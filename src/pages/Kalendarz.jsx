@@ -41,13 +41,14 @@ export default function Kalendarz({ user, onBack }) {
       setLoading(true)
 
       const [{ data: d }, { data: do_ }, { data: s }] = await Promise.all([
-        supabase.from('dania').select('"Danie", "TYP"').order('"Danie"'),
+        supabase.from('dania').select('*').order('"Danie"'),
         supabase.from('dodatki').select('"Dodatek"').order('"Dodatek"'),
         supabase.from('surowki').select('"Surówka"').order('"Surówka"'),
       ])
 
-      const unikalDania = [...new Map((d || []).map(x => [x.Danie, x])).values()]
-      setDania(unikalDania)
+     const unikalDania = [...new Map((d || []).map(x => [x['Danie'], x])).values()]
+console.log('Pierwsze danie:', unikalDania[0])
+setDania(unikalDania)
       setDodatki([...new Set((do_ || []).map(x => x.Dodatek))])
       setSurowki([...new Set((s || []).map(x => x['Surówka']))])
 
@@ -72,40 +73,45 @@ export default function Kalendarz({ user, onBack }) {
     pobierzDane()
   }, [tydzien])
 
-  async function zapiszWpis(data, posilek, pole, wartosc) {
-    const klucz = `${data}_${posilek}`
-    const istniejacy = plan[klucz]
+async function zapiszWpis(dataStr, posilek, pole, wartosc) {
+  const klucz = `${dataStr}_${posilek}`
+  const istniejacy = plan[klucz]
 
-    setZapisywanie(true)
+  setZapisywanie(true)
 
-    if (istniejacy) {
-      const { data: zaktualizowany } = await supabase
-        .from('kalendarz')
-        .update({ [pole]: wartosc || null })
-        .eq('id', istniejacy.id)
-        .select()
-        .single()
-      setPlan(prev => ({ ...prev, [klucz]: zaktualizowany }))
-    } else {
-      const { data: nowy } = await supabase
-        .from('kalendarz')
-        .insert({ user_id: user.id, data, posilek, [pole]: wartosc || null })
-        .select()
-        .single()
-      setPlan(prev => ({ ...prev, [klucz]: nowy }))
-    }
-    setZapisywanie(false)
+  // Jeśli zmieniamy danie, resetuj dodatek i surówkę
+  const dodatkoweReset = pole === 'danie' ? { dodatek: null, surowka: null } : {}
+
+  if (istniejacy) {
+    const { data: zaktualizowany } = await supabase
+      .from('kalendarz')
+      .update({ [pole]: wartosc || null, ...dodatkoweReset })
+      .eq('id', istniejacy.id)
+      .select()
+      .single()
+    setPlan(prev => ({ ...prev, [klucz]: zaktualizowany }))
+  } else {
+    const { data: nowy } = await supabase
+      .from('kalendarz')
+      .insert({ user_id: user.id, data: dataStr, posilek, [pole]: wartosc || null })
+      .select()
+      .single()
+    setPlan(prev => ({ ...prev, [klucz]: nowy }))
   }
+  setZapisywanie(false)
+}
 
-  function pobierzTypDania(nazwaDania) {
-    const d = dania.find(x => x.Danie === nazwaDania)
-    return d?.TYP || 'samodzielne'
-  }
+function pobierzTypDania(nazwaDania) {
+  if (!nazwaDania) return 'samodzielne'
+  const d = dania.find(x => x['Danie'] === nazwaDania)
+  return d?.['TYP'] || 'samodzielne'
+}
 
   if (loading) return <div style={s.loading}>Ładowanie kalendarza...</div>
 
   return (
-    <div style={s.container}>
+  <div style={{ width: '100%', maxWidth: 800, margin: '0 auto', overflowX: 'hidden' }}>
+  <div style={s.container}>
       <button style={s.back} onClick={onBack}>← Wróć</button>
 
       <div style={s.header}>
@@ -131,8 +137,9 @@ export default function Kalendarz({ user, onBack }) {
               {POSILKI.map(posilek => {
                 const klucz = `${dataStr}_${posilek}`
                 const wpis = plan[klucz]
-                const typ = pobierzTypDania(wpis?.danie)
-                const pokazDodatki = posilek === 'Obiad' && typ === 'z_dodatkiem'
+                const aktualneD = plan[`${dataStr}_${posilek}`]?.danie
+                const typ = pobierzTypDania(aktualneD)
+                const pokazDodatki = typ === 'z_dodatkiem'
 
                 return (
                   <div key={posilek} style={s.posilekBlok}>
@@ -180,16 +187,18 @@ export default function Kalendarz({ user, onBack }) {
         })}
       </div>
     </div>
+    </div>
   )
 }
 
 const s = {
   container: {
-    maxWidth: 800,
-    margin: '0 auto',
-    padding: '16px',
-    fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
-  },
+  padding: '16px',
+  fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
+  overflow: 'hidden',
+  width: '100%',
+  boxSizing: 'border-box',
+},
   back: {
     background: 'none', border: 'none',
     fontSize: 16, color: '#4a86e8',
@@ -222,17 +231,21 @@ const s = {
     color: '#4a86e8',
     marginBottom: 8,
   },
-  grid: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 12,
-  },
-  dzienKarta: {
-    background: 'white',
-    borderRadius: 14,
-    padding: '14px',
-    border: '1px solid #f0f0f0',
-  },
+grid: {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 12,
+  minWidth: 0,
+  width: '100%',
+},
+ dzienKarta: {
+  background: 'white',
+  borderRadius: 14,
+  padding: '14px',
+  border: '1px solid #f0f0f0',
+  width: '100%',
+  boxSizing: 'border-box',
+},
   dzienHeader: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -262,16 +275,17 @@ const s = {
     marginBottom: 4,
   },
   select: {
-    width: '100%',
-    padding: '10px 12px',
-    fontSize: 14,
-    border: '1px solid #eee',
-    borderRadius: 8,
-    background: '#fafafa',
-    color: '#1a1a1a',
-    marginBottom: 4,
-    boxSizing: 'border-box',
-  },
+  width: '100%',
+  maxWidth: '100%',
+  padding: '10px 12px',
+  fontSize: 14,
+  border: '1px solid #eee',
+  borderRadius: 8,
+  background: '#fafafa',
+  color: '#1a1a1a',
+  marginBottom: 4,
+  boxSizing: 'border-box',
+},
   selectMaly: {
     fontSize: 13,
     padding: '8px 10px',
