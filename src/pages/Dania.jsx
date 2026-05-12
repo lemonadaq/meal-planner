@@ -5,7 +5,7 @@ async function wyloguj() {
     await supabase.auth.signOut()
   }
 
-export default function Dania({ onSelect }) {
+export default function Dania({ onSelect, user, onKalendarz }) {
   const [dania, setDania] = useState([])
   const [loading, setLoading] = useState(true)
   const [szukaj, setSzukaj] = useState('')
@@ -41,9 +41,14 @@ export default function Dania({ onSelect }) {
         <div style={s.container}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
             <h1 style={s.title}>🍽️ Przepisy</h1>
-            <button onClick={wyloguj} style={{ background: 'none', border: 'none', color: '#999', fontSize: 13, cursor: 'pointer' }}>
-              Wyloguj
-            </button>
+          <div style={{ display: 'flex', gap: 8 }}>
+  <button onClick={onKalendarz} style={{ background: '#4a86e8', border: 'none', color: 'white', fontSize: 13, cursor: 'pointer', padding: '6px 12px', borderRadius: 8 }}>
+    📅 Kalendarz
+  </button>
+  <button onClick={wyloguj} style={{ background: 'none', border: 'none', color: '#999', fontSize: 13, cursor: 'pointer' }}>
+    Wyloguj
+  </button>
+</div>
           </div>
           <input
         style={s.search}
