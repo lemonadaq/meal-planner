@@ -1,5 +1,10 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../supabase'
+
+async function wyloguj() {
+    await supabase.auth.signOut()
+  }
+
 export default function Dania({ onSelect }) {
   const [dania, setDania] = useState([])
   const [loading, setLoading] = useState(true)
@@ -33,9 +38,14 @@ export default function Dania({ onSelect }) {
   if (loading) return <div style={s.loading}>Ładowanie...</div>
 
   return (
-    <div style={s.container}>
-      <h1 style={s.title}>🍽️ Przepisy</h1>
-      <input
+        <div style={s.container}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+            <h1 style={s.title}>🍽️ Przepisy</h1>
+            <button onClick={wyloguj} style={{ background: 'none', border: 'none', color: '#999', fontSize: 13, cursor: 'pointer' }}>
+              Wyloguj
+            </button>
+          </div>
+          <input
         style={s.search}
         placeholder="Szukaj dania..."
         value={szukaj}
