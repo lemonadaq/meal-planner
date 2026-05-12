@@ -1,25 +1,15 @@
-import { useEffect, useState } from 'react'
-import { supabase } from './supabase'
+import { useState } from 'react'
+import Dania from './pages/Dania'
+import DanieDetail from './pages/DanieDetail'
 
 function App() {
-  const [status, setStatus] = useState('Łączę z bazą...')
+  const [wybraneD, setWybraneD] = useState(null)
 
-  useEffect(() => {
-    supabase.from('_test').select('*').then(({ error }) => {
-      if (error?.message.includes('does not exist')) {
-        setStatus('✅ Połączono z Supabase!')
-      } else if (error) {
-        setStatus('❌ Błąd: ' + error.message)
-      }
-    })
-  }, [])
+  if (wybraneD) {
+    return <DanieDetail nazwa={wybraneD} onBack={() => setWybraneD(null)} />
+  }
 
-  return (
-    <div style={{ padding: 40, fontFamily: 'sans-serif' }}>
-      <h1>🍽️ Meal Planner</h1>
-      <p>{status}</p>
-    </div>
-  )
+  return <Dania onSelect={setWybraneD} />
 }
 
 export default App
