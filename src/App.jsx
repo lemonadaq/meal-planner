@@ -107,7 +107,7 @@ function App() {
         <Dania
           onSelect={setWybraneD}
           user={user}
-          onDodaj={() => setDodajDanie(true)}
+          onDodaj={() => setDodajDanie(true)} onBack={() => setTab('home')}
         />
       )}
       {tab === 'zakupy' && <ListaZakupow user={user} onBack={() => setTab('home')} />}

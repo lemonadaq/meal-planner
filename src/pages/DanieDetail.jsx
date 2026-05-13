@@ -26,18 +26,29 @@ function getEmoji(nazwa) {
   return '🍽️'
 }
 
+function podzielPrzepis(tekst) {
+  if (!tekst) return []
+
+  return tekst
+    .split(/\n|(?=\d+\.)/)
+    .map(krok =>
+      krok
+        .replace(/^\d+\.\s*/, '')
+        .trim()
+    )
+    .filter(Boolean)
+}
+
 export default function DanieDetail({ nazwa, onBack }) {
   const [skladniki, setSkladniki] = useState([])
-  const [dodatki, setDodatki] = useState([])
-  const [surowki, setSurowki] = useState([])
-  const [typ, setTyp] = useState('samodzielne')
+  const [przepis, setPrzepis] = useState('')
+  const [zdjecie, setZdjecie] = useState('')
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function pobierz() {
       setLoading(true)
 
-      // Pobierz składniki dania
       const { data: daniaData } = await supabase
         .from('dania')
         .select('*')
@@ -46,37 +57,16 @@ export default function DanieDetail({ nazwa, onBack }) {
 
       if (daniaData && daniaData.length > 0) {
         setSkladniki(daniaData)
-        const typDania = daniaData.find(d => d['TYP'])?.['TYP'] || 'samodzielne'
-        setTyp(typDania)
-
-        // Jeśli z_dodatkiem pobierz dodatki i surówki
-        if (typDania === 'z_dodatkiem') {
-          const [{ data: dod }, { data: sur }] = await Promise.all([
-            supabase.from('dodatki').select('"Dodatek"').order('"Dodatek"'),
-            supabase.from('surowki').select('"Surówka"').order('"Surówka"'),
-          ])
-
-          // Grupuj po nazwie dodatku
-          const dodMap = {}
-          ;(dod || []).forEach(d => {
-            if (!dodMap[d['Dodatek']]) dodMap[d['Dodatek']] = true
-          })
-          setDodatki(Object.keys(dodMap))
-
-          const surMap = {}
-          ;(sur || []).forEach(s => {
-            if (!surMap[s['Surówka']]) surMap[s['Surówka']] = true
-          })
-          setSurowki(Object.keys(surMap))
-        }
+        setPrzepis(daniaData.find(d => d['Przepis'])?.['Przepis'] || '')
+        setZdjecie(daniaData.find(d => d.zdjecie)?.zdjecie || '')
       }
 
       setLoading(false)
     }
+
     pobierz()
   }, [nazwa])
 
-  // Grupuj składniki po kategorii
   const pogrupowane = skladniki.reduce((acc, s) => {
     const kat = s['Kategoria']?.replace(/^\d_/, '') || 'Inne'
     if (!acc[kat]) acc[kat] = []
@@ -84,149 +74,220 @@ export default function DanieDetail({ nazwa, onBack }) {
     return acc
   }, {})
 
+  const krokiPrzepisu = podzielPrzepis(przepis)
+
   if (loading) return <div style={s.loading}>Ładowanie...</div>
 
   return (
     <div style={s.container}>
-      {/* Hero */}
-      <div style={{
-        ...s.hero,
-        background: getKolor(nazwa),
-      }}>
+      <div
+        style={{
+          ...s.hero,
+          background: getKolor(nazwa),
+        }}
+      >
         <button style={s.back} onClick={onBack}>← Wróć</button>
+
         <div style={s.heroEmoji}>{getEmoji(nazwa)}</div>
-        <h1 style={s.heroTytuł}>{nazwa}</h1>
-        {typ === 'z_dodatkiem' && (
-          <span style={s.heroTag}>🥔 Podawać z dodatkiem</span>
-        )}
+        <h1 style={s.heroTytul}>{nazwa}</h1>
       </div>
 
-      <div style={s.content}>
-        {/* Składniki */}
-        <h2 style={s.sekcjaTytuł}>Składniki</h2>
-        {Object.entries(pogrupowane).map(([kat, items]) => (
-          <div key={kat} style={s.grupa}>
-            <div style={s.katHeader}>{kat}</div>
-            {items.map((item, i) => (
-              <div key={i} style={s.skladnik}>
-                <span style={s.skladnikNazwa}>{item['Składnik']}</span>
-                <span style={s.skladnikIlosc}>
-                  {item['Ilość na 1 porcję'] && item['Ilość na 1 porcję'] !== '-'
-                    ? `${item['Ilość na 1 porcję']} ${item['Jednostka']}`
-                    : item['Jednostka']}
-                </span>
-              </div>
-            ))}
+<div style={s.skladnikiBox}>
+  <h2 style={s.sekcjaTytul}>Składniki</h2>
+
+  <div style={s.skladnikiGrid}>
+    {Object.entries(pogrupowane).map(([kat, items]) => (
+      <div key={kat} style={s.grupa}>
+        <div style={s.katHeader}>{kat}</div>
+
+        {items.map((item, i) => (
+          <div key={i} style={s.skladnik}>
+            <span style={s.skladnikNazwa}>{item['Składnik']}</span>
+            <span style={s.skladnikIlosc}>
+              {item['Ilość na 1 porcję'] && item['Ilość na 1 porcję'] !== '-'
+                ? `${item['Ilość na 1 porcję']} ${item['Jednostka']}`
+                : item['Jednostka']}
+            </span>
           </div>
         ))}
-
-        {/* Proponowane dodatki */}
-        {dodatki.length > 0 && (
-          <div style={s.sekcja}>
-            <h2 style={s.sekcjaTytuł}>🥔 Proponowane dodatki</h2>
-            <div style={s.chipyWrapper}>
-              {dodatki.map(d => (
-                <span key={d} style={s.chip}>{d}</span>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Proponowane surówki */}
-        {surowki.length > 0 && (
-          <div style={s.sekcja}>
-            <h2 style={s.sekcjaTytuł}>🥗 Proponowane surówki</h2>
-            <div style={s.chipyWrapper}>
-              {surowki.map(sur => (
-                <span key={sur} style={s.chip}>{sur}</span>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
-    </div>
+    ))}
+  </div>
+</div>
+
+        <div style={s.przepisBox}>
+          <h2 style={s.sekcjaTytul}>Przepis</h2>
+
+          {krokiPrzepisu.length > 0 ? (
+            <ol style={s.listaKrokow}>
+              {krokiPrzepisu.map((krok, index) => (
+                <li key={index} style={s.krok}>
+                  {krok}
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <div style={s.brakPrzepisu}>
+              Brak przepisu dla tego dania.
+            </div>
+          )}
+        </div>
+      </div>
   )
 }
 
 const s = {
-  container: {
-    fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
-    maxWidth: 600,
-    margin: '0 auto',
-  },
-  hero: {
-    padding: '20px 16px 32px',
-    textAlign: 'center',
-    position: 'relative',
-    minHeight: 200,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+ container: {
+  fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
+  width: '100%',
+  maxWidth: 900,
+  margin: '0 auto',
+  background: '#f8f9fa',
+  minHeight: '100vh',
+},
+skladnikiGrid: {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+  gap: 14,
+},
+hero: {
+  margin: 16,
+  padding: '18px 16px 24px',
+  textAlign: 'center',
+  position: 'relative',
+  minHeight: 180,
+  borderRadius: 24,
+  boxSizing: 'border-box',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+},
   back: {
     position: 'absolute',
-    top: 16, left: 16,
+    top: 16,
+    left: 16,
     background: 'rgba(255,255,255,0.8)',
-    border: 'none', borderRadius: 20,
-    padding: '6px 14px', fontSize: 14,
-    cursor: 'pointer', color: '#333',
+    border: 'none',
+    borderRadius: 20,
+    padding: '6px 14px',
+    fontSize: 14,
+    cursor: 'pointer', color: '#4a86e8',
     fontWeight: 500,
   },
-  heroEmoji: { fontSize: 64, marginBottom: 12 },
-  heroTytuł: {
-    fontSize: 24, fontWeight: 700,
-    color: '#1a1a1a', margin: '0 0 8px',
+  heroEmoji: {
+    fontSize: 64,
+    marginBottom: 12,
+  },
+  heroTytul: {
+    fontSize: 24,
+    fontWeight: 700,
+    color: '#1a1a1a',
+    margin: 0,
     textAlign: 'center',
   },
-  heroTag: {
-    background: 'rgba(255,255,255,0.8)',
-    padding: '4px 12px', borderRadius: 20,
-    fontSize: 13, color: '#555',
+content: {
+  padding: '0 16px 16px',
+},
+  topGrid: {
+    display: 'grid',
+    gridTemplateColumns: '1.15fr 0.85fr',
+    gap: 12,
+    alignItems: 'start',
   },
-  content: {
-    padding: '20px 16px',
-    background: '#f8f9fa',
-    minHeight: '60vh',
+skladnikiBox: {
+  background: 'white',
+  borderRadius: 16,
+  padding: 16,
+  boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+},
+  zdjecieBox: {
+    background: 'white',
+    borderRadius: 16,
+    overflow: 'hidden',
+    aspectRatio: '3/4',
+    boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+    position: 'sticky',
+    top: 12,
   },
-  sekcjaTytuł: {
-    fontSize: 17, fontWeight: 700,
-    color: '#1a1a1a', margin: '0 0 12px',
+  zdjecie: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+    display: 'block',
   },
-  sekcja: { marginTop: 24 },
-  grupa: { marginBottom: 16 },
+  zdjeciePlaceholder: {
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: 52,
+  },
+  sekcjaTytul: {
+    fontSize: 17,
+    fontWeight: 700,
+    color: '#1a1a1a',
+    margin: '0 0 12px',
+  },
+  grupa: {
+    marginBottom: 0,
+  },
   katHeader: {
-    fontSize: 11, fontWeight: 700,
-    textTransform: 'uppercase', letterSpacing: '0.5px',
-    color: '#4a86e8', padding: '6px 0',
-    borderBottom: '1px solid #eee', marginBottom: 8,
+    fontSize: 10,
+    fontWeight: 700,
+    textTransform: 'uppercase',
+    letterSpacing: '0.5px',
+    color: '#4a86e8',
+    padding: '4px 0',
+    borderBottom: '1px solid #eee',
+    marginBottom: 6,
   },
   skladnik: {
     display: 'flex',
     justifyContent: 'space-between',
-    padding: '10px 12px',
-    background: 'white',
-    borderRadius: 10,
-    marginBottom: 4,
-  },
-  skladnikNazwa: { fontSize: 15, color: '#1a1a1a' },
-  skladnikIlosc: { fontSize: 14, color: '#888' },
-  chipyWrapper: {
-    display: 'flex',
-    flexWrap: 'wrap',
     gap: 8,
+    padding: '7px 0',
+    borderBottom: '1px solid #f3f3f3',
   },
-  chip: {
-    background: 'white',
-    border: '1px solid #eee',
-    borderRadius: 20,
-    padding: '6px 14px',
+  skladnikNazwa: {
     fontSize: 13,
-    color: '#555',
+    color: '#1a1a1a',
+    lineHeight: 1.25,
+  },
+  skladnikIlosc: {
+    fontSize: 12,
+    color: '#888',
+    whiteSpace: 'nowrap',
+    lineHeight: 1.25,
+  },
+  przepisBox: {
+    marginTop: 16,
+    background: 'white',
+    borderRadius: 16,
+    padding: 16,
+    boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+  },
+  listaKrokow: {
+    margin: 0,
+    paddingLeft: 22,
+  },
+  krok: {
+    fontSize: 15,
+    color: '#1a1a1a',
+    lineHeight: 1.45,
+    marginBottom: 10,
+  },
+  brakPrzepisu: {
+    color: '#999',
+    fontSize: 14,
   },
   loading: {
     textAlign: 'center',
-    padding: 60, fontSize: 16,
-    color: '#666', fontFamily: 'sans-serif',
+    padding: 60,
+    fontSize: 16,
+    color: '#666',
+    fontFamily: 'sans-serif',
   },
 }
