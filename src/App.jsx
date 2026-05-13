@@ -6,6 +6,7 @@ import DanieDetail from './pages/DanieDetail'
 import Kalendarz from './pages/Kalendarz'
 import ListaZakupow from './pages/ListaZakupow'
 import DodajDanie from './pages/DodajDanie'
+
 function IOSInstallBaner() {
   const [pokaz, setPokaz] = useState(false)
 
@@ -71,32 +72,29 @@ function App() {
   if (loading) return <div style={{ textAlign: 'center', padding: 60, fontFamily: 'sans-serif' }}>Ładowanie...</div>
   if (!user) return <Login />
 
-  if (wybraneD) return <DanieDetail nazwa={wybraneD} onBack={() => setWybraneD(null)} />
-  if (widok === 'kalendarz') return <Kalendarz user={user} onBack={() => setWidok('dania')} />
-  if (widok === 'lista') return <ListaZakupow user={user} onBack={() => setWidok('dania')} />
-if (widok === 'dodaj') return (
-  <DodajDanie
-    onBack={() => setWidok('dania')}
-    onZapisano={(nazwa) => {
-      setWidok('dania')
-    }}
-  />
-)
-return <Dania onSelect={setWybraneD} user={user} onKalendarz={() => setWidok('kalendarz')} onLista={() => setWidok('lista')} onDodaj={() => setWidok('dodaj')} />
-if (widok === 'lista') return (
-  <>
-    <ListaZakupow user={user} onBack={() => setWidok('dania')} />
-    <IOSInstallBaner />
-  </>
-)
-
-// itd dla każdego widoku, albo prościej:
-return (
-  <>
-    <Dania onSelect={setWybraneD} user={user} onKalendarz={() => setWidok('kalendarz')} onLista={() => setWidok('lista')} onDodaj={() => setWidok('dodaj')} />
-    <IOSInstallBaner />
-  </>
-)
+  return (
+    <>
+      {wybraneD && <DanieDetail nazwa={wybraneD} onBack={() => setWybraneD(null)} />}
+      {!wybraneD && widok === 'kalendarz' && <Kalendarz user={user} onBack={() => setWidok('dania')} />}
+      {!wybraneD && widok === 'lista' && <ListaZakupow user={user} onBack={() => setWidok('dania')} />}
+      {!wybraneD && widok === 'dodaj' && (
+        <DodajDanie
+          onBack={() => setWidok('dania')}
+          onZapisano={() => setWidok('dania')}
+        />
+      )}
+      {!wybraneD && widok === 'dania' && (
+        <Dania
+          onSelect={setWybraneD}
+          user={user}
+          onKalendarz={() => setWidok('kalendarz')}
+          onLista={() => setWidok('lista')}
+          onDodaj={() => setWidok('dodaj')}
+        />
+      )}
+      <IOSInstallBaner />
+    </>
+  )
 }
 
 export default App
