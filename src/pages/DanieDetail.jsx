@@ -67,9 +67,35 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user }) {
   const [wybranyPosilek, setWybranyPosilek] = useState('Obiad')
   const [dodawanie, setDodawanie] = useState(false)
   const [sukces, setSukces] = useState(false)
+  const [planTygodnia, setPlanTygodnia] = useState({})
 
-  useEffect(() => { pobierz() }, [nazwaProp])
+const poniedzialek = getPoniedzialek(tydzien)
+const dni = Array.from({ length: 7 }, (_, i) => {
+  const d = new Date(poniedzialek)
+  d.setDate(d.getDate() + i)
+  return d
+})
 
+useEffect(() => { pobierz() }, [nazwaProp])
+useEffect(() => {
+  if (!pokazKalendarz || !user) return
+  async function pobierzPlan() {
+    const od = formatData(dni[0])
+    const do_ = formatData(dni[6])
+    const { data } = await supabase
+      .from('kalendarz')
+      .select('*')
+      .eq('user_id', user.id)
+      .gte('data', od)
+      .lte('data', do_)
+    const mapa = {}
+    ;(data || []).forEach(p => {
+      mapa[`${p.data}_${p.posilek}`] = p.danie
+    })
+    setPlanTygodnia(mapa)
+  }
+  pobierzPlan()
+}, [pokazKalendarz, tydzien, user])
   async function pobierz() {
     setLoading(true)
     const { data } = await supabase
@@ -164,13 +190,6 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user }) {
     return acc
   }, {})
 
-  const poniedzialek = getPoniedzialek(tydzien)
-  const dni = Array.from({ length: 7 }, (_, i) => {
-    const d = new Date(poniedzialek)
-    d.setDate(d.getDate() + i)
-    return d
-  })
-
   if (loading) return <div style={s.loading}>Ładowanie...</div>
 
   return (
@@ -194,20 +213,41 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user }) {
                   <button style={s.navBtn} onClick={() => setTydzien(t => t + 1)}>›</button>
                 </div>
                 <div style={s.dniGrid}>
-                  {dni.map((dzien, i) => {
-                    const dataStr = formatData(dzien)
-                    const aktywny = wybranyDzien === dataStr
-                    return (
-                      <button key={dataStr}
-                        style={{ ...s.dzienBtn, ...(aktywny ? s.dzienBtnAktywny : {}) }}
-                        onClick={() => setWybranyDzien(dataStr)}
-                      >
-                        <span style={s.dzienNazwa}>{DNI[i].slice(0, 3)}</span>
-                        <span style={s.dzienData}>{dzien.getDate()}</span>
-                      </button>
-                    )
-                  })}
-                </div>
+  {dni.map((dzien, i) => {
+    const dataStr = formatData(dzien)
+    const aktywny = wybranyDzien === dataStr
+    const zaplanowane = planTygodnia[`${dataStr}_${wybranyPosilek}`]
+    return (
+      <button key={dataStr}
+        style={{ ...s.dzienBtn, ...(aktywny ? s.dzienBtnAktywny : {}) }}
+        onClick={() => setWybranyDzien(dataStr)}
+      >
+        <span style={{ fontSize: 9, fontWeight: 600, textTransform: 'uppercase', opacity: 0.7, color: aktywny ? 'white' : '#888' }}>
+          {DNI[i].slice(0, 3)}
+        </span>
+        <span style={{ fontSize: 15, fontWeight: 700, marginTop: 2, color: aktywny ? 'white' : '#1a1a1a' }}>
+          {dzien.getDate()}
+        </span>
+        {zaplanowane && (
+          <span style={{
+            fontSize: 8,
+            color: aktywny ? 'rgba(255,255,255,0.85)' : '#4a86e8',
+            textAlign: 'center',
+            lineHeight: 1.2,
+            marginTop: 3,
+            padding: '0 2px',
+            overflow: 'hidden',
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+          }}>
+            {zaplanowane}
+          </span>
+        )}
+      </button>
+    )
+  })}
+</div>
                 <div style={s.posilkiRow}>
                   {POSILKI.map(p => (
                     <button key={p}
@@ -490,11 +530,12 @@ const s = {
     gap: 4, marginBottom: 12,
   },
   dzienBtn: {
-    display: 'flex', flexDirection: 'column',
-    alignItems: 'center', padding: '6px 0',
-    background: '#f8f9fa', border: 'none',
-    borderRadius: 10, cursor: 'pointer',
-  },
+  display: 'flex', flexDirection: 'column',
+  alignItems: 'center', padding: '6px 2px',
+  background: '#f8f9fa', border: 'none',
+  borderRadius: 10, cursor: 'pointer',
+  minHeight: 64, width: '100%',
+},
   dzienBtnAktywny: {
     background: '#4a86e8', color: 'white',
   },
