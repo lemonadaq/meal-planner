@@ -223,6 +223,8 @@ if (
             <input
               style={{ ...s.input, flex: 1 }}
               placeholder="Ilość"
+                type="decimal"
+  inputMode="decimal"
               value={nowyS.ilosc}
               onChange={e => setNowyS(prev => ({ ...prev, ilosc: e.target.value }))}
             />
