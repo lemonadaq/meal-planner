@@ -5,6 +5,7 @@ import Dania from './pages/Dania'
 import DanieDetail from './pages/DanieDetail'
 import Kalendarz from './pages/Kalendarz'
 import ListaZakupow from './pages/ListaZakupow'
+import DodajDanie from './pages/DodajDanie'
 
 function App() {
   const [user, setUser] = useState(null)
@@ -29,8 +30,15 @@ function App() {
   if (wybraneD) return <DanieDetail nazwa={wybraneD} onBack={() => setWybraneD(null)} />
   if (widok === 'kalendarz') return <Kalendarz user={user} onBack={() => setWidok('dania')} />
   if (widok === 'lista') return <ListaZakupow user={user} onBack={() => setWidok('dania')} />
-
-  return <Dania onSelect={setWybraneD} user={user} onKalendarz={() => setWidok('kalendarz')} onLista={() => setWidok('lista')} />
+if (widok === 'dodaj') return (
+  <DodajDanie
+    onBack={() => setWidok('dania')}
+    onZapisano={(nazwa) => {
+      setWidok('dania')
+    }}
+  />
+)
+return <Dania onSelect={setWybraneD} user={user} onKalendarz={() => setWidok('kalendarz')} onLista={() => setWidok('lista')} onDodaj={() => setWidok('dodaj')} />
 }
 
 export default App

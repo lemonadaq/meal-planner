@@ -4,8 +4,7 @@ import { supabase } from '../supabase'
 async function wyloguj() {
     await supabase.auth.signOut()
   }
-export default function Dania({ onSelect, user, onKalendarz, onLista }) {
-  const [dania, setDania] = useState([])
+export default function Dania({ onSelect, user, onKalendarz, onLista, onDodaj }) {  const [dania, setDania] = useState([])
   const [loading, setLoading] = useState(true)
   const [szukaj, setSzukaj] = useState('')
 
@@ -47,6 +46,9 @@ export default function Dania({ onSelect, user, onKalendarz, onLista }) {
   </button>
   <button onClick={onLista} style={{ background: '#34a853', border: 'none', color: 'white', fontSize: 13, cursor: 'pointer', padding: '6px 12px', borderRadius: 8 }}>
   🛒 Zakupy
+</button>
+<button onClick={onDodaj} style={{ background: '#e8a84a', border: 'none', color: 'white', fontSize: 13, cursor: 'pointer', padding: '6px 12px', borderRadius: 8 }}>
+  + Danie
 </button>
   <button onClick={wyloguj} style={{ background: 'none', border: 'none', color: '#999', fontSize: 13, cursor: 'pointer' }}>
     Wyloguj
