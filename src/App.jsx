@@ -6,6 +6,7 @@ import DanieDetail from './pages/DanieDetail'
 import Kalendarz from './pages/Kalendarz'
 import ListaZakupow from './pages/ListaZakupow'
 import DodajDanie from './pages/DodajDanie'
+import NavBar from './components/NavBar'
 
 function IOSInstallBaner() {
   const [pokaz, setPokaz] = useState(false)
@@ -27,11 +28,11 @@ function IOSInstallBaner() {
 
   return (
     <div style={{
-      position: 'fixed', bottom: 0, left: 0, right: 0,
+      position: 'fixed', bottom: 70, left: 12, right: 12,
       background: 'white', padding: '16px 20px',
       boxShadow: '0 -4px 20px rgba(0,0,0,0.15)',
       zIndex: 9999, fontFamily: 'sans-serif',
-      borderRadius: '16px 16px 0 0',
+      borderRadius: 16,
     }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div style={{ flex: 1 }}>
@@ -40,7 +41,7 @@ function IOSInstallBaner() {
           </div>
           {jestChrome ? (
             <div style={{ fontSize: 13, color: '#666', lineHeight: 1.5 }}>
-              Na iPhone działa tylko przez <strong>Safari</strong>. Otwórz tę stronę w Safari, a następnie kliknij <strong>□↑</strong> i <strong>"Dodaj do ekranu głównego"</strong>
+              Na iPhone działa tylko przez <strong>Safari</strong>. Otwórz tę stronę w Safari, kliknij <strong>□↑</strong> i <strong>"Dodaj do ekranu głównego"</strong>
             </div>
           ) : (
             <div style={{ fontSize: 13, color: '#666', lineHeight: 1.5 }}>
@@ -65,8 +66,9 @@ function IOSInstallBaner() {
 function App() {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [widok, setWidok] = useState('dania')
+  const [tab, setTab] = useState('home')
   const [wybraneD, setWybraneD] = useState(null)
+  const [dodajDanie, setDodajDanie] = useState(false)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -79,31 +81,75 @@ function App() {
     return () => subscription.unsubscribe()
   }, [])
 
-  if (loading) return <div style={{ textAlign: 'center', padding: 60, fontFamily: 'sans-serif' }}>Ładowanie...</div>
+  if (loading) return (
+    <div style={{ textAlign: 'center', padding: 60, fontFamily: 'sans-serif' }}>
+      Ładowanie...
+    </div>
+  )
+
   if (!user) return <Login />
 
+  // Widoki overlay (bez navbara)
+  if (wybraneD) return <DanieDetail nazwa={wybraneD} onBack={() => setWybraneD(null)} />
+  if (dodajDanie) return (
+    <DodajDanie
+      onBack={() => setDodajDanie(false)}
+      onZapisano={() => setDodajDanie(false)}
+    />
+  )
+
   return (
-    <>
-      {wybraneD && <DanieDetail nazwa={wybraneD} onBack={() => setWybraneD(null)} />}
-      {!wybraneD && widok === 'kalendarz' && <Kalendarz user={user} onBack={() => setWidok('dania')} />}
-      {!wybraneD && widok === 'lista' && <ListaZakupow user={user} onBack={() => setWidok('dania')} />}
-      {!wybraneD && widok === 'dodaj' && (
-        <DodajDanie
-          onBack={() => setWidok('dania')}
-          onZapisano={() => setWidok('dania')}
-        />
-      )}
-      {!wybraneD && widok === 'dania' && (
+    <div style={{ paddingBottom: 80, minHeight: '100vh', background: '#f8f9fa' }}>
+      {tab === 'home' && <Home user={user} onTabChange={setTab} />}
+      {tab === 'planer' && <Kalendarz user={user} onBack={() => setTab('home')} />}
+      {tab === 'przepisy' && (
         <Dania
           onSelect={setWybraneD}
           user={user}
-          onKalendarz={() => setWidok('kalendarz')}
-          onLista={() => setWidok('lista')}
-          onDodaj={() => setWidok('dodaj')}
+          onDodaj={() => setDodajDanie(true)}
         />
       )}
+      {tab === 'zakupy' && <ListaZakupow user={user} onBack={() => setTab('home')} />}
+      <NavBar aktywny={tab} onChange={setTab} />
       <IOSInstallBaner />
-    </>
+    </div>
+  )
+}
+
+// Tymczasowy placeholder dla Home
+function Home({ user, onTabChange }) {
+  const imie = user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'Cześć'
+
+  return (
+    <div style={{ padding: '24px 16px', fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif' }}>
+      <h1 style={{ fontSize: 24, fontWeight: 700, color: '#1a1a1a', marginBottom: 4 }}>
+        Dzień dobry, {imie}! 👋
+      </h1>
+      <p style={{ color: '#888', fontSize: 15, marginBottom: 24 }}>
+        {new Date().toLocaleDateString('pl-PL', { weekday: 'long', day: 'numeric', month: 'long' })}
+      </p>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+        {[
+          { ikona: '📅', label: 'Planer', tab: 'planer', kolor: '#e8f0fe' },
+          { ikona: '🛒', label: 'Zakupy', tab: 'zakupy', kolor: '#e6f4ea' },
+          { ikona: '🍽️', label: 'Przepisy', tab: 'przepisy', kolor: '#fce8e6' },
+        ].map(k => (
+          <div
+            key={k.tab}
+            onClick={() => onTabChange(k.tab)}
+            style={{
+              background: k.kolor, borderRadius: 16,
+              padding: '20px 16px', cursor: 'pointer',
+              textAlign: 'center',
+            }}
+          >
+            <div style={{ fontSize: 32, marginBottom: 8 }}>{k.ikona}</div>
+            <div style={{ fontWeight: 600, fontSize: 15 }}>{k.label}</div>
+          </div>
+        ))}
+      </div>
+    </div>
   )
 }
 
