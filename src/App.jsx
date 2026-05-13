@@ -91,7 +91,7 @@ function App() {
   if (!user) return <Login />
 
   // Widoki overlay (bez navbara)
-  if (wybraneD) return <DanieDetail nazwa={wybraneD} onBack={() => setWybraneD(null)} />
+  if (wybraneD) return <DanieDetail nazwa={wybraneD} onBack={() => setWybraneD(null)} user={user} />
   if (dodajDanie) return (
     <DodajDanie
       onBack={() => setDodajDanie(false)}
