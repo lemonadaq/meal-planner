@@ -62,12 +62,20 @@ function wyczyscFormularz() {
   setBlad('')
   setPodpowiedzi([])
 }
-  function dodajSkladnik() {
-    if (!nowyS.nazwa.trim()) return
-    setSkladniki(prev => [...prev, { ...nowyS }])
-    setNowyS({ nazwa: '', ilosc: '', jednostka: 'g', kategoria: '1_Warzywa i owoce' })
-    setPodpowiedzi([])
+ function dodajSkladnik() {
+  if (!nowyS.nazwa.trim()) return
+  
+  // Sprawdź czy już jest na liście
+  if (skladniki.find(s => s.nazwa.toLowerCase() === nowyS.nazwa.toLowerCase())) {
+    setBlad('Ten składnik już jest na liście!')
+    return
   }
+  
+  setSkladniki(prev => [...prev, { ...nowyS }])
+  setNowyS({ nazwa: '', ilosc: '', jednostka: 'g', kategoria: '1_Warzywa i owoce' })
+  setPodpowiedzi([])
+  setBlad('')
+}
 
   function usunSkladnik(i) {
     setSkladniki(prev => prev.filter((_, idx) => idx !== i))
@@ -308,13 +316,17 @@ const s = {
     background: '#4a86e8', color: 'white',
     border: '1px solid #4a86e8', fontWeight: 600,
   },
-  podpowiedzi: {
-    position: 'absolute', top: '100%', left: 0, right: 0,
-    background: 'white', border: '1px solid #eee',
-    borderRadius: 10, zIndex: 100,
-    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-    maxHeight: 200, overflowY: 'auto',
-  },
+podpowiedzi: {
+  position: 'absolute',
+  bottom: '100%',  // ← zmień top na bottom
+  left: 0, right: 0,
+  background: 'white',
+  border: '1px solid #eee',
+  borderRadius: 10,
+  zIndex: 100,
+  boxShadow: '0 -4px 12px rgba(0,0,0,0.1)',  // ← cień do góry
+  maxHeight: 200, overflowY: 'auto',
+},
   podpowiedzItem: {
     padding: '10px 14px', cursor: 'pointer',
     fontSize: 14, borderBottom: '1px solid #f5f5f5',
