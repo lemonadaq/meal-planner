@@ -9,12 +9,16 @@ import DodajDanie from './pages/DodajDanie'
 
 function IOSInstallBaner() {
   const [pokaz, setPokaz] = useState(false)
+  const [jestChrome, setJestChrome] = useState(false)
 
   useEffect(() => {
-    const iosUrzadzenie = /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase())
+    const ua = navigator.userAgent.toLowerCase()
+    const iosUrzadzenie = /iphone|ipad|ipod/.test(ua)
+    const chrome = /crios/.test(ua)
     const juzZainstalowana = window.navigator.standalone === true
     const ukryte = localStorage.getItem('banerUkryty')
     if (iosUrzadzenie && !juzZainstalowana && !ukryte) {
+      setJestChrome(chrome)
       setPokaz(true)
     }
   }, [])
@@ -34,9 +38,15 @@ function IOSInstallBaner() {
           <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 6 }}>
             📲 Dodaj do ekranu głównego
           </div>
-          <div style={{ fontSize: 13, color: '#666', lineHeight: 1.5 }}>
-            Kliknij <strong>□↑</strong> na dole ekranu, a następnie <strong>"Dodaj do ekranu głównego"</strong>
-          </div>
+          {jestChrome ? (
+            <div style={{ fontSize: 13, color: '#666', lineHeight: 1.5 }}>
+              Na iPhone działa tylko przez <strong>Safari</strong>. Otwórz tę stronę w Safari, a następnie kliknij <strong>□↑</strong> i <strong>"Dodaj do ekranu głównego"</strong>
+            </div>
+          ) : (
+            <div style={{ fontSize: 13, color: '#666', lineHeight: 1.5 }}>
+              Kliknij <strong>□↑</strong> na dole ekranu, a następnie <strong>"Dodaj do ekranu głównego"</strong>
+            </div>
+          )}
         </div>
         <button
           onClick={() => {
