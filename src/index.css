@@ -7,6 +7,15 @@ select {
   background-color: white !important;
   color: #1a1a1a !important;
 }
+input {
+  background-color: white !important;
+  color: #1a1a1a !important;
+}
+
+option {
+  background-color: white !important;
+  color: #1a1a1a !important;
+}
 
 :root {
   --text: #6b6375;
