@@ -7,6 +7,7 @@ import Kalendarz from './pages/Kalendarz'
 import ListaZakupow from './pages/ListaZakupow'
 import DodajDanie from './pages/DodajDanie'
 import NavBar from './components/NavBar'
+import Home from './pages/Home'
 
 function IOSInstallBaner() {
   const [pokaz, setPokaz] = useState(false)
@@ -112,43 +113,6 @@ function App() {
       {tab === 'zakupy' && <ListaZakupow user={user} onBack={() => setTab('home')} />}
       <NavBar aktywny={tab} onChange={setTab} />
       <IOSInstallBaner />
-    </div>
-  )
-}
-
-// Tymczasowy placeholder dla Home
-function Home({ user, onTabChange }) {
-  const imie = user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'Cześć'
-
-  return (
-    <div style={{ padding: '24px 16px', fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif' }}>
-      <h1 style={{ fontSize: 24, fontWeight: 700, color: '#1a1a1a', marginBottom: 4 }}>
-        Dzień dobry, {imie}! 👋
-      </h1>
-      <p style={{ color: '#888', fontSize: 15, marginBottom: 24 }}>
-        {new Date().toLocaleDateString('pl-PL', { weekday: 'long', day: 'numeric', month: 'long' })}
-      </p>
-
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-        {[
-          { ikona: '📅', label: 'Planer', tab: 'planer', kolor: '#e8f0fe' },
-          { ikona: '🛒', label: 'Zakupy', tab: 'zakupy', kolor: '#e6f4ea' },
-          { ikona: '🍽️', label: 'Przepisy', tab: 'przepisy', kolor: '#fce8e6' },
-        ].map(k => (
-          <div
-            key={k.tab}
-            onClick={() => onTabChange(k.tab)}
-            style={{
-              background: k.kolor, borderRadius: 16,
-              padding: '20px 16px', cursor: 'pointer',
-              textAlign: 'center',
-            }}
-          >
-            <div style={{ fontSize: 32, marginBottom: 8 }}>{k.ikona}</div>
-            <div style={{ fontWeight: 600, fontSize: 15 }}>{k.label}</div>
-          </div>
-        ))}
-      </div>
     </div>
   )
 }
