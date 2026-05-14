@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../supabase'
+import { t, fonts, ui, avatarBg } from '../theme'
 
 export default function Home({ user, onTabChange }) {
   const imie = user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'Cześć'
@@ -42,195 +43,181 @@ export default function Home({ user, onTabChange }) {
   const godziny = { Śniadanie: '8:00', Obiad: '13:00', Kolacja: '19:00' }
 
   const dzisiejszaData = new Date().toLocaleDateString('pl-PL', {
-    weekday: 'long', day: 'numeric', month: 'long'
+    weekday: 'long', day: 'numeric', month: 'long',
   })
+
+  const zaplanowane = dzisiaj.filter(d => d.danie)
 
   return (
     <div style={s.container}>
-      <div style={s.header}>
+      {/* ─ Header ─────────────────────────────────────────── */}
+      <header style={s.header}>
         <div>
-          <h1 style={s.powitanie}>Dzień dobry, {imie}! 👋</h1>
-          <p style={s.data}>{dzisiejszaData}</p>
+          <div style={s.eyebrow}>{dzisiejszaData}</div>
+          <h1 style={s.powitanie}>
+            Cześć, <em style={s.italic}>{imie}</em>
+            <span style={{ color: t.warm }}>.</span>
+          </h1>
         </div>
-        <div style={s.avatar}>
-          {imie[0]?.toUpperCase()}
-        </div>
+        <div style={s.avatar} title={imie}>{imie[0]?.toUpperCase()}</div>
+      </header>
+
+      {/* ─ Section: dzisiejsze posiłki ─────────────────────── */}
+      <div style={s.sekcjaHeader}>
+        <h2 style={s.h2}>Dzisiaj na talerzu</h2>
+        <button style={s.link} onClick={() => onTabChange('planer')}>Plan tygodnia →</button>
       </div>
 
-      <div style={s.sekcja}>
-        <div style={s.sekcjaHeader}>
-          <span style={s.sekcjaTytuł}>Dzisiejsze posiłki</span>
-          <button style={s.sekcjaLink} onClick={() => onTabChange('planer')}>
-            Zobacz plan →
+      {zaplanowane.length === 0 ? (
+        <div style={s.pusty}>
+          <h3 style={s.pustyTytul}>Pusty kalendarz</h3>
+          <p style={s.pustySub}>Zaplanuj swoje posiłki — później Twoja lista zakupów ułoży się sama.</p>
+          <button style={s.btnPlanuj} onClick={() => onTabChange('planer')}>
+            Zaplanuj dzień
           </button>
         </div>
-
-        {dzisiaj.filter(d => d.danie).length === 0 ? (
-          <div style={s.pusty}>
-            <div style={{ fontSize: 32, marginBottom: 8 }}>📅</div>
-            <div style={{ fontSize: 14, color: '#888' }}>Brak zaplanowanych posiłków</div>
-            <button style={s.btnPlanuj} onClick={() => onTabChange('planer')}>
-              Zaplanuj dzień
-            </button>
-          </div>
-        ) : (
-          <div style={s.posilkiLista}>
-            {['Śniadanie', 'Obiad', 'Kolacja'].map(posilek => {
-              const wpis = dzisiaj.find(d => d.posilek === posilek)
-              if (!wpis?.danie) return null
-              return (
-                <div key={posilek} style={s.posilekItem}>
-                  <div style={s.posilekGodz}>{godziny[posilek]}</div>
-                  <div style={s.posilekInfo}>
-                    <div style={s.posilekNazwa}>{posilek}</div>
-                    <div style={s.posilekDanie}>{wpis.danie}</div>
-                    {wpis.dodatek && (
-                      <div style={s.posilekExtra}>+ {wpis.dodatek}</div>
-                    )}
-                  </div>
+      ) : (
+        <div style={s.posilkiLista}>
+          {['Śniadanie', 'Obiad', 'Kolacja'].map((posilek, idx) => {
+            const wpis = dzisiaj.find(d => d.posilek === posilek)
+            if (!wpis?.danie) return null
+            return (
+              <article key={posilek} style={s.posilekItem}>
+                <div style={s.posilekTime}>
+                  <span style={s.timeIdx}>{String(idx + 1).padStart(2, '0')}</span>
+                  <span style={s.timeHour}>{godziny[posilek]}</span>
                 </div>
-              )
-            })}
-          </div>
-        )}
-      </div>
+                <div style={s.posilekInfo}>
+                  <div style={s.posilekNazwa}>{posilek}</div>
+                  <div style={s.posilekDanie}>{wpis.danie}</div>
+                  {wpis.dodatek && (
+                    <div style={s.posilekExtra}>z {wpis.dodatek}{wpis.surowka ? ` · ${wpis.surowka}` : ''}</div>
+                  )}
+                </div>
+              </article>
+            )
+          })}
+        </div>
+      )}
 
+      {/* ─ Section: szybkie skróty ─────────────────────────── */}
+      <h2 style={{ ...s.h2, marginTop: 32, marginBottom: 12 }}>Skróty</h2>
       <div style={s.skroty}>
         {[
-          { ikona: '🛒', tytuł: 'Lista zakupów', sub: liczbaPozycji > 0 ? `${liczbaPozycji} dań w tym tygodniu` : 'Brak dań w tym tygodniu', tab: 'zakupy' },
-          { ikona: '🍽️', tytuł: 'Przepisy', sub: 'Przeglądaj bazę dań', tab: 'przepisy' },
-          { ikona: '📅', tytuł: 'Planer tygodnia', sub: 'Zaplanuj posiłki', tab: 'planer' },
+          { tytuł: 'Lista zakupów', sub: liczbaPozycji > 0 ? `${liczbaPozycji} dań w tym tygodniu` : 'Brak dań w tym tygodniu', tab: 'zakupy', icon: CartIcon, hue: t.warm },
+          { tytuł: 'Przepisy', sub: 'Przeglądaj bazę dań', tab: 'przepisy', icon: BookIcon, hue: t.accent },
+          { tytuł: 'Planer tygodnia', sub: 'Zaplanuj posiłki', tab: 'planer', icon: CalIcon, hue: t.accent },
         ].map(k => (
-          <div key={k.tab} style={s.skrotKarta} onClick={() => onTabChange(k.tab)}>
-            <div style={s.skrotIkona}>{k.ikona}</div>
+          <button key={k.tab} style={s.skrotKarta} onClick={() => onTabChange(k.tab)}>
+            <div style={{ ...s.skrotIkona, background: k.hue }}>
+              <k.icon />
+            </div>
             <div style={s.skrotInfo}>
               <div style={s.skrotTytuł}>{k.tytuł}</div>
               <div style={s.skrotSub}>{k.sub}</div>
             </div>
             <div style={s.skrotStrzalka}>›</div>
-          </div>
+          </button>
         ))}
       </div>
     </div>
   )
 }
 
+// ── small inline icons (no extra deps) ──────────────────────────────────────
+const CartIcon = () => (<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 4h2l2.5 12.5a2 2 0 0 0 2 1.5h7.5a2 2 0 0 0 2-1.6L21 8H6"/><circle cx="9" cy="21" r="1.2"/><circle cx="18" cy="21" r="1.2"/></svg>)
+const BookIcon = () => (<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h7a3 3 0 0 1 3 3v14H7a3 3 0 0 1-3-3V4z"/><path d="M20 4h-3a3 3 0 0 0-3 3v14h3a3 3 0 0 0 3-3V4z"/></svg>)
+const CalIcon = () => (<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>)
+
 const s = {
   container: {
-    padding: '24px 16px 16px',
-    fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
-    maxWidth: 600,
-    margin: '0 auto',
+    padding: '20px 20px 24px',
+    fontFamily: fonts.sans, color: t.text,
+    background: t.bg, minHeight: '100vh',
+    maxWidth: 600, margin: '0 auto', boxSizing: 'border-box',
   },
   header: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 24,
+    display: 'flex', justifyContent: 'space-between',
+    alignItems: 'flex-start', marginBottom: 28, gap: 12,
+  },
+  eyebrow: {
+    ...ui.eyebrow, marginBottom: 4, textTransform: 'capitalize',
+    fontSize: 11, letterSpacing: 1.2,
   },
   powitanie: {
-    fontSize: 22, fontWeight: 700,
-    color: '#1a1a1a', margin: '0 0 4px',
+    ...ui.h1, fontSize: 30, lineHeight: 1.05, fontWeight: 400,
   },
-  data: {
-    fontSize: 14, color: '#888', margin: 0,
-    textTransform: 'capitalize',
-  },
+  italic: { fontStyle: 'italic', color: t.accent, fontFamily: fonts.serif },
   avatar: {
-    width: 44, height: 44,
-    borderRadius: '50%',
-    background: '#4a86e8',
-    color: 'white',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    fontSize: 18, fontWeight: 700,
+    width: 44, height: 44, borderRadius: '50%',
+    background: avatarBg('avatar:home'),
+    color: '#fff',
+    display: 'grid', placeItems: 'center',
+    fontFamily: fonts.serif, fontSize: 18, fontWeight: 500,
     flexShrink: 0,
-  },
-  sekcja: {
-    background: 'white',
-    borderRadius: 20,
-    padding: '16px',
-    marginBottom: 12,
-    boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+    boxShadow: '0 4px 12px rgba(74,55,40,.12)',
   },
   sekcjaHeader: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
+    display: 'flex', justifyContent: 'space-between',
+    alignItems: 'baseline', marginBottom: 12,
   },
-  sekcjaTytuł: {
-    fontSize: 16, fontWeight: 700, color: '#1a1a1a',
-  },
-  sekcjaLink: {
-    background: 'none', border: 'none',
-    fontSize: 13, color: '#4a86e8',
-    cursor: 'pointer', fontWeight: 500,
-  },
+  h2: { ...ui.h2 },
+  link: { ...ui.btnText, color: t.accent, padding: 0 },
   pusty: {
-    textAlign: 'center',
-    padding: '20px 0',
+    ...ui.card, padding: '28px 24px', textAlign: 'center',
   },
-  btnPlanuj: {
-    marginTop: 12,
-    background: '#4a86e8', color: 'white',
-    border: 'none', borderRadius: 10,
-    padding: '10px 20px', fontSize: 14,
-    cursor: 'pointer', fontWeight: 600,
+  pustyTytul: { ...ui.h3, marginBottom: 6 },
+  pustySub: {
+    fontFamily: fonts.sans, fontSize: 13.5, color: t.mute,
+    margin: '0 0 18px', lineHeight: 1.5,
   },
-  posilkiLista: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 10,
-  },
+  btnPlanuj: { ...ui.btnPrimary, padding: '12px 22px' },
+  posilkiLista: { display: 'flex', flexDirection: 'column', gap: 8 },
   posilekItem: {
-    display: 'flex',
-    alignItems: 'flex-start',
-    gap: 12,
-    padding: '10px 12px',
-    background: '#f8f9fa',
-    borderRadius: 12,
+    display: 'flex', alignItems: 'center', gap: 14,
+    padding: '14px 16px', ...ui.card,
   },
-  posilekGodz: {
-    fontSize: 12, color: '#888',
-    fontWeight: 600, minWidth: 36,
-    paddingTop: 2,
+  posilekTime: {
+    flexShrink: 0, display: 'flex', flexDirection: 'column',
+    alignItems: 'center', gap: 2, paddingRight: 12,
+    borderRight: `0.5px solid ${t.border}`,
+    minWidth: 56,
   },
-  posilekInfo: { flex: 1 },
-  posilekNazwa: {
-    fontSize: 11, color: '#4a86e8',
-    fontWeight: 700, textTransform: 'uppercase',
-    letterSpacing: '0.5px', marginBottom: 2,
+  timeIdx: {
+    fontFamily: fonts.serif, fontSize: 20, color: t.accent,
+    fontStyle: 'italic', lineHeight: 1, fontVariantNumeric: 'tabular-nums',
   },
+  timeHour: {
+    fontFamily: fonts.sans, fontSize: 10, fontWeight: 600,
+    letterSpacing: 0.6, color: t.mute, fontVariantNumeric: 'tabular-nums',
+  },
+  posilekInfo: { flex: 1, minWidth: 0 },
+  posilekNazwa: { ...ui.slotLabel, marginBottom: 2 },
   posilekDanie: {
-    fontSize: 15, fontWeight: 600, color: '#1a1a1a',
+    fontFamily: fonts.serif, fontSize: 17, color: t.text,
+    letterSpacing: -0.1, lineHeight: 1.15,
   },
   posilekExtra: {
-    fontSize: 12, color: '#888', marginTop: 2,
+    fontFamily: fonts.sans, fontSize: 12, color: t.mute, marginTop: 3,
   },
-  skroty: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 10,
-  },
+  skroty: { display: 'flex', flexDirection: 'column', gap: 8 },
   skrotKarta: {
-    background: 'white',
-    borderRadius: 16,
-    padding: '14px 16px',
-    display: 'flex',
-    alignItems: 'center',
-    gap: 14,
-    cursor: 'pointer',
-    boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+    ...ui.card, padding: '12px 14px',
+    display: 'flex', alignItems: 'center', gap: 14,
+    cursor: 'pointer', textAlign: 'left',
+    fontFamily: fonts.sans,
   },
-  skrotIkona: { fontSize: 28, flexShrink: 0 },
-  skrotInfo: { flex: 1 },
+  skrotIkona: {
+    width: 40, height: 40, borderRadius: 12,
+    display: 'grid', placeItems: 'center', flexShrink: 0,
+  },
+  skrotInfo: { flex: 1, minWidth: 0 },
   skrotTytuł: {
-    fontSize: 15, fontWeight: 600, color: '#1a1a1a',
+    fontFamily: fonts.serif, fontSize: 17, color: t.text,
+    letterSpacing: -0.1, lineHeight: 1.2,
   },
   skrotSub: {
-    fontSize: 13, color: '#888', marginTop: 2,
+    fontFamily: fonts.sans, fontSize: 12.5, color: t.mute, marginTop: 2,
   },
-  skrotStrzalka: {
-    fontSize: 20, color: '#ccc',
-  },
+  skrotStrzalka: { fontSize: 22, color: t.muteLight, fontFamily: fonts.serif },
 }

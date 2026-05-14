@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '../supabase'
+import { t, fonts, ui } from '../theme'
 
 export default function ListaZakupow({ user, onBack }) {
   const [lista, setLista] = useState([])
@@ -26,15 +27,12 @@ export default function ListaZakupow({ user, onBack }) {
       .lte('data', niedzielaStr)
 
     if (!planData || planData.length === 0) {
-      setLista([])
-      setLoading(false)
-      return
+      setLista([]); setLoading(false); return
     }
 
     const wybraneDania = new Set()
     const wybraneDodatki = new Set()
     const wybraneSurowki = new Set()
-
     planData.forEach(p => {
       if (p.danie) wybraneDania.add(p.danie)
       if (p.dodatek) wybraneDodatki.add(p.dodatek)
@@ -42,65 +40,37 @@ export default function ListaZakupow({ user, onBack }) {
     })
 
     const skladnikiMap = {}
-
     function dodaj(skladnik, ilosc, jednostka, kategoria) {
       if (!skladnik) return
       const iloscNum = parseFloat(ilosc?.toString().replace(',', '.'))
       if (!iloscNum || isNaN(iloscNum)) return
       const klucz = `${skladnik}||${jednostka}`
-      if (skladnikiMap[klucz]) {
-        skladnikiMap[klucz].ilosc += iloscNum
-      } else {
-        skladnikiMap[klucz] = {
-          skladnik, ilosc: iloscNum,
-          jednostka, kategoria: kategoria || '8_Inne',
-          klucz
-        }
-      }
+      if (skladnikiMap[klucz]) skladnikiMap[klucz].ilosc += iloscNum
+      else skladnikiMap[klucz] = { skladnik, ilosc: iloscNum, jednostka, kategoria: kategoria || '8_Inne', klucz }
     }
 
     if (wybraneDania.size > 0) {
-      const { data: daniaData } = await supabase
-        .from('dania')
-        .select('*')
-        .in('"Danie"', [...wybraneDania])
-      ;(daniaData || []).forEach(r => {
-        dodaj(r['Składnik'], r['Ilość na 1 porcję'], r['Jednostka'], r['Kategoria'])
-      })
+      const { data: daniaData } = await supabase.from('dania').select('*').in('"Danie"', [...wybraneDania])
+      ;(daniaData || []).forEach(r => dodaj(r['Składnik'], r['Ilość na 1 porcję'], r['Jednostka'], r['Kategoria']))
     }
-
     if (wybraneDodatki.size > 0) {
-      const { data: dodatkiData } = await supabase
-        .from('dodatki')
-        .select('*')
-        .in('"Dodatek"', [...wybraneDodatki])
-      ;(dodatkiData || []).forEach(r => {
-        dodaj(r['Składnik'], r['Ilość na porcję'], r['Jednostka'], r['Kategoria'])
-      })
+      const { data: dodatkiData } = await supabase.from('dodatki').select('*').in('"Dodatek"', [...wybraneDodatki])
+      ;(dodatkiData || []).forEach(r => dodaj(r['Składnik'], r['Ilość na porcję'], r['Jednostka'], r['Kategoria']))
     }
-
     if (wybraneSurowki.size > 0) {
-      const { data: surowkiData } = await supabase
-        .from('surowki')
-        .select('*')
-        .in('"Surówka"', [...wybraneSurowki])
-      ;(surowkiData || []).forEach(r => {
-        dodaj(r['Składnik'], r['Ilość na porcję'], r['Jednostka'], r['Kategoria'])
-      })
+      const { data: surowkiData } = await supabase.from('surowki').select('*').in('"Surówka"', [...wybraneSurowki])
+      ;(surowkiData || []).forEach(r => dodaj(r['Składnik'], r['Ilość na porcję'], r['Jednostka'], r['Kategoria']))
     }
 
     const posortowane = Object.values(skladnikiMap).sort((a, b) =>
       a.kategoria.localeCompare(b.kategoria) || a.skladnik.localeCompare(b.skladnik)
     )
-
     setLista(posortowane)
     setOdznaczone(new Set())
     setLoading(false)
   }, [user.id])
 
-  useEffect(() => {
-    generuj()
-  }, [generuj])
+  useEffect(() => { generuj() }, [generuj])
 
   function toggle(klucz) {
     setOdznaczone(prev => {
@@ -122,65 +92,84 @@ export default function ListaZakupow({ user, onBack }) {
     kategorie[kat].push(item)
   })
 
-  if (loading) return <div style={s.loading}>Generuję listę zakupów...</div>
+  if (loading) return <div style={s.loading}>Generuję listę zakupów…</div>
 
   return (
-    <div style={{ width: '100%', maxWidth: 600, margin: '0 auto', overflowX: 'hidden' }}>
+    <div style={s.outer}>
       <div style={s.container}>
         <button style={s.back} onClick={onBack}>← Wróć</button>
 
-        <div style={s.headerBox}>
-          <h1 style={s.title}>🛒 Lista zakupów</h1>
-          <div style={s.subtitle}>{kupione.length} z {lista.length} produktów</div>
-          <div style={s.progressBar}>
-            <div style={{ ...s.progressFill, width: `${procent}%` }} />
+        {/* Header card — sage gradient w/ progress */}
+        <header style={s.headerCard}>
+          <div style={s.headerTop}>
+            <div>
+              <div style={s.headerEyebrow}>LISTA NA TEN TYDZIEŃ</div>
+              <h1 style={s.title}>Zakupy</h1>
+            </div>
+            <div style={s.progressRing}>
+              <svg width="56" height="56" viewBox="0 0 56 56">
+                <circle cx="28" cy="28" r="24" fill="none" stroke="rgba(255,255,255,.25)" strokeWidth="3" />
+                <circle cx="28" cy="28" r="24" fill="none" stroke="#fff" strokeWidth="3"
+                  strokeLinecap="round" strokeDasharray={`${(procent / 100) * 150.8} 200`}
+                  transform="rotate(-90 28 28)" />
+              </svg>
+              <div style={s.progressTxt}>{procent}%</div>
+            </div>
           </div>
-        </div>
+          <div style={s.headerSub}>
+            {kupione.length} z {lista.length} produktów w koszyku
+          </div>
+        </header>
 
         {lista.length === 0 ? (
           <div style={s.empty}>
-            <div style={{ fontSize: 48 }}>🛒</div>
-            <div style={{ fontSize: 16, marginTop: 12 }}>Brak zaplanowanych dań</div>
-            <div style={{ fontSize: 13, color: '#aaa', marginTop: 6 }}>Wypełnij kalendarz na ten tydzień</div>
+            <h3 style={s.emptyTytul}>Brak zaplanowanych dań</h3>
+            <p style={s.emptySub}>Wypełnij kalendarz na ten tydzień — lista ułoży się sama z przepisów.</p>
           </div>
         ) : (
           <>
             {Object.entries(kategorie).map(([kat, items]) => (
-              <div key={kat}>
-                <div style={s.katHeader}>{kat}</div>
-                {items.map(item => (
-                  <div key={item.klucz} style={s.item} onClick={() => toggle(item.klucz)}>
-                    <div style={s.checkbox} />
-                    <div style={s.itemInfo}>
-                      <div style={s.itemNazwa}>{item.skladnik}</div>
-                      <div style={s.itemIlosc}>{item.ilosc} {item.jednostka}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <section key={kat} style={s.katSekcja}>
+                <h3 style={s.katHeader}>{kat}</h3>
+                <div style={s.katLista}>
+                  {items.map(item => (
+                    <button key={item.klucz} style={s.item} onClick={() => toggle(item.klucz)}>
+                      <div style={s.checkbox} />
+                      <div style={s.itemInfo}>
+                        <div style={s.itemNazwa}>{item.skladnik}</div>
+                        <div style={s.itemIlosc}>{item.ilosc} {item.jednostka}</div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </section>
             ))}
 
             {kupione.length > 0 && (
-              <div style={{ marginTop: 20 }}>
-                <div style={s.kupioneHeader}>W koszyku ({kupione.length})</div>
-                {kupione.map(item => (
-                  <div key={item.klucz} style={{ ...s.item, ...s.itemDone }} onClick={() => toggle(item.klucz)}>
-                    <div style={{ ...s.checkbox, ...s.checkboxDone }}>✓</div>
-                    <div style={s.itemInfo}>
-                      <div style={{ ...s.itemNazwa, textDecoration: 'line-through', color: '#aaa' }}>{item.skladnik}</div>
-                      <div style={s.itemIlosc}>{item.ilosc} {item.jednostka}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <section style={{ ...s.katSekcja, marginTop: 24 }}>
+                <h3 style={s.katHeaderDone}>W koszyku ({kupione.length})</h3>
+                <div style={s.katLista}>
+                  {kupione.map(item => (
+                    <button key={item.klucz} style={{ ...s.item, ...s.itemDone }} onClick={() => toggle(item.klucz)}>
+                      <div style={{ ...s.checkbox, ...s.checkboxDone }}>
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12l5 5L20 7"/></svg>
+                      </div>
+                      <div style={s.itemInfo}>
+                        <div style={{ ...s.itemNazwa, textDecoration: 'line-through', color: t.muteLight }}>{item.skladnik}</div>
+                        <div style={{ ...s.itemIlosc, color: t.muteLight }}>{item.ilosc} {item.jednostka}</div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </section>
             )}
 
-            <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
-              <button style={{ ...s.btnReset, flex: 1 }} onClick={() => setOdznaczone(new Set())}>
-                🔄 Zacznij od nowa
+            <div style={s.btnRow}>
+              <button style={s.btnGhost} onClick={() => setOdznaczone(new Set())}>
+                Zacznij od nowa
               </button>
-              <button style={{ ...s.btnReset, flex: 1 }} onClick={generuj}>
-                🔃 Odśwież listę
+              <button style={s.btnGhost} onClick={generuj}>
+                Odśwież listę
               </button>
             </div>
           </>
@@ -191,79 +180,82 @@ export default function ListaZakupow({ user, onBack }) {
 }
 
 const s = {
+  outer: { background: t.bg, minHeight: '100vh', fontFamily: fonts.sans },
   container: {
-    padding: '16px',
-    fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
+    padding: '20px 20px 32px',
+    maxWidth: 620, margin: '0 auto', boxSizing: 'border-box',
   },
-  back: {
-    background: 'none', border: 'none',
-    fontSize: 16, color: '#4a86e8',
-    cursor: 'pointer', padding: '0 0 12px 0',
-    display: 'block',
+  back: { ...ui.btnText, padding: '0 0 14px', display: 'block' },
+
+  headerCard: {
+    background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentDark} 100%)`,
+    color: '#fff', borderRadius: 22, padding: '20px 20px 18px',
+    marginBottom: 20, position: 'relative', overflow: 'hidden',
   },
-  headerBox: {
-    background: '#4a86e8',
-    borderRadius: 16,
-    padding: '20px',
-    marginBottom: 16,
-    color: 'white',
+  headerTop: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' },
+  headerEyebrow: {
+    fontFamily: fonts.sans, fontSize: 10.5, fontWeight: 600,
+    letterSpacing: 1.6, textTransform: 'uppercase', opacity: 0.75,
+    marginBottom: 6,
   },
   title: {
-    fontSize: 22, fontWeight: 700,
-    margin: '0 0 4px', color: 'white',
+    fontFamily: fonts.serif, fontSize: 32, lineHeight: 1, color: '#fff',
+    letterSpacing: -0.4, margin: 0, fontWeight: 400,
   },
-  subtitle: { fontSize: 14, opacity: 0.85, marginBottom: 12 },
-  progressBar: {
-    background: 'rgba(255,255,255,0.3)',
-    borderRadius: 10, height: 6, overflow: 'hidden',
+  headerSub: { fontFamily: fonts.sans, fontSize: 13, opacity: 0.85, marginTop: 14 },
+  progressRing: { position: 'relative', width: 56, height: 56 },
+  progressTxt: {
+    position: 'absolute', inset: 0,
+    display: 'grid', placeItems: 'center',
+    fontFamily: fonts.sans, fontSize: 13, fontWeight: 600,
+    fontVariantNumeric: 'tabular-nums',
   },
-  progressFill: {
-    background: 'white', height: '100%',
-    borderRadius: 10, transition: 'width 0.3s ease',
+
+  empty: {
+    ...ui.card, padding: '30px 24px', textAlign: 'center',
   },
+  emptyTytul: { ...ui.h3, marginBottom: 6 },
+  emptySub: { fontFamily: fonts.sans, fontSize: 13.5, color: t.mute, margin: 0, lineHeight: 1.5 },
+
+  katSekcja: { marginBottom: 18 },
   katHeader: {
-    fontSize: 11, fontWeight: 700,
-    textTransform: 'uppercase', letterSpacing: '0.5px',
-    color: '#4a86e8', padding: '10px 0 6px',
-    borderBottom: '1px solid #eee', marginBottom: 4,
+    fontFamily: fonts.sans, fontSize: 11, fontWeight: 700,
+    letterSpacing: 1.4, textTransform: 'uppercase', color: t.accent,
+    margin: '0 0 8px', padding: '0 4px',
+  },
+  katHeaderDone: {
+    fontFamily: fonts.sans, fontSize: 11, fontWeight: 700,
+    letterSpacing: 1.4, textTransform: 'uppercase', color: t.muteLight,
+    margin: '0 0 8px', padding: '0 4px',
+  },
+  katLista: {
+    ...ui.card, padding: 0, overflow: 'hidden',
   },
   item: {
+    width: '100%', textAlign: 'left',
     display: 'flex', alignItems: 'center', gap: 14,
-    padding: '14px 12px',
-    background: 'white', borderRadius: 12,
-    margin: '4px 0', cursor: 'pointer',
-    border: '1px solid #f0f0f0',
+    padding: '12px 16px', background: 'transparent', border: 'none',
+    borderBottom: `0.5px solid ${t.border}`,
+    cursor: 'pointer', fontFamily: fonts.sans,
   },
-  itemDone: { background: '#f9f9f9' },
+  itemDone: { opacity: 0.7 },
   checkbox: {
-    width: 24, height: 24, borderRadius: '50%',
-    border: '2px solid #4a86e8', flexShrink: 0,
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    width: 22, height: 22, borderRadius: '50%',
+    border: `1.5px solid ${t.borderStrong}`, flexShrink: 0,
+    display: 'grid', placeItems: 'center',
+    background: t.surface, transition: 'all .15s',
   },
-  checkboxDone: {
-    background: '#34a853', borderColor: '#34a853',
-    color: 'white', fontSize: 13, fontWeight: 700,
-  },
-  itemInfo: { flex: 1 },
-  itemNazwa: { fontSize: 15, color: '#1a1a1a', fontWeight: 500 },
-  itemIlosc: { fontSize: 13, color: '#888', marginTop: 2 },
-  kupioneHeader: {
-    fontSize: 12, fontWeight: 600, color: '#aaa',
-    textTransform: 'uppercase', letterSpacing: '0.5px',
-    padding: '8px 0',
-  },
-  btnReset: {
-    padding: '14px',
-    background: 'white', border: '1px solid #eee',
-    borderRadius: 12, fontSize: 15, color: '#666',
-    cursor: 'pointer', textAlign: 'center',
-  },
-  empty: {
-    textAlign: 'center', padding: '60px 20px', color: '#888',
-  },
+  checkboxDone: { background: t.accent, borderColor: t.accent },
+  itemInfo: { flex: 1, minWidth: 0 },
+  itemNazwa: { fontSize: 14, fontWeight: 500, color: t.text, lineHeight: 1.2 },
+  itemIlosc: { fontSize: 12, color: t.mute, marginTop: 3, fontVariantNumeric: 'tabular-nums' },
+
+  btnRow: { display: 'flex', gap: 8, marginTop: 18 },
+  btnGhost: { ...ui.btnGhost, flex: 1, padding: '12px 14px' },
+
   loading: {
-    textAlign: 'center', padding: 60,
-    fontSize: 16, color: '#666',
-    fontFamily: 'sans-serif',
+    textAlign: 'center', padding: 80,
+    fontFamily: fonts.sans, fontSize: 15, color: t.mute,
+    background: t.bg, minHeight: '100vh',
   },
 }

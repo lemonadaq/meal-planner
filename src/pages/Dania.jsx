@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../supabase'
+import { t, fonts, ui } from '../theme'
 
+// Pastel placeholder color from name hash — same algorithm as before so old
+// images stay visually identical for users.
 function getKolor(nazwa) {
-  const kolory = ['#FFE4E1','#E1F5FE','#E8F5E9','#FFF8E1','#F3E5F5','#FCE4EC','#E0F2F1','#FBE9E7']
+  const kolory = ['#F4E2D8','#E7E9D5','#EFE0DA','#E4E2D4','#F0DDC9','#E0E3D6','#F4D9CC','#DCE5D2']
   let hash = 0
   for (let i = 0; i < nazwa.length; i++) hash = nazwa.charCodeAt(i) + ((hash << 5) - hash)
   return kolory[Math.abs(hash) % kolory.length]
@@ -30,455 +33,311 @@ function getEmoji(nazwa) {
 }
 
 export default function Dania({ onSelect, user, onDodaj, onBack }) {
-const [dania, setDania] = useState([])
-const [dodatki, setDodatki] = useState([])
-const [surowki, setSurowki] = useState([])
+  const [dania, setDania] = useState([])
+  const [dodatki, setDodatki] = useState([])
+  const [surowki, setSurowki] = useState([])
   const [loading, setLoading] = useState(true)
   const [szukaj, setSzukaj] = useState('')
-  const [sekcja, setSekcja] = useState('dania')
-  const [widok, setWidok] = useState('kafelki') // kafelki | male | lista
+  const [sekcja, setSekcja] = useState('dania')   // 'dania' | 'dodatki' | 'surowki'
+  const [widok, setWidok] = useState('siatka')    // 'siatka' | 'lista'
 
- useEffect(() => {
-  async function pobierzDane() {
-    setLoading(true)
-
-    const [
-      daniaRes,
-      dodatkiRes,
-      surowkiRes
-    ] = await Promise.all([
-      supabase
-        .from('dania')
-        .select('"Danie", "TYP", zdjecie')
-        .order('"Danie"'),
-
-      supabase
-        .from('dodatki')
-        .select('"Dodatek"')
-        .order('"Dodatek"'),
-
-      supabase
-        .from('surowki')
-        .select('"Surówka"')
-        .order('"Surówka"')
-    ])
-
-    const daniaData = [...new Map(
-      (daniaRes.data || []).map(d => [d['Danie'], d])
-    ).values()]
-
-    const dodatkiData = [...new Set(
-      (dodatkiRes.data || []).map(d => d['Dodatek'])
-    )].map(d => ({
-      Danie: d,
-      TYP: 'dodatek'
-    }))
-
-    const surowkiData = [...new Set(
-      (surowkiRes.data || []).map(d => d['Surówka'])
-    )].map(d => ({
-      Danie: d,
-      TYP: 'surowka'
-    }))
-
-    setDania(daniaData)
-    setDodatki(dodatkiData)
-    setSurowki(surowkiData)
-
-    setLoading(false)
-  }
-
-  pobierzDane()
-}, [])
-const aktualneDane =
-  sekcja === 'dania'
-    ? dania
-    : sekcja === 'dodatki'
-    ? dodatki
-    : surowki
-
-const przefiltrowane = aktualneDane.filter(d =>
-  d['Danie']?.toLowerCase().includes(szukaj.toLowerCase())
-)
-
-  async function wyloguj() {
-    await supabase.auth.signOut()
-  }
-
-  function renderGrafika(d) {
-    const nazwa = d['Danie']
-
-    if (d.zdjecie) {
-      return (
-        <img
-          src={d.zdjecie}
-          alt={nazwa}
-          style={s.zdjecie}
-          loading="lazy"
-        />
-      )
+  useEffect(() => {
+    async function pobierzDane() {
+      setLoading(true)
+      const [daniaRes, dodatkiRes, surowkiRes] = await Promise.all([
+        supabase.from('dania').select('"Danie", "TYP", zdjecie').order('"Danie"'),
+        supabase.from('dodatki').select('"Dodatek"').order('"Dodatek"'),
+        supabase.from('surowki').select('"Surówka"').order('"Surówka"'),
+      ])
+      const daniaData = [...new Map((daniaRes.data || []).map(d => [d['Danie'], d])).values()]
+      const dodatkiData = [...new Set((dodatkiRes.data || []).map(d => d['Dodatek']))]
+        .map(d => ({ Danie: d, TYP: 'dodatek' }))
+      const surowkiData = [...new Set((surowkiRes.data || []).map(d => d['Surówka']))]
+        .map(d => ({ Danie: d, TYP: 'surowka' }))
+      setDania(daniaData); setDodatki(dodatkiData); setSurowki(surowkiData)
+      setLoading(false)
     }
+    pobierzDane()
+  }, [])
 
-    return (
-      
-      <div
-        style={{
-          ...s.placeholder,
-          background: getKolor(nazwa),
-        }}
-      >
-        {getEmoji(nazwa)}
-      </div>
-      
-    )
-  }
+  const aktualneDane = sekcja === 'dania' ? dania : sekcja === 'dodatki' ? dodatki : surowki
+  const przefiltrowane = aktualneDane.filter(d =>
+    d['Danie']?.toLowerCase().includes(szukaj.toLowerCase())
+  )
 
-  function renderKarta(d) {
+  async function wyloguj() { await supabase.auth.signOut() }
+
+  function renderImg(d) {
     const nazwa = d['Danie']
-
+    if (d.zdjecie) {
+      return <img src={d.zdjecie} alt={nazwa} style={s.img} loading="lazy" />
+    }
     return (
-      <div
-        key={nazwa}
-        style={{
-          ...s.karta,
-          ...(widok === 'male' ? s.kartaMala : {}),
-        }}
-        onClick={() => sekcja === 'dania' ? onSelect(nazwa) : null}
-      >
-        <div style={{
-          ...s.zdjecieWrapper,
-          ...(widok === 'male' ? s.zdjecieWrapperMaly : {}),
-        }}>
-          {renderGrafika(d)}
-          <div style={s.nazwaOverlay}>
-            {nazwa}
-          </div>
-        </div>
+      <div style={{ ...s.placeholder, background: getKolor(nazwa) }}>
+        <span style={s.placeholderEmoji}>{getEmoji(nazwa)}</span>
       </div>
     )
   }
 
-  function renderLista(d) {
-    const nazwa = d['Danie']
+  if (loading) return <div style={s.loading}>Ładowanie przepisów…</div>
 
-    return (
-      <div
-        key={nazwa}
-        style={s.listaItem}
-        onClick={() => sekcja === 'dania' ? onSelect(nazwa) : null}
-      >
-        <div style={s.listaMiniatura}>
-          {d.zdjecie ? (
-            <img src={d.zdjecie} alt={nazwa} style={s.listaZdjecie} loading="lazy" />
-          ) : (
-            <div style={{ ...s.listaEmoji, background: getKolor(nazwa) }}>
-              {getEmoji(nazwa)}
-            </div>
-          )}
-        </div>
-
-        <div style={s.listaNazwa}>{nazwa}</div>
-        <div style={s.listaStrzalka}>›</div>
-      </div>
-    )
-  }
-
-  if (loading) return <div style={s.loading}>Ładowanie...</div>
+  // Pierwsze danie z obrazem jako "featured", reszta w siatce
+  const [featured, ...reszta] = przefiltrowane
 
   return (
-    <div style={s.container}>
-      <div style={s.header}>
-         <button style={s.back} onClick={onBack}>← Wróć</button>
-        <h1 style={s.title}>🍽️ Przepisy</h1>
-        <div style={s.headerButtons}>
-           
-          <button onClick={onDodaj} style={s.btnDodaj}>+ Dodaj</button>
-          <button onClick={wyloguj} style={s.btnWyloguj}>Wyloguj</button>
+    <div style={s.outer}>
+      <div style={s.container}>
+        <button style={s.back} onClick={onBack}>← Wróć</button>
+
+        {/* Header */}
+        <header style={s.header}>
+          <div>
+            <div style={s.eyebrow}>Twoja kuchnia</div>
+            <h1 style={s.title}>Przepisy</h1>
+          </div>
+          <div style={s.headerBtns}>
+            <button style={s.btnAdd} onClick={onDodaj} title="Dodaj nowy przepis">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+            <button style={s.btnLogout} onClick={wyloguj}>Wyloguj</button>
+          </div>
+        </header>
+
+        {/* Search */}
+        <div style={s.searchWrap}>
+          <svg style={s.searchIcon} width="17" height="17" viewBox="0 0 24 24" fill="none" stroke={t.mute} strokeWidth="1.8" strokeLinecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input
+            style={s.search}
+            placeholder="Szukaj przepisu lub składnika…"
+            value={szukaj}
+            onChange={e => setSzukaj(e.target.value)}
+          />
         </div>
+
+        {/* Tabs */}
+        <div style={s.tabs}>
+          {[
+            { id: 'dania', label: 'Dania' },
+            { id: 'dodatki', label: 'Dodatki' },
+            { id: 'surowki', label: 'Surówki' },
+          ].map(z => {
+            const on = sekcja === z.id
+            return (
+              <button key={z.id}
+                style={{ ...s.tab, ...(on ? s.tabOn : {}) }}
+                onClick={() => setSekcja(z.id)}>
+                {z.label}
+                {on && <span style={s.tabUnderline} />}
+              </button>
+            )
+          })}
+          <div style={{ flex: 1 }} />
+          {/* widok toggle */}
+          <div style={s.viewToggle}>
+            {['siatka', 'lista'].map(w => (
+              <button key={w}
+                style={{ ...s.viewBtn, ...(widok === w ? s.viewBtnOn : {}) }}
+                onClick={() => setWidok(w)}
+                title={w === 'siatka' ? 'Siatka' : 'Lista'}>
+                {w === 'siatka' ? (
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
+                ) : (
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Content */}
+        {przefiltrowane.length === 0 ? (
+          <div style={s.empty}>
+            {szukaj ? `Brak wyników dla "${szukaj}"` : 'Brak pozycji'}
+          </div>
+        ) : widok === 'siatka' && sekcja === 'dania' ? (
+          <>
+            {/* Featured */}
+            {featured && (
+              <article style={s.featured} onClick={() => onSelect(featured['Danie'])}>
+                <div style={s.featuredImg}>{renderImg(featured)}</div>
+                <div style={s.featuredOverlay}>
+                  <div style={s.featuredEyebrow}>POLECANE</div>
+                  <h2 style={s.featuredTitle}>{featured['Danie']}</h2>
+                </div>
+              </article>
+            )}
+
+            {/* Grid */}
+            <div style={s.grid}>
+              {reszta.map(d => (
+                <article key={d['Danie']} style={s.card}
+                  onClick={() => onSelect(d['Danie'])}>
+                  <div style={s.cardImg}>{renderImg(d)}</div>
+                  <div style={s.cardBody}>
+                    <h3 style={s.cardTitle}>{d['Danie']}</h3>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </>
+        ) : widok === 'siatka' ? (
+          // dodatki / surowki — bez detalu, więc prostsza siatka kart
+          <div style={s.grid}>
+            {przefiltrowane.map(d => (
+              <article key={d['Danie']} style={s.card}>
+                <div style={s.cardImg}>{renderImg(d)}</div>
+                <div style={s.cardBody}>
+                  <h3 style={s.cardTitle}>{d['Danie']}</h3>
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          // List view
+          <div style={s.listView}>
+            {przefiltrowane.map(d => (
+              <button key={d['Danie']} style={s.listItem}
+                onClick={() => sekcja === 'dania' ? onSelect(d['Danie']) : null}>
+                <div style={s.listImg}>{renderImg(d)}</div>
+                <div style={s.listName}>{d['Danie']}</div>
+                {sekcja === 'dania' && (
+                  <div style={s.listArrow}>›</div>
+                )}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
-
-      <input
-        style={s.search}
-        placeholder="Szukaj..."
-        value={szukaj}
-        onChange={e => setSzukaj(e.target.value)}
-      />
-
-      <div style={s.zakladki}>
-        {[
-          { id: 'dania', label: '🍽️ Dania' },
-          { id: 'dodatki', label: '🥔 Dodatki' },
-          { id: 'surowki', label: '🥗 Surówki' },
-        ].map(z => (
-          <button
-            key={z.id}
-            style={{ ...s.zakladka, ...(sekcja === z.id ? s.zakladkaAktywna : {}) }}
-            onClick={() => setSekcja(z.id)}
-          >
-            {z.label}
-          </button>
-        ))}
-      </div>
-
-      <div style={s.widokBar}>
-        {[
-          { id: 'kafelki', label: '▦ Duże' },
-          { id: 'male', label: '▥ Małe' },
-          { id: 'lista', label: '☰ Lista' },
-        ].map(w => (
-          <button
-            key={w.id}
-            style={{ ...s.widokBtn, ...(widok === w.id ? s.widokBtnAktywny : {}) }}
-            onClick={() => setWidok(w.id)}
-          >
-            {w.label}
-          </button>
-        ))}
-      </div>
-
-      {widok === 'lista' ? (
-        <div style={s.lista}>
-          {przefiltrowane.map(renderLista)}
-        </div>
-      ) : (
-        <div
-          style={{
-            ...s.grid,
-            ...(widok === 'male' ? s.gridMale : {}),
-          }}
-        >
-          {przefiltrowane.map(renderKarta)}
-        </div>
-      )}
-
-      {przefiltrowane.length === 0 && (
-        <div style={s.empty}>
-          {szukaj ? `Brak wyników dla "${szukaj}"` : 'Brak pozycji'}
-        </div>
-      )}
     </div>
   )
 }
 
 const s = {
+  outer: { background: t.bg, minHeight: '100vh', fontFamily: fonts.sans },
   container: {
-    maxWidth: 800,
-    margin: '0 auto',
-    padding: '16px',
-    fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
+    padding: '20px 20px 32px',
+    maxWidth: 760, margin: '0 auto', boxSizing: 'border-box',
   },
+  back: { ...ui.btnText, padding: '0 0 14px', display: 'block' },
+
   header: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-    gap: 12,
+    display: 'flex', justifyContent: 'space-between',
+    alignItems: 'flex-start', gap: 12, marginBottom: 18,
   },
-  title: {
-    fontSize: 22,
-    fontWeight: 700,
-    color: '#1a1a1a',
-    margin: 0,
+  eyebrow: { ...ui.eyebrow, marginBottom: 4 },
+  title: { ...ui.h1, fontSize: 32, lineHeight: 1 },
+  headerBtns: { display: 'flex', gap: 8, alignItems: 'center' },
+  btnAdd: {
+    width: 38, height: 38, borderRadius: 999,
+    background: t.warm, color: '#fff', border: 'none',
+    display: 'grid', placeItems: 'center', cursor: 'pointer',
+    boxShadow: '0 4px 12px rgba(192,78,44,.3)',
   },
-  headerButtons: {
-    display: 'flex',
-    gap: 8,
-    alignItems: 'center',
+  btnLogout: {
+    background: 'none', border: 'none', cursor: 'pointer',
+    fontFamily: fonts.sans, fontSize: 12.5, color: t.mute, fontWeight: 500,
   },
-  back: {
-    top: 16, left: 16,
-    background: 'rgba(255,255,255,0.8)',
-    border: 'none', borderRadius: 20,
-    padding: '6px 14px', fontSize: 14,
-    cursor: 'pointer', color: '#4a86e8',
-    fontWeight: 500,
-  },
-  btnDodaj: {
-    background: '#4a86e8',
-    color: 'white',
-    border: 'none',
-    borderRadius: 8,
-    padding: '7px 12px',
-    fontSize: 13,
-    fontWeight: 600,
-    cursor: 'pointer',
-  },
-  btnWyloguj: {
-    background: 'none',
-    border: 'none',
-    color: '#aaa',
-    fontSize: 13,
-    cursor: 'pointer',
-  },
+
+  searchWrap: { position: 'relative', marginBottom: 14 },
+  searchIcon: { position: 'absolute', top: '50%', left: 14, transform: 'translateY(-50%)' },
   search: {
-    width: '100%',
-    padding: '12px 16px',
-    fontSize: 15,
-    border: '1px solid #eee',
-    borderRadius: 12,
-    marginBottom: 12,
-    boxSizing: 'border-box',
-    outline: 'none',
-    background: 'white',
+    ...ui.input, paddingLeft: 40, height: 44,
   },
-  zakladki: {
-    display: 'flex',
-    gap: 0,
-    marginBottom: 12,
-    borderBottom: '2px solid #f0f0f0',
-  },
-  zakladka: {
-    flex: 1,
-    padding: '10px 0',
-    background: 'none',
-    border: 'none',
-    borderBottom: '2px solid transparent',
-    marginBottom: -2,
-    fontSize: 14,
-    cursor: 'pointer',
-    color: '#888',
-    fontWeight: 500,
-  },
-  zakladkaAktywna: {
-    color: '#4a86e8',
-    borderBottom: '2px solid #4a86e8',
-    fontWeight: 700,
-  },
-  widokBar: {
-    display: 'flex',
-    gap: 8,
+
+  tabs: {
+    display: 'flex', alignItems: 'center', gap: 16,
+    borderBottom: `0.5px solid ${t.border}`,
     marginBottom: 16,
   },
-  widokBtn: {
-    flex: 1,
-    padding: '8px 10px',
-    borderRadius: 12,
-    border: '1px solid #eee',
-    background: 'white',
-    color: '#666',
-    fontSize: 13,
-    fontWeight: 500,
-    cursor: 'pointer',
+  tab: {
+    position: 'relative', padding: '10px 0',
+    background: 'none', border: 'none', cursor: 'pointer',
+    fontFamily: fonts.sans, fontSize: 14, fontWeight: 500, color: t.mute,
   },
-  widokBtnAktywny: {
-    background: '#4a86e8',
-    color: 'white',
-    border: '1px solid #4a86e8',
-    fontWeight: 700,
+  tabOn: { color: t.text, fontWeight: 600 },
+  tabUnderline: {
+    position: 'absolute', left: 0, right: 0, bottom: -0.5, height: 2,
+    background: t.accent, borderRadius: 1,
   },
+  viewToggle: {
+    display: 'inline-flex', padding: 2, borderRadius: 8,
+    background: t.surfaceAlt,
+  },
+  viewBtn: {
+    width: 28, height: 26, border: 'none', borderRadius: 6,
+    background: 'transparent', color: t.mute, cursor: 'pointer',
+    display: 'grid', placeItems: 'center',
+  },
+  viewBtnOn: { background: t.surface, color: t.text, boxShadow: '0 1px 2px rgba(74,55,40,.08)' },
+
+  // Featured
+  featured: {
+    position: 'relative', borderRadius: 20, overflow: 'hidden',
+    aspectRatio: '16/9', marginBottom: 16, cursor: 'pointer',
+  },
+  featuredImg: { position: 'absolute', inset: 0 },
+  featuredOverlay: {
+    position: 'absolute', inset: 0, padding: 18, color: '#fff',
+    display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
+    background: 'linear-gradient(to top, rgba(20,15,10,.78), transparent 55%)',
+  },
+  featuredEyebrow: {
+    fontFamily: fonts.sans, fontSize: 10, fontWeight: 700,
+    letterSpacing: 1.6, textTransform: 'uppercase', marginBottom: 6,
+    color: '#fff', opacity: 0.85,
+  },
+  featuredTitle: {
+    fontFamily: fonts.serif, fontSize: 26, lineHeight: 1.1,
+    color: '#fff', letterSpacing: -0.3, fontWeight: 400, margin: 0,
+  },
+
+  // Grid
   grid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(2, 1fr)',
     gap: 12,
   },
-  gridMale: {
-    gridTemplateColumns: 'repeat(3, 1fr)',
-    gap: 8,
+  card: {
+    ...ui.card, overflow: 'hidden', cursor: 'pointer',
+    display: 'flex', flexDirection: 'column',
   },
-  karta: {
-    background: 'white',
-    borderRadius: 16,
-    overflow: 'hidden',
-    cursor: 'pointer',
-    boxShadow: '0 1px 4px rgba(0,0,0,0.08)',
+  cardImg: { width: '100%', aspectRatio: '4/3', position: 'relative', overflow: 'hidden' },
+  cardBody: { padding: '10px 12px 12px' },
+  cardTitle: {
+    fontFamily: fonts.serif, fontSize: 15.5, lineHeight: 1.2,
+    color: t.text, letterSpacing: -0.1, fontWeight: 400, margin: 0,
+    display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
   },
-  kartaMala: {
-    borderRadius: 12,
+
+  // Image content
+  img: { width: '100%', height: '100%', objectFit: 'cover', display: 'block' },
+  placeholder: { width: '100%', height: '100%', display: 'grid', placeItems: 'center' },
+  placeholderEmoji: { fontSize: 42, filter: 'grayscale(.1)' },
+
+  // List view
+  listView: { display: 'flex', flexDirection: 'column', gap: 6 },
+  listItem: {
+    display: 'flex', alignItems: 'center', gap: 12,
+    padding: 6, ...ui.card, cursor: 'pointer',
+    fontFamily: fonts.sans, textAlign: 'left',
   },
-  zdjecieWrapper: {
-    width: '100%',
-    aspectRatio: '4/3',
-    overflow: 'hidden',
-    position: 'relative',
+  listImg: {
+    width: 52, height: 52, borderRadius: 12, overflow: 'hidden', flexShrink: 0,
   },
-  zdjecieWrapperMaly: {
-    aspectRatio: '1/1',
+  listName: {
+    flex: 1, minWidth: 0,
+    fontFamily: fonts.serif, fontSize: 16, color: t.text, letterSpacing: -0.1,
+    whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
   },
-  zdjecie: {
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover',
-    display: 'block',
-  },
-  placeholder: {
-    width: '100%',
-    height: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: 48,
-  },
-  nazwaOverlay: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    padding: '8px 10px',
-    background: 'rgba(0,0,0,0.48)',
-    color: 'white',
-    fontSize: 14,
-    fontWeight: 700,
-    lineHeight: 1.2,
-    textShadow: '0 1px 2px rgba(0,0,0,0.3)',
-  },
-  lista: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 8,
-  },
-  listaItem: {
-    display: 'flex',
-    alignItems: 'center',
-    background: 'white',
-    borderRadius: 14,
-    padding: 8,
-    gap: 12,
-    cursor: 'pointer',
-    boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
-  },
-  listaMiniatura: {
-    width: 54,
-    height: 54,
-    borderRadius: 12,
-    overflow: 'hidden',
-    flexShrink: 0,
-  },
-  listaZdjecie: {
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover',
-    display: 'block',
-  },
-  listaEmoji: {
-    width: '100%',
-    height: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: 26,
-  },
-  listaNazwa: {
-    flex: 1,
-    fontSize: 15,
-    fontWeight: 600,
-    color: '#1a1a1a',
-  },
-  listaStrzalka: {
-    fontSize: 26,
-    color: '#bbb',
-    paddingRight: 4,
+  listArrow: { fontSize: 22, color: t.muteLight, fontFamily: fonts.serif, paddingRight: 8 },
+
+  empty: {
+    ...ui.card, padding: '40px 20px', textAlign: 'center',
+    color: t.mute, fontFamily: fonts.sans, fontSize: 14,
   },
   loading: {
-    textAlign: 'center',
-    padding: 60,
-    fontSize: 16,
-    color: '#666',
-    fontFamily: 'sans-serif',
-  },
-  empty: {
-    textAlign: 'center',
-    padding: 40,
-    color: '#aaa',
-    fontSize: 15,
+    textAlign: 'center', padding: 80,
+    fontFamily: fonts.sans, fontSize: 15, color: t.mute,
+    background: t.bg, minHeight: '100vh',
   },
 }

@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../supabase'
+import { t, fonts, ui } from '../theme'
 
 function getKolor(nazwa) {
-  const kolory = ['#FFE4E1','#E1F5FE','#E8F5E9','#FFF8E1','#F3E5F5','#FCE4EC','#E0F2F1','#FBE9E7']
+  const kolory = ['#F4E2D8','#E7E9D5','#EFE0DA','#E4E2D4','#F0DDC9','#E0E3D6','#F4D9CC','#DCE5D2']
   let hash = 0
   for (let i = 0; i < nazwa.length; i++) hash = nazwa.charCodeAt(i) + ((hash << 5) - hash)
   return kolory[Math.abs(hash) % kolory.length]
 }
-
 function getEmoji(nazwa) {
   const n = nazwa.toLowerCase()
   if (n.includes('kurczak') || n.includes('pierś')) return '🍗'
@@ -28,6 +28,7 @@ function getEmoji(nazwa) {
 
 const JEDNOSTKI = ['g', 'kg', 'ml', 'l', 'szt.', 'opak.', 'łyżka', 'łyżki', 'łyżeczka', 'szklanka', 'ząbki', 'pęczek', 'garść', 'do smaku']
 const DNI = ['Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota', 'Niedziela']
+const DNI_KROTKO = ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Nd']
 const POSILKI = ['Śniadanie', 'Obiad', 'Kolacja']
 
 function getPoniedzialek(offset = 0) {
@@ -37,14 +38,8 @@ function getPoniedzialek(offset = 0) {
   d.setHours(0, 0, 0, 0)
   return d
 }
-
-function formatData(date) {
-  return date.toISOString().split('T')[0]
-}
-
-function formatNaglowek(date) {
-  return date.toLocaleDateString('pl-PL', { day: 'numeric', month: 'short' })
-}
+function formatData(date) { return date.toISOString().split('T')[0] }
+function formatKrotkoMies(date) { return date.toLocaleDateString('pl-PL', { day: 'numeric', month: 'short' }) }
 
 export default function DanieDetail({ nazwa: nazwaProp, onBack, user }) {
   const [skladniki, setSkladniki] = useState([])
@@ -60,7 +55,7 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user }) {
   const [edPrzepis, setEdPrzepis] = useState([])
   const [nowyKrok, setNowyKrok] = useState('')
 
-  // Kalendarz modal
+  // Modal "dodaj do kalendarza"
   const [pokazKalendarz, setPokazKalendarz] = useState(false)
   const [tydzien, setTydzien] = useState(0)
   const [wybranyDzien, setWybranyDzien] = useState(null)
@@ -69,40 +64,33 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user }) {
   const [sukces, setSukces] = useState(false)
   const [planTygodnia, setPlanTygodnia] = useState({})
 
-const poniedzialek = getPoniedzialek(tydzien)
-const dni = Array.from({ length: 7 }, (_, i) => {
-  const d = new Date(poniedzialek)
-  d.setDate(d.getDate() + i)
-  return d
-})
+  const poniedzialek = getPoniedzialek(tydzien)
+  const dni = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(poniedzialek)
+    d.setDate(d.getDate() + i)
+    return d
+  })
 
-useEffect(() => { pobierz() }, [nazwaProp])
-useEffect(() => {
-  if (!pokazKalendarz || !user) return
-  async function pobierzPlan() {
-    const od = formatData(dni[0])
-    const do_ = formatData(dni[6])
-    const { data } = await supabase
-      .from('kalendarz')
-      .select('*')
-      .eq('user_id', user.id)
-      .gte('data', od)
-      .lte('data', do_)
-    const mapa = {}
-    ;(data || []).forEach(p => {
-      mapa[`${p.data}_${p.posilek}`] = p.danie
-    })
-    setPlanTygodnia(mapa)
-  }
-  pobierzPlan()
-}, [pokazKalendarz, tydzien, user])
+  useEffect(() => { pobierz() }, [nazwaProp])
+  useEffect(() => {
+    if (!pokazKalendarz || !user) return
+    async function pobierzPlan() {
+      const od = formatData(dni[0])
+      const doStr = formatData(dni[6])
+      const { data } = await supabase
+        .from('kalendarz').select('*')
+        .eq('user_id', user.id).gte('data', od).lte('data', doStr)
+      const mapa = {}
+      ;(data || []).forEach(p => { mapa[`${p.data}_${p.posilek}`] = p.danie })
+      setPlanTygodnia(mapa)
+    }
+    pobierzPlan()
+  }, [pokazKalendarz, tydzien, user])
+
   async function pobierz() {
     setLoading(true)
-    const { data } = await supabase
-      .from('dania').select('*')
-      .eq('"Danie"', nazwaProp)
-      .order('"Kategoria"')
-
+    const { data } = await supabase.from('dania').select('*')
+      .eq('"Danie"', nazwaProp).order('"Kategoria"')
     if (data && data.length > 0) {
       setSkladniki(data)
       const przepisTekst = data.find(d => d['Przepis'])?.['Przepis'] || ''
@@ -135,24 +123,20 @@ useEffect(() => {
       setNazwa(edNazwa)
     }
     await supabase.from('dania').update({ 'Przepis': przepisTekst }).eq('"Danie"', edNazwa)
-    for (const s of edSkladniki) {
+    for (const sk of edSkladniki) {
       await supabase.from('dania').update({
-        'Składnik': s.Skladnik,
-        'Ilość na 1 porcję': s.Ilosc,
-        'Jednostka': s.Jednostka,
-        'Kategoria': s.Kategoria,
-      }).eq('id', s.id)
+        'Składnik': sk.Skladnik, 'Ilość na 1 porcję': sk.Ilosc,
+        'Jednostka': sk.Jednostka, 'Kategoria': sk.Kategoria,
+      }).eq('id', sk.id)
     }
     await pobierz()
-    setEdycja(false)
-    setSaving(false)
+    setEdycja(false); setSaving(false)
   }
 
   function usunSkladnik(i) { setEdSkladniki(prev => prev.filter((_, idx) => idx !== i)) }
   function dodajKrok() {
     if (!nowyKrok.trim()) return
-    setEdPrzepis(prev => [...prev, nowyKrok.trim()])
-    setNowyKrok('')
+    setEdPrzepis(prev => [...prev, nowyKrok.trim()]); setNowyKrok('')
   }
   function usunKrok(i) { setEdPrzepis(prev => prev.filter((_, idx) => idx !== i)) }
   function przesunKrok(i, kierunek) {
@@ -168,102 +152,97 @@ useEffect(() => {
     setDodawanie(true)
     const { data: istniejacy } = await supabase
       .from('kalendarz').select('id')
-      .eq('user_id', user.id)
-      .eq('data', wybranyDzien)
-      .eq('posilek', wybranyPosilek)
+      .eq('user_id', user.id).eq('data', wybranyDzien).eq('posilek', wybranyPosilek)
       .maybeSingle()
-
     if (istniejacy) {
       await supabase.from('kalendarz').update({ danie: nazwa }).eq('id', istniejacy.id)
     } else {
       await supabase.from('kalendarz').insert({ user_id: user.id, data: wybranyDzien, posilek: wybranyPosilek, danie: nazwa })
     }
-    setDodawanie(false)
-    setSukces(true)
+    setDodawanie(false); setSukces(true)
     setTimeout(() => { setSukces(false); setPokazKalendarz(false) }, 1500)
   }
 
-  const pogrupowane = skladniki.reduce((acc, s) => {
-    const kat = s['Kategoria']?.replace(/^\d_/, '') || 'Inne'
+  const pogrupowane = skladniki.reduce((acc, sk) => {
+    const kat = sk['Kategoria']?.replace(/^\d_/, '') || 'Inne'
     if (!acc[kat]) acc[kat] = []
-    acc[kat].push(s)
-    return acc
+    acc[kat].push(sk); return acc
   }, {})
 
-  if (loading) return <div style={s.loading}>Ładowanie...</div>
+  if (loading) return <div style={s.loading}>Ładowanie…</div>
+
+  const heroZdj = skladniki.find(sk => sk.zdjecie)?.zdjecie
 
   return (
-    <div style={s.container}>
-
-      {/* Modal kalendarza */}
+    <div style={s.outer}>
+      {/* ── Modal: dodaj do kalendarza ─────────────────── */}
       {pokazKalendarz && (
         <div style={s.modalOverlay} onClick={() => setPokazKalendarz(false)}>
           <div style={s.modal} onClick={e => e.stopPropagation()}>
             <div style={s.modalHeader}>
-              <span style={s.modalTytul}>📅 Dodaj do kalendarza</span>
-              <button style={s.modalClose} onClick={() => setPokazKalendarz(false)}>✕</button>
+              <div>
+                <div style={s.modalEyebrow}>DO KALENDARZA</div>
+                <div style={s.modalTytul}>{nazwa}</div>
+              </div>
+              <button style={s.modalClose} onClick={() => setPokazKalendarz(false)} aria-label="Zamknij">✕</button>
             </div>
+
             {sukces ? (
-              <div style={s.sukces}>✅ Dodano do kalendarza!</div>
+              <div style={s.sukces}>
+                <div style={s.sukcesIkona}>
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={t.accent} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12l5 5L20 7"/></svg>
+                </div>
+                <div style={s.sukcesTxt}>Dodano do kalendarza</div>
+              </div>
             ) : (
               <>
                 <div style={s.tydzienNav}>
                   <button style={s.navBtn} onClick={() => setTydzien(t => t - 1)}>‹</button>
-                  <span style={s.tydzienLabel}>{formatNaglowek(dni[0])} — {formatNaglowek(dni[6])}</span>
+                  <span style={s.tydzienLabel}>
+                    {formatKrotkoMies(dni[0])} — {formatKrotkoMies(dni[6])}
+                  </span>
                   <button style={s.navBtn} onClick={() => setTydzien(t => t + 1)}>›</button>
                 </div>
+
                 <div style={s.dniGrid}>
-  {dni.map((dzien, i) => {
-    const dataStr = formatData(dzien)
-    const aktywny = wybranyDzien === dataStr
-    const zaplanowane = planTygodnia[`${dataStr}_${wybranyPosilek}`]
-    return (
-      <button key={dataStr}
-        style={{ ...s.dzienBtn, ...(aktywny ? s.dzienBtnAktywny : {}) }}
-        onClick={() => setWybranyDzien(dataStr)}
-      >
-        <span style={{ fontSize: 9, fontWeight: 600, textTransform: 'uppercase', opacity: 0.7, color: aktywny ? 'white' : '#888' }}>
-          {DNI[i].slice(0, 3)}
-        </span>
-        <span style={{ fontSize: 15, fontWeight: 700, marginTop: 2, color: aktywny ? 'white' : '#1a1a1a' }}>
-          {dzien.getDate()}
-        </span>
-        {zaplanowane && (
-          <span style={{
-            fontSize: 8,
-            color: aktywny ? 'rgba(255,255,255,0.85)' : '#4a86e8',
-            textAlign: 'center',
-            lineHeight: 1.2,
-            marginTop: 3,
-            padding: '0 2px',
-            overflow: 'hidden',
-            display: '-webkit-box',
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical',
-          }}>
-            {zaplanowane}
-          </span>
-        )}
-      </button>
-    )
-  })}
-</div>
+                  {dni.map((dzien, i) => {
+                    const dataStr = formatData(dzien)
+                    const aktywny = wybranyDzien === dataStr
+                    const zaplanowane = planTygodnia[`${dataStr}_${wybranyPosilek}`]
+                    return (
+                      <button key={dataStr}
+                        style={{ ...s.dzienBtn, ...(aktywny ? s.dzienBtnOn : {}) }}
+                        onClick={() => setWybranyDzien(dataStr)}>
+                        <span style={{ ...s.dzienBtnDow, color: aktywny ? '#fff' : t.mute }}>
+                          {DNI_KROTKO[i]}
+                        </span>
+                        <span style={{ ...s.dzienBtnDate, color: aktywny ? '#fff' : t.text }}>
+                          {dzien.getDate()}
+                        </span>
+                        {zaplanowane && (
+                          <span style={{ ...s.dzienBtnNote, color: aktywny ? 'rgba(255,255,255,.85)' : t.accent }}>
+                            {zaplanowane}
+                          </span>
+                        )}
+                      </button>
+                    )
+                  })}
+                </div>
+
                 <div style={s.posilkiRow}>
                   {POSILKI.map(p => (
                     <button key={p}
-                      style={{ ...s.posilekBtn, ...(wybranyPosilek === p ? s.posilekBtnAktywny : {}) }}
-                      onClick={() => setWybranyPosilek(p)}
-                    >
+                      style={{ ...s.posilekBtn, ...(wybranyPosilek === p ? s.posilekBtnOn : {}) }}
+                      onClick={() => setWybranyPosilek(p)}>
                       {p}
                     </button>
                   ))}
                 </div>
-                <button
-                  style={{ ...s.btnDodajKal, opacity: wybranyDzien ? 1 : 0.5 }}
+
+                <button style={{ ...s.btnDodajKal, opacity: wybranyDzien ? 1 : 0.5 }}
                   onClick={dodajDoKalendarza}
-                  disabled={!wybranyDzien || dodawanie}
-                >
-                  {dodawanie ? 'Dodaję...' : '+ Dodaj do kalendarza'}
+                  disabled={!wybranyDzien || dodawanie}>
+                  {dodawanie ? 'Dodaję…' : 'Dodaj do kalendarza'}
                 </button>
               </>
             )}
@@ -271,294 +250,320 @@ useEffect(() => {
         </div>
       )}
 
-      {/* Hero */}
-      <div style={{ ...s.hero, background: getKolor(nazwa) }}>
-        <button style={s.back} onClick={onBack}>← Wróć</button>
-        {!edycja && (
-          <button style={s.btnEdytuj} onClick={wejdzWEdycje}>✏️ Edytuj</button>
-        )}
-        <div style={s.heroEmoji}>{getEmoji(nazwa)}</div>
-        {edycja ? (
-          <input style={s.inputNazwa} value={edNazwa} onChange={e => setEdNazwa(e.target.value)} />
-        ) : (
-          <h1 style={s.heroTytul}>{nazwa}</h1>
-        )}
-        {!edycja && (
-          <button style={s.btnKalendarz} onClick={() => setPokazKalendarz(true)}>
-            📅 Dodaj do kalendarza
-          </button>
-        )}
-      </div>
-
-      {/* Składniki */}
-      <div style={s.skladnikiBox}>
-        <h2 style={s.sekcjaTytul}>Składniki</h2>
-        {edycja ? (
-          <div>
-            {edSkladniki.map((sk, i) => (
-              <div key={sk.id} style={s.edSkladnikRow}>
-                <input style={{ ...s.edInput, flex: 2 }} value={sk.Skladnik}
-                  onChange={e => { const n = [...edSkladniki]; n[i].Skladnik = e.target.value; setEdSkladniki(n) }} />
-                <input style={{ ...s.edInput, flex: 1 }} value={sk.Ilosc} placeholder="Ilość"
-                  onChange={e => { const n = [...edSkladniki]; n[i].Ilosc = e.target.value; setEdSkladniki(n) }} />
-                <select style={{ ...s.edInput, flex: 1 }} value={sk.Jednostka}
-                  onChange={e => { const n = [...edSkladniki]; n[i].Jednostka = e.target.value; setEdSkladniki(n) }}>
-                  {JEDNOSTKI.map(j => <option key={j} value={j}>{j}</option>)}
-                </select>
-                <button style={s.btnUsun} onClick={() => usunSkladnik(i)}>✕</button>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div style={s.skladnikiGrid}>
-            {Object.entries(pogrupowane).map(([kat, items]) => (
-              <div key={kat} style={s.grupa}>
-                <div style={s.katHeader}>{kat}</div>
-                {items.map((item, i) => (
-                  <div key={i} style={s.skladnik}>
-                    <span style={s.skladnikNazwa}>{item['Składnik']}</span>
-                    <span style={s.skladnikIlosc}>
-                      {item['Ilość na 1 porcję'] && item['Ilość na 1 porcję'] !== '-'
-                        ? `${item['Ilość na 1 porcję']} ${item['Jednostka']}`
-                        : item['Jednostka']}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Przepis */}
-      <div style={s.przepisBox}>
-        <h2 style={s.sekcjaTytul}>Przepis</h2>
-        {edycja ? (
-          <div>
-            {edPrzepis.map((krok, i) => (
-              <div key={i} style={s.edKrokRow}>
-                <span style={s.edKrokNr}>{i + 1}.</span>
-                <input style={{ ...s.edInput, flex: 1 }} value={krok}
-                  onChange={e => { const n = [...edPrzepis]; n[i] = e.target.value; setEdPrzepis(n) }} />
-                <button style={s.btnMini} onClick={() => przesunKrok(i, -1)}>↑</button>
-                <button style={s.btnMini} onClick={() => przesunKrok(i, 1)}>↓</button>
-                <button style={s.btnUsun} onClick={() => usunKrok(i)}>✕</button>
-              </div>
-            ))}
-            <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
-              <input style={{ ...s.edInput, flex: 1 }} placeholder="Nowy krok..."
-                value={nowyKrok} onChange={e => setNowyKrok(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && dodajKrok()} />
-              <button style={s.btnDodajKrok} onClick={dodajKrok}>+ Dodaj</button>
-            </div>
-          </div>
-        ) : przepis.length > 0 ? (
-          <ol style={s.listaKrokow}>
-            {przepis.map((krok, i) => <li key={i} style={s.krok}>{krok}</li>)}
-          </ol>
-        ) : (
-          <div style={s.brakPrzepisu}>Brak przepisu. Kliknij ✏️ Edytuj żeby dodać.</div>
-        )}
-      </div>
-
-      {/* Przyciski zapisu */}
-      {edycja && (
-        <div style={{ display: 'flex', gap: 8, margin: '12px 16px 0' }}>
-          <button style={{ ...s.btnZapisz, flex: 1 }} onClick={zapiszZmiany} disabled={saving}>
-            {saving ? 'Zapisuję...' : '💾 Zapisz zmiany'}
-          </button>
-          <button style={{ ...s.btnAnuluj, flex: 0.4 }} onClick={() => setEdycja(false)}>
-            Anuluj
-          </button>
+      <div style={s.container}>
+        <div style={s.topBar}>
+          <button style={s.backTop} onClick={onBack}>← Wróć</button>
+          {!edycja && (
+            <button style={s.editTop} onClick={wejdzWEdycje}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: 6 }}><path d="M4 20h4l10-10-4-4L4 16v4z"/><path d="M14 6l4 4"/></svg>
+              Edytuj
+            </button>
+          )}
         </div>
-      )}
+
+        {/* ── Hero ─────────────────────────────────────── */}
+        <article style={s.hero}>
+          <div style={{ ...s.heroImg, background: heroZdj ? 'transparent' : getKolor(nazwa) }}>
+            {heroZdj
+              ? <img src={heroZdj} alt={nazwa} style={s.heroImgInner} />
+              : <span style={s.heroEmoji}>{getEmoji(nazwa)}</span>}
+          </div>
+
+          <div style={s.heroInfo}>
+            <div style={s.eyebrow}>Przepis</div>
+            {edycja ? (
+              <input style={s.inputNazwa} value={edNazwa} onChange={e => setEdNazwa(e.target.value)} />
+            ) : (
+              <h1 style={s.heroTytul}>{nazwa}</h1>
+            )}
+            {!edycja && (
+              <div style={s.heroActions}>
+                <button style={s.btnKalendarz} onClick={() => setPokazKalendarz(true)}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: 8 }}><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+                  Zaplanuj
+                </button>
+              </div>
+            )}
+          </div>
+        </article>
+
+        {/* ── Składniki ─────────────────────────────────── */}
+        <section style={s.section}>
+          <div style={s.sectionHeader}>
+            <h2 style={s.sectionTitle}>Składniki</h2>
+            {!edycja && skladniki.length > 0 && (
+              <span style={s.countBadge}>{skladniki.length}</span>
+            )}
+          </div>
+
+          {edycja ? (
+            <div style={s.edList}>
+              {edSkladniki.map((sk, i) => (
+                <div key={sk.id || i} style={s.edSkladnikRow}>
+                  <input style={{ ...s.edInput, flex: 2 }} value={sk.Skladnik}
+                    onChange={e => { const n = [...edSkladniki]; n[i].Skladnik = e.target.value; setEdSkladniki(n) }} />
+                  <input style={{ ...s.edInput, flex: 1 }} value={sk.Ilosc} placeholder="Ilość"
+                    onChange={e => { const n = [...edSkladniki]; n[i].Ilosc = e.target.value; setEdSkladniki(n) }} />
+                  <select style={{ ...s.edInput, flex: 1 }} value={sk.Jednostka}
+                    onChange={e => { const n = [...edSkladniki]; n[i].Jednostka = e.target.value; setEdSkladniki(n) }}>
+                    {JEDNOSTKI.map(j => <option key={j} value={j}>{j}</option>)}
+                  </select>
+                  <button style={s.btnUsun} onClick={() => usunSkladnik(i)}>✕</button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div style={s.skladnikiGrid}>
+              {Object.entries(pogrupowane).map(([kat, items]) => (
+                <div key={kat} style={s.grupa}>
+                  <div style={s.katHeader}>{kat}</div>
+                  {items.map((item, i) => (
+                    <div key={i} style={s.skladnik}>
+                      <span style={s.skladnikNazwa}>{item['Składnik']}</span>
+                      <span style={s.skladnikIlosc}>
+                        {item['Ilość na 1 porcję'] && item['Ilość na 1 porcję'] !== '-'
+                          ? `${item['Ilość na 1 porcję']} ${item['Jednostka']}`
+                          : item['Jednostka']}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+
+        {/* ── Przepis ───────────────────────────────────── */}
+        <section style={s.section}>
+          <h2 style={s.sectionTitle}>Przepis</h2>
+          {edycja ? (
+            <div style={s.edList}>
+              {edPrzepis.map((krok, i) => (
+                <div key={i} style={s.edKrokRow}>
+                  <span style={s.edKrokNr}>{String(i + 1).padStart(2, '0')}</span>
+                  <input style={{ ...s.edInput, flex: 1 }} value={krok}
+                    onChange={e => { const n = [...edPrzepis]; n[i] = e.target.value; setEdPrzepis(n) }} />
+                  <button style={s.btnMini} onClick={() => przesunKrok(i, -1)}>↑</button>
+                  <button style={s.btnMini} onClick={() => przesunKrok(i, 1)}>↓</button>
+                  <button style={s.btnUsun} onClick={() => usunKrok(i)}>✕</button>
+                </div>
+              ))}
+              <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+                <input style={{ ...s.edInput, flex: 1 }} placeholder="Nowy krok…"
+                  value={nowyKrok} onChange={e => setNowyKrok(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && dodajKrok()} />
+                <button style={s.btnDodajKrok} onClick={dodajKrok}>+ Dodaj</button>
+              </div>
+            </div>
+          ) : przepis.length > 0 ? (
+            <ol style={s.kroki}>
+              {przepis.map((krok, i) => (
+                <li key={i} style={s.krok}>
+                  <span style={s.krokNr}>{String(i + 1).padStart(2, '0')}</span>
+                  <span style={s.krokTxt}>{krok}</span>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <div style={s.brak}>Brak przepisu. Kliknij <em style={s.italic}>Edytuj</em>, aby dodać kroki.</div>
+          )}
+        </section>
+
+        {/* ── Save/cancel w edycji ─────────────────────── */}
+        {edycja && (
+          <div style={s.saveRow}>
+            <button style={{ ...ui.btnPrimary, flex: 1 }} onClick={zapiszZmiany} disabled={saving}>
+              {saving ? 'Zapisuję…' : 'Zapisz zmiany'}
+            </button>
+            <button style={{ ...ui.btnGhost, padding: '14px 20px' }} onClick={() => setEdycja(false)}>
+              Anuluj
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
 
 const s = {
+  outer: { background: t.bg, minHeight: '100vh', fontFamily: fonts.sans },
   container: {
-    fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
-    width: '100%', maxWidth: 900,
-    margin: '0 auto', background: '#f8f9fa',
-    minHeight: '100vh', paddingBottom: 80,
+    padding: '20px 20px 40px',
+    maxWidth: 760, margin: '0 auto', boxSizing: 'border-box',
   },
+  topBar: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 },
+  backTop: { ...ui.btnText, padding: 0 },
+  editTop: {
+    background: t.surface, color: t.text,
+    border: `0.5px solid ${t.border}`, borderRadius: 999, padding: '8px 14px',
+    fontFamily: fonts.sans, fontSize: 13, fontWeight: 500, cursor: 'pointer',
+    display: 'inline-flex', alignItems: 'center',
+  },
+
+  // Hero
   hero: {
-    margin: 16, padding: '18px 16px 24px',
-    textAlign: 'center', position: 'relative',
-    minHeight: 180, borderRadius: 24,
-    boxSizing: 'border-box', display: 'flex',
-    flexDirection: 'column', alignItems: 'center',
-    justifyContent: 'center',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+    ...ui.card,
+    overflow: 'hidden', marginBottom: 18, padding: 0,
   },
-  back: {
-    position: 'absolute', top: 16, left: 16,
-    background: 'rgba(255,255,255,0.8)', border: 'none',
-    borderRadius: 20, padding: '6px 14px', fontSize: 14,
-    cursor: 'pointer', color: '#4a86e8', fontWeight: 500,
+  heroImg: {
+    width: '100%', aspectRatio: '5/3',
+    display: 'grid', placeItems: 'center', overflow: 'hidden',
   },
-  btnEdytuj: {
-    position: 'absolute', top: 16, right: 16,
-    background: 'rgba(255,255,255,0.8)', border: 'none',
-    borderRadius: 20, padding: '6px 14px', fontSize: 14,
-    cursor: 'pointer', color: '#333', fontWeight: 500,
-  },
-  heroEmoji: { fontSize: 64, marginBottom: 12 },
-  heroTytul: {
-    fontSize: 24, fontWeight: 700,
-    color: '#1a1a1a', margin: '0 0 12px', textAlign: 'center',
-  },
+  heroImgInner: { width: '100%', height: '100%', objectFit: 'cover', display: 'block' },
+  heroEmoji: { fontSize: 88 },
+  heroInfo: { padding: '20px 22px 22px' },
+  eyebrow: { ...ui.eyebrow, marginBottom: 6 },
+  heroTytul: { ...ui.h1, fontSize: 30, lineHeight: 1.05, margin: 0 },
   inputNazwa: {
-    fontSize: 20, fontWeight: 700,
-    border: 'none', borderBottom: '2px solid #4a86e8',
-    background: 'transparent', textAlign: 'center',
-    padding: '4px 8px', marginBottom: 8,
-    outline: 'none', width: '80%',
+    fontFamily: fonts.serif, fontSize: 28, color: t.text,
+    border: 'none', borderBottom: `2px solid ${t.accent}`,
+    background: 'transparent', padding: '6px 0', width: '100%',
+    outline: 'none', letterSpacing: -0.4,
   },
+  heroActions: { display: 'flex', gap: 8, marginTop: 14 },
   btnKalendarz: {
-    background: 'rgba(255,255,255,0.9)', border: 'none',
-    borderRadius: 20, padding: '8px 18px', fontSize: 14,
-    cursor: 'pointer', color: '#4a86e8', fontWeight: 600,
-    boxShadow: '0 1px 4px rgba(0,0,0,0.1)',
+    ...ui.btnPrimary, display: 'inline-flex', alignItems: 'center',
+    padding: '11px 16px', fontSize: 14,
   },
-  skladnikiBox: {
-    background: 'white', borderRadius: 16,
-    padding: 16, margin: '0 16px',
-    boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+
+  // Sections
+  section: {
+    ...ui.card, padding: 20, marginBottom: 14,
   },
+  sectionHeader: { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 },
+  sectionTitle: { ...ui.h2, fontSize: 20 },
+  countBadge: {
+    fontFamily: fonts.sans, fontSize: 10.5, fontWeight: 700,
+    letterSpacing: 0.6, color: t.mute,
+    padding: '2px 8px', borderRadius: 999, background: t.surfaceAlt,
+  },
+
+  // Ingredients
   skladnikiGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
-    gap: 10,
+    display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 16,
   },
-  przepisBox: {
-    marginTop: 12, margin: '12px 16px 0',
-    background: 'white', borderRadius: 16,
-    padding: 16, boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
-  },
-  sekcjaTytul: {
-    fontSize: 17, fontWeight: 700,
-    color: '#1a1a1a', margin: '0 0 12px',
-  },
-  grupa: { marginBottom: 0 },
+  grupa: {},
   katHeader: {
-    fontSize: 9, fontWeight: 700,
-    textTransform: 'uppercase', letterSpacing: '0.5px',
-    color: '#4a86e8', padding: '3px 0',
-    borderBottom: '1px solid #eee', marginBottom: 4,
+    fontFamily: fonts.sans, fontSize: 10, fontWeight: 700,
+    letterSpacing: 1.4, textTransform: 'uppercase', color: t.accent,
+    paddingBottom: 6, marginBottom: 6, borderBottom: `0.5px solid ${t.border}`,
   },
   skladnik: {
-    display: 'flex', justifyContent: 'space-between',
-    gap: 4, padding: '4px 0',
-    borderBottom: '1px solid #f5f5f5',
+    display: 'flex', justifyContent: 'space-between', gap: 8,
+    padding: '5px 0', fontFamily: fonts.sans,
   },
-  skladnikNazwa: { fontSize: 12, color: '#1a1a1a', lineHeight: 1.2 },
-  skladnikIlosc: { fontSize: 11, color: '#888', whiteSpace: 'nowrap', lineHeight: 1.2 },
-  edSkladnikRow: { display: 'flex', gap: 6, alignItems: 'center', marginBottom: 6 },
-  edKrokRow: { display: 'flex', gap: 6, alignItems: 'center', marginBottom: 6 },
-  edKrokNr: { fontSize: 13, color: '#888', minWidth: 20, fontWeight: 600 },
+  skladnikNazwa: { fontSize: 13.5, color: t.text },
+  skladnikIlosc: { fontSize: 12.5, color: t.mute, whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums' },
+
+  // Recipe steps
+  kroki: { margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 14 },
+  krok: { display: 'flex', alignItems: 'flex-start', gap: 14 },
+  krokNr: {
+    flexShrink: 0, fontFamily: fonts.serif, fontSize: 20, color: t.accent,
+    fontStyle: 'italic', fontVariantNumeric: 'tabular-nums', lineHeight: 1.2, minWidth: 28,
+  },
+  krokTxt: { fontFamily: fonts.sans, fontSize: 15, color: t.text, lineHeight: 1.55 },
+  italic: { fontStyle: 'italic', color: t.accent, fontFamily: fonts.serif },
+  brak: { fontFamily: fonts.sans, fontSize: 13.5, color: t.mute, padding: '6px 0' },
+
+  // Edit forms
+  edList: { display: 'flex', flexDirection: 'column', gap: 8 },
+  edSkladnikRow: { display: 'flex', gap: 6, alignItems: 'center' },
+  edKrokRow: { display: 'flex', gap: 6, alignItems: 'center' },
+  edKrokNr: {
+    minWidth: 28, fontFamily: fonts.serif, fontSize: 18, color: t.accent,
+    fontStyle: 'italic', fontVariantNumeric: 'tabular-nums',
+  },
   edInput: {
-    padding: '8px 10px', fontSize: 13,
-    border: '1px solid #eee', borderRadius: 8,
-    outline: 'none', background: 'white',
-    boxSizing: 'border-box',
+    ...ui.input, padding: '9px 11px', fontSize: 13, marginBottom: 0,
   },
   btnUsun: {
-    background: 'none', border: 'none',
-    color: '#ccc', fontSize: 16,
-    cursor: 'pointer', flexShrink: 0, padding: '0 4px',
+    background: 'none', border: 'none', color: t.muteLight,
+    fontSize: 16, cursor: 'pointer', padding: '0 6px',
   },
   btnMini: {
-    background: '#f0f0f0', border: 'none',
-    borderRadius: 6, padding: '4px 8px',
-    fontSize: 12, cursor: 'pointer', flexShrink: 0,
+    background: t.surfaceAlt, border: 'none', borderRadius: 8,
+    padding: '6px 9px', fontSize: 12, cursor: 'pointer',
+    color: t.text, fontFamily: fonts.sans,
   },
-  btnDodajKrok: {
-    background: '#4a86e8', color: 'white',
-    border: 'none', borderRadius: 8,
-    padding: '8px 14px', fontSize: 13,
-    cursor: 'pointer', fontWeight: 600, flexShrink: 0,
-  },
-  listaKrokow: { margin: 0, paddingLeft: 20 },
-  krok: { fontSize: 15, color: '#1a1a1a', lineHeight: 1.5, marginBottom: 10 },
-  brakPrzepisu: { color: '#aaa', fontSize: 14, textAlign: 'center', padding: '20px 0' },
-  btnZapisz: {
-    padding: '14px', background: '#4a86e8', color: 'white',
-    border: 'none', borderRadius: 12, fontSize: 15,
-    fontWeight: 600, cursor: 'pointer',
-  },
-  btnAnuluj: {
-    padding: '14px', background: '#f0f0f0', color: '#666',
-    border: 'none', borderRadius: 12, fontSize: 15, cursor: 'pointer',
-  },
-  loading: { textAlign: 'center', padding: 60, fontSize: 16, color: '#666', fontFamily: 'sans-serif' },
+  btnDodajKrok: { ...ui.btnPrimary, padding: '10px 14px', fontSize: 13 },
+  saveRow: { display: 'flex', gap: 8, marginTop: 14 },
 
-  // Modal kalendarza
+  // Modal
   modalOverlay: {
-    position: 'fixed', inset: 0,
-    background: 'rgba(0,0,0,0.4)',
-    zIndex: 1000, display: 'flex',
-    alignItems: 'flex-end', justifyContent: 'center',
+    position: 'fixed', inset: 0, zIndex: 1000,
+    background: 'rgba(20,15,10,.4)', backdropFilter: 'blur(6px)',
+    display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
   },
   modal: {
-    background: 'white', borderRadius: '20px 20px 0 0',
-    padding: '20px 16px 40px', width: '100%',
-    maxWidth: 500,
+    background: t.surface,
+    borderRadius: '22px 22px 0 0',
+    padding: '22px 22px 32px', width: '100%', maxWidth: 540,
+    boxShadow: '0 -12px 40px rgba(20,15,10,.2)',
+    fontFamily: fonts.sans,
   },
   modalHeader: {
-    display: 'flex', justifyContent: 'space-between',
-    alignItems: 'center', marginBottom: 16,
+    display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start',
+    marginBottom: 18,
   },
-  modalTytul: { fontSize: 16, fontWeight: 700, color: '#1a1a1a' },
+  modalEyebrow: { ...ui.eyebrow, marginBottom: 3 },
+  modalTytul: { fontFamily: fonts.serif, fontSize: 22, color: t.text, letterSpacing: -0.2, lineHeight: 1.1 },
   modalClose: {
-    background: 'none', border: 'none',
-    fontSize: 20, color: '#aaa', cursor: 'pointer',
+    background: t.surfaceAlt, border: 'none', borderRadius: 999,
+    width: 32, height: 32, fontSize: 14, color: t.mute, cursor: 'pointer',
   },
-  tydzienNav: {
-    display: 'flex', alignItems: 'center',
-    justifyContent: 'space-between', marginBottom: 12,
-  },
-  tydzienLabel: { fontSize: 14, fontWeight: 600, color: '#1a1a1a' },
+
+  tydzienNav: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 },
+  tydzienLabel: { fontFamily: fonts.serif, fontSize: 16, color: t.text },
   navBtn: {
-    background: '#f0f0f0', border: 'none',
-    borderRadius: 8, width: 32, height: 32,
-    fontSize: 18, cursor: 'pointer',
+    width: 32, height: 32, borderRadius: 999,
+    background: t.surface, border: `0.5px solid ${t.border}`,
+    fontFamily: fonts.serif, fontSize: 18, color: t.text, cursor: 'pointer',
+    display: 'grid', placeItems: 'center',
   },
+
   dniGrid: {
     display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)',
-    gap: 4, marginBottom: 12,
+    gap: 5, marginBottom: 14,
   },
   dzienBtn: {
-  display: 'flex', flexDirection: 'column',
-  alignItems: 'center', padding: '6px 2px',
-  background: '#f8f9fa', border: 'none',
-  borderRadius: 10, cursor: 'pointer',
-  minHeight: 64, width: '100%',
-},
-  dzienBtnAktywny: {
-    background: '#4a86e8', color: 'white',
+    display: 'flex', flexDirection: 'column', alignItems: 'center',
+    padding: '8px 2px', minHeight: 70,
+    background: t.surface, border: `0.5px solid ${t.border}`, borderRadius: 12,
+    cursor: 'pointer',
   },
-  dzienNazwa: { fontSize: 9, fontWeight: 600, textTransform: 'uppercase', opacity: 0.7 },
-  dzienData: { fontSize: 15, fontWeight: 700, marginTop: 2 },
-  posilkiRow: { display: 'flex', gap: 8, marginBottom: 16 },
+  dzienBtnOn: {
+    background: t.accent, borderColor: t.accent,
+    boxShadow: '0 4px 12px rgba(77,124,77,.3)',
+  },
+  dzienBtnDow: { fontSize: 9.5, fontWeight: 700, letterSpacing: 0.6, textTransform: 'uppercase' },
+  dzienBtnDate: { fontFamily: fonts.serif, fontSize: 17, marginTop: 2 },
+  dzienBtnNote: {
+    fontSize: 8.5, marginTop: 3, padding: '0 2px',
+    overflow: 'hidden', display: '-webkit-box',
+    WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', textAlign: 'center', lineHeight: 1.2,
+  },
+
+  posilkiRow: { display: 'flex', gap: 6, marginBottom: 16 },
   posilekBtn: {
-    flex: 1, padding: '10px 0',
-    background: '#f0f0f0', border: 'none',
-    borderRadius: 10, fontSize: 13,
-    cursor: 'pointer', fontWeight: 500, color: '#666',
+    flex: 1, padding: '10px 0', borderRadius: 10,
+    background: t.surfaceAlt, border: 'none', cursor: 'pointer',
+    fontFamily: fonts.sans, fontSize: 13, color: t.text, fontWeight: 500,
   },
-  posilekBtnAktywny: {
-    background: '#4a86e8', color: 'white', fontWeight: 700,
+  posilekBtnOn: { background: t.warm, color: '#fff', fontWeight: 600 },
+
+  btnDodajKal: { ...ui.btnPrimary, width: '100%', padding: '14px' },
+
+  sukces: { padding: '30px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 },
+  sukcesIkona: {
+    width: 56, height: 56, borderRadius: '50%',
+    background: t.accentSoft, display: 'grid', placeItems: 'center',
   },
-  btnDodajKal: {
-    width: '100%', padding: '14px',
-    background: '#4a86e8', color: 'white',
-    border: 'none', borderRadius: 12,
-    fontSize: 15, fontWeight: 600, cursor: 'pointer',
-  },
-  sukces: {
-    textAlign: 'center', padding: '30px 0',
-    fontSize: 18, color: '#34a853',
+  sukcesTxt: { fontFamily: fonts.serif, fontSize: 18, color: t.text, letterSpacing: -0.2 },
+
+  loading: {
+    textAlign: 'center', padding: 80,
+    fontFamily: fonts.sans, fontSize: 15, color: t.mute,
+    background: t.bg, minHeight: '100vh',
   },
 }
