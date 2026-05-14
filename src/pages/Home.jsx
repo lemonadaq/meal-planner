@@ -2,10 +2,19 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../supabase'
 import { t, fonts, ui, avatarBg } from '../theme'
 
-export default function Home({ user, onTabChange }) {
+function getPowitanie() {
+  const h = new Date().getHours()
+  if (h >= 5 && h < 11)  return 'Dzień dobry'
+  if (h >= 11 && h < 17) return 'Cześć'
+  if (h >= 17 && h < 22) return 'Dobry wieczór'
+  return 'Dobranoc'
+}
+
+export default function Home({ user, onTabChange, onUstawienia }) {
   const imie = user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'Cześć'
   const [dzisiaj, setDzisiaj] = useState([])
   const [liczbaPozycji, setLiczbaPozycji] = useState(0)
+  const [powitanie] = useState(getPowitanie)
 
   useEffect(() => {
     async function pobierz() {
@@ -41,28 +50,31 @@ export default function Home({ user, onTabChange }) {
   }, [user.id])
 
   const godziny = { Śniadanie: '8:00', Obiad: '13:00', Kolacja: '19:00' }
-
   const dzisiejszaData = new Date().toLocaleDateString('pl-PL', {
     weekday: 'long', day: 'numeric', month: 'long',
   })
-
   const zaplanowane = dzisiaj.filter(d => d.danie)
 
   return (
     <div style={s.container}>
-      {/* ─ Header ─────────────────────────────────────────── */}
       <header style={s.header}>
         <div>
           <div style={s.eyebrow}>{dzisiejszaData}</div>
           <h1 style={s.powitanie}>
-            Cześć, <em style={s.italic}>{imie}</em>
+            {powitanie}, <em style={s.italic}>{imie}</em>
             <span style={{ color: t.warm }}>.</span>
           </h1>
         </div>
-        <div style={s.avatar} title={imie}>{imie[0]?.toUpperCase()}</div>
+        <button
+          style={s.avatar}
+          title="Ustawienia"
+          onClick={onUstawienia}
+          aria-label="Ustawienia"
+        >
+          {imie[0]?.toUpperCase()}
+        </button>
       </header>
 
-      {/* ─ Section: dzisiejsze posiłki ─────────────────────── */}
       <div style={s.sekcjaHeader}>
         <h2 style={s.h2}>Dzisiaj na talerzu</h2>
         <button style={s.link} onClick={() => onTabChange('planer')}>Plan tygodnia →</button>
@@ -100,7 +112,6 @@ export default function Home({ user, onTabChange }) {
         </div>
       )}
 
-      {/* ─ Section: szybkie skróty ─────────────────────────── */}
       <h2 style={{ ...s.h2, marginTop: 32, marginBottom: 12 }}>Skróty</h2>
       <div style={s.skroty}>
         {[
@@ -124,7 +135,6 @@ export default function Home({ user, onTabChange }) {
   )
 }
 
-// ── small inline icons (no extra deps) ──────────────────────────────────────
 const CartIcon = () => (<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 4h2l2.5 12.5a2 2 0 0 0 2 1.5h7.5a2 2 0 0 0 2-1.6L21 8H6"/><circle cx="9" cy="21" r="1.2"/><circle cx="18" cy="21" r="1.2"/></svg>)
 const BookIcon = () => (<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h7a3 3 0 0 1 3 3v14H7a3 3 0 0 1-3-3V4z"/><path d="M20 4h-3a3 3 0 0 0-3 3v14h3a3 3 0 0 0 3-3V4z"/></svg>)
 const CalIcon = () => (<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>)
@@ -144,17 +154,15 @@ const s = {
     ...ui.eyebrow, marginBottom: 4, textTransform: 'capitalize',
     fontSize: 11, letterSpacing: 1.2,
   },
-  powitanie: {
-    ...ui.h1, fontSize: 30, lineHeight: 1.05, fontWeight: 400,
-  },
+  powitanie: { ...ui.h1, fontSize: 30, lineHeight: 1.05, fontWeight: 400 },
   italic: { fontStyle: 'italic', color: t.accent, fontFamily: fonts.serif },
   avatar: {
     width: 44, height: 44, borderRadius: '50%',
     background: avatarBg('avatar:home'),
-    color: '#fff',
+    color: '#fff', border: 'none',
     display: 'grid', placeItems: 'center',
     fontFamily: fonts.serif, fontSize: 18, fontWeight: 500,
-    flexShrink: 0,
+    flexShrink: 0, cursor: 'pointer',
     boxShadow: '0 4px 12px rgba(74,55,40,.12)',
   },
   sekcjaHeader: {
@@ -163,9 +171,7 @@ const s = {
   },
   h2: { ...ui.h2 },
   link: { ...ui.btnText, color: t.accent, padding: 0 },
-  pusty: {
-    ...ui.card, padding: '28px 24px', textAlign: 'center',
-  },
+  pusty: { ...ui.card, padding: '28px 24px', textAlign: 'center' },
   pustyTytul: { ...ui.h3, marginBottom: 6 },
   pustySub: {
     fontFamily: fonts.sans, fontSize: 13.5, color: t.mute,
@@ -197,15 +203,12 @@ const s = {
     fontFamily: fonts.serif, fontSize: 17, color: t.text,
     letterSpacing: -0.1, lineHeight: 1.15,
   },
-  posilekExtra: {
-    fontFamily: fonts.sans, fontSize: 12, color: t.mute, marginTop: 3,
-  },
+  posilekExtra: { fontFamily: fonts.sans, fontSize: 12, color: t.mute, marginTop: 3 },
   skroty: { display: 'flex', flexDirection: 'column', gap: 8 },
   skrotKarta: {
     ...ui.card, padding: '12px 14px',
     display: 'flex', alignItems: 'center', gap: 14,
-    cursor: 'pointer', textAlign: 'left',
-    fontFamily: fonts.sans,
+    cursor: 'pointer', textAlign: 'left', fontFamily: fonts.sans,
   },
   skrotIkona: {
     width: 40, height: 40, borderRadius: 12,
@@ -216,8 +219,6 @@ const s = {
     fontFamily: fonts.serif, fontSize: 17, color: t.text,
     letterSpacing: -0.1, lineHeight: 1.2,
   },
-  skrotSub: {
-    fontFamily: fonts.sans, fontSize: 12.5, color: t.mute, marginTop: 2,
-  },
+  skrotSub: { fontFamily: fonts.sans, fontSize: 12.5, color: t.mute, marginTop: 2 },
   skrotStrzalka: { fontSize: 22, color: t.muteLight, fontFamily: fonts.serif },
 }

@@ -1,8 +1,7 @@
 import { t, fonts } from '../theme'
 
 // Same prop signature as your original NavBar: `aktywny` is the active tab id,
-// `onChange(id)` fires when the user taps another tab. The id strings match
-// what Home / Kalendarz / etc. already pass to `onTabChange`.
+// `onChange(id)` fires when the user taps another tab.
 
 export default function NavBar({ aktywny, onChange }) {
   const tabs = [
@@ -14,36 +13,35 @@ export default function NavBar({ aktywny, onChange }) {
 
   return (
     <>
-      {/* Spacer so content above doesn't get covered by the fixed nav. Render
-          this anywhere in your tree — it just provides bottom padding. */}
       <div style={s.spacer} aria-hidden />
 
-      <nav style={s.nav} aria-label="Nawigacja główna">
-        {tabs.map(tab => {
-          const on = aktywny === tab.id
-          return (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => onChange(tab.id)}
-              aria-current={on ? 'page' : undefined}
-              style={{ ...s.tab, color: on ? t.accent : t.muteLight }}
-            >
-              <span style={s.ikona}>
-                <tab.Icon active={on} />
-              </span>
-              <span style={{ ...s.label, fontWeight: on ? 600 : 500 }}>
-                {tab.label}
-              </span>
-            </button>
-          )
-        })}
-      </nav>
+      <div style={s.navWrap}>
+        <nav style={s.nav} aria-label="Nawigacja główna">
+          {tabs.map(tab => {
+            const on = aktywny === tab.id
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => onChange(tab.id)}
+                aria-current={on ? 'page' : undefined}
+                style={{ ...s.tab, color: on ? t.accent : t.muteLight }}
+              >
+                <span style={s.ikona}>
+                  <tab.Icon active={on} />
+                </span>
+                <span style={{ ...s.label, fontWeight: on ? 600 : 500 }}>
+                  {tab.label}
+                </span>
+              </button>
+            )
+          })}
+        </nav>
+      </div>
     </>
   )
 }
 
-// ── Line-art icons (filled-stroke variants when active) ─────────────────────
 const HomeIcon = ({ active }) => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
     stroke="currentColor" strokeWidth={active ? 2 : 1.6}
@@ -78,18 +76,24 @@ const CartIcon = ({ active }) => (
 )
 
 const s = {
-  // Pushes page content above the nav so the last items aren't hidden.
-  // Height = nav padding-top + content + safe-area bottom padding.
   spacer: { height: 84 },
 
-  nav: {
+  // Wrapper bierze pełną szerokość ekranu (białe tło + cień),
+  // a nav w środku jest scentrowany i ograniczony do szerokości aplikacji.
+  navWrap: {
     position: 'fixed', bottom: 0, left: 0, right: 0,
     background: t.surface,
     borderTop: `0.5px solid ${t.border}`,
     boxShadow: '0 -4px 24px rgba(74,55,40,.04)',
-    display: 'flex',
     padding: '8px 0 calc(20px + env(safe-area-inset-bottom, 0px))',
     zIndex: 100,
+  },
+  nav: {
+    display: 'flex',
+    maxWidth: 760,     // ← zgodny z najszerszą stroną (Kalendarz / DanieDetail)
+    margin: '0 auto',
+    padding: '0 20px', // ← te same 20px co kontener stron
+    boxSizing: 'border-box',
   },
   tab: {
     flex: 1, display: 'flex', flexDirection: 'column',

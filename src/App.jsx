@@ -8,6 +8,13 @@ import ListaZakupow from './pages/ListaZakupow'
 import DodajDanie from './pages/DodajDanie'
 import NavBar from './components/NavBar'
 import Home from './pages/Home'
+import Ustawienia from './pages/Ustawienia'
+import Admin from './pages/Admin'
+import { useUstawienia } from './useUstawienia'
+import { useTabAnalytics, sledz } from './analytics'
+
+// ⚠️ ZMIEŃ NA SWÓJ EMAIL — to email który ma dostęp do panelu admina
+const ADMIN_EMAILE = ['wojownik157@gmail.com']
 
 function IOSInstallBaner() {
   const [pokaz, setPokaz] = useState(false)
@@ -70,6 +77,7 @@ function App() {
   const [tab, setTab] = useState('home')
   const [wybraneD, setWybraneD] = useState(null)
   const [dodajDanie, setDodajDanie] = useState(false)
+  const [ekran, setEkran] = useState(null) // 'ustawienia' | 'admin' | null
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -82,6 +90,12 @@ function App() {
     return () => subscription.unsubscribe()
   }, [])
 
+  // Ustawienia (porcje itd.) — działa tylko jak user jest zalogowany
+  const { ustawienia, zapisz: zapiszUstawienia } = useUstawienia(user)
+
+  // Analytics — automatyczne śledzenie zakładek
+  useTabAnalytics(user, user ? tab : null)
+
   if (loading) return (
     <div style={{ textAlign: 'center', padding: 60, fontFamily: 'sans-serif' }}>
       Ładowanie...
@@ -90,27 +104,79 @@ function App() {
 
   if (!user) return <Login />
 
-  // Widoki overlay (bez navbara)
-  if (wybraneD) return <DanieDetail nazwa={wybraneD} onBack={() => setWybraneD(null)} user={user} />
+  const jestAdmin = ADMIN_EMAILE.includes(user.email)
+
+  // Pomocnik dla dzieci
+  const sledzAkcje = (wartosc, szczegoly) => sledz(user, 'akcja', wartosc, szczegoly)
+
+  // ── Widoki overlay (bez navbara) ──
+  if (ekran === 'ustawienia') {
+    return (
+      <Ustawienia
+        user={user}
+        ustawienia={ustawienia}
+        onZapisz={zapiszUstawienia}
+        onBack={() => setEkran(null)}
+        onAdmin={() => setEkran('admin')}
+        jestAdmin={jestAdmin}
+      />
+    )
+  }
+  if (ekran === 'admin') {
+    return <Admin onBack={() => setEkran('ustawienia')} />
+  }
+
+  if (wybraneD) return (
+    <DanieDetail
+      nazwa={wybraneD}
+      onBack={() => setWybraneD(null)}
+      user={user}
+      sledz={sledzAkcje}
+    />
+  )
   if (dodajDanie) return (
     <DodajDanie
       onBack={() => setDodajDanie(false)}
-      onZapisano={() => setDodajDanie(false)}
+      onZapisano={(nazwa) => {
+        sledzAkcje('dodaj_danie', { danie: nazwa })
+        setDodajDanie(false)
+      }}
     />
   )
 
   return (
     <div style={{ paddingBottom: 80, minHeight: '100vh', background: '#f8f9fa' }}>
-      {tab === 'home' && <Home user={user} onTabChange={setTab} />}
-      {tab === 'planer' && <Kalendarz user={user} onBack={() => setTab('home')} />}
+      {tab === 'home' && (
+        <Home
+          user={user}
+          onTabChange={setTab}
+          onUstawienia={() => setEkran('ustawienia')}
+        />
+      )}
+      {tab === 'planer' && (
+        <Kalendarz
+          user={user}
+          onBack={() => setTab('home')}
+          domyslnePorcje={ustawienia?.domyslne_porcje ?? 1}
+          sledz={sledzAkcje}
+        />
+      )}
       {tab === 'przepisy' && (
         <Dania
           onSelect={setWybraneD}
           user={user}
-          onDodaj={() => setDodajDanie(true)} onBack={() => setTab('home')}
+          onDodaj={() => setDodajDanie(true)}
+          onBack={() => setTab('home')}
         />
       )}
-      {tab === 'zakupy' && <ListaZakupow user={user} onBack={() => setTab('home')} />}
+      {tab === 'zakupy' && (
+        <ListaZakupow
+          user={user}
+          onBack={() => setTab('home')}
+          domyslnePorcje={ustawienia?.domyslne_porcje ?? 1}
+          sledz={sledzAkcje}
+        />
+      )}
       <NavBar aktywny={tab} onChange={setTab} />
       <IOSInstallBaner />
     </div>

@@ -27,6 +27,10 @@ function getEmoji(nazwa) {
 }
 
 const JEDNOSTKI = ['g', 'kg', 'ml', 'l', 'szt.', 'opak.', 'łyżka', 'łyżki', 'łyżeczka', 'szklanka', 'ząbki', 'pęczek', 'garść', 'do smaku']
+const KATEGORIE = [
+  '1_Mięso i ryby', '2_Warzywa', '3_Owoce', '4_Nabiał',
+  '5_Pieczywo', '6_Sypkie', '7_Przyprawy', '8_Inne',
+]
 const DNI = ['Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota', 'Niedziela']
 const DNI_KROTKO = ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Nd']
 const POSILKI = ['Śniadanie', 'Obiad', 'Kolacja']
@@ -41,7 +45,7 @@ function getPoniedzialek(offset = 0) {
 function formatData(date) { return date.toISOString().split('T')[0] }
 function formatKrotkoMies(date) { return date.toLocaleDateString('pl-PL', { day: 'numeric', month: 'short' }) }
 
-export default function DanieDetail({ nazwa: nazwaProp, onBack, user }) {
+export default function DanieDetail({ nazwa: nazwaProp, onBack, user, sledz }) {
   const [skladniki, setSkladniki] = useState([])
   const [przepis, setPrzepis] = useState([])
   const [loading, setLoading] = useState(true)
@@ -49,13 +53,11 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user }) {
   const [saving, setSaving] = useState(false)
   const [nazwa, setNazwa] = useState(nazwaProp)
 
-  // Edycja
   const [edNazwa, setEdNazwa] = useState('')
   const [edSkladniki, setEdSkladniki] = useState([])
   const [edPrzepis, setEdPrzepis] = useState([])
   const [nowyKrok, setNowyKrok] = useState('')
 
-  // Modal "dodaj do kalendarza"
   const [pokazKalendarz, setPokazKalendarz] = useState(false)
   const [tydzien, setTydzien] = useState(0)
   const [wybranyDzien, setWybranyDzien] = useState(null)
@@ -104,36 +106,84 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user }) {
 
   function wejdzWEdycje() {
     setEdNazwa(nazwa)
-    setEdSkladniki(skladniki.map(s => ({
-      id: s.id,
-      Skladnik: s['Składnik'] || '',
-      Ilosc: s['Ilość na 1 porcję'] || '',
-      Jednostka: s['Jednostka'] || 'szt.',
-      Kategoria: s['Kategoria'] || '8_Inne',
+    setEdSkladniki(skladniki.map(sk => ({
+      id: sk.id,
+      Skladnik: sk['Składnik'] || '',
+      Ilosc: sk['Ilość na 1 porcję'] || '',
+      Jednostka: sk['Jednostka'] || 'szt.',
+      Kategoria: sk['Kategoria'] || '8_Inne',
+      _nowy: false,
     })))
     setEdPrzepis([...przepis])
     setEdycja(true)
   }
 
+  function dodajPustySkladnik() {
+    setEdSkladniki(prev => [
+      ...prev,
+      { id: null, Skladnik: '', Ilosc: '', Jednostka: 'szt.', Kategoria: '8_Inne', _nowy: true }
+    ])
+  }
+
   async function zapiszZmiany() {
     setSaving(true)
     const przepisTekst = edPrzepis.map((k, i) => `${i + 1}. ${k}`).join('\n')
-    if (edNazwa !== nazwa) {
-      await supabase.from('dania').update({ 'Danie': edNazwa }).eq('"Danie"', nazwa)
-      setNazwa(edNazwa)
+
+    let aktualnaNazwa = nazwa
+    if (edNazwa !== nazwa && edNazwa.trim()) {
+      await supabase.from('dania').update({ 'Danie': edNazwa.trim() }).eq('"Danie"', nazwa)
+      aktualnaNazwa = edNazwa.trim()
+      setNazwa(aktualnaNazwa)
     }
-    await supabase.from('dania').update({ 'Przepis': przepisTekst }).eq('"Danie"', edNazwa)
-    for (const sk of edSkladniki) {
-      await supabase.from('dania').update({
-        'Składnik': sk.Skladnik, 'Ilość na 1 porcję': sk.Ilosc,
-        'Jednostka': sk.Jednostka, 'Kategoria': sk.Kategoria,
-      }).eq('id', sk.id)
+
+    const operacje = []
+    operacje.push(
+      supabase.from('dania').update({ 'Przepis': przepisTekst }).eq('"Danie"', aktualnaNazwa)
+    )
+
+    edSkladniki.filter(sk => sk.id && !sk._nowy).forEach(sk => {
+      operacje.push(
+        supabase.from('dania').update({
+          'Składnik': sk.Skladnik,
+          'Ilość na 1 porcję': sk.Ilosc,
+          'Jednostka': sk.Jednostka,
+          'Kategoria': sk.Kategoria,
+        }).eq('id', sk.id)
+      )
+    })
+
+    const noweSkladniki = edSkladniki.filter(sk => sk._nowy && sk.Skladnik.trim())
+    if (noweSkladniki.length > 0) {
+      const wzor = skladniki[0] || {}
+      const wiersze = noweSkladniki.map(sk => ({
+        'Danie': aktualnaNazwa,
+        'Składnik': sk.Skladnik.trim(),
+        'Ilość na 1 porcję': sk.Ilosc,
+        'Jednostka': sk.Jednostka,
+        'Kategoria': sk.Kategoria,
+        'Przepis': przepisTekst,
+        'TYP': wzor['TYP'] || null,
+        'zdjecie': wzor['zdjecie'] || null,
+      }))
+      operacje.push(supabase.from('dania').insert(wiersze))
     }
+
+    await Promise.all(operacje)
+    sledz?.('edytuj_danie', { danie: aktualnaNazwa, nowe_skladniki: noweSkladniki.length })
     await pobierz()
     setEdycja(false); setSaving(false)
   }
 
-  function usunSkladnik(i) { setEdSkladniki(prev => prev.filter((_, idx) => idx !== i)) }
+  async function usunSkladnik(i) {
+    const sk = edSkladniki[i]
+    if (sk._nowy || !sk.id) {
+      setEdSkladniki(prev => prev.filter((_, idx) => idx !== i))
+      return
+    }
+    await supabase.from('dania').delete().eq('id', sk.id)
+    setEdSkladniki(prev => prev.filter((_, idx) => idx !== i))
+  }
+
   function dodajKrok() {
     if (!nowyKrok.trim()) return
     setEdPrzepis(prev => [...prev, nowyKrok.trim()]); setNowyKrok('')
@@ -155,10 +205,11 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user }) {
       .eq('user_id', user.id).eq('data', wybranyDzien).eq('posilek', wybranyPosilek)
       .maybeSingle()
     if (istniejacy) {
-      await supabase.from('kalendarz').update({ danie: nazwa }).eq('id', istniejacy.id)
+      await supabase.from('kalendarz').update({ danie: nazwa, podmiany: {} }).eq('id', istniejacy.id)
     } else {
       await supabase.from('kalendarz').insert({ user_id: user.id, data: wybranyDzien, posilek: wybranyPosilek, danie: nazwa })
     }
+    sledz?.('dodaj_do_kalendarza', { danie: nazwa, dzien: wybranyDzien, posilek: wybranyPosilek })
     setDodawanie(false); setSukces(true)
     setTimeout(() => { setSukces(false); setPokazKalendarz(false) }, 1500)
   }
@@ -175,7 +226,6 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user }) {
 
   return (
     <div style={s.outer}>
-      {/* ── Modal: dodaj do kalendarza ─────────────────── */}
       {pokazKalendarz && (
         <div style={s.modalOverlay} onClick={() => setPokazKalendarz(false)}>
           <div style={s.modal} onClick={e => e.stopPropagation()}>
@@ -261,7 +311,6 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user }) {
           )}
         </div>
 
-        {/* ── Hero ─────────────────────────────────────── */}
         <article style={s.hero}>
           <div style={{ ...s.heroImg, background: heroZdj ? 'transparent' : getKolor(nazwa) }}>
             {heroZdj
@@ -287,7 +336,6 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user }) {
           </div>
         </article>
 
-        {/* ── Składniki ─────────────────────────────────── */}
         <section style={s.section}>
           <div style={s.sectionHeader}>
             <h2 style={s.sectionTitle}>Składniki</h2>
@@ -299,18 +347,27 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user }) {
           {edycja ? (
             <div style={s.edList}>
               {edSkladniki.map((sk, i) => (
-                <div key={sk.id || i} style={s.edSkladnikRow}>
-                  <input style={{ ...s.edInput, flex: 2 }} value={sk.Skladnik}
-                    onChange={e => { const n = [...edSkladniki]; n[i].Skladnik = e.target.value; setEdSkladniki(n) }} />
-                  <input style={{ ...s.edInput, flex: 1 }} value={sk.Ilosc} placeholder="Ilość"
-                    onChange={e => { const n = [...edSkladniki]; n[i].Ilosc = e.target.value; setEdSkladniki(n) }} />
-                  <select style={{ ...s.edInput, flex: 1 }} value={sk.Jednostka}
-                    onChange={e => { const n = [...edSkladniki]; n[i].Jednostka = e.target.value; setEdSkladniki(n) }}>
-                    {JEDNOSTKI.map(j => <option key={j} value={j}>{j}</option>)}
+                <div key={sk.id || `nowy-${i}`} style={s.edSkladnikBlok}>
+                  <div style={s.edSkladnikRow}>
+                    <input style={{ ...s.edInput, flex: 2 }} value={sk.Skladnik} placeholder="Składnik"
+                      onChange={e => { const n = [...edSkladniki]; n[i].Skladnik = e.target.value; setEdSkladniki(n) }} />
+                    <input style={{ ...s.edInput, flex: 1 }} value={sk.Ilosc} placeholder="Ilość"
+                      onChange={e => { const n = [...edSkladniki]; n[i].Ilosc = e.target.value; setEdSkladniki(n) }} />
+                    <select style={{ ...s.edInput, flex: 1 }} value={sk.Jednostka}
+                      onChange={e => { const n = [...edSkladniki]; n[i].Jednostka = e.target.value; setEdSkladniki(n) }}>
+                      {JEDNOSTKI.map(j => <option key={j} value={j}>{j}</option>)}
+                    </select>
+                    <button style={s.btnUsun} onClick={() => usunSkladnik(i)} title="Usuń">✕</button>
+                  </div>
+                  <select style={{ ...s.edInput, ...s.kategoriaSelect }} value={sk.Kategoria}
+                    onChange={e => { const n = [...edSkladniki]; n[i].Kategoria = e.target.value; setEdSkladniki(n) }}>
+                    {KATEGORIE.map(k => <option key={k} value={k}>{k.replace(/^\d_/, '')}</option>)}
                   </select>
-                  <button style={s.btnUsun} onClick={() => usunSkladnik(i)}>✕</button>
                 </div>
               ))}
+              <button style={s.btnDodajSkladnik} onClick={dodajPustySkladnik}>
+                + Dodaj składnik
+              </button>
             </div>
           ) : (
             <div style={s.skladnikiGrid}>
@@ -333,7 +390,6 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user }) {
           )}
         </section>
 
-        {/* ── Przepis ───────────────────────────────────── */}
         <section style={s.section}>
           <h2 style={s.sectionTitle}>Przepis</h2>
           {edycja ? (
@@ -369,7 +425,6 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user }) {
           )}
         </section>
 
-        {/* ── Save/cancel w edycji ─────────────────────── */}
         {edycja && (
           <div style={s.saveRow}>
             <button style={{ ...ui.btnPrimary, flex: 1 }} onClick={zapiszZmiany} disabled={saving}>
@@ -399,12 +454,7 @@ const s = {
     fontFamily: fonts.sans, fontSize: 13, fontWeight: 500, cursor: 'pointer',
     display: 'inline-flex', alignItems: 'center',
   },
-
-  // Hero
-  hero: {
-    ...ui.card,
-    overflow: 'hidden', marginBottom: 18, padding: 0,
-  },
+  hero: { ...ui.card, overflow: 'hidden', marginBottom: 18, padding: 0 },
   heroImg: {
     width: '100%', aspectRatio: '5/3',
     display: 'grid', placeItems: 'center', overflow: 'hidden',
@@ -425,11 +475,7 @@ const s = {
     ...ui.btnPrimary, display: 'inline-flex', alignItems: 'center',
     padding: '11px 16px', fontSize: 14,
   },
-
-  // Sections
-  section: {
-    ...ui.card, padding: 20, marginBottom: 14,
-  },
+  section: { ...ui.card, padding: 20, marginBottom: 14 },
   sectionHeader: { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 },
   sectionTitle: { ...ui.h2, fontSize: 20 },
   countBadge: {
@@ -437,8 +483,6 @@ const s = {
     letterSpacing: 0.6, color: t.mute,
     padding: '2px 8px', borderRadius: 999, background: t.surfaceAlt,
   },
-
-  // Ingredients
   skladnikiGrid: {
     display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 16,
   },
@@ -454,8 +498,6 @@ const s = {
   },
   skladnikNazwa: { fontSize: 13.5, color: t.text },
   skladnikIlosc: { fontSize: 12.5, color: t.mute, whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums' },
-
-  // Recipe steps
   kroki: { margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 14 },
   krok: { display: 'flex', alignItems: 'flex-start', gap: 14 },
   krokNr: {
@@ -465,18 +507,19 @@ const s = {
   krokTxt: { fontFamily: fonts.sans, fontSize: 15, color: t.text, lineHeight: 1.55 },
   italic: { fontStyle: 'italic', color: t.accent, fontFamily: fonts.serif },
   brak: { fontFamily: fonts.sans, fontSize: 13.5, color: t.mute, padding: '6px 0' },
-
-  // Edit forms
   edList: { display: 'flex', flexDirection: 'column', gap: 8 },
+  edSkladnikBlok: {
+    display: 'flex', flexDirection: 'column', gap: 4,
+    padding: '8px 0', borderBottom: `0.5px solid ${t.border}`,
+  },
   edSkladnikRow: { display: 'flex', gap: 6, alignItems: 'center' },
+  kategoriaSelect: { padding: '6px 10px', fontSize: 11, color: t.mute, marginTop: 2 },
   edKrokRow: { display: 'flex', gap: 6, alignItems: 'center' },
   edKrokNr: {
     minWidth: 28, fontFamily: fonts.serif, fontSize: 18, color: t.accent,
     fontStyle: 'italic', fontVariantNumeric: 'tabular-nums',
   },
-  edInput: {
-    ...ui.input, padding: '9px 11px', fontSize: 13, marginBottom: 0,
-  },
+  edInput: { ...ui.input, padding: '9px 11px', fontSize: 13, marginBottom: 0 },
   btnUsun: {
     background: 'none', border: 'none', color: t.muteLight,
     fontSize: 16, cursor: 'pointer', padding: '0 6px',
@@ -486,10 +529,14 @@ const s = {
     padding: '6px 9px', fontSize: 12, cursor: 'pointer',
     color: t.text, fontFamily: fonts.sans,
   },
+  btnDodajSkladnik: {
+    background: t.accentSoft, color: t.accentDark,
+    border: 'none', borderRadius: 10, padding: '10px 14px',
+    fontSize: 13, fontWeight: 600, fontFamily: fonts.sans,
+    cursor: 'pointer', marginTop: 6,
+  },
   btnDodajKrok: { ...ui.btnPrimary, padding: '10px 14px', fontSize: 13 },
   saveRow: { display: 'flex', gap: 8, marginTop: 14 },
-
-  // Modal
   modalOverlay: {
     position: 'fixed', inset: 0, zIndex: 1000,
     background: 'rgba(20,15,10,.4)', backdropFilter: 'blur(6px)',
@@ -512,7 +559,6 @@ const s = {
     background: t.surfaceAlt, border: 'none', borderRadius: 999,
     width: 32, height: 32, fontSize: 14, color: t.mute, cursor: 'pointer',
   },
-
   tydzienNav: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 },
   tydzienLabel: { fontFamily: fonts.serif, fontSize: 16, color: t.text },
   navBtn: {
@@ -521,11 +567,7 @@ const s = {
     fontFamily: fonts.serif, fontSize: 18, color: t.text, cursor: 'pointer',
     display: 'grid', placeItems: 'center',
   },
-
-  dniGrid: {
-    display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)',
-    gap: 5, marginBottom: 14,
-  },
+  dniGrid: { display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 5, marginBottom: 14 },
   dzienBtn: {
     display: 'flex', flexDirection: 'column', alignItems: 'center',
     padding: '8px 2px', minHeight: 70,
@@ -543,7 +585,6 @@ const s = {
     overflow: 'hidden', display: '-webkit-box',
     WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', textAlign: 'center', lineHeight: 1.2,
   },
-
   posilkiRow: { display: 'flex', gap: 6, marginBottom: 16 },
   posilekBtn: {
     flex: 1, padding: '10px 0', borderRadius: 10,
@@ -551,16 +592,13 @@ const s = {
     fontFamily: fonts.sans, fontSize: 13, color: t.text, fontWeight: 500,
   },
   posilekBtnOn: { background: t.warm, color: '#fff', fontWeight: 600 },
-
   btnDodajKal: { ...ui.btnPrimary, width: '100%', padding: '14px' },
-
   sukces: { padding: '30px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 },
   sukcesIkona: {
     width: 56, height: 56, borderRadius: '50%',
     background: t.accentSoft, display: 'grid', placeItems: 'center',
   },
   sukcesTxt: { fontFamily: fonts.serif, fontSize: 18, color: t.text, letterSpacing: -0.2 },
-
   loading: {
     textAlign: 'center', padding: 80,
     fontFamily: fonts.sans, fontSize: 15, color: t.mute,
