@@ -15,22 +15,47 @@ const KATEGORIE = {
   'Inne':               '8_Inne',
 }
 
+// Rodzaje — 6 wartości, wszystko ląduje w tabeli `dania` (rodzaj decyduje o filtrach)
+const RODZAJE = [
+  { id: 'obiad',     label: 'Obiad',     placeholder: 'np. Makaron z dynią i szałwią' },
+  { id: 'sniadanie', label: 'Śniadanie', placeholder: 'np. Owsianka z bananem' },
+  { id: 'kolacja',   label: 'Kolacja',   placeholder: 'np. Tosty z awokado' },
+  { id: 'przekaska', label: 'Przekąska', placeholder: 'np. Hummus z marchewką' },
+  { id: 'dodatek',   label: 'Dodatek',   placeholder: 'np. Ryż basmati' },
+  { id: 'surowka',   label: 'Surówka',   placeholder: 'np. Surówka z marchewki' },
+]
+
+// Rodzaje, które mogą być "z dodatkiem" — dla dodatek/surowka nie ma sensu
+const RODZAJE_GLOWNE = ['obiad', 'sniadanie', 'kolacja', 'przekaska']
+
 export default function DodajDanie({ onBack, onZapisano }) {
+  const [rodzaj, setRodzaj] = useState('obiad')
   const [nazwa, setNazwa] = useState('')
   const [typ, setTyp] = useState('samodzielne')
+  const [czasMinuty, setCzasMinuty] = useState('')
+  const [porcjeBazowe, setPorcjeBazowe] = useState('4')
+  const [notatki, setNotatki] = useState('')
+
   const [skladniki, setSkladniki] = useState([])
   const [istniejaceSkladniki, setIstniejaceSkladniki] = useState([])
   const [nowyS, setNowyS] = useState({ nazwa: '', ilosc: '', jednostka: 'g', kategoria: '1_Warzywa i owoce' })
+  const [podpowiedzi, setPodpowiedzi] = useState([])
+
+  const [kroki, setKroki] = useState([])
+  const [nowyKrok, setNowyKrok] = useState('')
+
   const [saving, setSaving] = useState(false)
   const [blad, setBlad] = useState('')
-  const [podpowiedzi, setPodpowiedzi] = useState([])
-  const [tabela, setTabela] = useState('dania')
+
+  const rodzajCfg = RODZAJE.find(r => r.id === rodzaj)
+  const pokazTyp = RODZAJE_GLOWNE.includes(rodzaj)
 
   useEffect(() => {
     async function pobierzSkladniki() {
       const { data } = await supabase.from('dania').select('"Składnik", "Jednostka", "Kategoria"')
       if (data) {
         const unikalne = [...new Map(data.map(x => [x['Składnik'], x])).values()]
+          .filter(x => x['Składnik'])
         setIstniejaceSkladniki(unikalne)
       }
     }
@@ -54,67 +79,92 @@ export default function DodajDanie({ onBack, onZapisano }) {
     })
     setPodpowiedzi([])
   }
+
   function wyczyscFormularz() {
-    setNazwa(''); setTyp('samodzielne'); setSkladniki([])
+    setRodzaj('obiad'); setNazwa(''); setTyp('samodzielne')
+    setCzasMinuty(''); setPorcjeBazowe('4'); setNotatki('')
+    setSkladniki([]); setKroki([])
     setNowyS({ nazwa: '', ilosc: '', jednostka: 'g', kategoria: '1_Warzywa i owoce' })
+    setNowyKrok('')
     setBlad(''); setPodpowiedzi([])
   }
+
   function dodajSkladnik() {
     if (!nowyS.nazwa.trim()) return
     if (skladniki.find(sk => sk.nazwa.toLowerCase() === nowyS.nazwa.toLowerCase())) {
       setBlad('Ten składnik już jest na liście'); return
     }
-    setSkladniki(prev => [...prev, { ...nowyS }])
+    setSkladniki(prev => [...prev, { ...nowyS, nazwa: nowyS.nazwa.trim() }])
     setNowyS({ nazwa: '', ilosc: '', jednostka: 'g', kategoria: '1_Warzywa i owoce' })
     setPodpowiedzi([]); setBlad('')
   }
   function usunSkladnik(i) { setSkladniki(prev => prev.filter((_, idx) => idx !== i)) }
+
+  function dodajKrok() {
+    if (!nowyKrok.trim()) return
+    setKroki(prev => [...prev, nowyKrok.trim()])
+    setNowyKrok('')
+  }
+  function usunKrok(i) { setKroki(prev => prev.filter((_, idx) => idx !== i)) }
+  function przesunKrok(i, kierunek) {
+    const j = i + kierunek
+    if (j < 0 || j >= kroki.length) return
+    const nowe = [...kroki]
+    ;[nowe[i], nowe[j]] = [nowe[j], nowe[i]]
+    setKroki(nowe)
+  }
+  function edytujKrok(i, wartosc) {
+    const nowe = [...kroki]
+    nowe[i] = wartosc
+    setKroki(nowe)
+  }
 
   async function zapiszDanie() {
     if (!nazwa.trim()) { setBlad('Wpisz nazwę'); return }
     if (skladniki.length === 0) { setBlad('Dodaj przynajmniej jeden składnik'); return }
     setSaving(true); setBlad('')
 
-    // Sprawdź duplikaty we wszystkich 3 tabelach
-    const [{ data: wDaniach }, { data: wDodatkach }, { data: wSurowkach }] = await Promise.all([
-      supabase.from('dania').select('id').eq('"Danie"', nazwa.trim()).limit(1),
-      supabase.from('dodatki').select('id').eq('"Dodatek"', nazwa.trim()).limit(1),
-      supabase.from('surowki').select('id').eq('"Surówka"', nazwa.trim()).limit(1),
-    ])
-    if ((wDaniach?.length) || (wDodatkach?.length) || (wSurowkach?.length)) {
-      const gdzie = wDaniach?.length ? 'daniach' : wDodatkach?.length ? 'dodatkach' : 'surówkach'
-      setBlad(`"${nazwa}" już istnieje w ${gdzie}`)
+    // Duplikat — sprawdzamy wszystko w nowej, scalonej tabeli `dania`
+    const { data: istniejace } = await supabase
+      .from('dania').select('"Danie", rodzaj')
+      .eq('"Danie"', nazwa.trim())
+      .limit(1)
+    if (istniejace?.length) {
+      const r = RODZAJE.find(x => x.id === istniejace[0].rodzaj)?.label || 'bazie'
+      setBlad(`"${nazwa}" już istnieje (${r.toLowerCase()})`)
       setSaving(false); return
     }
 
-    let rows = []
-    if (tabela === 'dania') {
-      rows = skladniki.map((sk, i) => ({
-        'Danie': nazwa.trim(),
-        'Składnik': sk.nazwa,
-        'Ilość na 1 porcję': sk.ilosc || '-',
-        'Jednostka': sk.jednostka,
-        'Kategoria': sk.kategoria,
-        'TYP': i === 0 ? typ : null,
-      }))
-    } else if (tabela === 'dodatki') {
-      rows = skladniki.map(sk => ({
-        'Dodatek': nazwa.trim(),
-        'Składnik': sk.nazwa, 'Ilość na porcję': sk.ilosc || '-',
-        'Jednostka': sk.jednostka, 'Kategoria': sk.kategoria,
-      }))
-    } else {
-      rows = skladniki.map(sk => ({
-        'Surówka': nazwa.trim(),
-        'Składnik': sk.nazwa, 'Ilość na porcję': sk.ilosc || '-',
-        'Jednostka': sk.jednostka, 'Kategoria': sk.kategoria,
-      }))
+    const przepisTekst = kroki.length > 0
+      ? kroki.map((k, i) => `${i + 1}. ${k}`).join('\n')
+      : null
+
+    const wspolne = {
+      'Danie': nazwa.trim(),
+      'Przepis': przepisTekst,
+      'rodzaj': rodzaj,
+      'czas_minuty': czasMinuty ? parseInt(czasMinuty, 10) || null : null,
+      'porcje_bazowe': porcjeBazowe ? parseInt(porcjeBazowe, 10) || 4 : 4,
+      'notatki': notatki.trim() || null,
     }
 
-    const { error } = await supabase.from(tabela).insert(rows)
-    if (error) setBlad('Błąd zapisu: ' + error.message)
-    else onZapisano(nazwa)
-    setSaving(false)
+    const rows = skladniki.map((sk, i) => ({
+      ...wspolne,
+      'Składnik': sk.nazwa,
+      'Ilość na 1 porcję': sk.ilosc || '-',
+      'Jednostka': sk.jednostka,
+      'Kategoria': sk.kategoria,
+      // TYP zapisujemy tylko dla głównych rodzajów, w pierwszym wierszu
+      'TYP': pokazTyp && i === 0 ? typ : null,
+    }))
+
+    const { error } = await supabase.from('dania').insert(rows)
+    if (error) {
+      setBlad('Błąd zapisu: ' + error.message)
+      setSaving(false)
+    } else {
+      onZapisano(nazwa)
+    }
   }
 
   return (
@@ -122,29 +172,22 @@ export default function DodajDanie({ onBack, onZapisano }) {
       <div style={s.container}>
         <button style={s.back} onClick={onBack}>← Wróć</button>
 
-        {/* Header */}
         <header style={s.header}>
           <div style={s.eyebrow}>NOWY WPIS</div>
           <h1 style={s.title}>
-            {tabela === 'dania' ? <>Dodaj <em style={s.italic}>danie</em></>
-              : tabela === 'dodatki' ? <>Dodaj <em style={s.italic}>dodatek</em></>
-              : <>Dodaj <em style={s.italic}>surówkę</em></>}
+            Dodaj <em style={s.italic}>{rodzajCfg.label.toLowerCase()}</em>
           </h1>
         </header>
 
-        {/* Typ wpisu */}
+        {/* Wybór rodzaju — grid 3×2 */}
         <section style={s.section}>
           <label style={s.label}>Co dodajesz?</label>
-          <div style={s.segRow}>
-            {[
-              { val: 'dania', label: 'Danie' },
-              { val: 'dodatki', label: 'Dodatek' },
-              { val: 'surowki', label: 'Surówka' },
-            ].map(b => (
-              <button key={b.val}
-                style={{ ...s.segBtn, ...(tabela === b.val ? s.segBtnOn : {}) }}
-                onClick={() => setTabela(b.val)}>
-                {b.label}
+          <div style={s.rodzajeGrid}>
+            {RODZAJE.map(r => (
+              <button key={r.id}
+                style={{ ...s.rodzajBtn, ...(rodzaj === r.id ? s.rodzajBtnOn : {}) }}
+                onClick={() => setRodzaj(r.id)}>
+                {r.label}
               </button>
             ))}
           </div>
@@ -155,14 +198,46 @@ export default function DodajDanie({ onBack, onZapisano }) {
           <label style={s.label}>Nazwa</label>
           <input
             style={s.input}
-            placeholder={tabela === 'dania' ? 'np. Makaron z dynią i szałwią' : 'np. Surówka z marchewki'}
+            placeholder={rodzajCfg.placeholder}
             value={nazwa}
             onChange={e => setNazwa(e.target.value)}
           />
         </section>
 
-        {/* Typ dania (tylko dla dań) */}
-        {tabela === 'dania' && (
+        {/* Czas + porcje w jednym wierszu */}
+        <section style={s.section}>
+          <label style={s.label}>Czas i porcje</label>
+          <div style={s.row2}>
+            <div style={{ flex: 1 }}>
+              <input
+                style={s.input}
+                placeholder="Czas (min)"
+                type="number"
+                inputMode="numeric"
+                min="1"
+                value={czasMinuty}
+                onChange={e => setCzasMinuty(e.target.value)}
+              />
+            </div>
+            <div style={{ flex: 1 }}>
+              <input
+                style={s.input}
+                placeholder="Porcje"
+                type="number"
+                inputMode="numeric"
+                min="1"
+                value={porcjeBazowe}
+                onChange={e => setPorcjeBazowe(e.target.value)}
+              />
+            </div>
+          </div>
+          <div style={s.hint}>
+            Czas przyrządzania to opcja — dla filtra „do 30 minut". Porcje określają, ile osób wykarmi ten przepis bazowo.
+          </div>
+        </section>
+
+        {/* Typ dania (tylko dla głównych rodzajów) */}
+        {pokazTyp && (
           <section style={s.section}>
             <label style={s.label}>Typ dania</label>
             <div style={s.segRow}>
@@ -179,8 +254,8 @@ export default function DodajDanie({ onBack, onZapisano }) {
             </div>
             <div style={s.hint}>
               {typ === 'samodzielne'
-                ? 'Danie kompletne — nie wymaga dodatku ani surówki w planie.'
-                : 'Do tego dania w planie kalendarza dobierzesz dodatek i surówkę.'}
+                ? 'Posiłek kompletny — nie wymaga dodatku ani surówki w planie.'
+                : 'Do tego posiłku w kalendarzu dobierzesz dodatek i surówkę.'}
             </div>
           </section>
         )}
@@ -254,12 +329,71 @@ export default function DodajDanie({ onBack, onZapisano }) {
                     <div style={s.skNazwa}>{sk.nazwa}</div>
                     <div style={s.skMeta}>{sk.ilosc || '—'} {sk.jednostka}</div>
                   </div>
-                  <button style={s.btnUsun} onClick={() => usunSkladnik(i)}>✕</button>
+                  <button style={s.btnUsun} onClick={() => usunSkladnik(i)} aria-label="Usuń">✕</button>
                 </div>
               ))}
             </div>
           </section>
         )}
+
+        {/* Kroki przepisu — NOWE */}
+        <section style={s.section}>
+          <div style={s.skladnikiHeader}>
+            <label style={s.label}>Kroki przepisu</label>
+            {kroki.length > 0 && <span style={s.badge}>{kroki.length}</span>}
+          </div>
+
+          {kroki.length > 0 && (
+            <div style={{ ...s.skladnikiLista, marginBottom: 10 }}>
+              {kroki.map((krok, i) => (
+                <div key={i} style={s.krokItem}>
+                  <span style={s.krokNr}>{String(i + 1).padStart(2, '0')}</span>
+                  <textarea
+                    style={s.krokTextarea}
+                    value={krok}
+                    rows={2}
+                    onChange={e => edytujKrok(i, e.target.value)}
+                  />
+                  <div style={s.krokAkcje}>
+                    <button style={s.btnMini} onClick={() => przesunKrok(i, -1)} aria-label="W górę">↑</button>
+                    <button style={s.btnMini} onClick={() => przesunKrok(i, 1)} aria-label="W dół">↓</button>
+                    <button style={s.btnUsun} onClick={() => usunKrok(i)} aria-label="Usuń">✕</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <textarea
+            style={{ ...s.input, minHeight: 60, resize: 'vertical', fontFamily: fonts.sans }}
+            placeholder={'Opisz kolejny krok, np. „Smaż na średnim ogniu 4 minuty…"'}
+            value={nowyKrok}
+            onChange={e => setNowyKrok(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+                e.preventDefault()
+                dodajKrok()
+              }
+            }}
+          />
+          <button style={s.btnDodajSkl} onClick={dodajKrok}>
+            + Dodaj krok
+          </button>
+          <div style={s.hint}>
+            Wpisz czas w kroku („smaż 4 minuty", „piecz 30 minut") — w trybie gotowania pojawi się przy nim stoper.
+          </div>
+        </section>
+
+        {/* Notatki — NOWE */}
+        <section style={s.section}>
+          <label style={s.label}>Notatki (opcjonalne)</label>
+          <textarea
+            style={{ ...s.input, minHeight: 70, resize: 'vertical', fontFamily: fonts.sans }}
+            placeholder="Twoje uwagi, modyfikacje, wskazówki, czego unikać…"
+            value={notatki}
+            onChange={e => setNotatki(e.target.value)}
+          />
+        </section>
 
         {blad && <div style={s.blad}>{blad}</div>}
 
@@ -296,7 +430,23 @@ const s = {
     marginBottom: 10,
   },
 
-  // Segmented control
+  // Rodzaje — 3×2 grid
+  rodzajeGrid: {
+    display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6,
+    padding: 4, background: t.surfaceAlt, borderRadius: 14,
+  },
+  rodzajBtn: {
+    padding: '11px 6px', border: 'none', borderRadius: 10,
+    background: 'transparent', color: t.mute,
+    fontFamily: fonts.sans, fontSize: 13, fontWeight: 500, cursor: 'pointer',
+    transition: 'all .15s ease',
+  },
+  rodzajBtnOn: {
+    background: t.surface, color: t.text, fontWeight: 600,
+    boxShadow: '0 1px 3px rgba(74,55,40,.1)',
+  },
+
+  // Segmented control (Typ dania)
   segRow: { display: 'flex', gap: 4, padding: 3, background: t.surfaceAlt, borderRadius: 12 },
   segBtn: {
     flex: 1, padding: '9px 8px', border: 'none', borderRadius: 9,
@@ -335,12 +485,12 @@ const s = {
 
   btnDodajSkl: {
     width: '100%', padding: '12px', marginTop: 4,
-    background: t.accentSoft, color: t.accent,
+    background: t.accentSoft, color: t.accentDark,
     border: 'none', borderRadius: 12,
     fontFamily: fonts.sans, fontSize: 14, fontWeight: 600, cursor: 'pointer',
   },
 
-  // Ingredients list
+  // Składniki list
   skladnikiHeader: { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 },
   badge: {
     fontFamily: fonts.sans, fontSize: 10.5, fontWeight: 700, color: t.mute,
@@ -361,6 +511,32 @@ const s = {
   btnUsun: {
     background: 'none', border: 'none',
     color: t.muteLight, fontSize: 14, cursor: 'pointer', padding: '4px 8px',
+  },
+
+  // Kroki przepisu
+  krokItem: {
+    display: 'flex', alignItems: 'flex-start', gap: 10,
+    padding: '10px 12px', borderBottom: `0.5px solid ${t.border}`,
+  },
+  krokNr: {
+    fontFamily: fonts.serif, fontSize: 18, color: t.accent,
+    fontStyle: 'italic', fontVariantNumeric: 'tabular-nums', minWidth: 26,
+    paddingTop: 6, lineHeight: 1,
+  },
+  krokTextarea: {
+    flex: 1, padding: '8px 10px',
+    fontFamily: fonts.sans, fontSize: 13.5, color: t.text, lineHeight: 1.5,
+    background: t.surfaceWash, border: `0.5px solid ${t.border}`,
+    borderRadius: 8, outline: 'none', boxSizing: 'border-box',
+    resize: 'vertical', minHeight: 36,
+  },
+  krokAkcje: {
+    display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'center',
+  },
+  btnMini: {
+    background: t.surfaceAlt, border: 'none', borderRadius: 6,
+    padding: '3px 7px', fontSize: 11, cursor: 'pointer',
+    color: t.text, fontFamily: fonts.sans, lineHeight: 1,
   },
 
   blad: {

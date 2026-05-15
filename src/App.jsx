@@ -78,6 +78,7 @@ function App() {
   const [wybraneD, setWybraneD] = useState(null)
   const [dodajDanie, setDodajDanie] = useState(false)
   const [ekran, setEkran] = useState(null) // 'ustawienia' | 'admin' | null
+  const [homeRefresh, setHomeRefresh] = useState(0)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -90,11 +91,17 @@ function App() {
     return () => subscription.unsubscribe()
   }, [])
 
-  // Ustawienia (porcje itd.) — działa tylko jak user jest zalogowany
   const { ustawienia, zapisz: zapiszUstawienia } = useUstawienia(user)
-
-  // Analytics — automatyczne śledzenie zakładek
   useTabAnalytics(user, user ? tab : null)
+
+  // Bumpuje refresh dla Home gdy wracamy z innej zakładki
+  // (np. po dodaniu czegoś w planerze, zakupach, edycji dania)
+  function zmienTab(nowyTab) {
+    if (nowyTab === 'home' && tab !== 'home') {
+      setHomeRefresh(k => k + 1)
+    }
+    setTab(nowyTab)
+  }
 
   if (loading) return (
     <div style={{ textAlign: 'center', padding: 60, fontFamily: 'sans-serif' }}>
@@ -105,8 +112,6 @@ function App() {
   if (!user) return <Login />
 
   const jestAdmin = ADMIN_EMAILE.includes(user.email)
-
-  // Pomocnik dla dzieci
   const sledzAkcje = (wartosc, szczegoly) => sledz(user, 'akcja', wartosc, szczegoly)
 
   // ── Widoki overlay (bez navbara) ──
@@ -126,10 +131,14 @@ function App() {
     return <Admin onBack={() => setEkran('ustawienia')} />
   }
 
+  // Wybór dania (z Przepisów lub z sugestii na Home) — po powrocie odśwież Home
   if (wybraneD) return (
     <DanieDetail
       nazwa={wybraneD}
-      onBack={() => setWybraneD(null)}
+      onBack={() => {
+        setWybraneD(null)
+        setHomeRefresh(k => k + 1)
+      }}
       user={user}
       sledz={sledzAkcje}
     />
@@ -145,18 +154,20 @@ function App() {
   )
 
   return (
-    <div style={{ paddingBottom: 80, minHeight: '100vh', background: '#f8f9fa' }}>
+    <div style={{ paddingBottom: 80, minHeight: '100vh', background: '#FAF6F0' }}>
       {tab === 'home' && (
         <Home
           user={user}
-          onTabChange={setTab}
+          onTabChange={zmienTab}
           onUstawienia={() => setEkran('ustawienia')}
+          onSelectDanie={setWybraneD}
+          refreshKey={homeRefresh}
         />
       )}
       {tab === 'planer' && (
         <Kalendarz
           user={user}
-          onBack={() => setTab('home')}
+          onBack={() => zmienTab('home')}
           domyslnePorcje={ustawienia?.domyslne_porcje ?? 1}
           sledz={sledzAkcje}
         />
@@ -166,18 +177,18 @@ function App() {
           onSelect={setWybraneD}
           user={user}
           onDodaj={() => setDodajDanie(true)}
-          onBack={() => setTab('home')}
+          onBack={() => zmienTab('home')}
         />
       )}
       {tab === 'zakupy' && (
         <ListaZakupow
           user={user}
-          onBack={() => setTab('home')}
+          onBack={() => zmienTab('home')}
           domyslnePorcje={ustawienia?.domyslne_porcje ?? 1}
           sledz={sledzAkcje}
         />
       )}
-      <NavBar aktywny={tab} onChange={setTab} />
+      <NavBar aktywny={tab} onChange={zmienTab} />
       <IOSInstallBaner />
     </div>
   )
