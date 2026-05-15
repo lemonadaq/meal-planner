@@ -165,13 +165,14 @@ function App() {
         />
       )}
       {tab === 'planer' && (
-        <Kalendarz
-          user={user}
-          onBack={() => zmienTab('home')}
-          domyslnePorcje={ustawienia?.domyslne_porcje ?? 1}
-          sledz={sledzAkcje}
-        />
-      )}
+  <Kalendarz
+    user={user}
+    onBack={() => zmienTab('home')}
+    domyslnePorcje={ustawienia?.domyslne_porcje ?? 1}
+    sledz={sledzAkcje}
+    onSelectDanie={setWybraneD}   // ← TA LINIJKA
+  />
+)}
       {tab === 'przepisy' && (
         <Dania
           onSelect={setWybraneD}

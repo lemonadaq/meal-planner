@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { supabase } from '../supabase'
 import { t, fonts, ui, avatarBg } from '../theme'
+import { formatDataLocal as formatData } from '../dataHelpers'
 
 function getPowitanie() {
   const h = new Date().getHours()
@@ -10,7 +11,7 @@ function getPowitanie() {
   return 'Dobranoc'
 }
 
-function formatData(d) { return d.toISOString().split('T')[0] }
+// formatData z dataHelpers
 function dataPlus(d, dni) {
   const n = new Date(d); n.setDate(n.getDate() + dni); return n
 }

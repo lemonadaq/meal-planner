@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../supabase'
 import { t, fonts, ui } from '../theme'
+import { formatDataLocal as formatData } from '../dataHelpers'
 
 function getKolor(nazwa) {
   const kolory = ['#F4E2D8','#E7E9D5','#EFE0DA','#E4E2D4','#F0DDC9','#E0E3D6','#F4D9CC','#DCE5D2']
@@ -42,7 +43,7 @@ function getPoniedzialek(offset = 0) {
   d.setHours(0, 0, 0, 0)
   return d
 }
-function formatData(date) { return date.toISOString().split('T')[0] }
+// formatData z dataHelpers
 function formatKrotkoMies(date) { return date.toLocaleDateString('pl-PL', { day: 'numeric', month: 'short' }) }
 
 export default function DanieDetail({ nazwa: nazwaProp, onBack, user, sledz }) {

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { supabase } from '../supabase'
 import { t, fonts, ui } from '../theme'
+import { formatDataLocal } from '../dataHelpers'
 
 export default function ListaZakupow({ user, onBack, domyslnePorcje = 1, sledz }) {
   const [lista, setLista] = useState([])
@@ -10,6 +11,7 @@ export default function ListaZakupow({ user, onBack, domyslnePorcje = 1, sledz }
 
   const [toast, setToast] = useState(null)
   const toastTimer = useRef(null)
+  const storageKey = `lista_zakupow_${user.id}`
 
   function pokazToast(msg, onUndo) {
     if (toastTimer.current) clearTimeout(toastTimer.current)
@@ -24,10 +26,10 @@ export default function ListaZakupow({ user, onBack, domyslnePorcje = 1, sledz }
     const day = d.getDay() || 7
     d.setDate(d.getDate() - day + 1)
     d.setHours(0, 0, 0, 0)
-    const poniedzialek = d.toISOString().split('T')[0]
+    const poniedzialek = formatDataLocal(d)
     const niedziela = new Date(d)
     niedziela.setDate(niedziela.getDate() + 6)
-    const niedzielaStr = niedziela.toISOString().split('T')[0]
+    const niedzielaStr = formatDataLocal(niedziela)
 
     const { data: planData } = await supabase
       .from('kalendarz')
@@ -37,7 +39,11 @@ export default function ListaZakupow({ user, onBack, domyslnePorcje = 1, sledz }
       .lte('data', niedzielaStr)
 
     if (!planData || planData.length === 0) {
-      setLista([]); setOdznaczone(new Set()); setHistoriaIds({}); setLoading(false); return
+      setLista([])
+setOdznaczone(new Set())
+localStorage.removeItem(storageKey)
+setLoading(false)
+return
     }
 
     // Mapy: nazwa_dania -> suma porcji (z uwzględnieniem mnożników z kalendarza)
@@ -128,23 +134,41 @@ export default function ListaZakupow({ user, onBack, domyslnePorcje = 1, sledz }
     const posortowane = Object.values(skladnikiMap).sort((a, b) =>
       a.kategoria.localeCompare(b.kategoria) || a.skladnik.localeCompare(b.skladnik)
     )
-    setLista(posortowane)
-    setOdznaczone(new Set())
-    setHistoriaIds({})
-    setLoading(false)
+const zapisane = JSON.parse(localStorage.getItem(storageKey) || '[]')
+const zapisaneSet = new Set(zapisane)
+
+const aktualneKlucze = new Set(posortowane.map(i => i.klucz))
+
+const odtworzone = new Set(
+  [...zapisaneSet].filter(klucz => aktualneKlucze.has(klucz))
+)
+
+setLista(posortowane)
+setOdznaczone(odtworzone)
+setLoading(false)
   }, [user.id, domyslnePorcje])
 
   useEffect(() => { generuj() }, [generuj])
-
+function zapiszStanOdznaczenia(nowySet) {
+  localStorage.setItem(storageKey, JSON.stringify([...nowySet]))
+}
   async function toggle(item) {
     const klucz = item.klucz
     const byloOdznaczone = odznaczone.has(klucz)
 
     setOdznaczone(prev => {
-      const n = new Set(prev)
-      if (byloOdznaczone) n.delete(klucz); else n.add(klucz)
-      return n
-    })
+  const n = new Set(prev)
+
+  if (byloOdznaczone) {
+    n.delete(klucz)
+  } else {
+    n.add(klucz)
+  }
+
+  zapiszStanOdznaczenia(n)
+
+  return n
+})
 
     if (byloOdznaczone) {
       const histId = historiaIds[klucz]
@@ -170,7 +194,12 @@ export default function ListaZakupow({ user, onBack, domyslnePorcje = 1, sledz }
       }
 
       pokazToast(`Kupione: ${item.skladnik}`, async () => {
-        setOdznaczone(prev => { const n = new Set(prev); n.delete(klucz); return n })
+        setOdznaczone(prev => {
+  const n = new Set(prev)
+  n.delete(klucz)
+  zapiszStanOdznaczenia(n)
+  return n
+})
         if (data?.id) {
           await supabase.from('zakupy_historia').delete().eq('id', data.id)
           setHistoriaIds(prev => { const n = { ...prev }; delete n[klucz]; return n })
@@ -185,6 +214,7 @@ export default function ListaZakupow({ user, onBack, domyslnePorcje = 1, sledz }
     if (snapshot.odznaczone.size === 0) return
 
     setOdznaczone(new Set())
+    localStorage.removeItem(storageKey)
     const ids = Object.values(snapshot.historiaIds)
     if (ids.length > 0) {
       await supabase.from('zakupy_historia').delete().in('id', ids)
@@ -193,6 +223,7 @@ export default function ListaZakupow({ user, onBack, domyslnePorcje = 1, sledz }
 
     pokazToast(`Wyczyszczono ${snapshot.odznaczone.size} z koszyka`, async () => {
       setOdznaczone(snapshot.odznaczone)
+      zapiszStanOdznaczenia(snapshot.odznaczone)
       const itemsDoOdtworzenia = lista.filter(i => snapshot.odznaczone.has(i.klucz))
       if (itemsDoOdtworzenia.length > 0) {
         const { data } = await supabase
