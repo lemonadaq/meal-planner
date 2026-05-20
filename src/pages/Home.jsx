@@ -275,9 +275,9 @@ function DzienSekcja({ tytul, plan, onSlotClick, wyrozniony = true }) {
               <div style={s.posilekInfo}>
                 <div style={s.posilekNazwa}>{posilek}</div>
                 <div style={s.posilekDanie}>{wpis.danie}</div>
-                {wpis.dodatek && (
+                {Array.isArray(wpis.dodatki) && wpis.dodatki.filter(d => d?.nazwa).length > 0 && (
                   <div style={s.posilekExtra}>
-                    z {wpis.dodatek}{wpis.surowka ? ` · ${wpis.surowka}` : ''}
+                    z {wpis.dodatki.filter(d => d?.nazwa).map(d => d.nazwa).join(' · ')}
                   </div>
                 )}
               </div>

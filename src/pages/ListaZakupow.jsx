@@ -1,13 +1,31 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { supabase } from '../supabase'
 import { t, fonts, ui } from '../theme'
 import { formatDataLocal } from '../dataHelpers'
 
+const KATEGORIE = [
+  { id: '1_Warzywa i owoce',   label: 'Warzywa i owoce' },
+  { id: '2_Mięso i ryby',      label: 'Mięso i ryby' },
+  { id: '3_Nabiał',            label: 'Nabiał' },
+  { id: '4_Pieczywo',          label: 'Pieczywo' },
+  { id: '5_Produkty sypkie',   label: 'Produkty sypkie' },
+  { id: '6_Konserwy i słoiki', label: 'Konserwy i słoiki' },
+  { id: '7_Przyprawy',         label: 'Przyprawy' },
+  { id: '8_Inne',              label: 'Inne (papier, chemia, itp.)' },
+]
+
+const JEDNOSTKI = ['', 'szt.', 'opak.', 'g', 'kg', 'ml', 'l', 'pęczek']
+
 export default function ListaZakupow({ user, onBack, domyslnePorcje = 1, sledz }) {
   const [lista, setLista] = useState([])
+  const [wlasne, setWlasne] = useState([]) // z tabeli zakupy_wlasne
   const [odznaczone, setOdznaczone] = useState(new Set())
   const [loading, setLoading] = useState(true)
   const [historiaIds, setHistoriaIds] = useState({})
+
+  const [pokazDodaj, setPokazDodaj] = useState(false)
+  const [edycjaWlasnego, setEdycjaWlasnego] = useState(null)
+  const [trybSklepu, setTrybSklepu] = useState(false)
 
   const [toast, setToast] = useState(null)
   const toastTimer = useRef(null)
@@ -19,6 +37,7 @@ export default function ListaZakupow({ user, onBack, domyslnePorcje = 1, sledz }
     toastTimer.current = setTimeout(() => setToast(null), 3500)
   }
 
+  // ── Generowanie listy z planu + ładowanie własnych ──
   const generuj = useCallback(async () => {
     setLoading(true)
 
@@ -31,41 +50,40 @@ export default function ListaZakupow({ user, onBack, domyslnePorcje = 1, sledz }
     niedziela.setDate(niedziela.getDate() + 6)
     const niedzielaStr = formatDataLocal(niedziela)
 
-    const { data: planData } = await supabase
-      .from('kalendarz')
-      .select('*')
-      .eq('user_id', user.id)
-      .gte('data', poniedzialek)
-      .lte('data', niedzielaStr)
+    const [{ data: planData }, { data: wlasneData }] = await Promise.all([
+      supabase.from('kalendarz').select('*')
+        .eq('user_id', user.id)
+        .gte('data', poniedzialek)
+        .lte('data', niedzielaStr),
+      supabase.from('zakupy_wlasne').select('*')
+        .eq('user_id', user.id)
+        .order('created_at'),
+    ])
 
-    if (!planData || planData.length === 0) {
-      setLista([])
-setOdznaczone(new Set())
-localStorage.removeItem(storageKey)
-setLoading(false)
-return
+    // Wyczyść jednorazowe kupione własne produkty (z poprzednich tygodni)
+    const dotKupione = (wlasneData || []).filter(w => !w.powtarzaj && w.kupione)
+    if (dotKupione.length > 0) {
+      await supabase.from('zakupy_wlasne').delete().in('id', dotKupione.map(w => w.id))
     }
+    const aktywneWlasne = (wlasneData || []).filter(w => !(w.kupione && !w.powtarzaj))
+    setWlasne(aktywneWlasne)
 
-    // Mapy: nazwa_dania -> suma porcji (z uwzględnieniem mnożników z kalendarza)
-    const porcjeDan = {}
-    const porcjeDodatkow = {}
-    const porcjeSurowek = {}
-    // Wszystkie podmiany z tygodnia (oryginał -> zamiennik). Jeśli różne wpisy
-    // mają różne podmiany, ostatnia wygrywa — bo i tak agregujemy po nazwie.
+    // Zbieram porcje
+    const porcjeWszystkich = {}
     const globalnePodmiany = {}
 
-    planData.forEach(p => {
+    ;(planData || []).forEach(p => {
       const porcje = p.porcje != null ? +p.porcje : +domyslnePorcje
-      if (p.danie)   porcjeDan[p.danie]       = (porcjeDan[p.danie]       || 0) + porcje
-      if (p.dodatek) porcjeDodatkow[p.dodatek] = (porcjeDodatkow[p.dodatek] || 0) + porcje
-      if (p.surowka) porcjeSurowek[p.surowka]  = (porcjeSurowek[p.surowka]  || 0) + porcje
-
+      if (p.danie) porcjeWszystkich[p.danie] = (porcjeWszystkich[p.danie] || 0) + porcje
+      const dodatkiTab = Array.isArray(p.dodatki) ? p.dodatki : []
+      dodatkiTab.forEach(slot => {
+        if (slot?.nazwa) porcjeWszystkich[slot.nazwa] = (porcjeWszystkich[slot.nazwa] || 0) + porcje
+      })
       const pod = p.podmiany || {}
       Object.entries(pod).forEach(([k, v]) => { if (v) globalnePodmiany[k] = v })
     })
 
     const skladnikiMap = {}
-
     function dodaj(skladnik, ilosc, jednostka, kategoria, mnoznik) {
       if (!skladnik) return
       const finalny = globalnePodmiany[skladnik] || skladnik
@@ -73,60 +91,40 @@ return
       const klucz = `${finalny}||${jednostka || ''}`
 
       if (!iloscNum || isNaN(iloscNum)) {
-        // składnik "do smaku" / "garść"
         if (!skladnikiMap[klucz]) {
           skladnikiMap[klucz] = {
             skladnik: finalny, ilosc: null,
-            iloscOryginalna: ilosc,
-            jednostka, kategoria: kategoria || '8_Inne', klucz,
+            iloscOryginalna: ilosc, jednostka,
+            kategoria: kategoria || '8_Inne', klucz,
             podmieniono: !!globalnePodmiany[skladnik],
+            zrodlo: 'plan',
           }
         }
         return
       }
-
       const realnaIlosc = iloscNum * (mnoznik || 1)
       if (skladnikiMap[klucz]) {
         if (skladnikiMap[klucz].ilosc != null) skladnikiMap[klucz].ilosc += realnaIlosc
         else skladnikiMap[klucz].ilosc = realnaIlosc
       } else {
         skladnikiMap[klucz] = {
-          skladnik: finalny, ilosc: realnaIlosc,
-          jednostka, kategoria: kategoria || '8_Inne', klucz,
+          skladnik: finalny, ilosc: realnaIlosc, jednostka,
+          kategoria: kategoria || '8_Inne', klucz,
           podmieniono: !!globalnePodmiany[skladnik],
+          zrodlo: 'plan',
         }
       }
     }
 
-    // Dania
-    const nazwyDan = Object.keys(porcjeDan)
-    if (nazwyDan.length > 0) {
-      const { data: daniaData } = await supabase.from('dania').select('*').in('"Danie"', nazwyDan)
+    const wszystkieNazwy = Object.keys(porcjeWszystkich)
+    if (wszystkieNazwy.length > 0) {
+      const { data: daniaData } = await supabase.from('dania').select('*').in('"Danie"', wszystkieNazwy)
       ;(daniaData || []).forEach(r => {
-        const mnoznik = porcjeDan[r['Danie']] || 1
+        const mnoznik = porcjeWszystkich[r['Danie']] || 1
         dodaj(r['Składnik'], r['Ilość na 1 porcję'], r['Jednostka'], r['Kategoria'], mnoznik)
       })
     }
-    // Dodatki
-    const nazwyDodatkow = Object.keys(porcjeDodatkow)
-    if (nazwyDodatkow.length > 0) {
-      const { data: dodatkiData } = await supabase.from('dodatki').select('*').in('"Dodatek"', nazwyDodatkow)
-      ;(dodatkiData || []).forEach(r => {
-        const mnoznik = porcjeDodatkow[r['Dodatek']] || 1
-        dodaj(r['Składnik'], r['Ilość na porcję'], r['Jednostka'], r['Kategoria'], mnoznik)
-      })
-    }
-    // Surówki
-    const nazwySurowek = Object.keys(porcjeSurowek)
-    if (nazwySurowek.length > 0) {
-      const { data: surowkiData } = await supabase.from('surowki').select('*').in('"Surówka"', nazwySurowek)
-      ;(surowkiData || []).forEach(r => {
-        const mnoznik = porcjeSurowek[r['Surówka']] || 1
-        dodaj(r['Składnik'], r['Ilość na porcję'], r['Jednostka'], r['Kategoria'], mnoznik)
-      })
-    }
 
-    // Zaokrąglij sumy do 2 miejsc po przecinku, żeby nie pokazywać 1.0000001
     Object.values(skladnikiMap).forEach(item => {
       if (item.ilosc != null) item.ilosc = Math.round(item.ilosc * 100) / 100
     })
@@ -134,41 +132,35 @@ return
     const posortowane = Object.values(skladnikiMap).sort((a, b) =>
       a.kategoria.localeCompare(b.kategoria) || a.skladnik.localeCompare(b.skladnik)
     )
-const zapisane = JSON.parse(localStorage.getItem(storageKey) || '[]')
-const zapisaneSet = new Set(zapisane)
 
-const aktualneKlucze = new Set(posortowane.map(i => i.klucz))
+    // Odtwórz stan odznaczonych z localStorage (tylko te które wciąż są na liście)
+    const zapisane = JSON.parse(localStorage.getItem(storageKey) || '[]')
+    const aktualneKlucze = new Set(posortowane.map(i => i.klucz))
+    const odtworzone = new Set([...zapisane].filter(klucz => aktualneKlucze.has(klucz)))
 
-const odtworzone = new Set(
-  [...zapisaneSet].filter(klucz => aktualneKlucze.has(klucz))
-)
-
-setLista(posortowane)
-setOdznaczone(odtworzone)
-setLoading(false)
-  }, [user.id, domyslnePorcje])
+    setLista(posortowane)
+    setOdznaczone(odtworzone)
+    setLoading(false)
+  }, [user.id, domyslnePorcje, storageKey])
 
   useEffect(() => { generuj() }, [generuj])
-function zapiszStanOdznaczenia(nowySet) {
-  localStorage.setItem(storageKey, JSON.stringify([...nowySet]))
-}
+
+  function zapiszStanOdznaczenia(nowySet) {
+    localStorage.setItem(storageKey, JSON.stringify([...nowySet]))
+  }
+
+  // ── Toggle zwykłego skladnika (z planu) ──
   async function toggle(item) {
     const klucz = item.klucz
     const byloOdznaczone = odznaczone.has(klucz)
 
     setOdznaczone(prev => {
-  const n = new Set(prev)
-
-  if (byloOdznaczone) {
-    n.delete(klucz)
-  } else {
-    n.add(klucz)
-  }
-
-  zapiszStanOdznaczenia(n)
-
-  return n
-})
+      const n = new Set(prev)
+      if (byloOdznaczone) n.delete(klucz)
+      else n.add(klucz)
+      zapiszStanOdznaczenia(n)
+      return n
+    })
 
     if (byloOdznaczone) {
       const histId = historiaIds[klucz]
@@ -177,29 +169,20 @@ function zapiszStanOdznaczenia(nowySet) {
         setHistoriaIds(prev => { const n = { ...prev }; delete n[klucz]; return n })
       }
     } else {
-      const { data } = await supabase
-        .from('zakupy_historia')
-        .insert({
-          user_id: user.id,
-          skladnik: item.skladnik,
-          ilosc: item.ilosc,
-          jednostka: item.jednostka,
-          kategoria: item.kategoria,
-        })
-        .select()
-        .single()
+      const { data } = await supabase.from('zakupy_historia').insert({
+        user_id: user.id, skladnik: item.skladnik,
+        ilosc: item.ilosc, jednostka: item.jednostka,
+        kategoria: item.kategoria,
+      }).select().single()
       if (data) {
         setHistoriaIds(prev => ({ ...prev, [klucz]: data.id }))
         sledz?.('kupione', { skladnik: item.skladnik })
       }
-
       pokazToast(`Kupione: ${item.skladnik}`, async () => {
         setOdznaczone(prev => {
-  const n = new Set(prev)
-  n.delete(klucz)
-  zapiszStanOdznaczenia(n)
-  return n
-})
+          const n = new Set(prev); n.delete(klucz)
+          zapiszStanOdznaczenia(n); return n
+        })
         if (data?.id) {
           await supabase.from('zakupy_historia').delete().eq('id', data.id)
           setHistoriaIds(prev => { const n = { ...prev }; delete n[klucz]; return n })
@@ -209,6 +192,55 @@ function zapiszStanOdznaczenia(nowySet) {
     }
   }
 
+  // ── Toggle własnego produktu (bezpośrednio w zakupy_wlasne) ──
+  async function toggleWlasny(item) {
+    const noweKupione = !item.kupione
+    const { data } = await supabase.from('zakupy_wlasne')
+      .update({ kupione: noweKupione })
+      .eq('id', item.id).select().single()
+    if (data) {
+      setWlasne(prev => prev.map(w => w.id === item.id ? data : w))
+      if (noweKupione) {
+        pokazToast(`Kupione: ${item.nazwa}`, async () => {
+          await supabase.from('zakupy_wlasne').update({ kupione: false }).eq('id', item.id)
+          setWlasne(prev => prev.map(w => w.id === item.id ? { ...w, kupione: false } : w))
+          setToast(null)
+        })
+      }
+    }
+  }
+
+  // ── Dodawanie / edycja własnego produktu ──
+  async function zapiszWlasny(dane) {
+    if (edycjaWlasnego) {
+      const { data } = await supabase.from('zakupy_wlasne')
+        .update(dane).eq('id', edycjaWlasnego.id).select().single()
+      if (data) setWlasne(prev => prev.map(w => w.id === data.id ? data : w))
+      pokazToast(`Zmieniono: ${dane.nazwa}`)
+    } else {
+      const { data } = await supabase.from('zakupy_wlasne')
+        .insert({ ...dane, user_id: user.id, kupione: false })
+        .select().single()
+      if (data) setWlasne(prev => [...prev, data])
+      pokazToast(`Dodano: ${dane.nazwa}`)
+    }
+    setEdycjaWlasnego(null)
+    setPokazDodaj(false)
+  }
+
+  async function usunWlasny(item) {
+    await supabase.from('zakupy_wlasne').delete().eq('id', item.id)
+    setWlasne(prev => prev.filter(w => w.id !== item.id))
+    pokazToast(`Usunięto: ${item.nazwa}`, async () => {
+      // Przywróć (bez id, bo będzie nowy)
+      const { id, created_at, ...rest } = item
+      const { data } = await supabase.from('zakupy_wlasne').insert(rest).select().single()
+      if (data) setWlasne(prev => [...prev, data])
+      setToast(null)
+    })
+    setEdycjaWlasnego(null)
+  }
+
   async function zacznijOdNowa() {
     const snapshot = { odznaczone: new Set(odznaczone), historiaIds: { ...historiaIds } }
     if (snapshot.odznaczone.size === 0) return
@@ -216,9 +248,7 @@ function zapiszStanOdznaczenia(nowySet) {
     setOdznaczone(new Set())
     localStorage.removeItem(storageKey)
     const ids = Object.values(snapshot.historiaIds)
-    if (ids.length > 0) {
-      await supabase.from('zakupy_historia').delete().in('id', ids)
-    }
+    if (ids.length > 0) await supabase.from('zakupy_historia').delete().in('id', ids)
     setHistoriaIds({})
 
     pokazToast(`Wyczyszczono ${snapshot.odznaczone.size} z koszyka`, async () => {
@@ -226,14 +256,12 @@ function zapiszStanOdznaczenia(nowySet) {
       zapiszStanOdznaczenia(snapshot.odznaczone)
       const itemsDoOdtworzenia = lista.filter(i => snapshot.odznaczone.has(i.klucz))
       if (itemsDoOdtworzenia.length > 0) {
-        const { data } = await supabase
-          .from('zakupy_historia')
-          .insert(itemsDoOdtworzenia.map(i => ({
-            user_id: user.id,
-            skladnik: i.skladnik, ilosc: i.ilosc,
-            jednostka: i.jednostka, kategoria: i.kategoria,
-          })))
-          .select()
+        const { data } = await supabase.from('zakupy_historia').insert(
+          itemsDoOdtworzenia.map(i => ({
+            user_id: user.id, skladnik: i.skladnik,
+            ilosc: i.ilosc, jednostka: i.jednostka, kategoria: i.kategoria,
+          }))
+        ).select()
         const nowaMapa = {}
         ;(data || []).forEach((row, idx) => { nowaMapa[itemsDoOdtworzenia[idx].klucz] = row.id })
         setHistoriaIds(nowaMapa)
@@ -242,18 +270,61 @@ function zapiszStanOdznaczenia(nowySet) {
     })
   }
 
-  const doKupienia = lista.filter(i => !odznaczone.has(i.klucz))
-  const kupione = lista.filter(i => odznaczone.has(i.klucz))
-  const procent = lista.length > 0 ? Math.round(kupione.length / lista.length * 100) : 0
+  // ── Łączenie list (plan + własne) do widoku ──
+  // Każdy własny produkt mapuję na strukturę zgodną z item z planu
+  const wlasneJakoItems = useMemo(() => wlasne.map(w => ({
+    klucz: `wlasny_${w.id}`,
+    skladnik: w.nazwa,
+    ilosc: w.ilosc,
+    jednostka: w.jednostka,
+    kategoria: w.kategoria || '8_Inne',
+    podmieniono: false,
+    zrodlo: 'wlasne',
+    wlasnyData: w, // referencja do oryginalnego rekordu
+  })), [wlasne])
+
+  // Wszystkie itemy (plan + własne) razem
+  const wszystkieItemy = useMemo(() => {
+    return [...lista, ...wlasneJakoItems]
+  }, [lista, wlasneJakoItems])
+
+  // Czy item jest kupione? (różne źródło prawdy w zależności od zrodla)
+  const czyKupione = useCallback((item) => {
+    if (item.zrodlo === 'wlasne') return !!item.wlasnyData.kupione
+    return odznaczone.has(item.klucz)
+  }, [odznaczone])
+
+  const doKupienia = wszystkieItemy.filter(i => !czyKupione(i))
+  const kupione = wszystkieItemy.filter(i => czyKupione(i))
+  const procent = wszystkieItemy.length > 0 ? Math.round(kupione.length / wszystkieItemy.length * 100) : 0
 
   const kategorie = {}
   doKupienia.forEach(item => {
-    const kat = item.kategoria.replace(/^\d_/, '')
-    if (!kategorie[kat]) kategorie[kat] = []
-    kategorie[kat].push(item)
+    const katId = item.kategoria
+    const katLabel = (KATEGORIE.find(k => k.id === katId)?.label) || katId.replace(/^\d_/, '')
+    if (!kategorie[katLabel]) kategorie[katLabel] = { id: katId, items: [] }
+    kategorie[katLabel].items.push(item)
   })
 
+  // Toggle uniwersalny
+  function toggleAny(item) {
+    if (item.zrodlo === 'wlasne') return toggleWlasny(item.wlasnyData)
+    return toggle(item)
+  }
+
   if (loading) return <div style={s.loading}>Generuję listę zakupów…</div>
+
+  // ── Tryb sklepu (przejmuje cały ekran) ──
+  if (trybSklepu) {
+    return (
+      <TrybSklepu
+        wszystkieItemy={wszystkieItemy}
+        czyKupione={czyKupione}
+        onToggle={toggleAny}
+        onClose={() => setTrybSklepu(false)}
+      />
+    )
+  }
 
   return (
     <div style={s.outer}>
@@ -277,59 +348,64 @@ function zapiszStanOdznaczenia(nowySet) {
             </div>
           </div>
           <div style={s.headerSub}>
-            {kupione.length} z {lista.length} produktów w koszyku
+            {kupione.length} z {wszystkieItemy.length} produktów w koszyku
           </div>
         </header>
 
-        {lista.length === 0 ? (
+        {/* Główny CTA: Idę do sklepu */}
+        {wszystkieItemy.length > 0 && (
+          <button style={s.btnSklep} onClick={() => setTrybSklepu(true)}>
+            🛒 Idę do sklepu
+          </button>
+        )}
+
+        {wszystkieItemy.length === 0 ? (
           <div style={s.empty}>
-            <h3 style={s.emptyTytul}>Brak zaplanowanych dań</h3>
-            <p style={s.emptySub}>Wypełnij kalendarz na ten tydzień — lista ułoży się sama z przepisów.</p>
+            <h3 style={s.emptyTytul}>Brak rzeczy do kupienia</h3>
+            <p style={s.emptySub}>
+              Wypełnij kalendarz albo dodaj własny produkt.
+            </p>
+            <button style={s.emptyBtn} onClick={() => { setEdycjaWlasnego(null); setPokazDodaj(true) }}>
+              + Dodaj produkt
+            </button>
           </div>
         ) : (
           <>
-            {Object.entries(kategorie).map(([kat, items]) => (
-              <section key={kat} style={s.katSekcja}>
-                <h3 style={s.katHeader}>{kat}</h3>
+            {Object.entries(kategorie).map(([katLabel, { items }]) => (
+              <section key={katLabel} style={s.katSekcja}>
+                <h3 style={s.katHeader}>{katLabel}</h3>
                 <div style={s.katLista}>
                   {items.map(item => (
-                    <button key={item.klucz} style={s.item} onClick={() => toggle(item)}>
-                      <div style={s.checkbox} />
-                      <div style={s.itemInfo}>
-                        <div style={s.itemNazwa}>
-                          {item.skladnik}
-                          {item.podmieniono && <span style={s.podmianaIcon} title="Składnik podmieniony">↻</span>}
-                        </div>
-                        <div style={s.itemIlosc}>
-                          {item.ilosc != null
-                            ? `${item.ilosc} ${item.jednostka || ''}`
-                            : (item.iloscOryginalna || item.jednostka || '—')}
-                        </div>
-                      </div>
-                    </button>
+                    <ItemRow
+                      key={item.klucz}
+                      item={item}
+                      kupione={false}
+                      onTap={() => toggleAny(item)}
+                      onLongPress={item.zrodlo === 'wlasne'
+                        ? () => { setEdycjaWlasnego(item.wlasnyData); setPokazDodaj(true) }
+                        : null}
+                    />
                   ))}
                 </div>
               </section>
             ))}
+
+            {/* Dodaj własny produkt — przycisk pomiędzy kategoriami */}
+            <button style={s.btnDodajWlasny} onClick={() => { setEdycjaWlasnego(null); setPokazDodaj(true) }}>
+              + Dodaj własny produkt (papier, chemia, lek…)
+            </button>
 
             {kupione.length > 0 && (
               <section style={{ ...s.katSekcja, marginTop: 24 }}>
                 <h3 style={s.katHeaderDone}>W koszyku ({kupione.length})</h3>
                 <div style={s.katLista}>
                   {kupione.map(item => (
-                    <button key={item.klucz} style={{ ...s.item, ...s.itemDone }} onClick={() => toggle(item)}>
-                      <div style={{ ...s.checkbox, ...s.checkboxDone }}>
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12l5 5L20 7"/></svg>
-                      </div>
-                      <div style={s.itemInfo}>
-                        <div style={{ ...s.itemNazwa, textDecoration: 'line-through', color: t.muteLight }}>{item.skladnik}</div>
-                        <div style={{ ...s.itemIlosc, color: t.muteLight }}>
-                          {item.ilosc != null
-                            ? `${item.ilosc} ${item.jednostka || ''}`
-                            : (item.iloscOryginalna || item.jednostka || '—')}
-                        </div>
-                      </div>
-                    </button>
+                    <ItemRow
+                      key={item.klucz}
+                      item={item}
+                      kupione={true}
+                      onTap={() => toggleAny(item)}
+                    />
                   ))}
                 </div>
               </section>
@@ -347,34 +423,425 @@ function zapiszStanOdznaczenia(nowySet) {
         )}
       </div>
 
+      {pokazDodaj && (
+        <DodajProduktModal
+          edycja={edycjaWlasnego}
+          onClose={() => { setPokazDodaj(false); setEdycjaWlasnego(null) }}
+          onSave={zapiszWlasny}
+          onDelete={edycjaWlasnego ? () => usunWlasny(edycjaWlasnego) : null}
+        />
+      )}
+
       {toast && (
         <div style={s.toast}>
           <span style={s.toastMsg}>{toast.msg}</span>
-          <button style={s.toastBtn} onClick={toast.onUndo}>Cofnij</button>
+          {toast.onUndo && (
+            <button style={s.toastBtn} onClick={toast.onUndo}>Cofnij</button>
+          )}
         </div>
       )}
     </div>
   )
 }
 
+// ════════════════════════════════════════════════════════════
+// Pojedynczy wiersz listy — z long-pressem dla własnych
+function ItemRow({ item, kupione, onTap, onLongPress }) {
+  const longPressTimer = useRef(null)
+  const startPos = useRef(null)
+  const triggered = useRef(false)
+
+  function down(e) {
+    triggered.current = false
+    startPos.current = { x: e.clientX, y: e.clientY }
+    if (onLongPress) {
+      longPressTimer.current = setTimeout(() => {
+        triggered.current = true
+        onLongPress()
+        if (navigator.vibrate) navigator.vibrate(20)
+      }, 500)
+    }
+  }
+  function move(e) {
+    if (!startPos.current || !longPressTimer.current) return
+    const dx = Math.abs(e.clientX - startPos.current.x)
+    const dy = Math.abs(e.clientY - startPos.current.y)
+    if (dx > 10 || dy > 10) {
+      clearTimeout(longPressTimer.current)
+      longPressTimer.current = null
+    }
+  }
+  function up() {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current)
+      longPressTimer.current = null
+    }
+    if (!triggered.current) onTap()
+    startPos.current = null
+  }
+  function cancel() {
+    if (longPressTimer.current) clearTimeout(longPressTimer.current)
+    longPressTimer.current = null
+    startPos.current = null
+    triggered.current = false
+  }
+
+  const isWlasny = item.zrodlo === 'wlasne'
+  const powtarzaSie = isWlasny && item.wlasnyData.powtarzaj
+
+  return (
+    <div
+      style={{ ...s.item, ...(kupione ? s.itemDone : {}) }}
+      onPointerDown={down}
+      onPointerMove={move}
+      onPointerUp={up}
+      onPointerCancel={cancel}
+    >
+      <div style={{ ...s.checkbox, ...(kupione ? s.checkboxDone : {}) }}>
+        {kupione && (
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12l5 5L20 7"/></svg>
+        )}
+      </div>
+      <div style={s.itemInfo}>
+        <div style={{ ...s.itemNazwa, ...(kupione ? { textDecoration: 'line-through', color: t.muteLight } : {}) }}>
+          {item.skladnik}
+          {item.podmieniono && <span style={s.podmianaIcon} title="Składnik podmieniony">↻</span>}
+          {isWlasny && powtarzaSie && <span style={s.tagPowtarzaj} title="Powtarza się co tydzień">↻ tyg.</span>}
+          {isWlasny && !powtarzaSie && <span style={s.tagJednorazowo} title="Jednorazowo">jednorazowo</span>}
+        </div>
+        <div style={{ ...s.itemIlosc, ...(kupione ? { color: t.muteLight } : {}) }}>
+          {item.ilosc != null
+            ? `${item.ilosc} ${item.jednostka || ''}`
+            : (item.iloscOryginalna || item.jednostka || '—')}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ════════════════════════════════════════════════════════════
+// Modal: dodaj/edytuj własny produkt
+function DodajProduktModal({ edycja, onClose, onSave, onDelete }) {
+  const [nazwa, setNazwa] = useState(edycja?.nazwa || '')
+  const [ilosc, setIlosc] = useState(edycja?.ilosc?.toString() || '')
+  const [jednostka, setJednostka] = useState(edycja?.jednostka || '')
+  const [kategoria, setKategoria] = useState(edycja?.kategoria || '8_Inne')
+  const [powtarzaj, setPowtarzaj] = useState(edycja?.powtarzaj ?? true)
+
+  function submit() {
+    if (!nazwa.trim()) return
+    onSave({
+      nazwa: nazwa.trim(),
+      ilosc: ilosc ? parseFloat(ilosc.replace(',', '.')) : null,
+      jednostka: jednostka || null,
+      kategoria,
+      powtarzaj,
+    })
+  }
+
+  return (
+    <div style={mod.overlay} onClick={onClose}>
+      <div style={mod.modal} onClick={e => e.stopPropagation()}>
+        <div style={mod.header}>
+          <div>
+            <div style={mod.eyebrow}>{edycja ? 'EDYTUJ' : 'NOWY'}</div>
+            <div style={mod.title}>{edycja ? 'Edytuj produkt' : 'Własny produkt'}</div>
+          </div>
+          <button style={mod.close} onClick={onClose}>✕</button>
+        </div>
+
+        <div style={mod.body}>
+          <label style={mod.label}>Nazwa</label>
+          <input
+            style={mod.input}
+            type="text"
+            placeholder="np. Papier toaletowy"
+            value={nazwa}
+            onChange={e => setNazwa(e.target.value)}
+            autoFocus
+          />
+
+          <div style={mod.rowSplit}>
+            <div style={{ flex: 1 }}>
+              <label style={mod.label}>Ilość (opcjonalnie)</label>
+              <input
+                style={mod.input}
+                type="text"
+                inputMode="decimal"
+                placeholder="—"
+                value={ilosc}
+                onChange={e => setIlosc(e.target.value)}
+              />
+            </div>
+            <div style={{ flex: 1 }}>
+              <label style={mod.label}>Jednostka</label>
+              <select style={mod.input} value={jednostka} onChange={e => setJednostka(e.target.value)}>
+                {JEDNOSTKI.map(j => <option key={j} value={j}>{j || '—'}</option>)}
+              </select>
+            </div>
+          </div>
+
+          <label style={mod.label}>Kategoria</label>
+          <select style={mod.input} value={kategoria} onChange={e => setKategoria(e.target.value)}>
+            {KATEGORIE.map(k => <option key={k.id} value={k.id}>{k.label}</option>)}
+          </select>
+
+          <label style={mod.checkRow}>
+            <input
+              type="checkbox"
+              checked={powtarzaj}
+              onChange={e => setPowtarzaj(e.target.checked)}
+            />
+            <div>
+              <div style={mod.checkLabel}>Powtarzaj co tydzień</div>
+              <div style={mod.checkHelp}>
+                {powtarzaj
+                  ? 'Pojawi się na liście co tydzień, dopóki nie usuniesz.'
+                  : 'Zniknie z listy po odznaczeniu (jednorazowo).'}
+              </div>
+            </div>
+          </label>
+        </div>
+
+        <div style={mod.footer}>
+          {onDelete && (
+            <button style={mod.btnDelete} onClick={onDelete}>Usuń</button>
+          )}
+          <button style={mod.btnCancel} onClick={onClose}>Anuluj</button>
+          <button style={mod.btnSave} onClick={submit} disabled={!nazwa.trim()}>
+            {edycja ? 'Zapisz' : 'Dodaj'}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ════════════════════════════════════════════════════════════
+// Tryb sklepu — fullscreen, ciemne tło, swipe
+function TrybSklepu({ wszystkieItemy, czyKupione, onToggle, onClose }) {
+  const [wakeLockOn, setWakeLockOn] = useState(false)
+  const wakeLockRef = useRef(null)
+
+  // Wake Lock — ekran nie gaśnie
+  useEffect(() => {
+    let aktywne = true
+    async function lock() {
+      if (!('wakeLock' in navigator)) return
+      try {
+        wakeLockRef.current = await navigator.wakeLock.request('screen')
+        if (aktywne) setWakeLockOn(true)
+        wakeLockRef.current.addEventListener('release', () => setWakeLockOn(false))
+      } catch (e) {
+        // Brak uprawnień / nieobsługiwane — to OK
+      }
+    }
+    lock()
+    // Re-request gdy strona wraca z tła
+    function onVisible() {
+      if (document.visibilityState === 'visible') lock()
+    }
+    document.addEventListener('visibilitychange', onVisible)
+    return () => {
+      aktywne = false
+      document.removeEventListener('visibilitychange', onVisible)
+      if (wakeLockRef.current) {
+        wakeLockRef.current.release().catch(() => {})
+        wakeLockRef.current = null
+      }
+    }
+  }, [])
+
+  const doKupienia = wszystkieItemy.filter(i => !czyKupione(i))
+  const kupione = wszystkieItemy.filter(i => czyKupione(i))
+
+  // Pogrupuj do kupienia po kategoriach
+  const kategorie = {}
+  doKupienia.forEach(item => {
+    const katId = item.kategoria
+    const katLabel = (KATEGORIE.find(k => k.id === katId)?.label) || katId.replace(/^\d_/, '')
+    if (!kategorie[katLabel]) kategorie[katLabel] = []
+    kategorie[katLabel].push(item)
+  })
+
+  return (
+    <div style={sklep.outer}>
+      <header style={sklep.header}>
+        <div>
+          <div style={sklep.eyebrow}>TRYB SKLEPU{wakeLockOn ? ' · EKRAN AKTYWNY' : ''}</div>
+          <div style={sklep.headerStats}>
+            <strong style={sklep.headerStatsNum}>{doKupienia.length}</strong> do kupienia
+            {kupione.length > 0 && <span style={sklep.headerStatsDone}>· {kupione.length} w koszyku</span>}
+          </div>
+        </div>
+        <button style={sklep.close} onClick={onClose} aria-label="Wyjdź ze sklepu">✕</button>
+      </header>
+
+      <div style={sklep.scroll}>
+        {doKupienia.length === 0 ? (
+          <div style={sklep.gotowe}>
+            <div style={sklep.gotoweEmoji}>🎉</div>
+            <div style={sklep.gotoweTitle}>Wszystko w koszyku!</div>
+            <div style={sklep.gotoweSub}>Możesz wracać do domu.</div>
+          </div>
+        ) : (
+          Object.entries(kategorie).map(([katLabel, items]) => (
+            <section key={katLabel} style={sklep.kat}>
+              <h2 style={sklep.katTitle}>{katLabel}</h2>
+              <div style={sklep.katItems}>
+                {items.map(item => (
+                  <SwipeItem
+                    key={item.klucz}
+                    item={item}
+                    onSwipeRight={() => onToggle(item)}
+                  />
+                ))}
+              </div>
+            </section>
+          ))
+        )}
+
+        {kupione.length > 0 && (
+          <section style={{ ...sklep.kat, marginTop: 32, opacity: 0.55 }}>
+            <h2 style={{ ...sklep.katTitle, color: '#aaa' }}>W koszyku ({kupione.length})</h2>
+            <div style={sklep.katItems}>
+              {kupione.map(item => (
+                <SwipeItem
+                  key={item.klucz}
+                  item={item}
+                  kupione
+                  onSwipeRight={() => onToggle(item)}
+                />
+              ))}
+            </div>
+          </section>
+        )}
+      </div>
+
+      <div style={sklep.hint}>
+        Przesuń produkt w prawo, żeby {/* */}{doKupienia.length > 0 ? 'wrzucić do koszyka' : 'przywrócić'}
+      </div>
+    </div>
+  )
+}
+
+// Pojedynczy swipe-able item w trybie sklepu
+function SwipeItem({ item, kupione, onSwipeRight }) {
+  const [translateX, setTranslateX] = useState(0)
+  const [animowanie, setAnimowanie] = useState(false)
+  const startX = useRef(null)
+  const startY = useRef(null)
+  const startTime = useRef(0)
+  const kierunek = useRef(null) // 'x' lub 'y' — żeby nie blokować scrolla
+
+  function down(e) {
+    if (animowanie) return
+    startX.current = e.clientX
+    startY.current = e.clientY
+    startTime.current = Date.now()
+    kierunek.current = null
+  }
+  function move(e) {
+    if (startX.current == null) return
+    const dx = e.clientX - startX.current
+    const dy = e.clientY - startY.current
+
+    // Zdecyduj kierunek po pierwszych 8px
+    if (!kierunek.current) {
+      if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return
+      kierunek.current = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y'
+    }
+    if (kierunek.current === 'y') return // pozwól scrollowi
+
+    // Tylko swipe w prawo (kupione = pochłonięte)
+    // Dla itemów już kupionych pozwól też w prawo (przywróć)
+    const ograniczone = Math.max(0, dx)
+    setTranslateX(ograniczone)
+    if (e.cancelable) e.preventDefault()
+  }
+  function up(e) {
+    if (startX.current == null) return
+    const dx = e.clientX - startX.current
+    const dt = Date.now() - startTime.current
+    const swipnal = dx > 80 || (dx > 40 && dt < 250) // próg lub szybki gest
+
+    if (swipnal && kierunek.current === 'x') {
+      // Animuj wyjście w prawo
+      setAnimowanie(true)
+      setTranslateX(window.innerWidth)
+      setTimeout(() => {
+        onSwipeRight()
+        // reset po pełnym wyrenderowaniu (drugi rerender po toggle z setData)
+        setTranslateX(0)
+        setAnimowanie(false)
+      }, 200)
+      if (navigator.vibrate) navigator.vibrate(15)
+    } else {
+      setTranslateX(0)
+    }
+    startX.current = null
+    startY.current = null
+    kierunek.current = null
+  }
+
+  // Tap = również toggle (fallback dla tych co nie chcą swipe)
+  function onClick() {
+    if (Math.abs(translateX) < 5 && !animowanie) {
+      onSwipeRight()
+    }
+  }
+
+  return (
+    <div style={sklep.itemWrapper}>
+      {/* Tło które pokazuje się przy swipe */}
+      <div style={{
+        ...sklep.itemBg,
+        opacity: Math.min(1, translateX / 100),
+      }}>
+        <span style={sklep.itemBgIcon}>✓</span>
+        <span style={sklep.itemBgTxt}>{kupione ? 'Przywróć' : 'Do koszyka'}</span>
+      </div>
+
+      {/* Sam item */}
+      <div
+        onPointerDown={down}
+        onPointerMove={move}
+        onPointerUp={up}
+        onPointerCancel={() => { setTranslateX(0); startX.current = null; kierunek.current = null }}
+        onClick={onClick}
+        style={{
+          ...sklep.item,
+          ...(kupione ? sklep.itemKupione : {}),
+          transform: `translateX(${translateX}px)`,
+          transition: animowanie ? 'transform .2s ease-out' : (translateX === 0 ? 'transform .15s' : 'none'),
+        }}
+      >
+        <div style={sklep.itemNazwa}>{item.skladnik}</div>
+        <div style={sklep.itemIlosc}>
+          {item.ilosc != null
+            ? `${item.ilosc} ${item.jednostka || ''}`
+            : (item.iloscOryginalna || item.jednostka || '')}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ════════════════════════════════════════════════════════════
 const s = {
   outer: { background: t.bg, minHeight: '100vh', fontFamily: fonts.sans, position: 'relative' },
-  container: {
-    padding: '20px 20px 32px',
-    maxWidth: 620, margin: '0 auto', boxSizing: 'border-box',
-  },
+  container: { padding: '20px 20px 32px', maxWidth: 620, margin: '0 auto', boxSizing: 'border-box' },
   back: { ...ui.btnText, padding: '0 0 14px', display: 'block' },
 
   headerCard: {
     background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentDark} 100%)`,
     color: '#fff', borderRadius: 22, padding: '20px 20px 18px',
-    marginBottom: 20, position: 'relative', overflow: 'hidden',
+    marginBottom: 16, position: 'relative', overflow: 'hidden',
   },
   headerTop: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' },
   headerEyebrow: {
     fontFamily: fonts.sans, fontSize: 10.5, fontWeight: 600,
-    letterSpacing: 1.6, textTransform: 'uppercase', opacity: 0.75,
-    marginBottom: 6,
+    letterSpacing: 1.6, textTransform: 'uppercase', opacity: 0.75, marginBottom: 6,
   },
   title: {
     fontFamily: fonts.serif, fontSize: 32, lineHeight: 1, color: '#fff',
@@ -383,15 +850,25 @@ const s = {
   headerSub: { fontFamily: fonts.sans, fontSize: 13, opacity: 0.85, marginTop: 14 },
   progressRing: { position: 'relative', width: 56, height: 56 },
   progressTxt: {
-    position: 'absolute', inset: 0,
-    display: 'grid', placeItems: 'center',
-    fontFamily: fonts.sans, fontSize: 13, fontWeight: 600,
-    fontVariantNumeric: 'tabular-nums',
+    position: 'absolute', inset: 0, display: 'grid', placeItems: 'center',
+    fontFamily: fonts.sans, fontSize: 13, fontWeight: 600, fontVariantNumeric: 'tabular-nums',
+  },
+
+  btnSklep: {
+    width: '100%', padding: '14px 16px', marginBottom: 20,
+    background: t.text, color: '#fff', border: 'none', borderRadius: 14,
+    fontFamily: fonts.sans, fontSize: 15, fontWeight: 600, cursor: 'pointer',
+    boxShadow: '0 4px 16px rgba(74,55,40,.18)',
   },
 
   empty: { ...ui.card, padding: '30px 24px', textAlign: 'center' },
   emptyTytul: { ...ui.h3, marginBottom: 6 },
-  emptySub: { fontFamily: fonts.sans, fontSize: 13.5, color: t.mute, margin: 0, lineHeight: 1.5 },
+  emptySub: { fontFamily: fonts.sans, fontSize: 13.5, color: t.mute, margin: '0 0 18px', lineHeight: 1.5 },
+  emptyBtn: {
+    background: t.accent, color: '#fff', border: 'none', borderRadius: 12,
+    padding: '12px 18px', fontFamily: fonts.sans, fontSize: 13, fontWeight: 600,
+    cursor: 'pointer',
+  },
 
   katSekcja: { marginBottom: 18 },
   katHeader: {
@@ -405,12 +882,15 @@ const s = {
     margin: '0 0 8px', padding: '0 4px',
   },
   katLista: { ...ui.card, padding: 0, overflow: 'hidden' },
+
   item: {
     width: '100%', textAlign: 'left',
     display: 'flex', alignItems: 'center', gap: 14,
     padding: '12px 16px', background: 'transparent', border: 'none',
     borderBottom: `0.5px solid ${t.border}`,
     cursor: 'pointer', fontFamily: fonts.sans,
+    userSelect: 'none', WebkitUserSelect: 'none',
+    touchAction: 'manipulation',
   },
   itemDone: { opacity: 0.7 },
   checkbox: {
@@ -421,10 +901,28 @@ const s = {
   },
   checkboxDone: { background: t.accent, borderColor: t.accent },
   itemInfo: { flex: 1, minWidth: 0 },
-  itemNazwa: { fontSize: 14, fontWeight: 500, color: t.text, lineHeight: 1.2 },
+  itemNazwa: {
+    fontSize: 14, fontWeight: 500, color: t.text, lineHeight: 1.2,
+    display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap',
+  },
   itemIlosc: { fontSize: 12, color: t.mute, marginTop: 3, fontVariantNumeric: 'tabular-nums' },
-  podmianaIcon: {
-    fontSize: 11, color: t.warm, marginLeft: 6, fontWeight: 700,
+  podmianaIcon: { fontSize: 11, color: t.warm, fontWeight: 700 },
+  tagPowtarzaj: {
+    fontSize: 9.5, color: t.accent, background: t.surfaceAlt,
+    padding: '2px 6px', borderRadius: 4, fontWeight: 600,
+    letterSpacing: 0.3,
+  },
+  tagJednorazowo: {
+    fontSize: 9.5, color: t.mute, background: t.surfaceAlt,
+    padding: '2px 6px', borderRadius: 4, fontWeight: 600,
+    letterSpacing: 0.3,
+  },
+
+  btnDodajWlasny: {
+    width: '100%', padding: '14px 16px', marginTop: 4,
+    background: 'transparent', border: `1.5px dashed ${t.borderStrong}`,
+    borderRadius: 14, color: t.mute, cursor: 'pointer',
+    fontFamily: fonts.sans, fontSize: 13.5, fontWeight: 600,
   },
 
   btnRow: { display: 'flex', gap: 8, marginTop: 18 },
@@ -432,16 +930,14 @@ const s = {
 
   toast: {
     position: 'fixed', bottom: 96, left: '50%', transform: 'translateX(-50%)',
-    background: t.text, color: '#fff',
-    borderRadius: 12, padding: '10px 14px',
+    background: t.text, color: '#fff', borderRadius: 12, padding: '10px 14px',
     display: 'flex', alignItems: 'center', gap: 14,
-    boxShadow: '0 8px 24px rgba(0,0,0,.2)',
-    zIndex: 200, fontFamily: fonts.sans, fontSize: 13,
-    maxWidth: 'calc(100vw - 32px)',
+    boxShadow: '0 8px 24px rgba(0,0,0,.2)', zIndex: 200,
+    fontFamily: fonts.sans, fontSize: 13, maxWidth: 'calc(100vw - 32px)',
   },
   toastMsg: { color: '#fff', flex: 1 },
   toastBtn: {
-    background: 'none', border: 'none', color: t.accentSoft,
+    background: 'none', border: 'none', color: t.accentSoft || '#FBD3C2',
     fontFamily: fonts.sans, fontSize: 13, fontWeight: 700,
     cursor: 'pointer', padding: '4px 6px',
     textTransform: 'uppercase', letterSpacing: 0.8,
@@ -451,5 +947,141 @@ const s = {
     textAlign: 'center', padding: 80,
     fontFamily: fonts.sans, fontSize: 15, color: t.mute,
     background: t.bg, minHeight: '100vh',
+  },
+}
+
+const mod = {
+  overlay: {
+    position: 'fixed', inset: 0, background: 'rgba(74,55,40,.4)',
+    display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
+    zIndex: 300, padding: 0,
+  },
+  modal: {
+    background: t.surface, borderRadius: '20px 20px 0 0', width: '100%',
+    maxWidth: 460, maxHeight: '90vh', overflowY: 'auto',
+    padding: '20px 20px 24px', boxSizing: 'border-box',
+    fontFamily: fonts.sans,
+  },
+  header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 },
+  eyebrow: {
+    fontSize: 10.5, fontWeight: 600, letterSpacing: 1.4,
+    textTransform: 'uppercase', color: t.mute, marginBottom: 4,
+  },
+  title: { fontFamily: fonts.serif, fontSize: 22, color: t.text, margin: 0 },
+  close: {
+    background: t.surfaceAlt, border: 'none', borderRadius: 999,
+    width: 32, height: 32, fontSize: 14, color: t.text, cursor: 'pointer',
+  },
+  body: { display: 'flex', flexDirection: 'column' },
+  label: {
+    fontSize: 11, fontWeight: 600, letterSpacing: 1, textTransform: 'uppercase',
+    color: t.mute, marginBottom: 6, marginTop: 12,
+  },
+  input: {
+    ...ui.input, marginBottom: 0, padding: '11px 12px', fontSize: 14,
+  },
+  rowSplit: { display: 'flex', gap: 12 },
+  checkRow: {
+    display: 'flex', alignItems: 'flex-start', gap: 12,
+    marginTop: 16, padding: '12px', background: t.surfaceAlt,
+    borderRadius: 10, cursor: 'pointer',
+  },
+  checkLabel: { fontSize: 13.5, fontWeight: 600, color: t.text },
+  checkHelp: { fontSize: 12, color: t.mute, marginTop: 3, lineHeight: 1.4 },
+  footer: { display: 'flex', gap: 8, marginTop: 20 },
+  btnCancel: {
+    flex: 1, padding: '12px', background: 'transparent',
+    border: `1px solid ${t.border}`, borderRadius: 12,
+    fontFamily: fonts.sans, fontSize: 13.5, fontWeight: 600,
+    color: t.mute, cursor: 'pointer',
+  },
+  btnSave: {
+    flex: 1.5, padding: '12px', background: t.accent, color: '#fff',
+    border: 'none', borderRadius: 12,
+    fontFamily: fonts.sans, fontSize: 13.5, fontWeight: 600, cursor: 'pointer',
+  },
+  btnDelete: {
+    padding: '12px 14px', background: 'transparent',
+    border: `1px solid ${t.border}`, borderRadius: 12, color: '#c44',
+    fontFamily: fonts.sans, fontSize: 13.5, fontWeight: 600, cursor: 'pointer',
+  },
+}
+
+// Tryb sklepu — ciemny motyw, większy tekst
+const SKLEP_BG = '#1a1814'
+const SKLEP_SURFACE = '#2a2520'
+const SKLEP_TEXT = '#f4ede2'
+const SKLEP_MUTE = '#a89a85'
+
+const sklep = {
+  outer: {
+    position: 'fixed', inset: 0, background: SKLEP_BG,
+    color: SKLEP_TEXT, fontFamily: fonts.sans, zIndex: 500,
+    display: 'flex', flexDirection: 'column',
+  },
+  header: {
+    padding: '18px 20px 14px', display: 'flex',
+    justifyContent: 'space-between', alignItems: 'flex-start',
+    borderBottom: `0.5px solid #3a342d`,
+  },
+  eyebrow: {
+    fontSize: 10, fontWeight: 700, letterSpacing: 1.5,
+    textTransform: 'uppercase', color: t.warm || '#d8c4a8', marginBottom: 4,
+  },
+  headerStats: { fontSize: 18, color: SKLEP_TEXT },
+  headerStatsNum: { fontFamily: fonts.serif, fontSize: 28, fontWeight: 400, marginRight: 6 },
+  headerStatsDone: { color: SKLEP_MUTE, fontSize: 14, marginLeft: 6 },
+  close: {
+    background: SKLEP_SURFACE, border: 'none', borderRadius: 999,
+    width: 36, height: 36, fontSize: 16, color: SKLEP_TEXT, cursor: 'pointer',
+  },
+  scroll: { flex: 1, overflowY: 'auto', padding: '12px 16px 24px', WebkitOverflowScrolling: 'touch' },
+  kat: { marginBottom: 24 },
+  katTitle: {
+    fontSize: 11, fontWeight: 700, letterSpacing: 1.5,
+    textTransform: 'uppercase', color: t.warm || '#d8c4a8',
+    margin: '0 0 10px', padding: '0 4px',
+  },
+  katItems: { display: 'flex', flexDirection: 'column', gap: 4 },
+
+  itemWrapper: {
+    position: 'relative', overflow: 'hidden',
+    borderRadius: 14, background: SKLEP_BG,
+  },
+  itemBg: {
+    position: 'absolute', inset: 0,
+    background: 'linear-gradient(90deg, #1a4d2e 0%, #2a7d4f 100%)',
+    display: 'flex', alignItems: 'center', paddingLeft: 24,
+    color: '#fff', gap: 12,
+  },
+  itemBgIcon: { fontSize: 24, fontWeight: 700 },
+  itemBgTxt: { fontSize: 14, fontWeight: 600, letterSpacing: 0.5 },
+
+  item: {
+    position: 'relative', background: SKLEP_SURFACE,
+    padding: '18px 20px', borderRadius: 14,
+    cursor: 'pointer', userSelect: 'none', WebkitUserSelect: 'none',
+  },
+  itemKupione: { opacity: 0.55 },
+  itemNazwa: {
+    fontSize: 20, fontWeight: 500, color: SKLEP_TEXT,
+    fontFamily: fonts.serif, lineHeight: 1.2, letterSpacing: -0.2,
+  },
+  itemIlosc: {
+    fontSize: 14, color: SKLEP_MUTE, marginTop: 5,
+    fontVariantNumeric: 'tabular-nums',
+  },
+
+  gotowe: { padding: '60px 24px', textAlign: 'center' },
+  gotoweEmoji: { fontSize: 48, marginBottom: 12 },
+  gotoweTitle: {
+    fontFamily: fonts.serif, fontSize: 26, color: SKLEP_TEXT, marginBottom: 6,
+  },
+  gotoweSub: { fontSize: 14, color: SKLEP_MUTE },
+
+  hint: {
+    padding: '10px 20px 16px', textAlign: 'center',
+    fontSize: 11.5, color: SKLEP_MUTE,
+    borderTop: `0.5px solid #3a342d`,
   },
 }

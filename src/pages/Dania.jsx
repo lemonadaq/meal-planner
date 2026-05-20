@@ -121,13 +121,19 @@ export default function Dania({ onSelect, user, onDodaj, onBack }) {
   async function rozpocznijUsuwanie(danie, rodzaj) {
     setMenuDla(null)
 
-    // Sprawdź czy wystepuje w kalendarzu — 3 osobne query (bezpieczniej niż or z escape'm)
-    const [{ data: jakoD }, { data: jakoDo }, { data: jakoS }] = await Promise.all([
-      supabase.from('kalendarz').select('id, data, posilek, danie, dodatek, surowka').eq('user_id', user.id).eq('danie', danie),
-      supabase.from('kalendarz').select('id, data, posilek, danie, dodatek, surowka').eq('user_id', user.id).eq('dodatek', danie),
-      supabase.from('kalendarz').select('id, data, posilek, danie, dodatek, surowka').eq('user_id', user.id).eq('surowka', danie),
+    // Sprawdź czy występuje w kalendarzu jako główne danie ALBO jako side-slot
+    // (w tablicy dodatki jsonb). Dwa query: po danie i po contains dla side.
+    const [{ data: jakoD }, { data: jakoSide }] = await Promise.all([
+      supabase.from('kalendarz')
+        .select('id, data, posilek, danie, dodatki')
+        .eq('user_id', user.id).eq('danie', danie),
+      // contains: znajdź wpisy gdzie tablica dodatki zawiera obiekt z tą nazwą
+      supabase.from('kalendarz')
+        .select('id, data, posilek, danie, dodatki')
+        .eq('user_id', user.id)
+        .contains('dodatki', [{ nazwa: danie }]),
     ])
-    const wszystkieWpisy = [...(jakoD || []), ...(jakoDo || []), ...(jakoS || [])]
+    const wszystkieWpisy = [...(jakoD || []), ...(jakoSide || [])]
     const unikalneWpisy = [...new Map(wszystkieWpisy.map(w => [w.id, w])).values()]
 
     setPotwierdz({ danie, rodzaj, wpisyKalendarza: unikalneWpisy })
@@ -140,7 +146,7 @@ export default function Dania({ onSelect, user, onDodaj, onBack }) {
 
     // Pobierz kopię wszystkich wierszy do undo
     const { data: kopiaWierszy } = await supabase.from('dania').select('*').eq('"Danie"', danie)
-    const kopiaWierszyArr = (kopiaWierszy || []).map(({ id, ...reszta }) => reszta) // bez id, żeby insert ponownie nadał
+    const kopiaWierszyArr = (kopiaWierszy || []).map(({ id, ...reszta }) => reszta)
 
     // Kopia wpisów kalendarza do undo
     const kopiaKalendarza = usunZKal ? wpisyKalendarza.map(w => ({ ...w })) : []
@@ -152,9 +158,13 @@ export default function Dania({ onSelect, user, onDodaj, onBack }) {
     if (usunZKal && wpisyKalendarza.length > 0) {
       const ops = wpisyKalendarza.map(w => {
         const update = {}
-        if (w.danie === danie)   update.danie = null
-        if (w.dodatek === danie) update.dodatek = null
-        if (w.surowka === danie) update.surowka = null
+        if (w.danie === danie) update.danie = null
+        // Wyfiltruj usunięte danie z tablicy side-slotów
+        if (Array.isArray(w.dodatki) && w.dodatki.some(s => s?.nazwa === danie)) {
+          let nowa = w.dodatki.map(s => (s?.nazwa === danie ? null : s))
+          while (nowa.length > 0 && !nowa[nowa.length - 1]) nowa.pop()
+          update.dodatki = nowa
+        }
         return supabase.from('kalendarz').update(update).eq('id', w.id)
       })
       await Promise.all(ops)
@@ -170,7 +180,7 @@ export default function Dania({ onSelect, user, onDodaj, onBack }) {
       if (kopiaKalendarza.length > 0) {
         const ops = kopiaKalendarza.map(w =>
           supabase.from('kalendarz').update({
-            danie: w.danie, dodatek: w.dodatek, surowka: w.surowka,
+            danie: w.danie, dodatki: w.dodatki || [],
           }).eq('id', w.id)
         )
         await Promise.all(ops)
