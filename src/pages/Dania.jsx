@@ -51,7 +51,7 @@ function getEmoji(nazwa) {
   return '🍽️'
 }
 
-export default function Dania({ onSelect, user, onDodaj, onBack }) {
+export default function Dania({ onSelect, user, householdId, onDodaj, onBack }) {
   const [wszystkie, setWszystkie] = useState([])
   const [loading, setLoading] = useState(true)
   const [szukaj, setSzukaj] = useState('')
@@ -126,11 +126,11 @@ export default function Dania({ onSelect, user, onDodaj, onBack }) {
     const [{ data: jakoD }, { data: jakoSide }] = await Promise.all([
       supabase.from('kalendarz')
         .select('id, data, posilek, danie, dodatki')
-        .eq('user_id', user.id).eq('danie', danie),
+        .eq('household_id', householdId).eq('danie', danie),
       // contains: znajdź wpisy gdzie tablica dodatki zawiera obiekt z tą nazwą
       supabase.from('kalendarz')
         .select('id, data, posilek, danie, dodatki')
-        .eq('user_id', user.id)
+        .eq('household_id', householdId)
         .contains('dodatki', [{ nazwa: danie }]),
     ])
     const wszystkieWpisy = [...(jakoD || []), ...(jakoSide || [])]

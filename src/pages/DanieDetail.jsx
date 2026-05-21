@@ -46,7 +46,7 @@ function getPoniedzialek(offset = 0) {
 // formatData z dataHelpers
 function formatKrotkoMies(date) { return date.toLocaleDateString('pl-PL', { day: 'numeric', month: 'short' }) }
 
-export default function DanieDetail({ nazwa: nazwaProp, onBack, user, sledz }) {
+export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdId, sledz }) {
   const [skladniki, setSkladniki] = useState([])
   const [przepis, setPrzepis] = useState([])
   const [loading, setLoading] = useState(true)
@@ -82,13 +82,13 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, sledz }) {
       const doStr = formatData(dni[6])
       const { data } = await supabase
         .from('kalendarz').select('*')
-        .eq('user_id', user.id).gte('data', od).lte('data', doStr)
+        .eq('household_id', householdId).gte('data', od).lte('data', doStr)
       const mapa = {}
       ;(data || []).forEach(p => { mapa[`${p.data}_${p.posilek}`] = p.danie })
       setPlanTygodnia(mapa)
     }
     pobierzPlan()
-  }, [pokazKalendarz, tydzien, user])
+  }, [pokazKalendarz, tydzien, householdId])
 
   async function pobierz() {
     setLoading(true)
@@ -203,12 +203,12 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, sledz }) {
     setDodawanie(true)
     const { data: istniejacy } = await supabase
       .from('kalendarz').select('id')
-      .eq('user_id', user.id).eq('data', wybranyDzien).eq('posilek', wybranyPosilek)
+      .eq('household_id', householdId).eq('data', wybranyDzien).eq('posilek', wybranyPosilek)
       .maybeSingle()
     if (istniejacy) {
       await supabase.from('kalendarz').update({ danie: nazwa, podmiany: {} }).eq('id', istniejacy.id)
     } else {
-      await supabase.from('kalendarz').insert({ user_id: user.id, data: wybranyDzien, posilek: wybranyPosilek, danie: nazwa })
+      await supabase.from('kalendarz').insert({ household_id: householdId, user_id: user.id, data: wybranyDzien, posilek: wybranyPosilek, danie: nazwa })
     }
     sledz?.('dodaj_do_kalendarza', { danie: nazwa, dzien: wybranyDzien, posilek: wybranyPosilek })
     setDodawanie(false); setSukces(true)

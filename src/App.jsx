@@ -10,7 +10,10 @@ import NavBar from './components/NavBar'
 import Home from './pages/Home'
 import Ustawienia from './pages/Ustawienia'
 import Admin from './pages/Admin'
+import Rodzina from './pages/Rodzina'
+import ZaproszenieModal from './components/ZaproszenieModal'
 import { useUstawienia } from './useUstawienia'
+import { useHousehold } from './useHousehold'
 import { useTabAnalytics, sledz } from './analytics'
 
 // ⚠️ ZMIEŃ NA SWÓJ EMAIL — to email który ma dostęp do panelu admina
@@ -77,7 +80,7 @@ function App() {
   const [tab, setTab] = useState('home')
   const [wybraneD, setWybraneD] = useState(null)
   const [dodajDanie, setDodajDanie] = useState(false)
-  const [ekran, setEkran] = useState(null) // 'ustawienia' | 'admin' | null
+  const [ekran, setEkran] = useState(null) // 'ustawienia' | 'admin' | 'rodzina' | null
   const [homeRefresh, setHomeRefresh] = useState(0)
 
   useEffect(() => {
@@ -92,10 +95,16 @@ function App() {
   }, [])
 
   const { ustawienia, zapisz: zapiszUstawienia } = useUstawienia(user)
+  const { householdId, household, refresh: refreshHousehold } = useHousehold(user)
   useTabAnalytics(user, user ? tab : null)
 
+  // Po akceptacji zaproszenia przeładuj household i bumpuj wszystkie ekrany
+  function poZaakceptowaniu() {
+    refreshHousehold()
+    setHomeRefresh(k => k + 1)
+  }
+
   // Bumpuje refresh dla Home gdy wracamy z innej zakładki
-  // (np. po dodaniu czegoś w planerze, zakupach, edycji dania)
   function zmienTab(nowyTab) {
     if (nowyTab === 'home' && tab !== 'home') {
       setHomeRefresh(k => k + 1)
@@ -117,40 +126,60 @@ function App() {
   // ── Widoki overlay (bez navbara) ──
   if (ekran === 'ustawienia') {
     return (
-      <Ustawienia
-        user={user}
-        ustawienia={ustawienia}
-        onZapisz={zapiszUstawienia}
-        onBack={() => setEkran(null)}
-        onAdmin={() => setEkran('admin')}
-        jestAdmin={jestAdmin}
-      />
+      <>
+        <Ustawienia
+          user={user}
+          ustawienia={ustawienia}
+          onZapisz={zapiszUstawienia}
+          onBack={() => setEkran(null)}
+          onAdmin={() => setEkran('admin')}
+          onRodzina={() => setEkran('rodzina')}
+          jestAdmin={jestAdmin}
+        />
+        <ZaproszenieModal user={user} onZaakceptowano={poZaakceptowaniu} />
+      </>
     )
   }
   if (ekran === 'admin') {
     return <Admin onBack={() => setEkran('ustawienia')} />
   }
+  if (ekran === 'rodzina') {
+    return (
+      <Rodzina
+        user={user}
+        householdId={householdId}
+        onBack={() => setEkran('ustawienia')}
+        onZmianaHousehold={poZaakceptowaniu}
+      />
+    )
+  }
 
-  // Wybór dania (z Przepisów lub z sugestii na Home) — po powrocie odśwież Home
   if (wybraneD) return (
-    <DanieDetail
-      nazwa={wybraneD}
-      onBack={() => {
-        setWybraneD(null)
-        setHomeRefresh(k => k + 1)
-      }}
-      user={user}
-      sledz={sledzAkcje}
-    />
+    <>
+      <DanieDetail
+        nazwa={wybraneD}
+        onBack={() => {
+          setWybraneD(null)
+          setHomeRefresh(k => k + 1)
+        }}
+        user={user}
+        householdId={householdId}
+        sledz={sledzAkcje}
+      />
+      <ZaproszenieModal user={user} onZaakceptowano={poZaakceptowaniu} />
+    </>
   )
   if (dodajDanie) return (
-    <DodajDanie
-      onBack={() => setDodajDanie(false)}
-      onZapisano={(nazwa) => {
-        sledzAkcje('dodaj_danie', { danie: nazwa })
-        setDodajDanie(false)
-      }}
-    />
+    <>
+      <DodajDanie
+        onBack={() => setDodajDanie(false)}
+        onZapisano={(nazwa) => {
+          sledzAkcje('dodaj_danie', { danie: nazwa })
+          setDodajDanie(false)
+        }}
+      />
+      <ZaproszenieModal user={user} onZaakceptowano={poZaakceptowaniu} />
+    </>
   )
 
   return (
@@ -158,6 +187,7 @@ function App() {
       {tab === 'home' && (
         <Home
           user={user}
+          householdId={householdId}
           onTabChange={zmienTab}
           onUstawienia={() => setEkran('ustawienia')}
           onSelectDanie={setWybraneD}
@@ -165,18 +195,20 @@ function App() {
         />
       )}
       {tab === 'planer' && (
-  <Kalendarz
-    user={user}
-    onBack={() => zmienTab('home')}
-    domyslnePorcje={ustawienia?.domyslne_porcje ?? 1}
-    sledz={sledzAkcje}
-    onSelectDanie={setWybraneD}   // ← TA LINIJKA
-  />
-)}
+        <Kalendarz
+          user={user}
+          householdId={householdId}
+          onBack={() => zmienTab('home')}
+          domyslnePorcje={ustawienia?.domyslne_porcje ?? 1}
+          sledz={sledzAkcje}
+          onSelectDanie={setWybraneD}
+        />
+      )}
       {tab === 'przepisy' && (
         <Dania
           onSelect={setWybraneD}
           user={user}
+          householdId={householdId}
           onDodaj={() => setDodajDanie(true)}
           onBack={() => zmienTab('home')}
         />
@@ -184,6 +216,7 @@ function App() {
       {tab === 'zakupy' && (
         <ListaZakupow
           user={user}
+          householdId={householdId}
           onBack={() => zmienTab('home')}
           domyslnePorcje={ustawienia?.domyslne_porcje ?? 1}
           sledz={sledzAkcje}
@@ -191,6 +224,7 @@ function App() {
       )}
       <NavBar aktywny={tab} onChange={zmienTab} />
       <IOSInstallBaner />
+      <ZaproszenieModal user={user} onZaakceptowano={poZaakceptowaniu} />
     </div>
   )
 }

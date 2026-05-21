@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../supabase'
 import { t, fonts, ui, avatarBg } from '../theme'
 
-export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin, jestAdmin }) {
+export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin, onRodzina, jestAdmin }) {
   const imie = user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || ''
   const [porcje, setPorcje] = useState(ustawienia?.domyslne_porcje ?? 1)
   const [zapisano, setZapisano] = useState(false)
@@ -55,6 +55,17 @@ export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin
             </div>
             <button style={s.porcjeBtn} onClick={() => zmienPorcje(0.5)} disabled={porcje >= 20}>+</button>
           </div>
+        </section>
+
+        <section style={s.section}>
+          <h2 style={s.sectionTitle}>Rodzina</h2>
+          <p style={s.sectionSub}>
+            Planuj kalendarz i listę zakupów wspólnie z bliskimi.
+            Zaproś do 4 osób (rodzina, partner, współlokatorzy).
+          </p>
+          <button style={s.btnRodzina} onClick={onRodzina}>
+            👨‍👩‍👧 Zarządzaj rodziną
+          </button>
         </section>
 
         {jestAdmin && (
@@ -144,6 +155,12 @@ const s = {
 
   btnAdmin: {
     ...ui.btnPrimary, width: '100%', padding: '12px 16px', fontSize: 14,
+  },
+  btnRodzina: {
+    background: t.surface, border: `1px solid ${t.borderStrong}`,
+    color: t.text, borderRadius: 12, padding: '12px 16px',
+    fontFamily: fonts.sans, fontSize: 14, fontWeight: 600,
+    cursor: 'pointer', width: '100%',
   },
   btnWyloguj: {
     background: 'none', border: `1px solid ${t.border}`,

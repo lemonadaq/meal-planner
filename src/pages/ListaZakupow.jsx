@@ -16,7 +16,7 @@ const KATEGORIE = [
 
 const JEDNOSTKI = ['', 'szt.', 'opak.', 'g', 'kg', 'ml', 'l', 'pęczek']
 
-export default function ListaZakupow({ user, onBack, domyslnePorcje = 1, sledz }) {
+export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje = 1, sledz }) {
   const [lista, setLista] = useState([])
   const [wlasne, setWlasne] = useState([]) // z tabeli zakupy_wlasne
   const [odznaczone, setOdznaczone] = useState(new Set())
@@ -29,7 +29,9 @@ export default function ListaZakupow({ user, onBack, domyslnePorcje = 1, sledz }
 
   const [toast, setToast] = useState(null)
   const toastTimer = useRef(null)
-  const storageKey = `lista_zakupow_${user.id}`
+  // Stan odznaczonych jest teraz w bazie (zakupy_historia, wspólne dla rodziny),
+  // a nie w localStorage — funkcja zostaje jako no-op, żeby nie zmieniać call-site'ów.
+  const storageKey = `lista_zakupow_${user.id}` // legacy, niezużywane
 
   function pokazToast(msg, onUndo) {
     if (toastTimer.current) clearTimeout(toastTimer.current)
@@ -50,14 +52,16 @@ export default function ListaZakupow({ user, onBack, domyslnePorcje = 1, sledz }
     niedziela.setDate(niedziela.getDate() + 6)
     const niedzielaStr = formatDataLocal(niedziela)
 
-    const [{ data: planData }, { data: wlasneData }] = await Promise.all([
+    const [{ data: planData }, { data: wlasneData }, { data: historiaData }] = await Promise.all([
       supabase.from('kalendarz').select('*')
-        .eq('user_id', user.id)
+        .eq('household_id', householdId)
         .gte('data', poniedzialek)
         .lte('data', niedzielaStr),
       supabase.from('zakupy_wlasne').select('*')
-        .eq('user_id', user.id)
+        .eq('household_id', householdId)
         .order('created_at'),
+      supabase.from('zakupy_historia').select('*')
+        .eq('household_id', householdId),
     ])
 
     // Wyczyść jednorazowe kupione własne produkty (z poprzednich tygodni)
@@ -133,20 +137,76 @@ export default function ListaZakupow({ user, onBack, domyslnePorcje = 1, sledz }
       a.kategoria.localeCompare(b.kategoria) || a.skladnik.localeCompare(b.skladnik)
     )
 
-    // Odtwórz stan odznaczonych z localStorage (tylko te które wciąż są na liście)
-    const zapisane = JSON.parse(localStorage.getItem(storageKey) || '[]')
+    // Odtwórz stan odznaczonych z bazy (zakupy_historia jest wspólne dla rodziny)
     const aktualneKlucze = new Set(posortowane.map(i => i.klucz))
-    const odtworzone = new Set([...zapisane].filter(klucz => aktualneKlucze.has(klucz)))
+    const odtworzone = new Set()
+    const mapaHistoriaId = {}
+    ;(historiaData || []).forEach(h => {
+      const klucz = `${h.skladnik}||${h.jednostka || ''}`
+      if (aktualneKlucze.has(klucz)) {
+        odtworzone.add(klucz)
+        mapaHistoriaId[klucz] = h.id
+      }
+    })
 
     setLista(posortowane)
     setOdznaczone(odtworzone)
+    setHistoriaIds(mapaHistoriaId)
     setLoading(false)
-  }, [user.id, domyslnePorcje, storageKey])
+  }, [householdId, domyslnePorcje])
 
   useEffect(() => { generuj() }, [generuj])
 
-  function zapiszStanOdznaczenia(nowySet) {
-    localStorage.setItem(storageKey, JSON.stringify([...nowySet]))
+  // Realtime: gdy partner odhaczy/doda coś, aktualizuj lokalnie bez pełnego reloadu.
+  // - zakupy_historia: ktoś odhaczył składnik → dodaj klucz do odznaczonych
+  // - zakupy_wlasne:    ktoś dodał/zmienił/usunął własny produkt → odśwież listę wlasne
+  useEffect(() => {
+    if (!householdId) return
+
+    const channel = supabase
+      .channel(`zakupy:${householdId}`)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'zakupy_historia', filter: `household_id=eq.${householdId}` },
+        (payload) => {
+          const row = payload.new || payload.old
+          if (!row) return
+          const klucz = `${row.skladnik}||${row.jednostka || ''}`
+          if (payload.eventType === 'DELETE') {
+            setOdznaczone(prev => {
+              if (!prev.has(klucz)) return prev
+              const n = new Set(prev); n.delete(klucz); return n
+            })
+            setHistoriaIds(prev => {
+              if (!(klucz in prev)) return prev
+              const n = { ...prev }; delete n[klucz]; return n
+            })
+          } else {
+            setOdznaczone(prev => prev.has(klucz) ? prev : new Set(prev).add(klucz))
+            setHistoriaIds(prev => prev[klucz] === row.id ? prev : { ...prev, [klucz]: row.id })
+          }
+        }
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'zakupy_wlasne', filter: `household_id=eq.${householdId}` },
+        (payload) => {
+          if (payload.eventType === 'DELETE') {
+            setWlasne(prev => prev.filter(w => w.id !== payload.old?.id))
+          } else if (payload.eventType === 'INSERT') {
+            setWlasne(prev => prev.some(w => w.id === payload.new.id) ? prev : [...prev, payload.new])
+          } else if (payload.eventType === 'UPDATE') {
+            setWlasne(prev => prev.map(w => w.id === payload.new.id ? payload.new : w))
+          }
+        }
+      )
+      .subscribe()
+
+    return () => { supabase.removeChannel(channel) }
+  }, [householdId])
+
+  function zapiszStanOdznaczenia(/* nowySet */) {
+    // No-op — stan jest w bazie (zakupy_historia) i synchronizowany przez Realtime.
   }
 
   // ── Toggle zwykłego skladnika (z planu) ──
@@ -170,7 +230,7 @@ export default function ListaZakupow({ user, onBack, domyslnePorcje = 1, sledz }
       }
     } else {
       const { data } = await supabase.from('zakupy_historia').insert({
-        user_id: user.id, skladnik: item.skladnik,
+        household_id: householdId, user_id: user.id, skladnik: item.skladnik,
         ilosc: item.ilosc, jednostka: item.jednostka,
         kategoria: item.kategoria,
       }).select().single()
@@ -219,7 +279,7 @@ export default function ListaZakupow({ user, onBack, domyslnePorcje = 1, sledz }
       pokazToast(`Zmieniono: ${dane.nazwa}`)
     } else {
       const { data } = await supabase.from('zakupy_wlasne')
-        .insert({ ...dane, user_id: user.id, kupione: false })
+        .insert({ ...dane, household_id: householdId, user_id: user.id, kupione: false })
         .select().single()
       if (data) setWlasne(prev => [...prev, data])
       pokazToast(`Dodano: ${dane.nazwa}`)
@@ -246,7 +306,6 @@ export default function ListaZakupow({ user, onBack, domyslnePorcje = 1, sledz }
     if (snapshot.odznaczone.size === 0) return
 
     setOdznaczone(new Set())
-    localStorage.removeItem(storageKey)
     const ids = Object.values(snapshot.historiaIds)
     if (ids.length > 0) await supabase.from('zakupy_historia').delete().in('id', ids)
     setHistoriaIds({})
@@ -258,7 +317,7 @@ export default function ListaZakupow({ user, onBack, domyslnePorcje = 1, sledz }
       if (itemsDoOdtworzenia.length > 0) {
         const { data } = await supabase.from('zakupy_historia').insert(
           itemsDoOdtworzenia.map(i => ({
-            user_id: user.id, skladnik: i.skladnik,
+            household_id: householdId, user_id: user.id, skladnik: i.skladnik,
             ilosc: i.ilosc, jednostka: i.jednostka, kategoria: i.kategoria,
           }))
         ).select()

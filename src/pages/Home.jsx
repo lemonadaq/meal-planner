@@ -43,7 +43,7 @@ function getEmoji(nazwa) {
   return '🍽️'
 }
 
-export default function Home({ user, onTabChange, onUstawienia, onSelectDanie, refreshKey }) {
+export default function Home({ user, householdId, onTabChange, onUstawienia, onSelectDanie, refreshKey }) {
   const imie = user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'Cześć'
   const [powitanie] = useState(getPowitanie)
 
@@ -65,7 +65,7 @@ export default function Home({ user, onTabChange, onUstawienia, onSelectDanie, r
 
   // ── Pobieranie ────────────────────────────────────────────────
   useEffect(() => {
-    if (!user?.id) return
+    if (!householdId) return
     let anulowane = false
 
     async function pobierz() {
@@ -73,7 +73,7 @@ export default function Home({ user, onTabChange, onUstawienia, onSelectDanie, r
       const { data: plany } = await supabase
         .from('kalendarz')
         .select('*')
-        .eq('user_id', user.id)
+        .eq('household_id', householdId)
         .in('data', [dzisStr, jutroStr])
 
       if (anulowane) return
@@ -106,7 +106,7 @@ export default function Home({ user, onTabChange, onUstawienia, onSelectDanie, r
       const { data: historia } = await supabase
         .from('kalendarz')
         .select('danie, data')
-        .eq('user_id', user.id)
+        .eq('household_id', householdId)
         .gte('data', formatData(dawno))
         .not('danie', 'is', null)
 
@@ -142,7 +142,7 @@ export default function Home({ user, onTabChange, onUstawienia, onSelectDanie, r
 
     pobierz()
     return () => { anulowane = true }
-  }, [user?.id, dzisStr, jutroStr, refreshKey])
+  }, [householdId, dzisStr, jutroStr, refreshKey])
 
   function losujInne() {
     if (sugestieMozliwe.length < 2) return
