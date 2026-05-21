@@ -563,19 +563,6 @@ function WidokDnia({
     const stan = { nazwa, typ, meta, x, y, podniesiony: false }
     dragRef.current = stan
     setDragState(stan)
-    // Zablokuj scroll dokumentu i wyłącz domyślne gesty dotykowe.
-    // Bez tego mobilna przeglądarka zaczyna scrollować zanim zdążymy
-    // wywołać preventDefault na pointermove.
-    document.body.style.overflow = 'hidden'
-    document.body.style.touchAction = 'none'
-    document.documentElement.style.touchAction = 'none'
-  }, [])
-
-  // Cleanup blokady scrolla — gdyby coś padło w trakcie
-  useEffect(() => () => {
-    document.body.style.overflow = ''
-    document.body.style.touchAction = ''
-    document.documentElement.style.touchAction = ''
   }, [])
 
   const onPointerDownItem = useCallback((e, nazwa, typ, meta) => {
@@ -592,19 +579,64 @@ function WidokDnia({
           startPos.current.target.setPointerCapture?.(startPos.current.pointerId)
         }
       } catch {}
-    }, 320)
+    }, 250)
   }, [startDrag])
 
+  // ── Blokada scrolla strony, gdy kafelek jest podniesiony ─────
+  // KLUCZOWE: nie używamy overflow: hidden bo to psuje position: sticky
+  // (sticky-element wymaga scrollującego przodka). Zamiast tego
+  // zapamiętujemy pozycję scrolla, ustawiamy body w position: fixed
+  // (iOS-safe pattern), a po puszczeniu przywracamy pozycję.
+  // Dzień u góry jest w osobnym sticky-elemencie i zostaje na miejscu.
+  useEffect(() => {
+    if (!dragState?.podniesiony) return
+    const body = document.body
+    const scrollY = window.scrollY
+    const prev = {
+      position: body.style.position,
+      top: body.style.top,
+      left: body.style.left,
+      right: body.style.right,
+      width: body.style.width,
+      touchAction: body.style.touchAction,
+      overscrollBehavior: body.style.overscrollBehavior,
+    }
+    body.style.position = 'fixed'
+    body.style.top = `-${scrollY}px`
+    body.style.left = '0'
+    body.style.right = '0'
+    body.style.width = '100%'
+    body.style.touchAction = 'none'
+    body.style.overscrollBehavior = 'contain'
+
+    return () => {
+      body.style.position = prev.position
+      body.style.top = prev.top
+      body.style.left = prev.left
+      body.style.right = prev.right
+      body.style.width = prev.width
+      body.style.touchAction = prev.touchAction
+      body.style.overscrollBehavior = prev.overscrollBehavior
+      window.scrollTo(0, scrollY)
+    }
+  }, [dragState?.podniesiony])
+
   // ── Edge scroll: jak drag jest blisko góry/dołu, scrolluj okno
+  // UWAGA: body jest w position: fixed (zob. blokada scrolla powyżej),
+  // więc window.scrollBy nie zadziała. Zamiast tego modyfikujemy
+  // body.style.top, który symuluje scroll.
   const edgeScrollDelta = useRef(0)
   useEffect(() => {
     function loop() {
-      if (edgeScrollDelta.current !== 0) {
-        // body ma overflow:hidden — scrollujemy window, ale to nie zadziała.
-        // Dlatego edge-scroll robimy przez window.scrollBy NA elemencie outer.
-        // Najprościej: tymczasowo zdjąć blokadę, scroll, blokada z powrotem.
-        // Ale to chaotyczne. Zamiast tego scrollujemy najbliższego scroll-parenta.
-        window.scrollBy(0, edgeScrollDelta.current)
+      if (edgeScrollDelta.current !== 0 && dragRef.current?.podniesiony) {
+        const body = document.body
+        const current = parseInt(body.style.top || '0', 10) // ujemna wartość
+        const noweTop = current - edgeScrollDelta.current
+        // Cap: nie pozwól scrollować poza dokument
+        const max = 0
+        const min = -(document.documentElement.scrollHeight - window.innerHeight)
+        const skorygowane = Math.max(min, Math.min(max, noweTop))
+        body.style.top = `${skorygowane}px`
       }
       edgeScrollRaf.current = requestAnimationFrame(loop)
     }
@@ -617,8 +649,8 @@ function WidokDnia({
       if (longPressTimer.current && startPos.current) {
         const dx = e.clientX - startPos.current.x
         const dy = e.clientY - startPos.current.y
-        // Mały próg — drobne drgnięcie palca to OK, ale wyraźny ruch = scroll
-        if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
+        // Próg ruchu: drobne drgnięcie palca to OK, ale wyraźny ruch = scroll, anuluj long-press
+        if (Math.abs(dx) > 12 || Math.abs(dy) > 12) {
           clearTimeout(longPressTimer.current)
           longPressTimer.current = null
           startPos.current = null
@@ -629,20 +661,14 @@ function WidokDnia({
         dragRef.current = stan
         setDragState(stan)
 
-        // Edge scroll: blisko górnej / dolnej krawędzi viewportu
-        // Tu chwilowo zdejmujemy blokadę overflow żeby window mógł się przesunąć
+        // Edge scroll: ustaw deltę, faktyczny scroll robi loop powyżej
         const vh = window.innerHeight
-        let delta = 0
         if (e.clientY < EDGE_SCROLL_THRESHOLD) {
-          delta = -EDGE_SCROLL_SPEED * (1 - e.clientY / EDGE_SCROLL_THRESHOLD)
+          edgeScrollDelta.current = -EDGE_SCROLL_SPEED * (1 - e.clientY / EDGE_SCROLL_THRESHOLD)
         } else if (e.clientY > vh - EDGE_SCROLL_THRESHOLD) {
-          delta = EDGE_SCROLL_SPEED * (1 - (vh - e.clientY) / EDGE_SCROLL_THRESHOLD)
-        }
-        if (delta !== 0) {
-          // Window scroll mimo overflow:hidden na body — chwilowe zdjęcie
-          document.body.style.overflow = ''
-          window.scrollBy(0, delta)
-          document.body.style.overflow = 'hidden'
+          edgeScrollDelta.current = EDGE_SCROLL_SPEED * (1 - (vh - e.clientY) / EDGE_SCROLL_THRESHOLD)
+        } else {
+          edgeScrollDelta.current = 0
         }
 
         if (e.cancelable) e.preventDefault()
@@ -659,12 +685,6 @@ function WidokDnia({
         if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) return key
       }
       return null
-    }
-
-    function odblokujScroll() {
-      document.body.style.overflow = ''
-      document.body.style.touchAction = ''
-      document.documentElement.style.touchAction = ''
     }
 
     function handleUp(e) {
@@ -701,9 +721,9 @@ function WidokDnia({
             }
           }
         }
+        // Odblokowanie scrolla zrobi useEffect cleanup (gdy dragState?.podniesiony → false)
         dragRef.current = null
         setDragState(null)
-        odblokujScroll()
       }
       startPos.current = null
     }
@@ -716,7 +736,6 @@ function WidokDnia({
       window.removeEventListener('pointermove', handleMove)
       window.removeEventListener('pointerup', handleUp)
       window.removeEventListener('pointercancel', handleUp)
-      odblokujScroll()
     }
   }, [dataStr, subTryb, onUstawDanie, onUstawSide, onSetSubTryb])
 
