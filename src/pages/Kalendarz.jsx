@@ -572,8 +572,6 @@ function WidokDnia({
     longPressTimer.current = setTimeout(() => {
       startDrag(nazwa, typ, meta, x, y)
       if (navigator.vibrate) navigator.vibrate(20)
-      // Capture: dalsze pointer events nadal trafiają do tego elementu,
-      // nawet gdy palec wyszedł poza niego. Krytyczne na mobile.
       try {
         if (startPos.current?.target && startPos.current?.pointerId != null) {
           startPos.current.target.setPointerCapture?.(startPos.current.pointerId)
@@ -582,74 +580,12 @@ function WidokDnia({
     }, 250)
   }, [startDrag])
 
-  // ── Blokada scrolla strony, gdy kafelek jest podniesiony ─────
-  // KLUCZOWE: nie używamy overflow: hidden bo to psuje position: sticky
-  // (sticky-element wymaga scrollującego przodka). Zamiast tego
-  // zapamiętujemy pozycję scrolla, ustawiamy body w position: fixed
-  // (iOS-safe pattern), a po puszczeniu przywracamy pozycję.
-  // Dzień u góry jest w osobnym sticky-elemencie i zostaje na miejscu.
-  useEffect(() => {
-    if (!dragState?.podniesiony) return
-    const body = document.body
-    const scrollY = window.scrollY
-    const prev = {
-      position: body.style.position,
-      top: body.style.top,
-      left: body.style.left,
-      right: body.style.right,
-      width: body.style.width,
-      touchAction: body.style.touchAction,
-      overscrollBehavior: body.style.overscrollBehavior,
-    }
-    body.style.position = 'fixed'
-    body.style.top = `-${scrollY}px`
-    body.style.left = '0'
-    body.style.right = '0'
-    body.style.width = '100%'
-    body.style.touchAction = 'none'
-    body.style.overscrollBehavior = 'contain'
-
-    return () => {
-      body.style.position = prev.position
-      body.style.top = prev.top
-      body.style.left = prev.left
-      body.style.right = prev.right
-      body.style.width = prev.width
-      body.style.touchAction = prev.touchAction
-      body.style.overscrollBehavior = prev.overscrollBehavior
-      window.scrollTo(0, scrollY)
-    }
-  }, [dragState?.podniesiony])
-
-  // ── Edge scroll: jak drag jest blisko góry/dołu, scrolluj okno
-  // UWAGA: body jest w position: fixed (zob. blokada scrolla powyżej),
-  // więc window.scrollBy nie zadziała. Zamiast tego modyfikujemy
-  // body.style.top, który symuluje scroll.
-  const edgeScrollDelta = useRef(0)
-  useEffect(() => {
-    function loop() {
-      if (edgeScrollDelta.current !== 0 && dragRef.current?.podniesiony) {
-        const body = document.body
-        const current = parseInt(body.style.top || '0', 10) // ujemna wartość
-        const noweTop = current - edgeScrollDelta.current
-        // Cap: nie pozwól scrollować poza dokument
-        const max = 0
-        const min = -(document.documentElement.scrollHeight - window.innerHeight)
-        const skorygowane = Math.max(min, Math.min(max, noweTop))
-        body.style.top = `${skorygowane}px`
-      }
-      edgeScrollRaf.current = requestAnimationFrame(loop)
-    }
-    edgeScrollRaf.current = requestAnimationFrame(loop)
-    return () => cancelAnimationFrame(edgeScrollRaf.current)
-  }, [])
-
   useEffect(() => {
     function handleMove(e) {
       if (longPressTimer.current && startPos.current) {
         const dx = e.clientX - startPos.current.x
         const dy = e.clientY - startPos.current.y
-        // Próg ruchu: drobne drgnięcie palca to OK, ale wyraźny ruch = scroll, anuluj long-press
+        // Próg ruchu — gdy palec się rusza ZANIM odpali long-press, anuluj (= scroll palcem)
         if (Math.abs(dx) > 12 || Math.abs(dy) > 12) {
           clearTimeout(longPressTimer.current)
           longPressTimer.current = null
@@ -660,17 +596,9 @@ function WidokDnia({
         const stan = { ...dragRef.current, x: e.clientX, y: e.clientY, podniesiony: true }
         dragRef.current = stan
         setDragState(stan)
-
-        // Edge scroll: ustaw deltę, faktyczny scroll robi loop powyżej
-        const vh = window.innerHeight
-        if (e.clientY < EDGE_SCROLL_THRESHOLD) {
-          edgeScrollDelta.current = -EDGE_SCROLL_SPEED * (1 - e.clientY / EDGE_SCROLL_THRESHOLD)
-        } else if (e.clientY > vh - EDGE_SCROLL_THRESHOLD) {
-          edgeScrollDelta.current = EDGE_SCROLL_SPEED * (1 - (vh - e.clientY) / EDGE_SCROLL_THRESHOLD)
-        } else {
-          edgeScrollDelta.current = 0
-        }
-
+        // KLUCZ: gdy drag aktywny, blokujemy scroll przeglądarki preventDefault.
+        // Działa dzięki touchAction: 'none' na kafelku galerii (tam pointer
+        // wystartował) — listener z passive: false może faktycznie preventDefault.
         if (e.cancelable) e.preventDefault()
       }
     }
@@ -692,7 +620,6 @@ function WidokDnia({
         clearTimeout(longPressTimer.current)
         longPressTimer.current = null
       }
-      edgeScrollDelta.current = 0
 
       if (dragRef.current) {
         const stan = dragRef.current
@@ -721,14 +648,12 @@ function WidokDnia({
             }
           }
         }
-        // Odblokowanie scrolla zrobi useEffect cleanup (gdy dragState?.podniesiony → false)
         dragRef.current = null
         setDragState(null)
       }
       startPos.current = null
     }
 
-    // passive: false jest KLUCZOWE — pozwala wywołać preventDefault na touch.
     window.addEventListener('pointermove', handleMove, { passive: false })
     window.addEventListener('pointerup', handleUp)
     window.addEventListener('pointercancel', handleUp)
@@ -1449,9 +1374,11 @@ const s = {
     display: 'flex', flexDirection: 'column', gap: 6,
     background: 'transparent', border: 'none', padding: 0,
     cursor: 'pointer', fontFamily: fonts.sans, textAlign: 'left',
-    // touchAction: 'manipulation' pozwala na natywny scroll w osi Y,
-    // ale wycina double-tap-to-zoom. Drag startuje przez long-press w JS.
-    touchAction: 'manipulation', userSelect: 'none', WebkitUserSelect: 'none',
+    // touchAction: 'none' jest KLUCZOWE — bez tego Android Chrome
+    // kradnie gest scrollem zanim long-press zdąży się odpalić.
+    // Galerię scrollujesz palcem między kafelkami (gap między nimi
+    // i obszar wokół) — to jest świadomy kompromis żeby drag w ogóle działał.
+    touchAction: 'none', userSelect: 'none', WebkitUserSelect: 'none',
   },
   galeriaThumb: {
     aspectRatio: '1', borderRadius: 14, overflow: 'hidden',
