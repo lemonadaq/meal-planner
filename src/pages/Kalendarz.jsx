@@ -64,7 +64,7 @@ function emojiDania(n) {
 // ════════════════════════════════════════════════════════════
 //   GŁÓWNY KOMPONENT
 // ════════════════════════════════════════════════════════════
-export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 1, sledz, onSelectDanie }) {
+export default function Kalendarz({ user, onBack, domyslnePorcje = 1, sledz, onSelectDanie }) {
   const [tydzien, setTydzien] = useState(0)
   const [dania, setDania] = useState([])
   const [dodatki, setDodatki] = useState([])
@@ -80,6 +80,10 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
 
   const [toast, setToast] = useState(null)
   const toastTimer = useRef(null)
+
+  // Filtry galerii — trzymane w rodzicu, żeby przeżyły wejście/wyjście z DanieDetail
+  const [filtrTekst, setFiltrTekst] = useState('')
+  const [filtrRodzaj, setFiltrRodzaj] = useState('wszystko')
   function pokazToast(msg, onUndo) {
     if (toastTimer.current) clearTimeout(toastTimer.current)
     setToast({ msg, onUndo })
@@ -101,7 +105,6 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
   }, [tydzien])
 
   useEffect(() => {
-    if (!householdId) return
     let anulowane = false
     async function pobierz() {
       setLoading(true)
@@ -111,7 +114,7 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
         // Wszystkie składniki — do search po składnikach
         supabase.from('dania').select('"Danie", "Składnik"'),
         supabase.from('kalendarz').select('*')
-          .eq('household_id', householdId)
+          .eq('user_id', user.id)
           .gte('data', formatData(dni[0]))
           .lte('data', formatData(dni[6])),
       ])
@@ -153,34 +156,7 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
     }
     pobierz()
     return () => { anulowane = true }
-  }, [tydzien, householdId])
-
-  // Realtime sync: gdy ktoś z rodziny zmieni plan, aktualizuj lokalnie.
-  useEffect(() => {
-    if (!householdId) return
-    const dataOd = formatData(dni[0])
-    const dataDo = formatData(dni[6])
-
-    const channel = supabase
-      .channel(`kalendarz:${householdId}`)
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'kalendarz', filter: `household_id=eq.${householdId}` },
-        (payload) => {
-          const row = payload.new || payload.old
-          if (!row?.data || row.data < dataOd || row.data > dataDo) return
-          const klucz = `${row.data}_${row.posilek}`
-          if (payload.eventType === 'DELETE') {
-            setPlan(p => { const n = { ...p }; delete n[klucz]; return n })
-          } else {
-            setPlan(p => ({ ...p, [klucz]: payload.new }))
-          }
-        }
-      )
-      .subscribe()
-
-    return () => { supabase.removeChannel(channel) }
-  }, [householdId, dni])
+  }, [tydzien, user.id])
 
   const daniaMap = useMemo(() => { const m = {}; dania.forEach(d => { m[d.Danie] = d }); return m }, [dania])
   const dodatkiMap = useMemo(() => { const m = {}; dodatki.forEach(d => { m[d.Dodatek] = d }); return m }, [dodatki])
@@ -215,7 +191,7 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
       }
     } else {
       const { data } = await supabase.from('kalendarz')
-        .insert({ household_id: householdId, user_id: user.id, data: dataStr, posilek, danie: nazwa, dodatki: [] })
+        .insert({ user_id: user.id, data: dataStr, posilek, danie: nazwa, dodatki: [] })
         .select().single()
       if (data) setPlan(p => ({ ...p, [klucz]: data }))
       sledz?.('zaplanuj_posilek', { dzien: dataStr, posilek, danie: nazwa })
@@ -329,7 +305,7 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
     const poprzedniPon = new Date(poniedzialek); poprzedniPon.setDate(poprzedniPon.getDate() - 7)
     const poprzedniNd = new Date(poprzedniPon); poprzedniNd.setDate(poprzedniNd.getDate() + 6)
     const { data: poprzedniPlan } = await supabase.from('kalendarz').select('*')
-      .eq('household_id', householdId)
+      .eq('user_id', user.id)
       .gte('data', formatData(poprzedniPon))
       .lte('data', formatData(poprzedniNd))
 
@@ -463,6 +439,10 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
             onZmienPorcje={zmienPorcje}
             onPodmien={(wpis) => setPodmianaModal(wpis)}
             onKopiujDzien={(zDataStr) => setKopiujModal({ zDataStr })}
+            filtrTekst={filtrTekst}
+            setFiltrTekst={setFiltrTekst}
+            filtrRodzaj={filtrRodzaj}
+            setFiltrRodzaj={setFiltrRodzaj}
           />
         )}
       </div>
@@ -553,10 +533,14 @@ function WidokDnia({
   onUstawDanie, onUstawSide,
   onUsunPosilek, onUsunSide,
   onZmienPorcje, onPodmien, onKopiujDzien,
+  filtrTekst, setFiltrTekst,
+  filtrRodzaj, setFiltrRodzaj,
 }) {
   const dataStr = formatData(dzien)
-  const [filtr, setFiltr] = useState('')
   const [dragState, setDragState] = useState(null)
+  // Alias dla mniejszych zmian w dalszym kodzie
+  const filtr = filtrTekst
+  const setFiltr = setFiltrTekst
 
   // Refy do slotów (dla wykrywania drop): zarówno głównych jak i side-slotów
   // Klucz: `${posilek}` dla dania, `${posilek}_side_${i}` dla side-slotów
@@ -572,45 +556,55 @@ function WidokDnia({
     [plan, dataStr]
   )
 
-  // Reset filtra przy zmianie sub-trybu / dnia
-  useEffect(() => { setFiltr('') }, [subTryb?.typ, subTryb?.posilek, dataStr])
+  // UWAGA: świadomie NIE resetujemy filtrów przy zmianie dnia/subTrybu.
+  // Filtry żyją w rodzicu i przeżywają wejście/wyjście z DanieDetail.
 
   const startDrag = useCallback((nazwa, typ, meta, x, y) => {
     const stan = { nazwa, typ, meta, x, y, podniesiony: false }
     dragRef.current = stan
     setDragState(stan)
+    // Zablokuj scroll dokumentu i wyłącz domyślne gesty dotykowe.
+    // Bez tego mobilna przeglądarka zaczyna scrollować zanim zdążymy
+    // wywołać preventDefault na pointermove.
+    document.body.style.overflow = 'hidden'
+    document.body.style.touchAction = 'none'
+    document.documentElement.style.touchAction = 'none'
+  }, [])
+
+  // Cleanup blokady scrolla — gdyby coś padło w trakcie
+  useEffect(() => () => {
+    document.body.style.overflow = ''
+    document.body.style.touchAction = ''
+    document.documentElement.style.touchAction = ''
   }, [])
 
   const onPointerDownItem = useCallback((e, nazwa, typ, meta) => {
     if (e.pointerType === 'mouse' && e.button !== 0) return
     const x = e.clientX, y = e.clientY
-    startPos.current = { x, y, nazwa, typ, meta }
+    startPos.current = { x, y, nazwa, typ, meta, pointerId: e.pointerId, target: e.currentTarget }
     longPressTimer.current = setTimeout(() => {
       startDrag(nazwa, typ, meta, x, y)
       if (navigator.vibrate) navigator.vibrate(20)
-    }, 250)
+      // Capture: dalsze pointer events nadal trafiają do tego elementu,
+      // nawet gdy palec wyszedł poza niego. Krytyczne na mobile.
+      try {
+        if (startPos.current?.target && startPos.current?.pointerId != null) {
+          startPos.current.target.setPointerCapture?.(startPos.current.pointerId)
+        }
+      } catch {}
+    }, 320)
   }, [startDrag])
 
   // ── Edge scroll: jak drag jest blisko góry/dołu, scrolluj okno
-  // UWAGA: gdy drag jest aktywny, body jest w position: fixed (iOS-safe pattern),
-  // więc window.scrollBy nie zadziała. W tym trybie modyfikujemy body.style.top
-  // (które reprezentuje "zamrożoną" pozycję scrolla — gdy ją zmieniamy, treść
-  // wizualnie przesuwa się w górę/dół).
   const edgeScrollDelta = useRef(0)
   useEffect(() => {
     function loop() {
       if (edgeScrollDelta.current !== 0) {
-        const body = document.body
-        if (body.style.position === 'fixed') {
-          // Drag aktywny — przesuwamy zamrożoną pozycję
-          const current = parseFloat(body.style.top || '0') // ujemna wartość
-          const max = -(document.documentElement.scrollHeight - window.innerHeight)
-          const nowy = Math.max(max, Math.min(0, current - edgeScrollDelta.current))
-          body.style.top = `${nowy}px`
-        } else {
-          // Normalny scroll (np. drag nie wystartował jeszcze)
-          window.scrollBy(0, edgeScrollDelta.current)
-        }
+        // body ma overflow:hidden — scrollujemy window, ale to nie zadziała.
+        // Dlatego edge-scroll robimy przez window.scrollBy NA elemencie outer.
+        // Najprościej: tymczasowo zdjąć blokadę, scroll, blokada z powrotem.
+        // Ale to chaotyczne. Zamiast tego scrollujemy najbliższego scroll-parenta.
+        window.scrollBy(0, edgeScrollDelta.current)
       }
       edgeScrollRaf.current = requestAnimationFrame(loop)
     }
@@ -618,56 +612,13 @@ function WidokDnia({
     return () => cancelAnimationFrame(edgeScrollRaf.current)
   }, [])
 
-  // ── Blokada scrolla strony, gdy kafelek jest podniesiony
-  // UWAGA: nie używamy overflow: hidden bo to psuje position: sticky
-  // (sticky-element wymaga scrollującego przodka). Zamiast tego zapamiętujemy
-  // pozycję scrolla, ustawiamy body w position: fixed (iOS-safe pattern),
-  // a po puszczeniu kafelka przywracamy pozycję.
-  useEffect(() => {
-    if (!dragState?.podniesiony) return
-    const body = document.body
-    const scrollY = window.scrollY
-    const prev = {
-      position: body.style.position,
-      top: body.style.top,
-      left: body.style.left,
-      right: body.style.right,
-      width: body.style.width,
-      touchAction: body.style.touchAction,
-      overscrollBehavior: body.style.overscrollBehavior,
-    }
-    body.style.position = 'fixed'
-    body.style.top = `-${scrollY}px`
-    body.style.left = '0'
-    body.style.right = '0'
-    body.style.width = '100%'
-    body.style.touchAction = 'none'
-    body.style.overscrollBehavior = 'contain'
-
-    return () => {
-      // Odczytaj aktualne body.style.top — mogło zostać zmienione przez edge-scroll
-      const ostatniTop = parseFloat(body.style.top || '0')
-      const docelowyScrollY = ostatniTop ? Math.abs(ostatniTop) : scrollY
-
-      body.style.position = prev.position
-      body.style.top = prev.top
-      body.style.left = prev.left
-      body.style.right = prev.right
-      body.style.width = prev.width
-      body.style.touchAction = prev.touchAction
-      body.style.overscrollBehavior = prev.overscrollBehavior
-      // Przywróć pozycję scrolla (uwzględniając edge-scroll w trakcie dragu)
-      window.scrollTo(0, docelowyScrollY)
-    }
-  }, [dragState?.podniesiony])
-
   useEffect(() => {
     function handleMove(e) {
       if (longPressTimer.current && startPos.current) {
         const dx = e.clientX - startPos.current.x
         const dy = e.clientY - startPos.current.y
-        // Większy próg + jeśli głównie pionowy ruch = scroll, anuluj long-press
-        if (Math.abs(dx) > 14 || Math.abs(dy) > 14) {
+        // Mały próg — drobne drgnięcie palca to OK, ale wyraźny ruch = scroll
+        if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
           clearTimeout(longPressTimer.current)
           longPressTimer.current = null
           startPos.current = null
@@ -679,13 +630,19 @@ function WidokDnia({
         setDragState(stan)
 
         // Edge scroll: blisko górnej / dolnej krawędzi viewportu
+        // Tu chwilowo zdejmujemy blokadę overflow żeby window mógł się przesunąć
         const vh = window.innerHeight
+        let delta = 0
         if (e.clientY < EDGE_SCROLL_THRESHOLD) {
-          edgeScrollDelta.current = -EDGE_SCROLL_SPEED * (1 - e.clientY / EDGE_SCROLL_THRESHOLD)
+          delta = -EDGE_SCROLL_SPEED * (1 - e.clientY / EDGE_SCROLL_THRESHOLD)
         } else if (e.clientY > vh - EDGE_SCROLL_THRESHOLD) {
-          edgeScrollDelta.current = EDGE_SCROLL_SPEED * (1 - (vh - e.clientY) / EDGE_SCROLL_THRESHOLD)
-        } else {
-          edgeScrollDelta.current = 0
+          delta = EDGE_SCROLL_SPEED * (1 - (vh - e.clientY) / EDGE_SCROLL_THRESHOLD)
+        }
+        if (delta !== 0) {
+          // Window scroll mimo overflow:hidden na body — chwilowe zdjęcie
+          document.body.style.overflow = ''
+          window.scrollBy(0, delta)
+          document.body.style.overflow = 'hidden'
         }
 
         if (e.cancelable) e.preventDefault()
@@ -693,10 +650,7 @@ function WidokDnia({
     }
 
     function znajdzCel(x, y) {
-      // Sprawdzaj side-sloty przed głównym (są na wierzchu wizualnie i mniejsze)
-      // Klucze: `${posilek}_side_0`, `${posilek}_side_1`, `${posilek}`
       const keys = Object.keys(slotRefs.current)
-      // Sortuj: side przed głównym (po długości klucza)
       keys.sort((a, b) => b.length - a.length)
       for (const key of keys) {
         const el = slotRefs.current[key]
@@ -705,6 +659,12 @@ function WidokDnia({
         if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) return key
       }
       return null
+    }
+
+    function odblokujScroll() {
+      document.body.style.overflow = ''
+      document.body.style.touchAction = ''
+      document.documentElement.style.touchAction = ''
     }
 
     function handleUp(e) {
@@ -718,19 +678,16 @@ function WidokDnia({
         const stan = dragRef.current
         let targetKey = null
         if (subTryb) {
-          // W sub-trybie cel jest predefiniowany — pierwszy pusty side-slot lub konkretny
           targetKey = subTryb.posilek + '_side_' + (subTryb.slotIdx ?? 0)
         } else {
           targetKey = znajdzCel(e.clientX, e.clientY)
         }
 
         if (targetKey) {
-          // Parsuj key: "Obiad" lub "Obiad_side_0"
           const sideMatch = targetKey.match(/^(.+)_side_(\d+)$/)
           if (sideMatch) {
             const posilek = sideMatch[1]
             const slotIdx = parseInt(sideMatch[2], 10)
-            // Jeśli upuszczamy DANIE na side-slot — zignoruj
             if (stan.typ === 'danie') {
               // No-op
             } else if (stan.typ === 'dodatek' || stan.typ === 'surowka') {
@@ -738,20 +695,20 @@ function WidokDnia({
               onSetSubTryb(null)
             }
           } else {
-            // Główny slot — przyjmuje tylko danie
             const posilek = targetKey
             if (stan.typ === 'danie') {
               onUstawDanie(dataStr, posilek, stan.nazwa)
             }
-            // dodatek/surowka na glowny slot — zignoruj
           }
         }
         dragRef.current = null
         setDragState(null)
+        odblokujScroll()
       }
       startPos.current = null
     }
 
+    // passive: false jest KLUCZOWE — pozwala wywołać preventDefault na touch.
     window.addEventListener('pointermove', handleMove, { passive: false })
     window.addEventListener('pointerup', handleUp)
     window.addEventListener('pointercancel', handleUp)
@@ -759,15 +716,13 @@ function WidokDnia({
       window.removeEventListener('pointermove', handleMove)
       window.removeEventListener('pointerup', handleUp)
       window.removeEventListener('pointercancel', handleUp)
+      odblokujScroll()
     }
   }, [dataStr, subTryb, onUstawDanie, onUstawSide, onSetSubTryb])
 
   // ── Filtrowanie galerii ──
-  // Filtrowanie po typie posiłku: gdy nie jesteśmy w sub-trybie, można pokazać:
-  //  - tylko dania pasujące do "fokusu" (np. ostatnio dotkniętego slotu) — nie ma takiej koncepcji teraz
-  //  - filtr ręczny: chip "Wszystko / Śniadania / Obiady / Kolacje"
-  // Wybieram drugie: user-controlled, prosty toggle.
-  const [filtrRodzaj, setFiltrRodzaj] = useState('wszystko')
+  // filtrRodzaj / setFiltrRodzaj pochodzą z propsów (stan trzymany w Kalendarz)
+  // dzięki czemu filtry przeżywają wejście/wyjście z DanieDetail.
 
   const galeriaItems = useMemo(() => {
     let lista

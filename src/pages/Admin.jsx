@@ -225,11 +225,194 @@ export default function Admin({ onBack }) {
                 </div>
               )}
             </section>
+
+            {/* Edytor skladniki_meta (opakowania) */}
+            <SkladnikiMetaEdytor />
           </>
         )}
       </div>
     </div>
   )
+}
+
+// ════════════════════════════════════════════════════════════
+// Edytor opakowań — które składniki mają być przeliczane na "opak."
+// ════════════════════════════════════════════════════════════
+const JEDNOSTKI_BAZOWE = ['g', 'ml']
+const JEDNOSTKI_OPAK = ['opak.', 'kostka', 'butelka', 'puszka', 'kubek', 'kg', 'l', 'szt.']
+
+function SkladnikiMetaEdytor() {
+  const [meta, setMeta] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [nowy, setNowy] = useState({
+    nazwa: '', jednostka_bazowa: 'g',
+    rozmiar_opakowania: '', jednostka_opakowania: 'opak.',
+    zaokraglaj: true,
+  })
+  const [filtr, setFiltr] = useState('')
+  const [zapisuje, setZapisuje] = useState(false)
+
+  useEffect(() => { pobierz() }, [])
+
+  async function pobierz() {
+    setLoading(true)
+    const { data } = await supabase.from('skladniki_meta').select('*').order('nazwa')
+    setMeta(data || [])
+    setLoading(false)
+  }
+
+  async function dodaj() {
+    if (!nowy.nazwa.trim() || !nowy.rozmiar_opakowania) return
+    setZapisuje(true)
+    const rec = {
+      nazwa: nowy.nazwa.trim(),
+      jednostka_bazowa: nowy.jednostka_bazowa,
+      rozmiar_opakowania: parseFloat(String(nowy.rozmiar_opakowania).replace(',', '.')),
+      jednostka_opakowania: nowy.jednostka_opakowania,
+      zaokraglaj: nowy.zaokraglaj,
+    }
+    const { data, error } = await supabase.from('skladniki_meta').upsert(rec).select().single()
+    if (error) { alert('Błąd: ' + error.message); setZapisuje(false); return }
+    setMeta(prev => {
+      const bez = prev.filter(m => m.nazwa !== rec.nazwa)
+      return [...bez, data].sort((a, b) => a.nazwa.localeCompare(b.nazwa))
+    })
+    setNowy({ nazwa: '', jednostka_bazowa: 'g', rozmiar_opakowania: '', jednostka_opakowania: 'opak.', zaokraglaj: true })
+    setZapisuje(false)
+  }
+
+  async function aktualizuj(nazwa, pola) {
+    const { data, error } = await supabase.from('skladniki_meta')
+      .update(pola).eq('nazwa', nazwa).select().single()
+    if (error) { alert('Błąd: ' + error.message); return }
+    setMeta(prev => prev.map(m => m.nazwa === nazwa ? data : m))
+  }
+
+  async function usun(nazwa) {
+    if (!confirm(`Usunąć "${nazwa}"?`)) return
+    await supabase.from('skladniki_meta').delete().eq('nazwa', nazwa)
+    setMeta(prev => prev.filter(m => m.nazwa !== nazwa))
+  }
+
+  const widoczne = meta.filter(m =>
+    !filtr || m.nazwa.toLowerCase().includes(filtr.toLowerCase())
+  )
+
+  return (
+    <section style={s.section}>
+      <h2 style={s.sectionTitle}>Opakowania składników</h2>
+      <p style={metaS.opis}>
+        Dla składników wpisanych poniżej lista zakupów pokaże zaokrągloną liczbę
+        opakowań zamiast surowej ilości w g/ml. Brak rekordu = pokazujemy oryginał.
+      </p>
+
+      {/* Formularz dodawania */}
+      <div style={metaS.formularz}>
+        <input
+          style={metaS.input}
+          placeholder="Nazwa składnika (np. Frytki mrożone)"
+          value={nowy.nazwa}
+          onChange={e => setNowy(p => ({ ...p, nazwa: e.target.value }))}
+        />
+        <div style={metaS.rzad}>
+          <select
+            style={{ ...metaS.input, flex: 1 }}
+            value={nowy.jednostka_bazowa}
+            onChange={e => setNowy(p => ({ ...p, jednostka_bazowa: e.target.value }))}
+          >
+            {JEDNOSTKI_BAZOWE.map(j => <option key={j} value={j}>{j}</option>)}
+          </select>
+          <input
+            style={{ ...metaS.input, flex: 1 }}
+            type="number"
+            placeholder="Rozmiar (np. 1000)"
+            value={nowy.rozmiar_opakowania}
+            onChange={e => setNowy(p => ({ ...p, rozmiar_opakowania: e.target.value }))}
+          />
+          <select
+            style={{ ...metaS.input, flex: 1 }}
+            value={nowy.jednostka_opakowania}
+            onChange={e => setNowy(p => ({ ...p, jednostka_opakowania: e.target.value }))}
+          >
+            {JEDNOSTKI_OPAK.map(j => <option key={j} value={j}>{j}</option>)}
+          </select>
+        </div>
+        <label style={metaS.checkRow}>
+          <input
+            type="checkbox"
+            checked={nowy.zaokraglaj}
+            onChange={e => setNowy(p => ({ ...p, zaokraglaj: e.target.checked }))}
+          />
+          Zaokrąglaj w górę (np. 500g → 1 opak. dla paczki 1kg)
+        </label>
+        <button style={metaS.btn} onClick={dodaj} disabled={zapisuje}>
+          {zapisuje ? 'Zapisuję…' : '+ Dodaj / zaktualizuj'}
+        </button>
+      </div>
+
+      {/* Filtr + lista */}
+      <input
+        style={{ ...metaS.input, marginTop: 16 }}
+        placeholder="Szukaj…"
+        value={filtr}
+        onChange={e => setFiltr(e.target.value)}
+      />
+
+      {loading ? (
+        <div style={s.loading}>Ładuję…</div>
+      ) : widoczne.length === 0 ? (
+        <div style={s.empty}>Brak rekordów.</div>
+      ) : (
+        <div style={metaS.lista}>
+          {widoczne.map(m => (
+            <div key={m.nazwa} style={metaS.row}>
+              <div style={metaS.rowInfo}>
+                <div style={metaS.rowNazwa}>{m.nazwa}</div>
+                <div style={metaS.rowMeta}>
+                  {m.rozmiar_opakowania} {m.jednostka_bazowa} / {m.jednostka_opakowania}
+                  {m.zaokraglaj && <span style={metaS.tag}>↑ zaokr.</span>}
+                </div>
+              </div>
+              <button style={metaS.usunBtn} onClick={() => usun(m.nazwa)}>✕</button>
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+  )
+}
+
+const metaS = {
+  opis: { fontSize: 12.5, color: t.mute, marginBottom: 12, lineHeight: 1.45 },
+  formularz: { display: 'flex', flexDirection: 'column', gap: 8, padding: 12, background: t.surfaceAlt, borderRadius: 12 },
+  rzad: { display: 'flex', gap: 8 },
+  input: {
+    padding: '8px 12px', border: `1px solid ${t.border}`, borderRadius: 8,
+    background: t.surface, fontSize: 13, fontFamily: fonts.sans, color: t.text,
+    outline: 'none', boxSizing: 'border-box', width: '100%',
+  },
+  checkRow: { display: 'flex', alignItems: 'center', gap: 8, fontSize: 12.5, color: t.text, cursor: 'pointer' },
+  btn: {
+    background: t.accent, color: '#fff', border: 'none', borderRadius: 8,
+    padding: '10px 14px', fontWeight: 600, cursor: 'pointer', fontSize: 13,
+  },
+  lista: { marginTop: 12, display: 'flex', flexDirection: 'column', gap: 4 },
+  row: {
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+    padding: '10px 12px', background: t.surface, borderRadius: 8,
+    border: `1px solid ${t.border}`,
+  },
+  rowInfo: { flex: 1, minWidth: 0 },
+  rowNazwa: { fontSize: 13.5, color: t.text, fontWeight: 600 },
+  rowMeta: { fontSize: 11.5, color: t.mute, marginTop: 2, display: 'flex', alignItems: 'center', gap: 6 },
+  tag: {
+    fontSize: 10, color: t.accent, background: t.surfaceAlt,
+    padding: '1px 5px', borderRadius: 3, fontWeight: 600,
+  },
+  usunBtn: {
+    background: 'transparent', border: 'none', color: t.mute,
+    cursor: 'pointer', fontSize: 14, padding: '4px 8px',
+  },
 }
 
 function Stat({ label, value }) {
