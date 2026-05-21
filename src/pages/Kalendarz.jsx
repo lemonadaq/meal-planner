@@ -592,11 +592,25 @@ function WidokDnia({
   }, [startDrag])
 
   // ── Edge scroll: jak drag jest blisko góry/dołu, scrolluj okno
+  // UWAGA: gdy drag jest aktywny, body jest w position: fixed (iOS-safe pattern),
+  // więc window.scrollBy nie zadziała. W tym trybie modyfikujemy body.style.top
+  // (które reprezentuje "zamrożoną" pozycję scrolla — gdy ją zmieniamy, treść
+  // wizualnie przesuwa się w górę/dół).
   const edgeScrollDelta = useRef(0)
   useEffect(() => {
     function loop() {
       if (edgeScrollDelta.current !== 0) {
-        window.scrollBy(0, edgeScrollDelta.current)
+        const body = document.body
+        if (body.style.position === 'fixed') {
+          // Drag aktywny — przesuwamy zamrożoną pozycję
+          const current = parseFloat(body.style.top || '0') // ujemna wartość
+          const max = -(document.documentElement.scrollHeight - window.innerHeight)
+          const nowy = Math.max(max, Math.min(0, current - edgeScrollDelta.current))
+          body.style.top = `${nowy}px`
+        } else {
+          // Normalny scroll (np. drag nie wystartował jeszcze)
+          window.scrollBy(0, edgeScrollDelta.current)
+        }
       }
       edgeScrollRaf.current = requestAnimationFrame(loop)
     }
@@ -605,28 +619,45 @@ function WidokDnia({
   }, [])
 
   // ── Blokada scrolla strony, gdy kafelek jest podniesiony
-  // Bez tego touch-action: manipulation na kafelku galerii oddaje
-  // gest przeglądarce — pointermove staje się niecancelable i strona
-  // scrolluje się zamiast kafelka.
+  // UWAGA: nie używamy overflow: hidden bo to psuje position: sticky
+  // (sticky-element wymaga scrollującego przodka). Zamiast tego zapamiętujemy
+  // pozycję scrolla, ustawiamy body w position: fixed (iOS-safe pattern),
+  // a po puszczeniu kafelka przywracamy pozycję.
   useEffect(() => {
     if (!dragState?.podniesiony) return
-    const html = document.documentElement
     const body = document.body
+    const scrollY = window.scrollY
     const prev = {
-      htmlOverflow: html.style.overflow,
-      bodyOverflow: body.style.overflow,
-      bodyTouchAction: body.style.touchAction,
-      bodyOverscroll: body.style.overscrollBehavior,
+      position: body.style.position,
+      top: body.style.top,
+      left: body.style.left,
+      right: body.style.right,
+      width: body.style.width,
+      touchAction: body.style.touchAction,
+      overscrollBehavior: body.style.overscrollBehavior,
     }
-    html.style.overflow = 'hidden'
-    body.style.overflow = 'hidden'
+    body.style.position = 'fixed'
+    body.style.top = `-${scrollY}px`
+    body.style.left = '0'
+    body.style.right = '0'
+    body.style.width = '100%'
     body.style.touchAction = 'none'
     body.style.overscrollBehavior = 'contain'
+
     return () => {
-      html.style.overflow = prev.htmlOverflow
-      body.style.overflow = prev.bodyOverflow
-      body.style.touchAction = prev.bodyTouchAction
-      body.style.overscrollBehavior = prev.bodyOverscroll
+      // Odczytaj aktualne body.style.top — mogło zostać zmienione przez edge-scroll
+      const ostatniTop = parseFloat(body.style.top || '0')
+      const docelowyScrollY = ostatniTop ? Math.abs(ostatniTop) : scrollY
+
+      body.style.position = prev.position
+      body.style.top = prev.top
+      body.style.left = prev.left
+      body.style.right = prev.right
+      body.style.width = prev.width
+      body.style.touchAction = prev.touchAction
+      body.style.overscrollBehavior = prev.overscrollBehavior
+      // Przywróć pozycję scrolla (uwzględniając edge-scroll w trakcie dragu)
+      window.scrollTo(0, docelowyScrollY)
     }
   }, [dragState?.podniesiony])
 
