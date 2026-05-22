@@ -29,6 +29,12 @@ const RODZAJ_LABEL = {
   kolacja: 'kolację',
 }
 
+const POSILEK_DLA_RODZAJU = {
+  sniadanie: 'Śniadanie',
+  obiad: 'Obiad',
+  kolacja: 'Kolacja',
+}
+
 // Mały odcisk koloru dla dania — stabilny po nazwie (jak w DanieDetail)
 function getKolor(nazwa) {
   const kolory = ['#F4E2D8','#E7E9D5','#EFE0DA','#E4E2D4','#F0DDC9','#E0E3D6','#F4D9CC','#DCE5D2']
@@ -63,6 +69,8 @@ export default function Home({ user, householdId, onTabChange, onUstawienia, onS
   const [sugestieMozliwe, setSugestieMozliwe] = useState([]) // pula do losowania
   const [typSugestii, setTypSugestii] = useState('obiad')
   const [loading, setLoading] = useState(true)
+  const [planowanie, setPlanowanie] = useState(null)
+  const [toast, setToast] = useState(null)
 
   const dzis = useMemo(() => new Date(), [])
   const dzisStr = formatData(dzis)
@@ -189,6 +197,68 @@ export default function Home({ user, householdId, onTabChange, onUstawienia, onS
     setSugestia(nowa)
   }
 
+  async function zaplanujSugestie(dataStr, kiedyLabel) {
+    if (!sugestia || !householdId || !user?.id) return
+
+    const posilek = POSILEK_DLA_RODZAJU[typSugestii] || 'Obiad'
+    const bucket = dataStr === dzisStr ? 'dzis' : 'jutro'
+    const istniejacy = planDni[bucket]?.find(p => p.posilek === posilek)
+
+    setPlanowanie(`${dataStr}_${posilek}`)
+
+    try {
+      let zapisany
+
+      if (istniejacy?.id) {
+        const { data, error } = await supabase
+          .from('kalendarz')
+          .update({ danie: sugestia.Danie, dodatki: [], podmiany: {} })
+          .eq('id', istniejacy.id)
+          .select()
+          .single()
+
+        if (error) throw error
+        zapisany = data
+      } else {
+        const { data, error } = await supabase
+          .from('kalendarz')
+          .insert({
+            household_id: householdId,
+            user_id: user.id,
+            data: dataStr,
+            posilek,
+            danie: sugestia.Danie,
+            dodatki: [],
+          })
+          .select()
+          .single()
+
+        if (error) throw error
+        zapisany = data
+      }
+
+      const wzbogacony = { ...zapisany, _meta: { zdjecie: sugestia.zdjecie } }
+
+      setPlanDni(prev => {
+        const aktualne = prev[bucket] || []
+        const bezSlota = aktualne.filter(p => p.posilek !== posilek)
+        return {
+          ...prev,
+          [bucket]: [...bezSlota, wzbogacony],
+        }
+      })
+
+      setToast(`Zaplanowano na ${kiedyLabel}: ${sugestia.Danie}`)
+      setTimeout(() => setToast(null), 2400)
+    } catch (error) {
+      console.error('Błąd planowania sugestii z Home:', error)
+      setToast('Nie udało się zaplanować')
+      setTimeout(() => setToast(null), 2400)
+    } finally {
+      setPlanowanie(null)
+    }
+  }
+
   function opisOstatnio(iso) {
     if (!iso) return 'Jeszcze tego nie gotowałeś'
     const d = new Date(iso)
@@ -280,6 +350,23 @@ export default function Home({ user, householdId, onTabChange, onUstawienia, onS
             </div>
             <div style={s.sugestiaArrow}>›</div>
           </button>
+
+          <div style={s.sugestiaAkcje}>
+            <button
+              style={s.sugestiaPlanBtn}
+              onClick={() => zaplanujSugestie(dzisStr, 'dziś')}
+              disabled={!!planowanie}
+            >
+              {planowanie === `${dzisStr}_${POSILEK_DLA_RODZAJU[typSugestii]}` ? 'Planuję…' : 'Zaplanuj na dziś'}
+            </button>
+            <button
+              style={s.sugestiaPlanBtnAlt}
+              onClick={() => zaplanujSugestie(jutroStr, 'jutro')}
+              disabled={!!planowanie}
+            >
+              {planowanie === `${jutroStr}_${POSILEK_DLA_RODZAJU[typSugestii]}` ? 'Planuję…' : 'Zaplanuj na jutro'}
+            </button>
+          </div>
         </section>
       )}
 
@@ -288,6 +375,12 @@ export default function Home({ user, householdId, onTabChange, onUstawienia, onS
         <div style={s.sugestiaSekcja}>
           <h2 style={s.h2}>Może ugotujesz?</h2>
           <div style={s.sugestiaSkeleton} />
+        </div>
+      )}
+
+      {toast && (
+        <div style={s.toast}>
+          {toast}
         </div>
       )}
     </div>
@@ -491,6 +584,26 @@ const s = {
     fontFamily: fonts.sans, fontSize: 12, color: t.mute, marginTop: 3,
   },
   sugestiaArrow: { fontSize: 22, color: t.muteLight, fontFamily: fonts.serif },
+  sugestiaAkcje: {
+    display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginTop: 8,
+  },
+  sugestiaPlanBtn: {
+    background: t.accent, color: '#fff', border: 'none', borderRadius: 13,
+    padding: '11px 10px', fontFamily: fonts.sans, fontSize: 13, fontWeight: 700,
+    cursor: 'pointer', boxShadow: '0 3px 10px rgba(74,55,40,.12)',
+  },
+  sugestiaPlanBtnAlt: {
+    background: t.surface, color: t.accent, border: `1px solid ${t.border}`, borderRadius: 13,
+    padding: '11px 10px', fontFamily: fonts.sans, fontSize: 13, fontWeight: 700,
+    cursor: 'pointer',
+  },
+
+  toast: {
+    position: 'fixed', bottom: 92, left: '50%', transform: 'translateX(-50%)',
+    background: t.text, color: '#fff', borderRadius: 12, padding: '10px 14px',
+    boxShadow: '0 8px 24px rgba(0,0,0,.2)', zIndex: 200,
+    fontFamily: fonts.sans, fontSize: 13, maxWidth: 'calc(100vw - 32px)',
+  },
 
   sugestiaSkeleton: {
     height: 88, borderRadius: 16,
