@@ -1078,8 +1078,10 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
               </button>
             </div>
 
+            {/* Dodaj własny produkt — ten sam przycisk co wcześniej, tylko przeniesiony niżej,
+                żeby nie wskakiwał pod palec po odznaczeniu ostatniej pozycji. */}
             <button style={s.btnDodajWlasny} onClick={otworzDodawanieWlasnego}>
-              + Dodaj własny produkt
+              + Dodaj własny produkt (papier, chemia, lek…)
             </button>
           </>
         )}
