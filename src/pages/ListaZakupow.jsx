@@ -16,6 +16,69 @@ const KATEGORIE = [
 
 const JEDNOSTKI = ['', 'szt.', 'opak.', 'g', 'kg', 'ml', 'l', 'pęczek']
 
+
+function normalizujJednostke(raw = '') {
+  const x = raw.toString().trim().toLowerCase().replace(/\.+$/, '')
+  if (!x) return null
+  if (['szt', 'sztuka', 'sztuki', 'sztuk'].includes(x)) return 'szt.'
+  if (['op', 'opak', 'opakowanie', 'opakowania'].includes(x)) return 'opak.'
+  if (['gram', 'gramy'].includes(x)) return 'g'
+  if (['kilogram', 'kilogramy'].includes(x)) return 'kg'
+  if (['mililitr', 'mililitry'].includes(x)) return 'ml'
+  if (['litr', 'litry'].includes(x)) return 'l'
+  if (['peczek', 'pęczek', 'peczki', 'pęczki'].includes(x)) return 'pęczek'
+  return raw.toString().trim()
+}
+
+function rozpoznajKategorie(nazwa = '') {
+  const x = nazwa.toLowerCase()
+  if (/chleb|buł|bul|bagiet|kajzer|pieczyw|tost|tortill/.test(x)) return '4_Pieczywo'
+  if (/mleko|jogurt|kefir|maślank|maslank|ser|twar[oó]g|śmietan|smietan|masło|maslo|jaj/.test(x)) return '3_Nabiał'
+  if (/pomidor|og[oó]rek|ziemni|marchew|cebula|czosnek|papryk|sałat|salat|jabł|jabl|banan|cytryn|limonk|awokado|broku|kalafior|kapust|cukini|bakła|bakla|pietruszk|koper|szczyp/.test(x)) return '1_Warzywa i owoce'
+  if (/kurczak|wołow|wolow|wieprz|schab|kark[oó]w|mi[eę]so|mielon|szynk|boczek|kiełbas|kielbas|ryb|łosoś|losos|dorsz|tuńczyk|tunczyk/.test(x)) return '2_Mięso i ryby'
+  if (/makaron|ryż|ryz|kasz|mąk|maka|cukier|płatki|platki|owsian|soczewic|ciecierzyc|fasol|groch/.test(x)) return '5_Produkty sypkie'
+  if (/konserw|puszk|słoik|sloik|passat|przecier|kukurydz|groszek|oliwk/.test(x)) return '6_Konserwy i słoiki'
+  if (/s[oó]l|pieprz|papryka słodka|papryka ostra|oregano|bazyl|curry|przypraw|zioł|ziol|cynamon/.test(x)) return '7_Przyprawy'
+  return '8_Inne'
+}
+
+function parsujSzybkiProdukt(linia) {
+  const tekst = (linia || '')
+    .replace(/^[-•*]\s*/, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+
+  if (!tekst) return null
+
+  const liczba = '(\\d+(?:[,.]\\d+)?)'
+  const jednostka = '([a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+\\.?)?'
+
+  // np. "Chleb 1szt.", "Chleb 1 szt.", "Chleb 1."
+  let m = tekst.match(new RegExp(`^(.+?)\\s+${liczba}\\s*${jednostka}\\.?$`))
+  if (m) {
+    const nazwa = m[1].trim()
+    const ilosc = parseFloat(m[2].replace(',', '.'))
+    const jedn = normalizujJednostke(m[3] || '')
+    if (nazwa) return { nazwa, ilosc, jednostka: jedn, kategoria: rozpoznajKategorie(nazwa) }
+  }
+
+  // np. "1szt. Chleb", "1 szt. Chleb", "2 l Mleko"
+  m = tekst.match(new RegExp(`^${liczba}\\s*${jednostka}\\s+(.+)$`))
+  if (m) {
+    const nazwa = m[3].trim()
+    const ilosc = parseFloat(m[1].replace(',', '.'))
+    const jedn = normalizujJednostke(m[2] || '')
+    if (nazwa) return { nazwa, ilosc, jednostka: jedn, kategoria: rozpoznajKategorie(nazwa) }
+  }
+
+  return {
+    nazwa: tekst,
+    ilosc: null,
+    jednostka: null,
+    kategoria: rozpoznajKategorie(tekst),
+  }
+}
+
 export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje = 1, sledz }) {
   const [lista, setLista] = useState([])
   const [wlasne, setWlasne] = useState([]) // z tabeli zakupy_wlasne
@@ -26,6 +89,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
   const [pokazDodaj, setPokazDodaj] = useState(false)
   const [edycjaWlasnego, setEdycjaWlasnego] = useState(null)
   const [trybSklepu, setTrybSklepu] = useState(false)
+  const [szybkiTekst, setSzybkiTekst] = useState('')
 
   const [toast, setToast] = useState(null)
   const toastTimer = useRef(null)
@@ -288,6 +352,48 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     setPokazDodaj(false)
   }
 
+
+  async function dodajSzybkieProdukty(tekst) {
+    const linie = (tekst || '')
+      .split(/\r?\n/)
+      .map(x => x.trim())
+      .filter(Boolean)
+
+    if (linie.length === 0) return
+
+    const rekordy = linie
+      .map(parsujSzybkiProdukt)
+      .filter(Boolean)
+      .map(dane => ({
+        ...dane,
+        household_id: householdId,
+        user_id: user.id,
+        kupione: false,
+        powtarzaj: false,
+      }))
+
+    if (rekordy.length === 0) return
+
+    const { data, error } = await supabase.from('zakupy_wlasne')
+      .insert(rekordy)
+      .select()
+
+    if (error) {
+      pokazToast('Nie udało się dodać produktu')
+      return
+    }
+
+    if (data?.length) {
+      setWlasne(prev => {
+        const ids = new Set(prev.map(w => w.id))
+        return [...prev, ...data.filter(w => !ids.has(w.id))]
+      })
+      sledz?.('dodaj_szybki_produkt', { ile: data.length })
+    }
+
+    pokazToast(data?.length === 1 ? `Dodano: ${data[0].nazwa}` : `Dodano ${data?.length || rekordy.length} produktów`)
+  }
+
   async function usunWlasny(item) {
     await supabase.from('zakupy_wlasne').delete().eq('id', item.id)
     setWlasne(prev => prev.filter(w => w.id !== item.id))
@@ -411,6 +517,12 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
           </div>
         </header>
 
+        <SzybkieDodawanie
+          value={szybkiTekst}
+          onChange={setSzybkiTekst}
+          onDodaj={dodajSzybkieProdukty}
+        />
+
         {/* Główny CTA: Idę do sklepu */}
         {wszystkieItemy.length > 0 && (
           <button style={s.btnSklep} onClick={() => setTrybSklepu(true)}>
@@ -443,6 +555,9 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
                       onLongPress={item.zrodlo === 'wlasne'
                         ? () => { setEdycjaWlasnego(item.wlasnyData); setPokazDodaj(true) }
                         : null}
+                      onEdit={item.zrodlo === 'wlasne'
+                        ? () => { setEdycjaWlasnego(item.wlasnyData); setPokazDodaj(true) }
+                        : null}
                     />
                   ))}
                 </div>
@@ -464,6 +579,9 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
                       item={item}
                       kupione={true}
                       onTap={() => toggleAny(item)}
+                      onEdit={item.zrodlo === 'wlasne'
+                        ? () => { setEdycjaWlasnego(item.wlasnyData); setPokazDodaj(true) }
+                        : null}
                     />
                   ))}
                 </div>
@@ -504,8 +622,77 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
 }
 
 // ════════════════════════════════════════════════════════════
+// Szybkie dodawanie: Enter dodaje produkt i zostawia pole aktywne.
+function SzybkieDodawanie({ value, onChange, onDodaj }) {
+  const textareaRef = useRef(null)
+
+  async function dodajAktualne() {
+    const tekst = value.trim()
+    if (!tekst) return
+    await onDodaj(tekst)
+    onChange('')
+    requestAnimationFrame(() => textareaRef.current?.focus())
+  }
+
+  async function handleChange(e) {
+    const next = e.target.value
+
+    // Obsługa wklejenia wielu linii albo Enter na klawiaturze mobilnej.
+    if (/\r?\n/.test(next)) {
+      const parts = next.split(/\r?\n/)
+      const gotowe = parts.slice(0, -1).map(x => x.trim()).filter(Boolean)
+      const reszta = parts[parts.length - 1] || ''
+
+      onChange(reszta)
+      if (gotowe.length > 0) await onDodaj(gotowe.join('\n'))
+      requestAnimationFrame(() => textareaRef.current?.focus())
+      return
+    }
+
+    onChange(next)
+  }
+
+  async function handleKeyDown(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      await dodajAktualne()
+    }
+  }
+
+  return (
+    <section style={s.quickAddCard}>
+      <div style={s.quickAddHeader}>
+        <div>
+          <div style={s.quickAddEyebrow}>SZYBKIE DODAWANIE</div>
+          <div style={s.quickAddTitle}>Dopisz swoje produkty</div>
+        </div>
+        <button
+          style={{ ...s.quickAddBtn, opacity: value.trim() ? 1 : 0.45 }}
+          onClick={dodajAktualne}
+          disabled={!value.trim()}
+        >
+          Dodaj
+        </button>
+      </div>
+      <textarea
+        ref={textareaRef}
+        style={s.quickAddInput}
+        value={value}
+        rows={1}
+        placeholder="np. Chleb 1 szt."
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
+      />
+      <div style={s.quickAddHelp}>
+        Enter dodaje produkt. Działa też: „Chleb 1szt.”, „Chleb 1 szt.”, „Chleb 1”, „2 l Mleko”.
+      </div>
+    </section>
+  )
+}
+
+// ════════════════════════════════════════════════════════════
 // Pojedynczy wiersz listy — z long-pressem dla własnych
-function ItemRow({ item, kupione, onTap, onLongPress }) {
+function ItemRow({ item, kupione, onTap, onLongPress, onEdit }) {
   const longPressTimer = useRef(null)
   const startPos = useRef(null)
   const triggered = useRef(false)
@@ -531,6 +718,7 @@ function ItemRow({ item, kupione, onTap, onLongPress }) {
     }
   }
   function up() {
+    if (!startPos.current) return
     if (longPressTimer.current) {
       clearTimeout(longPressTimer.current)
       longPressTimer.current = null
@@ -574,6 +762,18 @@ function ItemRow({ item, kupione, onTap, onLongPress }) {
             : (item.iloscOryginalna || item.jednostka || '—')}
         </div>
       </div>
+      {onEdit && (
+        <button
+          style={s.itemEditBtn}
+          onPointerDown={e => e.stopPropagation()}
+          onPointerUp={e => e.stopPropagation()}
+          onClick={e => { e.stopPropagation(); onEdit() }}
+          aria-label={`Edytuj ${item.skladnik}`}
+          title="Edytuj ilość"
+        >
+          ✎
+        </button>
+      )}
     </div>
   )
 }
@@ -920,6 +1120,46 @@ const s = {
     boxShadow: '0 4px 16px rgba(74,55,40,.18)',
   },
 
+  quickAddCard: {
+    ...ui.card,
+    padding: 14,
+    marginBottom: 14,
+  },
+  quickAddHeader: {
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12,
+    marginBottom: 10,
+  },
+  quickAddEyebrow: {
+    fontFamily: fonts.sans, fontSize: 9.5, fontWeight: 800,
+    letterSpacing: 1.2, textTransform: 'uppercase', color: t.accent,
+    marginBottom: 3,
+  },
+  quickAddTitle: {
+    fontFamily: fonts.sans, fontSize: 13.5, fontWeight: 700, color: t.text,
+  },
+  quickAddBtn: {
+    border: 'none', borderRadius: 10,
+    background: t.accent, color: '#fff',
+    fontFamily: fonts.sans, fontSize: 12.5, fontWeight: 700,
+    padding: '9px 12px', cursor: 'pointer',
+  },
+  quickAddInput: {
+    width: '100%', boxSizing: 'border-box',
+    border: `1px solid ${t.border}`, borderRadius: 12,
+    background: t.surfaceAlt || t.bg,
+    color: t.text,
+    fontFamily: fonts.sans, fontSize: 15,
+    lineHeight: 1.35,
+    padding: '12px 13px',
+    outline: 'none', resize: 'none', overflow: 'hidden',
+  },
+  quickAddHelp: {
+    marginTop: 8,
+    fontFamily: fonts.sans, fontSize: 11.5,
+    lineHeight: 1.35,
+    color: t.mute,
+  },
+
   empty: { ...ui.card, padding: '30px 24px', textAlign: 'center' },
   emptyTytul: { ...ui.h3, marginBottom: 6 },
   emptySub: { fontFamily: fonts.sans, fontSize: 13.5, color: t.mute, margin: '0 0 18px', lineHeight: 1.5 },
@@ -965,6 +1205,15 @@ const s = {
     display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap',
   },
   itemIlosc: { fontSize: 12, color: t.mute, marginTop: 3, fontVariantNumeric: 'tabular-nums' },
+  itemEditBtn: {
+    width: 32, height: 32, borderRadius: 999,
+    border: `1px solid ${t.border}`,
+    background: t.surfaceAlt,
+    color: t.mute,
+    display: 'grid', placeItems: 'center',
+    fontFamily: fonts.sans, fontSize: 14, fontWeight: 700,
+    cursor: 'pointer', flexShrink: 0,
+  },
   podmianaIcon: { fontSize: 11, color: t.warm, fontWeight: 700 },
   tagPowtarzaj: {
     fontSize: 9.5, color: t.accent, background: t.surfaceAlt,
