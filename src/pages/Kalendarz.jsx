@@ -662,6 +662,22 @@ function WidokDnia({
     }, 320)
   }, [startDrag])
 
+
+  const znajdzPierwszyPustySideSlot = useCallback((posilek) => {
+    const wpis = plan[`${dataStr}_${posilek}`]
+    if (!wpis?.danie) return null
+
+    const meta = daniaMap[wpis.danie]
+    if (meta?.TYP !== 'z_dodatkiem') return null
+
+    const dodatkiTab = Array.isArray(wpis.dodatki) ? wpis.dodatki : []
+    for (let idx = 0; idx < 2; idx++) {
+      if (!dodatkiTab[idx]) return idx
+    }
+
+    return null
+  }, [plan, dataStr, daniaMap])
+
   // ── Edge scroll: jak drag jest blisko góry/dołu, scrolluj okno
   useEffect(() => {
     function loop() {
@@ -817,11 +833,18 @@ function WidokDnia({
               onSetSubTryb(null)
             }
           } else {
-            // Główny slot przyjmuje tylko danie.
             const posilek = targetKey
 
             if (stan.typ === 'danie') {
               onUstawDanie(dataStr, posilek, stan.nazwa)
+            } else if (stan.typ === 'dodatek' || stan.typ === 'surowka') {
+              // Uproszczenie: dodatek/surówkę można upuścić na całym kafelku dania.
+              // Aplikacja sama wybiera pierwszy pusty mini-slot.
+              const slotIdx = znajdzPierwszyPustySideSlot(posilek)
+              if (slotIdx != null) {
+                onUstawSide(dataStr, posilek, slotIdx, stan.nazwa, stan.typ)
+                onSetSubTryb(null)
+              }
             }
           }
         }
@@ -850,7 +873,7 @@ function WidokDnia({
       window.removeEventListener('pointerup', handleUp)
       window.removeEventListener('pointercancel', handleCancel)
     }
-  }, [dataStr, subTryb, onUstawDanie, onUstawSide, onSetSubTryb, wyczyscGesture])
+  }, [dataStr, subTryb, onUstawDanie, onUstawSide, onSetSubTryb, wyczyscGesture, znajdzPierwszyPustySideSlot])
 
   // ── Mobilny drag: osobna obsługa touch*, żeby scroll galerii był naturalny,
   // a po long-press ruch palca przesuwał kafelek, nie stronę.
@@ -908,8 +931,20 @@ function WidokDnia({
               onUstawSide(dataStr, posilek, slotIdx, stan.nazwa, stan.typ)
               onSetSubTryb(null)
             }
-          } else if (stan.typ === 'danie') {
-            onUstawDanie(dataStr, targetKey, stan.nazwa)
+          } else {
+            const posilek = targetKey
+
+            if (stan.typ === 'danie') {
+              onUstawDanie(dataStr, posilek, stan.nazwa)
+            } else if (stan.typ === 'dodatek' || stan.typ === 'surowka') {
+              // Uproszczenie: nie trzeba celować w mały mini-slot.
+              // Drop na kafelek dania uzupełnia pierwszy pusty slot dodatku/surówki.
+              const slotIdx = znajdzPierwszyPustySideSlot(posilek)
+              if (slotIdx != null) {
+                onUstawSide(dataStr, posilek, slotIdx, stan.nazwa, stan.typ)
+                onSetSubTryb(null)
+              }
+            }
           }
         }
       }
@@ -975,20 +1010,32 @@ function WidokDnia({
       window.removeEventListener('touchend', handleTouchEnd)
       window.removeEventListener('touchcancel', handleTouchCancel)
     }
-  }, [dataStr, subTryb, onUstawDanie, onUstawSide, onSetSubTryb, wyczyscGesture])
+  }, [dataStr, subTryb, onUstawDanie, onUstawSide, onSetSubTryb, wyczyscGesture, znajdzPierwszyPustySideSlot])
 
   // ── Filtrowanie galerii ──
-  // Filtrowanie po typie posiłku: gdy nie jesteśmy w sub-trybie, można pokazać:
-  //  - tylko dania pasujące do "fokusu" (np. ostatnio dotkniętego slotu) — nie ma takiej koncepcji teraz
-  //  - filtr ręczny: chip "Wszystko / Śniadania / Obiady / Kolacje"
-  // Wybieram drugie: user-controlled, prosty toggle.
+  // Główny tryb galerii jest niezależny od kliknięcia mini-slotu:
+  // można wybrać Dania / Dodatki / Surówki na górze i przeciągać od razu.
   const [filtrRodzaj, setFiltrRodzaj] = useState('wszystko')
+  const [galeriaTryb, setGaleriaTryb] = useState('danie')
+
+  const typGalerii = subTryb?.typ || galeriaTryb
+
+  function zmienTrybGalerii(id) {
+    setGaleriaTryb(id)
+    setFiltr('')
+
+    if (subTryb) {
+      if (id === 'danie') onSetSubTryb(null)
+      else onSetSubTryb({ ...subTryb, typ: id })
+    }
+  }
 
   const galeriaItems = useMemo(() => {
     let lista
-    if (subTryb?.typ === 'dodatek') {
+
+    if (typGalerii === 'dodatek') {
       lista = dodatki.map(d => ({ nazwa: d.Dodatek, zdjecie: d.zdjecie }))
-    } else if (subTryb?.typ === 'surowka') {
+    } else if (typGalerii === 'surowka') {
       lista = surowki.map(d => ({ nazwa: d['Surówka'], zdjecie: d.zdjecie }))
     } else {
       lista = dania
@@ -1000,24 +1047,27 @@ function WidokDnia({
         })
         .map(d => ({ nazwa: d.Danie, zdjecie: d.zdjecie, rodzaj: d.rodzaj }))
     }
+
     const q = filtr.trim().toLowerCase()
     if (!q) return lista
+
     return lista.filter(x => {
       if (x.nazwa?.toLowerCase().includes(q)) return true
+
       // Search po składnikach — tylko dla dań
-      if (!subTryb && skladnikiDan?.[x.nazwa]) {
+      if (typGalerii === 'danie' && skladnikiDan?.[x.nazwa]) {
         for (const sk of skladnikiDan[x.nazwa]) {
           if (sk.includes(q)) return true
         }
       }
+
       return false
     })
-  }, [subTryb, dania, dodatki, surowki, filtr, filtrRodzaj, skladnikiDan])
+  }, [typGalerii, dania, dodatki, surowki, filtr, filtrRodzaj, skladnikiDan])
 
-  const typGalerii = subTryb?.typ || 'danie'
-  const tytulGalerii = typGalerii === 'dodatek' ? `Dodatek do: ${subTryb?.posilek}` :
-                       typGalerii === 'surowka' ? `Surówka do: ${subTryb?.posilek}` :
-                       'Galeria dań'
+  const tytulGalerii = subTryb
+    ? `${typGalerii === 'surowka' ? 'Surówka' : 'Dodatek'} do: ${subTryb.posilek}`
+    : 'Galeria'
 
   const planStickyStyle = dragState?.podniesiony
     ? {
@@ -1056,13 +1106,16 @@ function WidokDnia({
                 surowkiMap={surowkiMap}
                 domyslnePorcje={domyslnePorcje}
                 podswietlony={podswietl}
-                podswietlSide={dragTyp === 'dodatek' || dragTyp === 'surowka'}
+                podswietlSide={dragTyp === 'dodatek' || dragTyp === 'surowka' || (!dragTyp && (typGalerii === 'dodatek' || typGalerii === 'surowka'))}
                 onClick={() => wpis?.danie && onSelectDanie?.(wpis.danie)}
                 onUsun={() => onUsunPosilek(dataStr, posilek)}
                 onUsunSide={(slotIdx) => onUsunSide(dataStr, posilek, slotIdx)}
                 onZmienPorcje={(p) => onZmienPorcje(dataStr, posilek, p)}
                 onPodmien={() => onPodmien(wpis)}
-                onWybierzSide={(slotIdx) => onSetSubTryb({ dataStr, posilek, typ: 'dodatek', slotIdx })}
+                onWybierzSide={(slotIdx) => {
+                  setGaleriaTryb('dodatek')
+                  onSetSubTryb({ dataStr, posilek, typ: 'dodatek', slotIdx })
+                }}
               />
             )
           })}
@@ -1091,15 +1144,31 @@ function WidokDnia({
           <h2 style={s.galeriaTytul}>{tytulGalerii}</h2>
           <input
             type="text"
-            placeholder={subTryb ? 'Szukaj…' : 'Szukaj po nazwie lub składniku…'}
+            placeholder={typGalerii === 'danie' ? 'Szukaj po nazwie lub składniku…' : 'Szukaj…'}
             value={filtr}
             onChange={e => setFiltr(e.target.value)}
             style={s.szukaj}
           />
         </div>
 
-        {/* Filtr-chipy po rodzaju (tylko dla galerii dań, nie dla sub-trybu) */}
-        {!subTryb && (
+        <div style={s.trybGaleriiRow}>
+          {[
+            { id: 'danie', label: 'Dania' },
+            { id: 'dodatek', label: 'Dodatki' },
+            { id: 'surowka', label: 'Surówki' },
+          ].map(c => (
+            <button
+              key={c.id}
+              style={{ ...s.trybGaleriiBtn, ...(typGalerii === c.id ? s.trybGaleriiBtnOn : {}) }}
+              onClick={() => zmienTrybGalerii(c.id)}
+            >
+              {c.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Filtr-chipy po rodzaju — tylko dla galerii dań */}
+        {typGalerii === 'danie' && (
           <div style={s.chipsRow}>
             {[
               { id: 'wszystko',  label: 'Wszystko' },
@@ -1143,23 +1212,6 @@ function WidokDnia({
           <div style={s.brakDan}>Brak pasujących pozycji.</div>
         )}
 
-        {/* W sub-trybie: pokazujemy dwa taby do wyboru typu (dodatek vs surówka) */}
-        {subTryb && (
-          <div style={s.subTrybTaby}>
-            <button
-              style={{ ...s.subTrybTab, ...(subTryb.typ === 'dodatek' ? s.subTrybTabOn : {}) }}
-              onClick={() => onSetSubTryb({ ...subTryb, typ: 'dodatek' })}
-            >
-              Dodatki
-            </button>
-            <button
-              style={{ ...s.subTrybTab, ...(subTryb.typ === 'surowka' ? s.subTrybTabOn : {}) }}
-              onClick={() => onSetSubTryb({ ...subTryb, typ: 'surowka' })}
-            >
-              Surówki
-            </button>
-          </div>
-        )}
       </section>
 
       {dragState?.podniesiony && (
@@ -1694,6 +1746,20 @@ const s = {
     background: 'transparent', border: 'none',
     fontFamily: fonts.sans, fontSize: 12, fontWeight: 600,
     color: t.warm, cursor: 'pointer', padding: '6px 12px',
+  },
+
+  // Główne taby galerii
+  trybGaleriiRow: {
+    display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 4,
+    background: t.surfaceAlt, borderRadius: 14, padding: 4, marginBottom: 10,
+  },
+  trybGaleriiBtn: {
+    background: 'transparent', border: 'none', borderRadius: 10,
+    padding: '8px 6px', fontFamily: fonts.sans, fontSize: 12.5, fontWeight: 700,
+    color: t.mute, cursor: 'pointer',
+  },
+  trybGaleriiBtnOn: {
+    background: t.surface, color: t.text, boxShadow: '0 1px 2px rgba(74,55,40,.08)',
   },
 
   // Filtr-chipy galerii
