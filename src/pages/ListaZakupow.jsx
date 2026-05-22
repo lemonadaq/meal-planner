@@ -17,9 +17,13 @@ const KATEGORIE = [
 const JEDNOSTKI = ['', 'szt.', 'opak.', 'g', 'kg', 'ml', 'l', 'pęczek']
 
 const DOMYSLNE_PRODUKTY_W_DOMU = [
-  'Sól', 'Pieprz', 'Pieprz czarny', 'Olej', 'Oliwa',
-  'Cukier', 'Mąka', 'Papryka słodka', 'Oregano', 'Bazylia',
+  'Olej', 'Oliwa', 'Cukier', 'Mąka',
+  'Papryka słodka', 'Oregano', 'Bazylia',
 ]
+
+// Te składniki mogą zostać w przepisach, ale nie powinny wpadać na listę zakupów.
+// Dotyczy tylko pozycji wygenerowanych z przepisów — ręcznie dopisany produkt zostaje na liście.
+const ZAWSZE_UKRYTE_Z_PRZEPISOW = ['Sól', 'Pieprz']
 
 function normalizujProduktDomowy(nazwa = '') {
   return nazwa
@@ -137,6 +141,11 @@ function produktPasujeDoDomu(nazwa, produktyWDomuSet) {
     if (n === baza || n.startsWith(`${baza} `) || n.includes(` ${baza} `)) return true
   }
   return false
+}
+
+function produktZawszeUkrytyZPrzepisow(nazwa) {
+  const staleUkryte = new Set(ZAWSZE_UKRYTE_Z_PRZEPISOW.map(normalizujProduktDomowy).filter(Boolean))
+  return produktPasujeDoDomu(nazwa, staleUkryte)
 }
 
 
@@ -294,7 +303,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
   }, [householdId, user?.id])
 
   const produktyWDomuSet = useMemo(
-    () => new Set(produktyWDomu.map(normalizujProduktDomowy).filter(Boolean)),
+    () => new Set([...produktyWDomu, ...ZAWSZE_UKRYTE_Z_PRZEPISOW].map(normalizujProduktDomowy).filter(Boolean)),
     [produktyWDomu]
   )
 
@@ -925,7 +934,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
         />
 
         <MamWDomuShortcut
-          ile={produktyWDomu.length}
+          ile={listaPoKorektach.length}
           ukryte={ukrytePrzezMamWDomu.length}
           onClick={() => setPokazMamWDomu(true)}
         />
@@ -1044,9 +1053,9 @@ function MamWDomuShortcut({ ile, ukryte, onClick }) {
     <button style={s.mamWDomuShortcut} onClick={onClick}>
       <div>
         <div style={s.mamWDomuEyebrow}>MAM W DOMU</div>
-        <div style={s.mamWDomuTitle}>Produkty pomijane na liście</div>
+        <div style={s.mamWDomuTitle}>Odklikaj produkty z aktualnej listy</div>
         <div style={s.mamWDomuSub}>
-          {ile} zapisanych produktów{ukryte > 0 ? ` · ukryto teraz: ${ukryte}` : ''}
+          {ile} produktów z przepisów{ukryte > 0 ? ` · ukryto teraz: ${ukryte}` : ''}
         </div>
       </div>
       <span style={s.mamWDomuArrow}>›</span>
@@ -1056,42 +1065,49 @@ function MamWDomuShortcut({ ile, ukryte, onClick }) {
 
 function MamWDomuModal({ produkty, aktualneProdukty, ukryteProdukty, onClose, onSave }) {
   const [lokalne, setLokalne] = useState(() => unikalneProduktyWDomu(produkty))
-  const [tekst, setTekst] = useState('')
 
   const lokalneSet = useMemo(
     () => new Set(lokalne.map(normalizujProduktDomowy).filter(Boolean)),
     [lokalne]
   )
 
-  const sugestie = useMemo(() => {
+  const aktualneLista = useMemo(() => {
     const mapa = new Map()
     ;(aktualneProdukty || []).forEach(item => {
+      if (produktZawszeUkrytyZPrzepisow(item.skladnik)) return
       const ladna = ladnaNazwaProduktuDomowego(item.skladnik)
       const norm = normalizujProduktDomowy(ladna)
-      if (norm && !lokalneSet.has(norm) && !mapa.has(norm)) mapa.set(norm, ladna)
+      if (!norm || mapa.has(norm)) return
+      mapa.set(norm, {
+        norm,
+        nazwa: ladna,
+        kategoria: item.kategoria,
+        ilosc: item.ilosc != null
+          ? `${item.ilosc} ${item.jednostka || ''}`.trim()
+          : (item.iloscOryginalna || item.jednostka || ''),
+      })
     })
-    return [...mapa.values()].sort((a, b) => a.localeCompare(b, 'pl')).slice(0, 18)
-  }, [aktualneProdukty, lokalneSet])
+    return [...mapa.values()].sort((a, b) => a.nazwa.localeCompare(b.nazwa, 'pl'))
+  }, [aktualneProdukty])
 
-  function dodajNazwy(raw) {
-    const nazwy = rozbijSzybkieLinie(raw)
-      .map(ladnaNazwaProduktuDomowego)
-      .filter(Boolean)
-    if (nazwy.length === 0) return
-    setLokalne(prev => unikalneProduktyWDomu([...prev, ...nazwy]))
-    setTekst('')
+  function toggle(nazwa) {
+    const ladna = ladnaNazwaProduktuDomowego(nazwa)
+    const norm = normalizujProduktDomowy(ladna)
+    if (!norm) return
+    setLokalne(prev => {
+      const ma = prev.some(x => normalizujProduktDomowy(x) === norm)
+      if (ma) return prev.filter(x => normalizujProduktDomowy(x) !== norm)
+      return unikalneProduktyWDomu([...prev, ladna])
+    })
   }
 
-  function usun(nazwa) {
-    const norm = normalizujProduktDomowy(nazwa)
-    setLokalne(prev => prev.filter(x => normalizujProduktDomowy(x) !== norm))
-  }
-
-  function handleKeyDown(e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault()
-      dodajNazwy(tekst)
-    }
+  function zapiszAktualne() {
+    // Zapisujemy tylko produkty, które faktycznie pojawiły się na wygenerowanej liście.
+    // Ręcznie dopisane zakupy nie są tu brane pod uwagę.
+    const zaznaczoneZAktualnejListy = aktualneLista
+      .filter(item => lokalneSet.has(item.norm))
+      .map(item => item.nazwa)
+    onSave(zaznaczoneZAktualnejListy)
   }
 
   return (
@@ -1100,13 +1116,13 @@ function MamWDomuModal({ produkty, aktualneProdukty, ukryteProdukty, onClose, on
         <div style={mod.header}>
           <div>
             <div style={mod.eyebrow}>MAM W DOMU</div>
-            <div style={mod.title}>Nie dodawaj do zakupów</div>
+            <div style={mod.title}>Odklikaj z aktualnej listy</div>
           </div>
           <button style={mod.close} onClick={onClose}>✕</button>
         </div>
 
         <p style={mod.helpText}>
-          Te produkty będą pomijane tylko z listy generowanej z przepisów. Produkty dopisane ręcznie zostają na liście.
+          Pokazuję tylko produkty wygenerowane z przepisów na ten tydzień. Produkty dopisane ręcznie zostają na zakupach, bo zakładamy, że skoro je dopisałeś, to ich brakuje.
         </p>
 
         {ukryteProdukty?.length > 0 && (
@@ -1115,52 +1131,45 @@ function MamWDomuModal({ produkty, aktualneProdukty, ukryteProdukty, onClose, on
           </div>
         )}
 
-        <label style={mod.label}>Dopisz produkt</label>
-        <div style={mod.inlineAddRow}>
-          <input
-            style={{ ...mod.input, flex: 1 }}
-            type="text"
-            placeholder="np. Sól, pieprz, olej"
-            value={tekst}
-            onChange={e => setTekst(e.target.value)}
-            onKeyDown={handleKeyDown}
-            autoFocus
-          />
-          <button style={mod.btnSmallSave} onClick={() => dodajNazwy(tekst)} disabled={!tekst.trim()}>
-            Dodaj
-          </button>
-        </div>
+        <label style={mod.label}>Produkty z wygenerowanej listy ({aktualneLista.length})</label>
 
-        {sugestie.length > 0 && (
-          <>
-            <label style={mod.label}>Z aktualnej listy</label>
-            <div style={mod.chipCloud}>
-              {sugestie.map(nazwa => (
-                <button key={nazwa} style={mod.chipGhost} onClick={() => setLokalne(prev => unikalneProduktyWDomu([...prev, nazwa]))}>
-                  + {nazwa}
+        {aktualneLista.length === 0 ? (
+          <div style={mod.loading}>Brak produktów wygenerowanych z przepisów.</div>
+        ) : (
+          <div style={mod.choiceList}>
+            {aktualneLista.map(item => {
+              const checked = lokalneSet.has(item.norm)
+              return (
+                <button
+                  key={item.norm}
+                  style={{ ...mod.choiceRow, ...(checked ? mod.choiceRowOn : {}) }}
+                  onClick={() => toggle(item.nazwa)}
+                >
+                  <span style={{ ...mod.choiceCheck, ...(checked ? mod.choiceCheckOn : {}) }}>
+                    {checked ? '✓' : ''}
+                  </span>
+                  <span style={mod.choiceText}>
+                    <span style={mod.choiceName}>{item.nazwa}</span>
+                    {item.ilosc && <span style={mod.choiceQty}>{item.ilosc}</span>}
+                  </span>
                 </button>
-              ))}
-            </div>
-          </>
+              )
+            })}
+          </div>
         )}
 
-        <label style={mod.label}>Produkty w domu ({lokalne.length})</label>
-        <div style={mod.chipCloud}>
-          {lokalne.map(nazwa => (
-            <button key={nazwa} style={mod.chipOn} onClick={() => usun(nazwa)} title="Usuń z listy produktów w domu">
-              {nazwa} ×
-            </button>
-          ))}
-        </div>
-
         <div style={mod.footerWrap}>
-          <button style={mod.btnCancel} onClick={() => setLokalne(unikalneProduktyWDomu(DOMYSLNE_PRODUKTY_W_DOMU))}>
-            Domyślne
-          </button>
           <button style={mod.btnCancel} onClick={() => setLokalne([])}>
-            Wyczyść
+            Nic nie mam
           </button>
-          <button style={mod.btnSave} onClick={() => onSave(lokalne)}>
+          <button
+            style={mod.btnCancel}
+            onClick={() => setLokalne(aktualneLista.map(item => item.nazwa))}
+            disabled={aktualneLista.length === 0}
+          >
+            Mam wszystko
+          </button>
+          <button style={mod.btnSave} onClick={zapiszAktualne}>
             Zapisz
           </button>
         </div>
@@ -1926,6 +1935,28 @@ const mod = {
     padding: '7px 10px', fontFamily: fonts.sans,
     fontSize: 12, fontWeight: 700, cursor: 'pointer',
   },
+  loading: {
+    padding: '20px 0', textAlign: 'center',
+    fontFamily: fonts.sans, fontSize: 13, color: t.mute,
+  },
+  choiceList: { display: 'flex', flexDirection: 'column', gap: 8, marginTop: 8, maxHeight: '42vh', overflowY: 'auto', paddingRight: 2 },
+  choiceRow: {
+    width: '100%', display: 'flex', alignItems: 'center', gap: 10,
+    padding: '11px 12px', borderRadius: 12, border: `1px solid ${t.border}`,
+    background: t.surfaceAlt, color: t.text, textAlign: 'left', cursor: 'pointer',
+    fontFamily: fonts.sans, boxSizing: 'border-box',
+  },
+  choiceRowOn: { background: t.warmSoft || t.surfaceAlt, borderColor: t.warm || t.accent },
+  choiceCheck: {
+    width: 22, height: 22, borderRadius: 999, flexShrink: 0,
+    border: `1.5px solid ${t.borderStrong}`, background: t.surface,
+    display: 'grid', placeItems: 'center', fontSize: 13, fontWeight: 800,
+    color: '#fff', boxSizing: 'border-box',
+  },
+  choiceCheckOn: { background: t.accent, borderColor: t.accent },
+  choiceText: { minWidth: 0, display: 'flex', flexDirection: 'column', gap: 2 },
+  choiceName: { fontSize: 13.5, fontWeight: 650, color: t.text, lineHeight: 1.2 },
+  choiceQty: { fontSize: 11.5, color: t.mute, fontVariantNumeric: 'tabular-nums' },
   footerWrap: { display: 'flex', gap: 8, marginTop: 20, flexWrap: 'wrap' },
   label: {
     fontSize: 11, fontWeight: 600, letterSpacing: 1, textTransform: 'uppercase',
