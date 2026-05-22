@@ -20,46 +20,15 @@ export default function ZaproszenieModal({ user, onZaakceptowano }) {
     let anulowane = false
 
     async function pobierz() {
-      // 1. Pending zaproszenia na mój email
+      // Widok moje_zaproszenia_view jest filtrowany SQL-em po moim emailu,
+      // więc nie potrzebujemy żadnych dodatkowych joinów ani filtrów.
       const { data } = await supabase
-        .from('household_invites')
-        .select('id, household_id, invited_by, created_at')
-        .eq('status', 'pending')
-        .ilike('invited_email', user.email)
+        .from('moje_zaproszenia_view')
+        .select('*')
         .order('created_at', { ascending: false })
 
       if (anulowane) return
-      const lista = data || []
-      if (lista.length === 0) {
-        setZaproszenia([])
-        setLoading(false)
-        return
-      }
-
-      // 2. Nazwy household + emaile zapraszających (pobierane osobno, bez FK joinów)
-      const householdIds = [...new Set(lista.map(z => z.household_id))]
-      const inviterIds = [...new Set(lista.map(z => z.invited_by).filter(Boolean))]
-
-      const [{ data: hh }, { data: inviters }] = await Promise.all([
-        supabase.from('households').select('id, nazwa').in('id', householdIds),
-        inviterIds.length > 0
-          ? supabase.from('household_members_view').select('user_id, email, full_name').in('user_id', inviterIds)
-          : Promise.resolve({ data: [] }),
-      ])
-
-      if (anulowane) return
-
-      const mapaHh = {}
-      ;(hh || []).forEach(h => { mapaHh[h.id] = h })
-      const mapaInv = {}
-      ;(inviters || []).forEach(i => { mapaInv[i.user_id] = i })
-
-      lista.forEach(z => {
-        z._household = mapaHh[z.household_id]
-        z._zapraszajacy = mapaInv[z.invited_by]
-      })
-
-      setZaproszenia(lista)
+      setZaproszenia(data || [])
       setLoading(false)
     }
 
@@ -71,14 +40,13 @@ export default function ZaproszenieModal({ user, onZaakceptowano }) {
   if (aktualne >= zaproszenia.length) return null
 
   const z = zaproszenia[aktualne]
-  const nazwaRodziny = z._household?.nazwa || 'Rodzina'
-  const zapr = z._zapraszajacy
-  const ktoZaprasza = zapr?.full_name || zapr?.email || 'Ktoś'
+  const nazwaRodziny = z.household_nazwa || 'Rodzina'
+  const ktoZaprasza = z.invited_by_email || 'Ktoś'
 
   async function akceptuj() {
     setPrzetwarzam(true)
     setBlad(null)
-    const { error } = await supabase.rpc('zaakceptuj_zaproszenie', { invite_id: z.id })
+    const { error } = await supabase.rpc('zaakceptuj_zaproszenie', { p_invite_id: z.id })
     setPrzetwarzam(false)
     if (error) {
       setBlad(error.message)
@@ -91,7 +59,7 @@ export default function ZaproszenieModal({ user, onZaakceptowano }) {
   async function odrzuc() {
     setPrzetwarzam(true)
     setBlad(null)
-    const { error } = await supabase.rpc('odrzuc_zaproszenie', { invite_id: z.id })
+    const { error } = await supabase.rpc('odrzuc_zaproszenie', { p_invite_id: z.id })
     setPrzetwarzam(false)
     if (error) {
       setBlad(error.message)

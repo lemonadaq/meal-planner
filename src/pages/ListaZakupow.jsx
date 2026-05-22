@@ -16,68 +16,22 @@ const KATEGORIE = [
 
 const JEDNOSTKI = ['', 'szt.', 'opak.', 'g', 'kg', 'ml', 'l', 'pęczek']
 
-// ════════════════════════════════════════════════════════════
-// Helpery: konwersja jednostek i normalizacja
-// ════════════════════════════════════════════════════════════
-// Konwertuje wartość do jednostki bazowej (g, ml).
-// Zwraca null gdy konwersja niemożliwa (np. szt. -> g).
-function doJednostkiBazowej(ilosc, jednostka, jednostkaBazowa) {
-  if (ilosc == null || isNaN(ilosc)) return null
-  const j = (jednostka || '').toLowerCase().trim()
-  const jb = (jednostkaBazowa || '').toLowerCase().trim()
-  if (jb === 'g') {
-    if (j === 'g')  return ilosc
-    if (j === 'kg') return ilosc * 1000
-    return null
-  }
-  if (jb === 'ml') {
-    if (j === 'ml') return ilosc
-    if (j === 'l')  return ilosc * 1000
-    return null
-  }
-  return null
-}
-
-// Parser linii notatki: "frytki 500g", "mleko 2 l", "chleb"
-// Zwraca: { nazwa, ilosc, jednostka }
-function parsujLinieNotatki(linia) {
-  const trimmed = linia.trim()
-  if (!trimmed) return null
-  // Wzorzec: nazwa + opcjonalnie liczba + opcjonalnie jednostka
-  // Akceptuje: "papier toaletowy", "mleko 2l", "ser feta 200 g", "jabłka 1,5 kg", "chleb 1 szt"
-  const re = /^(.+?)\s+([\d]+(?:[.,]\d+)?)\s*(szt\.?|opak\.?|g|kg|ml|l|pęczek|kostka|opakowanie)?\s*\.?$/i
-  const m = trimmed.match(re)
-  if (m) {
-    const nazwa = m[1].trim()
-    const ilosc = parseFloat(m[2].replace(',', '.'))
-    let jednostka = (m[3] || '').toLowerCase().trim()
-    if (jednostka === 'opakowanie' || jednostka === 'opak') jednostka = 'opak.'
-    if (jednostka === 'szt') jednostka = 'szt.'
-    return { nazwa, ilosc: isNaN(ilosc) ? null : ilosc, jednostka: jednostka || null }
-  }
-  // Brak liczby — tylko nazwa
-  return { nazwa: trimmed, ilosc: null, jednostka: null }
-}
-
-export default function ListaZakupow({ user, onBack, domyslnePorcje = 1, sledz }) {
+export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje = 1, sledz }) {
   const [lista, setLista] = useState([])
   const [wlasne, setWlasne] = useState([]) // z tabeli zakupy_wlasne
   const [odznaczone, setOdznaczone] = useState(new Set())
   const [loading, setLoading] = useState(true)
   const [historiaIds, setHistoriaIds] = useState({})
-  const [meta, setMeta] = useState({}) // { nazwaLower: { jednostka_bazowa, rozmiar_opakowania, jednostka_opakowania, zaokraglaj } }
 
   const [pokazDodaj, setPokazDodaj] = useState(false)
   const [edycjaWlasnego, setEdycjaWlasnego] = useState(null)
   const [trybSklepu, setTrybSklepu] = useState(false)
 
-  // Inline szybkie dodawanie (jak notatka)
-  const [szybkiTekst, setSzybkiTekst] = useState('')
-  const [zapisujSzybkie, setZapisujSzybkie] = useState(false)
-
   const [toast, setToast] = useState(null)
   const toastTimer = useRef(null)
-  const storageKey = `lista_zakupow_${user.id}`
+  // Stan odznaczonych jest teraz w bazie (zakupy_historia, wspólne dla rodziny),
+  // a nie w localStorage — funkcja zostaje jako no-op, żeby nie zmieniać call-site'ów.
+  const storageKey = `lista_zakupow_${user.id}` // legacy, niezużywane
 
   function pokazToast(msg, onUndo) {
     if (toastTimer.current) clearTimeout(toastTimer.current)
@@ -98,21 +52,17 @@ export default function ListaZakupow({ user, onBack, domyslnePorcje = 1, sledz }
     niedziela.setDate(niedziela.getDate() + 6)
     const niedzielaStr = formatDataLocal(niedziela)
 
-    const [{ data: planData }, { data: wlasneData }, { data: metaData }] = await Promise.all([
+    const [{ data: planData }, { data: wlasneData }, { data: historiaData }] = await Promise.all([
       supabase.from('kalendarz').select('*')
-        .eq('user_id', user.id)
+        .eq('household_id', householdId)
         .gte('data', poniedzialek)
         .lte('data', niedzielaStr),
       supabase.from('zakupy_wlasne').select('*')
-        .eq('user_id', user.id)
+        .eq('household_id', householdId)
         .order('created_at'),
-      supabase.from('skladniki_meta').select('*'),
+      supabase.from('zakupy_historia').select('*')
+        .eq('household_id', householdId),
     ])
-
-    // Mapa meta: nazwa lower -> rekord
-    const metaMapa = {}
-    ;(metaData || []).forEach(m => { metaMapa[m.nazwa.toLowerCase()] = m })
-    setMeta(metaMapa)
 
     // Wyczyść jednorazowe kupione własne produkty (z poprzednich tygodni)
     const dotKupione = (wlasneData || []).filter(w => !w.powtarzaj && w.kupione)
@@ -187,20 +137,76 @@ export default function ListaZakupow({ user, onBack, domyslnePorcje = 1, sledz }
       a.kategoria.localeCompare(b.kategoria) || a.skladnik.localeCompare(b.skladnik)
     )
 
-    // Odtwórz stan odznaczonych z localStorage (tylko te które wciąż są na liście)
-    const zapisane = JSON.parse(localStorage.getItem(storageKey) || '[]')
+    // Odtwórz stan odznaczonych z bazy (zakupy_historia jest wspólne dla rodziny)
     const aktualneKlucze = new Set(posortowane.map(i => i.klucz))
-    const odtworzone = new Set([...zapisane].filter(klucz => aktualneKlucze.has(klucz)))
+    const odtworzone = new Set()
+    const mapaHistoriaId = {}
+    ;(historiaData || []).forEach(h => {
+      const klucz = `${h.skladnik}||${h.jednostka || ''}`
+      if (aktualneKlucze.has(klucz)) {
+        odtworzone.add(klucz)
+        mapaHistoriaId[klucz] = h.id
+      }
+    })
 
     setLista(posortowane)
     setOdznaczone(odtworzone)
+    setHistoriaIds(mapaHistoriaId)
     setLoading(false)
-  }, [user.id, domyslnePorcje, storageKey])
+  }, [householdId, domyslnePorcje])
 
   useEffect(() => { generuj() }, [generuj])
 
-  function zapiszStanOdznaczenia(nowySet) {
-    localStorage.setItem(storageKey, JSON.stringify([...nowySet]))
+  // Realtime: gdy partner odhaczy/doda coś, aktualizuj lokalnie bez pełnego reloadu.
+  // - zakupy_historia: ktoś odhaczył składnik → dodaj klucz do odznaczonych
+  // - zakupy_wlasne:    ktoś dodał/zmienił/usunął własny produkt → odśwież listę wlasne
+  useEffect(() => {
+    if (!householdId) return
+
+    const channel = supabase
+      .channel(`zakupy:${householdId}`)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'zakupy_historia', filter: `household_id=eq.${householdId}` },
+        (payload) => {
+          const row = payload.new || payload.old
+          if (!row) return
+          const klucz = `${row.skladnik}||${row.jednostka || ''}`
+          if (payload.eventType === 'DELETE') {
+            setOdznaczone(prev => {
+              if (!prev.has(klucz)) return prev
+              const n = new Set(prev); n.delete(klucz); return n
+            })
+            setHistoriaIds(prev => {
+              if (!(klucz in prev)) return prev
+              const n = { ...prev }; delete n[klucz]; return n
+            })
+          } else {
+            setOdznaczone(prev => prev.has(klucz) ? prev : new Set(prev).add(klucz))
+            setHistoriaIds(prev => prev[klucz] === row.id ? prev : { ...prev, [klucz]: row.id })
+          }
+        }
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'zakupy_wlasne', filter: `household_id=eq.${householdId}` },
+        (payload) => {
+          if (payload.eventType === 'DELETE') {
+            setWlasne(prev => prev.filter(w => w.id !== payload.old?.id))
+          } else if (payload.eventType === 'INSERT') {
+            setWlasne(prev => prev.some(w => w.id === payload.new.id) ? prev : [...prev, payload.new])
+          } else if (payload.eventType === 'UPDATE') {
+            setWlasne(prev => prev.map(w => w.id === payload.new.id ? payload.new : w))
+          }
+        }
+      )
+      .subscribe()
+
+    return () => { supabase.removeChannel(channel) }
+  }, [householdId])
+
+  function zapiszStanOdznaczenia(/* nowySet */) {
+    // No-op — stan jest w bazie (zakupy_historia) i synchronizowany przez Realtime.
   }
 
   // ── Toggle zwykłego skladnika (z planu) ──
@@ -224,7 +230,7 @@ export default function ListaZakupow({ user, onBack, domyslnePorcje = 1, sledz }
       }
     } else {
       const { data } = await supabase.from('zakupy_historia').insert({
-        user_id: user.id, skladnik: item.skladnik,
+        household_id: householdId, user_id: user.id, skladnik: item.skladnik,
         ilosc: item.ilosc, jednostka: item.jednostka,
         kategoria: item.kategoria,
       }).select().single()
@@ -273,7 +279,7 @@ export default function ListaZakupow({ user, onBack, domyslnePorcje = 1, sledz }
       pokazToast(`Zmieniono: ${dane.nazwa}`)
     } else {
       const { data } = await supabase.from('zakupy_wlasne')
-        .insert({ ...dane, user_id: user.id, kupione: false })
+        .insert({ ...dane, household_id: householdId, user_id: user.id, kupione: false })
         .select().single()
       if (data) setWlasne(prev => [...prev, data])
       pokazToast(`Dodano: ${dane.nazwa}`)
@@ -295,42 +301,11 @@ export default function ListaZakupow({ user, onBack, domyslnePorcje = 1, sledz }
     setEdycjaWlasnego(null)
   }
 
-  // ── Szybkie dodawanie z notatki (textarea linia po linii) ──
-  async function zapiszSzybkie() {
-    const linie = szybkiTekst.split('\n').map(l => l.trim()).filter(Boolean)
-    if (linie.length === 0) return
-    setZapisujSzybkie(true)
-    const rekordy = linie.map(linia => {
-      const p = parsujLinieNotatki(linia)
-      if (!p) return null
-      return {
-        user_id: user.id,
-        nazwa: p.nazwa,
-        ilosc: p.ilosc,
-        jednostka: p.jednostka,
-        kategoria: '8_Inne',
-        powtarzaj: false, // domyślnie jednorazowo
-        kupione: false,
-      }
-    }).filter(Boolean)
-
-    if (rekordy.length === 0) { setZapisujSzybkie(false); return }
-
-    const { data } = await supabase.from('zakupy_wlasne').insert(rekordy).select()
-    if (data) {
-      setWlasne(prev => [...prev, ...data])
-      pokazToast(`Dodano ${data.length} ${data.length === 1 ? 'produkt' : 'produkty'}`)
-      setSzybkiTekst('')
-    }
-    setZapisujSzybkie(false)
-  }
-
   async function zacznijOdNowa() {
     const snapshot = { odznaczone: new Set(odznaczone), historiaIds: { ...historiaIds } }
     if (snapshot.odznaczone.size === 0) return
 
     setOdznaczone(new Set())
-    localStorage.removeItem(storageKey)
     const ids = Object.values(snapshot.historiaIds)
     if (ids.length > 0) await supabase.from('zakupy_historia').delete().in('id', ids)
     setHistoriaIds({})
@@ -342,7 +317,7 @@ export default function ListaZakupow({ user, onBack, domyslnePorcje = 1, sledz }
       if (itemsDoOdtworzenia.length > 0) {
         const { data } = await supabase.from('zakupy_historia').insert(
           itemsDoOdtworzenia.map(i => ({
-            user_id: user.id, skladnik: i.skladnik,
+            household_id: householdId, user_id: user.id, skladnik: i.skladnik,
             ilosc: i.ilosc, jednostka: i.jednostka, kategoria: i.kategoria,
           }))
         ).select()
@@ -367,28 +342,10 @@ export default function ListaZakupow({ user, onBack, domyslnePorcje = 1, sledz }
     wlasnyData: w, // referencja do oryginalnego rekordu
   })), [wlasne])
 
-  // Wszystkie itemy (plan + własne) razem — z zastosowanym przeliczeniem opakowań
+  // Wszystkie itemy (plan + własne) razem
   const wszystkieItemy = useMemo(() => {
-    const polaczone = [...lista, ...wlasneJakoItems]
-    return polaczone.map(item => {
-      // Szukamy meta po nazwie (case-insensitive)
-      const m = meta[item.skladnik?.toLowerCase()]
-      if (!m || item.ilosc == null) return item
-      // Konwersja ilości do jednostki bazowej meta (np. g)
-      const wBazowej = doJednostkiBazowej(item.ilosc, item.jednostka, m.jednostka_bazowa)
-      if (wBazowej == null) return item // np. szt. nie da się przeliczyć
-      const liczbaOpak = wBazowej / m.rozmiar_opakowania
-      const koncowa = m.zaokraglaj ? Math.ceil(liczbaOpak) : Math.round(liczbaOpak * 100) / 100
-      return {
-        ...item,
-        ilosc: koncowa,
-        jednostka: m.jednostka_opakowania,
-        iloscBazowa: wBazowej, // do podpowiedzi pod spodem
-        jednostkaBazowa: m.jednostka_bazowa,
-        _przelicznione: true,
-      }
-    })
-  }, [lista, wlasneJakoItems, meta])
+    return [...lista, ...wlasneJakoItems]
+  }, [lista, wlasneJakoItems])
 
   // Czy item jest kupione? (różne źródło prawdy w zależności od zrodla)
   const czyKupione = useCallback((item) => {
@@ -492,43 +449,10 @@ export default function ListaZakupow({ user, onBack, domyslnePorcje = 1, sledz }
               </section>
             ))}
 
-            {/* Szybkie dodawanie — jak notatka */}
-            <section style={s.szybkiBlok}>
-              <div style={s.szybkiHeader}>
-                <h3 style={s.szybkiTytul}>Dopisz na liście</h3>
-                <button
-                  style={s.szybkiOpcjeBtn}
-                  onClick={() => { setEdycjaWlasnego(null); setPokazDodaj(true) }}
-                  title="Otwórz pełny formularz (kategoria, powtarzanie)"
-                >
-                  ⚙ więcej opcji
-                </button>
-              </div>
-              <textarea
-                style={s.szybkiTextarea}
-                value={szybkiTekst}
-                onChange={e => setSzybkiTekst(e.target.value)}
-                placeholder={'Każda linia = jeden produkt:\nmleko 2l\nchleb\npapier toaletowy 4 szt\nser feta 200g'}
-                rows={4}
-              />
-              <div style={s.szybkiAkcje}>
-                <span style={s.szybkiHint}>
-                  {szybkiTekst.trim()
-                    ? `${szybkiTekst.split('\n').filter(l => l.trim()).length} ${szybkiTekst.split('\n').filter(l => l.trim()).length === 1 ? 'pozycja' : 'pozycji'}`
-                    : 'Pisz po kolei, enter = nowa pozycja'}
-                </span>
-                <button
-                  style={{
-                    ...s.szybkiBtn,
-                    opacity: szybkiTekst.trim() && !zapisujSzybkie ? 1 : 0.5,
-                  }}
-                  onClick={zapiszSzybkie}
-                  disabled={!szybkiTekst.trim() || zapisujSzybkie}
-                >
-                  {zapisujSzybkie ? 'Dodaję…' : '+ Dodaj do listy'}
-                </button>
-              </div>
-            </section>
+            {/* Dodaj własny produkt — przycisk pomiędzy kategoriami */}
+            <button style={s.btnDodajWlasny} onClick={() => { setEdycjaWlasnego(null); setPokazDodaj(true) }}>
+              + Dodaj własny produkt (papier, chemia, lek…)
+            </button>
 
             {kupione.length > 0 && (
               <section style={{ ...s.katSekcja, marginTop: 24 }}>
@@ -648,11 +572,6 @@ function ItemRow({ item, kupione, onTap, onLongPress }) {
           {item.ilosc != null
             ? `${item.ilosc} ${item.jednostka || ''}`
             : (item.iloscOryginalna || item.jednostka || '—')}
-          {item._przelicznione && item.iloscBazowa != null && (
-            <span style={s.iloscPodspodem}>
-              {' '}· potrzeba ~{item.iloscBazowa} {item.jednostkaBazowa}
-            </span>
-          )}
         </div>
       </div>
     </div>
@@ -1046,7 +965,6 @@ const s = {
     display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap',
   },
   itemIlosc: { fontSize: 12, color: t.mute, marginTop: 3, fontVariantNumeric: 'tabular-nums' },
-  iloscPodspodem: { fontSize: 11, color: t.muteLight, fontWeight: 400 },
   podmianaIcon: { fontSize: 11, color: t.warm, fontWeight: 700 },
   tagPowtarzaj: {
     fontSize: 9.5, color: t.accent, background: t.surfaceAlt,
@@ -1064,46 +982,6 @@ const s = {
     background: 'transparent', border: `1.5px dashed ${t.borderStrong}`,
     borderRadius: 14, color: t.mute, cursor: 'pointer',
     fontFamily: fonts.sans, fontSize: 13.5, fontWeight: 600,
-  },
-
-  // Szybkie dodawanie (textarea-jak-notatka)
-  szybkiBlok: {
-    marginTop: 16, padding: 14,
-    background: t.surfaceAlt, borderRadius: 14,
-    border: `1px dashed ${t.border}`,
-  },
-  szybkiHeader: {
-    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-    marginBottom: 8,
-  },
-  szybkiTytul: {
-    fontFamily: fonts.sans, fontSize: 13, fontWeight: 700,
-    color: t.text, letterSpacing: 0.3, textTransform: 'uppercase',
-    margin: 0,
-  },
-  szybkiOpcjeBtn: {
-    background: 'transparent', border: 'none',
-    color: t.mute, fontFamily: fonts.sans, fontSize: 12,
-    cursor: 'pointer', padding: '4px 6px',
-  },
-  szybkiTextarea: {
-    width: '100%', minHeight: 90, padding: '10px 12px',
-    border: `1px solid ${t.border}`, borderRadius: 10,
-    background: t.surface, color: t.text,
-    fontFamily: fonts.sans, fontSize: 14, lineHeight: 1.5,
-    resize: 'vertical', boxSizing: 'border-box',
-    outline: 'none',
-  },
-  szybkiAkcje: {
-    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-    marginTop: 8, gap: 12,
-  },
-  szybkiHint: { fontSize: 11.5, color: t.mute, fontFamily: fonts.sans },
-  szybkiBtn: {
-    background: t.accent, color: '#fff',
-    border: 'none', borderRadius: 10, padding: '8px 16px',
-    fontFamily: fonts.sans, fontSize: 13, fontWeight: 600,
-    cursor: 'pointer',
   },
 
   btnRow: { display: 'flex', gap: 8, marginTop: 18 },

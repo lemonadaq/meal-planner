@@ -36,21 +36,6 @@ const DNI = ['Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota
 const DNI_KROTKO = ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Nd']
 const POSILKI = ['Śniadanie', 'Obiad', 'Kolacja']
 
-// Rodzaje — muszą być zgodne z DodajDanie.jsx (decyduje o filtrowaniu w kalendarzu)
-const RODZAJE = [
-  { id: 'obiad',     label: 'Obiad' },
-  { id: 'sniadanie', label: 'Śniadanie' },
-  { id: 'kolacja',   label: 'Kolacja' },
-  { id: 'przekaska', label: 'Przekąska' },
-  { id: 'dodatek',   label: 'Dodatek' },
-  { id: 'surowka',   label: 'Surówka' },
-]
-const RODZAJE_GLOWNE = ['obiad', 'sniadanie', 'kolacja', 'przekaska']
-const TYPY = [
-  { id: 'samodzielne',  label: 'Samodzielne' },
-  { id: 'z_dodatkiem',  label: 'Z dodatkiem' },
-]
-
 function getPoniedzialek(offset = 0) {
   const d = new Date()
   const day = d.getDay() || 7
@@ -61,7 +46,7 @@ function getPoniedzialek(offset = 0) {
 // formatData z dataHelpers
 function formatKrotkoMies(date) { return date.toLocaleDateString('pl-PL', { day: 'numeric', month: 'short' }) }
 
-export default function DanieDetail({ nazwa: nazwaProp, onBack, user, sledz }) {
+export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdId, sledz }) {
   const [skladniki, setSkladniki] = useState([])
   const [przepis, setPrzepis] = useState([])
   const [loading, setLoading] = useState(true)
@@ -72,8 +57,6 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, sledz }) {
   const [edNazwa, setEdNazwa] = useState('')
   const [edSkladniki, setEdSkladniki] = useState([])
   const [edPrzepis, setEdPrzepis] = useState([])
-  const [edRodzaj, setEdRodzaj] = useState('obiad')
-  const [edTyp, setEdTyp] = useState('samodzielne')
   const [nowyKrok, setNowyKrok] = useState('')
 
   const [pokazKalendarz, setPokazKalendarz] = useState(false)
@@ -99,13 +82,13 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, sledz }) {
       const doStr = formatData(dni[6])
       const { data } = await supabase
         .from('kalendarz').select('*')
-        .eq('user_id', user.id).gte('data', od).lte('data', doStr)
+        .eq('household_id', householdId).gte('data', od).lte('data', doStr)
       const mapa = {}
       ;(data || []).forEach(p => { mapa[`${p.data}_${p.posilek}`] = p.danie })
       setPlanTygodnia(mapa)
     }
     pobierzPlan()
-  }, [pokazKalendarz, tydzien, user])
+  }, [pokazKalendarz, tydzien, householdId])
 
   async function pobierz() {
     setLoading(true)
@@ -133,10 +116,6 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, sledz }) {
       _nowy: false,
     })))
     setEdPrzepis([...przepis])
-    // Wczytaj rodzaj i TYP z pierwszego wiersza (są te same dla całego dania)
-    const wzor = skladniki[0] || {}
-    setEdRodzaj(wzor.rodzaj || 'obiad')
-    setEdTyp(wzor['TYP'] || 'samodzielne')
     setEdycja(true)
   }
 
@@ -159,15 +138,8 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, sledz }) {
     }
 
     const operacje = []
-    // Update wspólny dla wszystkich wierszy dania: Przepis, rodzaj, TYP
-    // TYP zapisujemy tylko gdy rodzaj jest "główny" (obiad/sniadanie/kolacja/przekaska)
-    const wspolnyUpdate = {
-      'Przepis': przepisTekst,
-      'rodzaj': edRodzaj,
-      'TYP': RODZAJE_GLOWNE.includes(edRodzaj) ? edTyp : null,
-    }
     operacje.push(
-      supabase.from('dania').update(wspolnyUpdate).eq('"Danie"', aktualnaNazwa)
+      supabase.from('dania').update({ 'Przepis': przepisTekst }).eq('"Danie"', aktualnaNazwa)
     )
 
     edSkladniki.filter(sk => sk.id && !sk._nowy).forEach(sk => {
@@ -191,8 +163,7 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, sledz }) {
         'Jednostka': sk.Jednostka,
         'Kategoria': sk.Kategoria,
         'Przepis': przepisTekst,
-        'rodzaj': edRodzaj,
-        'TYP': RODZAJE_GLOWNE.includes(edRodzaj) ? edTyp : null,
+        'TYP': wzor['TYP'] || null,
         'zdjecie': wzor['zdjecie'] || null,
       }))
       operacje.push(supabase.from('dania').insert(wiersze))
@@ -232,12 +203,12 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, sledz }) {
     setDodawanie(true)
     const { data: istniejacy } = await supabase
       .from('kalendarz').select('id')
-      .eq('user_id', user.id).eq('data', wybranyDzien).eq('posilek', wybranyPosilek)
+      .eq('household_id', householdId).eq('data', wybranyDzien).eq('posilek', wybranyPosilek)
       .maybeSingle()
     if (istniejacy) {
       await supabase.from('kalendarz').update({ danie: nazwa, podmiany: {} }).eq('id', istniejacy.id)
     } else {
-      await supabase.from('kalendarz').insert({ user_id: user.id, data: wybranyDzien, posilek: wybranyPosilek, danie: nazwa })
+      await supabase.from('kalendarz').insert({ household_id: householdId, user_id: user.id, data: wybranyDzien, posilek: wybranyPosilek, danie: nazwa })
     }
     sledz?.('dodaj_do_kalendarza', { danie: nazwa, dzien: wybranyDzien, posilek: wybranyPosilek })
     setDodawanie(false); setSukces(true)
@@ -351,31 +322,7 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, sledz }) {
           <div style={s.heroInfo}>
             <div style={s.eyebrow}>Przepis</div>
             {edycja ? (
-              <>
-                <input style={s.inputNazwa} value={edNazwa} onChange={e => setEdNazwa(e.target.value)} />
-                <div style={s.edMetaRow}>
-                  <select
-                    style={s.edMetaSelect}
-                    value={edRodzaj}
-                    onChange={e => setEdRodzaj(e.target.value)}
-                  >
-                    {RODZAJE.map(r => (
-                      <option key={r.id} value={r.id}>{r.label}</option>
-                    ))}
-                  </select>
-                  {RODZAJE_GLOWNE.includes(edRodzaj) && (
-                    <select
-                      style={s.edMetaSelect}
-                      value={edTyp}
-                      onChange={e => setEdTyp(e.target.value)}
-                    >
-                      {TYPY.map(tp => (
-                        <option key={tp.id} value={tp.id}>{tp.label}</option>
-                      ))}
-                    </select>
-                  )}
-                </div>
-              </>
+              <input style={s.inputNazwa} value={edNazwa} onChange={e => setEdNazwa(e.target.value)} />
             ) : (
               <h1 style={s.heroTytul}>{nazwa}</h1>
             )}
@@ -523,14 +470,6 @@ const s = {
     border: 'none', borderBottom: `2px solid ${t.accent}`,
     background: 'transparent', padding: '6px 0', width: '100%',
     outline: 'none', letterSpacing: -0.4,
-  },
-  edMetaRow: { display: 'flex', gap: 8, marginTop: 12, flexWrap: 'wrap' },
-  edMetaSelect: {
-    flex: 1, minWidth: 130,
-    padding: '8px 12px', fontFamily: fonts.sans, fontSize: 13,
-    color: t.text, background: t.surface,
-    border: `1px solid ${t.border}`, borderRadius: 8,
-    outline: 'none', cursor: 'pointer',
   },
   heroActions: { display: 'flex', gap: 8, marginTop: 14 },
   btnKalendarz: {

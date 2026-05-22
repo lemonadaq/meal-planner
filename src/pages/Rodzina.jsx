@@ -77,16 +77,12 @@ export default function Rodzina({ user, householdId, onBack, onZmianaHousehold }
     setZapraszam(true)
     setBladZapr(null)
 
-    const { error } = await supabase.from('household_invites').insert({
-      household_id: householdId,
-      invited_email: email,
-      invited_by: user.id,
-    })
+    const { error } = await supabase.rpc('zapros_do_household', { p_email: email })
 
     setZapraszam(false)
 
     if (error) {
-      setBladZapr('Nie udało się wysłać zaproszenia: ' + error.message)
+      setBladZapr(error.message)
       return
     }
 
@@ -97,9 +93,11 @@ export default function Rodzina({ user, householdId, onBack, onZmianaHousehold }
   }
 
   async function anulujZaproszenie(inviteId) {
-    await supabase.from('household_invites')
-      .update({ status: 'cancelled', responded_at: new Date().toISOString() })
-      .eq('id', inviteId)
+    const { error } = await supabase.rpc('anuluj_zaproszenie', { p_invite_id: inviteId })
+    if (error) {
+      pokazToast('Błąd: ' + error.message)
+      return
+    }
     pobierz()
     pokazToast('Zaproszenie anulowane')
   }
@@ -119,7 +117,7 @@ export default function Rodzina({ user, householdId, onBack, onZmianaHousehold }
 
   async function usunCzlonka() {
     if (!usuwany) return
-    const { error } = await supabase.rpc('usun_z_household', { usuwany_user_id: usuwany.user_id })
+    const { error } = await supabase.rpc('usun_z_household', { p_user_id: usuwany.user_id })
     if (error) {
       pokazToast('Błąd: ' + error.message)
       return

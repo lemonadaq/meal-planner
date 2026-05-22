@@ -2,14 +2,12 @@ import { useEffect, useState, useCallback } from 'react'
 import { supabase } from './supabase'
 
 /**
- * Zwraca aktualny household_id dla zalogowanego usera + pełną info o rodzinie.
- * Każdy zarejestrowany user MA household (trigger w bazie tworzy go automatycznie).
+ * Zwraca aktualny household_id dla zalogowanego usera.
+ * Jeśli user nie ma household, automatycznie go tworzy (idempotentnie,
+ * przez RPC `utworz_moj_household`).
  *
- * Zwraca:
- *   householdId  – uuid aktywnego household
- *   household    – { id, nazwa, created_by, created_at }
- *   loading      – true podczas pierwszego ładowania
- *   refresh()    – wymuś przeładowanie (np. po akceptacji zaproszenia)
+ * Dzięki temu nie polegamy na triggerach Supabase ani backfillach —
+ * household powstaje przy pierwszym wejściu do apki po zalogowaniu.
  */
 export function useHousehold(user) {
   const [household, setHousehold] = useState(null)
@@ -26,10 +24,10 @@ export function useHousehold(user) {
     }
     let anulowane = false
 
-    async function pobierz() {
+    async function pobierzLubUtworz() {
       setLoading(true)
 
-      // 1. Znajdź household_id usera
+      // Krok 1: spróbuj pobrać istniejący household
       const { data: czlonek } = await supabase
         .from('household_members')
         .select('household_id')
@@ -38,28 +36,42 @@ export function useHousehold(user) {
 
       if (anulowane) return
 
-      if (!czlonek?.household_id) {
-        // Backup — jakby trigger zawiódł, spróbuj utworzyć ręcznie
-        // (zostawiamy null żeby wyłapać błąd w konsoli)
-        console.warn('[useHousehold] Brak household dla usera', user.id)
+      let hid = czlonek?.household_id
+
+      // Krok 2: jeśli nie ma → wywołaj RPC żeby go utworzyć
+      if (!hid) {
+        const { data: nowyHid, error } = await supabase.rpc('utworz_moj_household')
+        if (anulowane) return
+        if (error) {
+          console.error('[useHousehold] utworz_moj_household błąd:', error)
+          setHousehold(null)
+          setLoading(false)
+          return
+        }
+        hid = nowyHid
+      }
+
+      // Krok 3: pobierz pełne dane household
+      const { data: hh, error: hhError } = await supabase
+        .from('households')
+        .select('*')
+        .eq('id', hid)
+        .maybeSingle()
+
+      if (anulowane) return
+
+      if (hhError) {
+        console.error('[useHousehold] błąd pobierania household:', hhError)
         setHousehold(null)
         setLoading(false)
         return
       }
 
-      // 2. Pobierz pełne info o household
-      const { data: hh } = await supabase
-        .from('households')
-        .select('*')
-        .eq('id', czlonek.household_id)
-        .maybeSingle()
-
-      if (anulowane) return
       setHousehold(hh)
       setLoading(false)
     }
 
-    pobierz()
+    pobierzLubUtworz()
     return () => { anulowane = true }
   }, [user?.id, tick])
 
