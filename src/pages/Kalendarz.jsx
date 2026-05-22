@@ -557,6 +557,7 @@ function WidokDnia({
   const dataStr = formatData(dzien)
   const [filtr, setFiltr] = useState('')
   const [dragState, setDragState] = useState(null)
+  const [debug, setDebug] = useState('')
 
   // Refy do slotów (dla wykrywania drop): zarówno głównych jak i side-slotów
   // Klucz: `${posilek}` dla dania, `${posilek}_side_${i}` dla side-slotów
@@ -575,32 +576,18 @@ function WidokDnia({
   // Reset filtra przy zmianie sub-trybu / dnia
   useEffect(() => { setFiltr('') }, [subTryb?.typ, subTryb?.posilek, dataStr])
 
-  const startDrag = useCallback((nazwa, typ, meta, x, y, pointerEvent, pointerId) => {
-    const stan = { nazwa, typ, meta, x, y, podniesiony: false, pointerId }
+  const startDrag = useCallback((nazwa, typ, meta, x, y) => {
+    const stan = { nazwa, typ, meta, x, y, podniesiony: false }
     dragRef.current = stan
     setDragState(stan)
-    // Pointer capture — gwarantuje że dostaniemy wszystkie kolejne pointermove
-    // niezależnie od decyzji przeglądarki (np. że gest jest scrollem).
-    // Bez tego po długim wciśnięciu pierwszy ruch palca jest zjadany przez
-    // przeglądarkę, która klasyfikuje gest jako scroll i przestaje wysyłać eventy.
-    try {
-      pointerEvent?.target?.setPointerCapture?.(pointerId)
-    } catch {
-      // Niektóre przeglądarki rzucają jeśli element już nie jest w DOM
-    }
   }, [])
 
   const onPointerDownItem = useCallback((e, nazwa, typ, meta) => {
     if (e.pointerType === 'mouse' && e.button !== 0) return
     const x = e.clientX, y = e.clientY
-    const pointerId = e.pointerId
-    const target = e.currentTarget
-    // Zapamiętujemy event-like obiekt dla późniejszego capture (oryginalny e może
-    // być już "skonsumowany" gdy timeout się odpali)
-    const eventRef = { target, pointerId }
     startPos.current = { x, y, nazwa, typ, meta }
     longPressTimer.current = setTimeout(() => {
-      startDrag(nazwa, typ, meta, x, y, eventRef, pointerId)
+      startDrag(nazwa, typ, meta, x, y)
       if (navigator.vibrate) navigator.vibrate(20)
     }, 250)
   }, [startDrag])
@@ -641,6 +628,7 @@ function WidokDnia({
 
   useEffect(() => {
     function handleMove(e) {
+      setDebug(`x=${Math.round(e.clientX)} y=${Math.round(e.clientY)} drag=${!!dragRef.current} podn=${dragRef.current?.podniesiony ? 'T' : 'F'} timer=${!!longPressTimer.current}`)
       if (longPressTimer.current && startPos.current) {
         const dx = e.clientX - startPos.current.x
         const dy = e.clientY - startPos.current.y
@@ -669,7 +657,7 @@ function WidokDnia({
         if (e.cancelable) e.preventDefault()
       }
     }
-console.log('[MOVE]', e.clientX, e.clientY, 'drag?', !!dragRef.current, 'podniesiony?', dragRef.current?.podniesiony)
+
     function znajdzCel(x, y) {
       // Sprawdzaj side-sloty przed głównym (są na wierzchu wizualnie i mniejsze)
       // Klucze: `${posilek}_side_0`, `${posilek}_side_1`, `${posilek}`
@@ -924,6 +912,17 @@ console.log('[MOVE]', e.clientX, e.clientY, 'drag?', !!dragRef.current, 'podnies
           </div>
         )}
       </section>
+
+      {/* TYMCZASOWY DEBUG OVERLAY — usuń po diagnozie */}
+      <div style={{
+        position: 'fixed', top: 4, right: 4,
+        background: 'black', color: 'lime',
+        padding: 6, fontSize: 10, zIndex: 9999,
+        fontFamily: 'monospace', maxWidth: 280,
+        wordBreak: 'break-all', pointerEvents: 'none',
+      }}>
+        {debug || 'brak ruchu'}
+      </div>
 
       {dragState?.podniesiony && (
         <div style={{ ...s.dragGhost, left: dragState.x, top: dragState.y }}>
