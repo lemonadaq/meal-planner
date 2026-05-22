@@ -1077,68 +1077,115 @@ function TrybSklepu({ wszystkieItemy, czyKupione, onToggle, onClose }) {
 
 // Pojedynczy swipe-able item w trybie sklepu
 function SwipeItem({ item, kupione, onSwipeRight }) {
-  const [translateX, setTranslateX] = useState(0)
+  const [translateX, setTranslateXState] = useState(0)
   const [animowanie, setAnimowanie] = useState(false)
-  const startX = useRef(null)
-  const startY = useRef(null)
-  const startTime = useRef(0)
-  const kierunek = useRef(null) // 'x' lub 'y' — żeby nie blokować scrolla
+  const itemRef = useRef(null)
+  const swipe = useRef({ active: false, startX: 0, startY: 0, kierunek: null })
+  const translateRef = useRef(0)
+  const pointerIdRef = useRef(null)
 
-  function down(e) {
+  function setTranslateXSafe(value) {
+    translateRef.current = value
+    setTranslateXState(value)
+  }
+
+  function progZaliczenia() {
+    const szerokosc = itemRef.current?.offsetWidth || window.innerWidth || 320
+    // Celowo bez „szybkiego flicka”: zalicza dopiero świadome przesunięcie prawie do połowy.
+    return Math.min(240, Math.max(115, szerokosc * 0.45))
+  }
+
+  function resetRefs() {
+    swipe.current = { active: false, startX: 0, startY: 0, kierunek: null }
+    pointerIdRef.current = null
+  }
+
+  function start(clientX, clientY) {
     if (animowanie) return
-    startX.current = e.clientX
-    startY.current = e.clientY
-    startTime.current = Date.now()
-    kierunek.current = null
+    swipe.current = { active: true, startX: clientX, startY: clientY, kierunek: null }
+    setTranslateXSafe(0)
   }
-  function move(e) {
-    if (startX.current == null) return
-    const dx = e.clientX - startX.current
-    const dy = e.clientY - startY.current
 
-    // Zdecyduj kierunek po pierwszych 8px
-    if (!kierunek.current) {
-      if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return
-      kierunek.current = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y'
+  function move(clientX, clientY, event) {
+    if (!swipe.current.active || animowanie) return
+
+    const dx = clientX - swipe.current.startX
+    const dy = clientY - swipe.current.startY
+    const absX = Math.abs(dx)
+    const absY = Math.abs(dy)
+
+    // Najpierw rozpoznaj kierunek. Pion = normalny scroll listy. Poziom = swipe produktu.
+    if (!swipe.current.kierunek) {
+      if (absX < 8 && absY < 8) return
+      swipe.current.kierunek = absX > absY + 4 ? 'x' : 'y'
     }
-    if (kierunek.current === 'y') return // pozwól scrollowi
 
-    // Tylko swipe w prawo (kupione = pochłonięte)
-    // Dla itemów już kupionych pozwól też w prawo (przywróć)
-    const ograniczone = Math.max(0, dx)
-    setTranslateX(ograniczone)
-    if (e.cancelable) e.preventDefault()
+    if (swipe.current.kierunek === 'y') return
+
+    if (event?.cancelable) event.preventDefault()
+
+    const szerokosc = itemRef.current?.offsetWidth || window.innerWidth || 320
+    const ograniczone = Math.max(0, Math.min(dx, szerokosc * 0.85))
+    setTranslateXSafe(ograniczone)
   }
-  function up(e) {
-    if (startX.current == null) return
-    const dx = e.clientX - startX.current
-    const dt = Date.now() - startTime.current
-    const swipnal = dx > 80 || (dx > 40 && dt < 250) // próg lub szybki gest
 
-    if (swipnal && kierunek.current === 'x') {
-      // Animuj wyjście w prawo
+  function end() {
+    if (!swipe.current.active) return
+
+    const zaliczone = swipe.current.kierunek === 'x' && translateRef.current >= progZaliczenia()
+
+    if (zaliczone) {
       setAnimowanie(true)
-      setTranslateX(window.innerWidth)
+      setTranslateXSafe(window.innerWidth)
       setTimeout(() => {
         onSwipeRight()
-        // reset po pełnym wyrenderowaniu (drugi rerender po toggle z setData)
-        setTranslateX(0)
+        setTranslateXSafe(0)
         setAnimowanie(false)
-      }, 200)
-      if (navigator.vibrate) navigator.vibrate(15)
+      }, 180)
+      navigator.vibrate?.(15)
     } else {
-      setTranslateX(0)
+      setTranslateXSafe(0)
     }
-    startX.current = null
-    startY.current = null
-    kierunek.current = null
+
+    resetRefs()
   }
 
-  // Tap = również toggle (fallback dla tych co nie chcą swipe)
-  function onClick() {
-    if (Math.abs(translateX) < 5 && !animowanie) {
-      onSwipeRight()
-    }
+  function cancel() {
+    setTranslateXSafe(0)
+    resetRefs()
+  }
+
+  function pointerDown(e) {
+    // Dotyk obsługują onTouch*, żeby mobilne przeglądarki nie przejmowały gestu.
+    if (e.pointerType === 'touch') return
+    if (e.button != null && e.button !== 0) return
+    pointerIdRef.current = e.pointerId
+    try { e.currentTarget.setPointerCapture(e.pointerId) } catch {}
+    start(e.clientX, e.clientY)
+  }
+
+  function pointerMove(e) {
+    if (e.pointerType === 'touch') return
+    if (pointerIdRef.current != null && e.pointerId !== pointerIdRef.current) return
+    move(e.clientX, e.clientY, e)
+  }
+
+  function pointerUp(e) {
+    if (e.pointerType === 'touch') return
+    if (pointerIdRef.current != null && e.pointerId !== pointerIdRef.current) return
+    end()
+  }
+
+  function touchStart(e) {
+    const touch = e.touches?.[0]
+    if (!touch) return
+    start(touch.clientX, touch.clientY)
+  }
+
+  function touchMove(e) {
+    const touch = e.touches?.[0]
+    if (!touch) return
+    move(touch.clientX, touch.clientY, e)
   }
 
   return (
@@ -1146,7 +1193,7 @@ function SwipeItem({ item, kupione, onSwipeRight }) {
       {/* Tło które pokazuje się przy swipe */}
       <div style={{
         ...sklep.itemBg,
-        opacity: Math.min(1, translateX / 100),
+        opacity: Math.min(1, translateX / progZaliczenia()),
       }}>
         <span style={sklep.itemBgIcon}>✓</span>
         <span style={sklep.itemBgTxt}>{kupione ? 'Przywróć' : 'Do koszyka'}</span>
@@ -1154,16 +1201,20 @@ function SwipeItem({ item, kupione, onSwipeRight }) {
 
       {/* Sam item */}
       <div
-        onPointerDown={down}
-        onPointerMove={move}
-        onPointerUp={up}
-        onPointerCancel={() => { setTranslateX(0); startX.current = null; kierunek.current = null }}
-        onClick={onClick}
+        ref={itemRef}
+        onPointerDown={pointerDown}
+        onPointerMove={pointerMove}
+        onPointerUp={pointerUp}
+        onPointerCancel={cancel}
+        onTouchStart={touchStart}
+        onTouchMove={touchMove}
+        onTouchEnd={end}
+        onTouchCancel={cancel}
         style={{
           ...sklep.item,
           ...(kupione ? sklep.itemKupione : {}),
           transform: `translateX(${translateX}px)`,
-          transition: animowanie ? 'transform .2s ease-out' : (translateX === 0 ? 'transform .15s' : 'none'),
+          transition: animowanie ? 'transform .18s ease-out' : (translateX === 0 ? 'transform .16s ease-out' : 'none'),
         }}
       >
         <div style={sklep.itemNazwa}>{item.skladnik}</div>
@@ -1274,9 +1325,9 @@ const s = {
   katLista: { ...ui.card, padding: 0, overflow: 'hidden' },
 
   item: {
-    width: '100%', textAlign: 'left',
-    display: 'flex', alignItems: 'center', gap: 14,
-    padding: '12px 16px', background: 'transparent', border: 'none',
+    width: '100%', boxSizing: 'border-box', textAlign: 'left',
+    display: 'flex', alignItems: 'center', gap: 12,
+    padding: '12px 12px 12px 16px', background: 'transparent', border: 'none',
     borderBottom: `0.5px solid ${t.border}`,
     cursor: 'pointer', fontFamily: fonts.sans,
     userSelect: 'none', WebkitUserSelect: 'none',
@@ -1297,13 +1348,14 @@ const s = {
   },
   itemIlosc: { fontSize: 12, color: t.mute, marginTop: 3, fontVariantNumeric: 'tabular-nums' },
   itemEditBtn: {
-    width: 32, height: 32, borderRadius: 999,
+    width: 30, height: 30, borderRadius: 999,
     border: `1px solid ${t.border}`,
     background: t.surfaceAlt,
     color: t.mute,
     display: 'grid', placeItems: 'center',
-    fontFamily: fonts.sans, fontSize: 14, fontWeight: 700,
+    fontFamily: fonts.sans, fontSize: 13, fontWeight: 700,
     cursor: 'pointer', flexShrink: 0,
+    marginRight: 0,
   },
   podmianaIcon: { fontSize: 11, color: t.warm, fontWeight: 700 },
   tagPowtarzaj: {
@@ -1446,6 +1498,7 @@ const sklep = {
   itemWrapper: {
     position: 'relative', overflow: 'hidden',
     borderRadius: 14, background: SKLEP_BG,
+    touchAction: 'pan-y',
   },
   itemBg: {
     position: 'absolute', inset: 0,
@@ -1459,7 +1512,8 @@ const sklep = {
   item: {
     position: 'relative', background: SKLEP_SURFACE,
     padding: '18px 20px', borderRadius: 14,
-    cursor: 'pointer', userSelect: 'none', WebkitUserSelect: 'none',
+    cursor: 'grab', userSelect: 'none', WebkitUserSelect: 'none',
+    touchAction: 'pan-y', WebkitTouchCallout: 'none',
   },
   itemKupione: { opacity: 0.55 },
   itemNazwa: {
