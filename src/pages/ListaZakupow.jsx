@@ -62,6 +62,35 @@ function bezpiecznaKategoria(kategoria) {
   return KATEGORIE.some(k => k.id === kategoria) ? kategoria : '8_Inne'
 }
 
+function brakKolumnyJednostka(error) {
+  return error?.code === 'PGRST204' && /jednostka/i.test(error?.message || '')
+}
+
+function bezJednostkiKolumny(rekord) {
+  const { jednostka, ...reszta } = rekord || {}
+  return reszta
+}
+
+function aktualnyTydzienZakupow() {
+  const d = new Date()
+  const day = d.getDay() || 7
+  d.setDate(d.getDate() - day + 1)
+  d.setHours(0, 0, 0, 0)
+  return formatDataLocal(d)
+}
+
+function tekstIlosciSzybkiej(dane) {
+  if (!dane || dane.ilosc == null || !Number.isFinite(dane.ilosc)) return null
+  const liczba = Number.isInteger(dane.ilosc) ? String(dane.ilosc) : String(dane.ilosc).replace('.', ',')
+  const jednostka = dane.jednostka ? normalizujJednostke(dane.jednostka) : ''
+  return `${liczba}${jednostka ? ` ${jednostka}` : ''}`.trim() || null
+}
+
+function normalizujIloscTekst(raw) {
+  const tekst = raw == null ? '' : raw.toString().replace(/\s+/g, ' ').trim()
+  return tekst || null
+}
+
 function rozbijSzybkieLinie(tekst = '') {
   // Obsługuje zarówno Enter, średnik, jak i szybkie wpisy po przecinku:
   // „Woda, Musztarda sarepska 1szt., Margaryna”.
@@ -153,18 +182,13 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
         .lte('data', niedzielaStr),
       supabase.from('zakupy_wlasne').select('*')
         .eq('household_id', householdId)
+        .eq('tydzien', poniedzialek)
         .order('created_at'),
       supabase.from('zakupy_historia').select('*')
         .eq('household_id', householdId),
     ])
 
-    // Wyczyść jednorazowe kupione własne produkty (z poprzednich tygodni)
-    const dotKupione = (wlasneData || []).filter(w => !w.powtarzaj && w.kupione)
-    if (dotKupione.length > 0) {
-      await supabase.from('zakupy_wlasne').delete().in('id', dotKupione.map(w => w.id))
-    }
-    const aktywneWlasne = (wlasneData || []).filter(w => !(w.kupione && !w.powtarzaj))
-    setWlasne(aktywneWlasne)
+    setWlasne(wlasneData || [])
 
     // Zbieram porcje
     const porcjeWszystkich = {}
@@ -285,6 +309,9 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
         'postgres_changes',
         { event: '*', schema: 'public', table: 'zakupy_wlasne', filter: `household_id=eq.${householdId}` },
         (payload) => {
+          const row = payload.new || payload.old
+          if (row?.tydzien && row.tydzien !== aktualnyTydzienZakupow()) return
+
           if (payload.eventType === 'DELETE') {
             setWlasne(prev => prev.filter(w => w.id !== payload.old?.id))
           } else if (payload.eventType === 'INSERT') {
@@ -348,16 +375,23 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
 
   // ── Toggle własnego produktu (bezpośrednio w zakupy_wlasne) ──
   async function toggleWlasny(item) {
-    const noweKupione = !item.kupione
-    const { data } = await supabase.from('zakupy_wlasne')
-      .update({ kupione: noweKupione })
+    const noweOdznaczone = !item.odznaczone
+    const { data, error } = await supabase.from('zakupy_wlasne')
+      .update({ odznaczone: noweOdznaczone })
       .eq('id', item.id).select().single()
+
+    if (error) {
+      console.error('Błąd odznaczania własnego produktu:', error, item)
+      pokazToast('Nie udało się zmienić statusu produktu')
+      return
+    }
+
     if (data) {
       setWlasne(prev => prev.map(w => w.id === item.id ? data : w))
-      if (noweKupione) {
+      if (noweOdznaczone) {
         pokazToast(`Kupione: ${item.nazwa}`, async () => {
-          await supabase.from('zakupy_wlasne').update({ kupione: false }).eq('id', item.id)
-          setWlasne(prev => prev.map(w => w.id === item.id ? { ...w, kupione: false } : w))
+          await supabase.from('zakupy_wlasne').update({ odznaczone: false }).eq('id', item.id)
+          setWlasne(prev => prev.map(w => w.id === item.id ? { ...w, odznaczone: false } : w))
           setToast(null)
         })
       }
@@ -366,17 +400,47 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
 
   // ── Dodawanie / edycja własnego produktu ──
   async function zapiszWlasny(dane) {
+    const daneDoZapisu = {
+      nazwa: poprawNazwe(dane.nazwa),
+      ilosc: normalizujIloscTekst(dane.ilosc),
+      kategoria: bezpiecznaKategoria(dane.kategoria),
+    }
+
+    if (!daneDoZapisu.nazwa) return
+
     if (edycjaWlasnego) {
-      const { data } = await supabase.from('zakupy_wlasne')
-        .update(dane).eq('id', edycjaWlasnego.id).select().single()
+      const { data, error } = await supabase.from('zakupy_wlasne')
+        .update(daneDoZapisu).eq('id', edycjaWlasnego.id).select().single()
+
+      if (error) {
+        console.error('Błąd edycji własnego produktu:', error, daneDoZapisu)
+        pokazToast('Nie udało się zapisać produktu')
+        return
+      }
+
       if (data) setWlasne(prev => prev.map(w => w.id === data.id ? data : w))
-      pokazToast(`Zmieniono: ${dane.nazwa}`)
+      pokazToast(`Zmieniono: ${daneDoZapisu.nazwa}`)
     } else {
-      const { data } = await supabase.from('zakupy_wlasne')
-        .insert({ ...dane, household_id: householdId, user_id: user.id, kupione: false })
+      const rekord = {
+        ...daneDoZapisu,
+        household_id: householdId,
+        user_id: user.id,
+        tydzien: aktualnyTydzienZakupow(),
+        odznaczone: false,
+      }
+
+      const { data, error } = await supabase.from('zakupy_wlasne')
+        .insert(rekord)
         .select().single()
+
+      if (error) {
+        console.error('Błąd dodawania własnego produktu:', error, rekord)
+        pokazToast('Nie udało się dodać produktu')
+        return
+      }
+
       if (data) setWlasne(prev => [...prev, data])
-      pokazToast(`Dodano: ${dane.nazwa}`)
+      pokazToast(`Dodano: ${daneDoZapisu.nazwa}`)
     }
     setEdycjaWlasnego(null)
     setPokazDodaj(false)
@@ -393,13 +457,12 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
       .filter(Boolean)
       .map(dane => ({
         nazwa: poprawNazwe(dane.nazwa),
-        ilosc: Number.isFinite(dane.ilosc) ? dane.ilosc : null,
-        jednostka: dane.jednostka ? normalizujJednostke(dane.jednostka) : null,
+        ilosc: tekstIlosciSzybkiej(dane),
         kategoria: bezpiecznaKategoria(dane.kategoria),
         household_id: householdId,
         user_id: user.id,
-        kupione: false,
-        powtarzaj: false,
+        tydzien: aktualnyTydzienZakupow(),
+        odznaczone: false,
       }))
       .filter(rekord => rekord.nazwa)
 
@@ -413,7 +476,6 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
       console.error('Błąd szybkiego dodawania produktów — bulk insert:', error, rekordy)
 
       // Gdyby jedna linijka wywaliła bulk insert, spróbuj zapisać pozostałe pojedynczo.
-      // To pole ma być odporne: jeden krzywy wpis nie może blokować reszty.
       const dodane = []
       const bledy = []
 
@@ -501,8 +563,9 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
   const wlasneJakoItems = useMemo(() => wlasne.map(w => ({
     klucz: `wlasny_${w.id}`,
     skladnik: w.nazwa,
-    ilosc: w.ilosc,
-    jednostka: w.jednostka,
+    ilosc: null,
+    iloscOryginalna: w.ilosc || '',
+    jednostka: '',
     kategoria: w.kategoria || '8_Inne',
     podmieniono: false,
     zrodlo: 'wlasne',
@@ -516,7 +579,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
 
   // Czy item jest kupione? (różne źródło prawdy w zależności od zrodla)
   const czyKupione = useCallback((item) => {
-    if (item.zrodlo === 'wlasne') return !!item.wlasnyData.kupione
+    if (item.zrodlo === 'wlasne') return !!item.wlasnyData.odznaczone
     return odznaczone.has(item.klucz)
   }, [odznaczone])
 
@@ -745,7 +808,7 @@ function SzybkieDodawanie({ value, onChange, onDodaj }) {
         onKeyDown={handleKeyDown}
       />
       <div style={s.quickAddHelp}>
-        Enter dodaje produkt. Możesz wpisać też kilka po przecinku: „Woda, Musztarda sarepska 1szt., Margaryna”. Brak jednostki trafia jako puste/null.
+        Enter dodaje produkt. Możesz wpisać też kilka po przecinku: „Woda, Musztarda sarepska 1szt., Margaryna”. Brak ilości też jest OK — produkt i tak trafi do „Inne”.
       </div>
     </section>
   )
@@ -795,7 +858,6 @@ function ItemRow({ item, kupione, onTap, onLongPress, onEdit }) {
   }
 
   const isWlasny = item.zrodlo === 'wlasne'
-  const powtarzaSie = isWlasny && item.wlasnyData.powtarzaj
 
   return (
     <div
@@ -814,8 +876,7 @@ function ItemRow({ item, kupione, onTap, onLongPress, onEdit }) {
         <div style={{ ...s.itemNazwa, ...(kupione ? { textDecoration: 'line-through', color: t.muteLight } : {}) }}>
           {item.skladnik}
           {item.podmieniono && <span style={s.podmianaIcon} title="Składnik podmieniony">↻</span>}
-          {isWlasny && powtarzaSie && <span style={s.tagPowtarzaj} title="Powtarza się co tydzień">↻ tyg.</span>}
-          {isWlasny && !powtarzaSie && <span style={s.tagJednorazowo} title="Jednorazowo">jednorazowo</span>}
+          {isWlasny && <span style={s.tagJednorazowo} title="Produkt dopisany ręcznie">własne</span>}
         </div>
         <div style={{ ...s.itemIlosc, ...(kupione ? { color: t.muteLight } : {}) }}>
           {item.ilosc != null
@@ -844,18 +905,14 @@ function ItemRow({ item, kupione, onTap, onLongPress, onEdit }) {
 function DodajProduktModal({ edycja, onClose, onSave, onDelete }) {
   const [nazwa, setNazwa] = useState(edycja?.nazwa || '')
   const [ilosc, setIlosc] = useState(edycja?.ilosc?.toString() || '')
-  const [jednostka, setJednostka] = useState(edycja?.jednostka || '')
   const [kategoria, setKategoria] = useState(edycja?.kategoria || '8_Inne')
-  const [powtarzaj, setPowtarzaj] = useState(edycja?.powtarzaj ?? true)
 
   function submit() {
     if (!nazwa.trim()) return
     onSave({
       nazwa: nazwa.trim(),
-      ilosc: ilosc ? parseFloat(ilosc.replace(',', '.')) : null,
-      jednostka: jednostka || null,
+      ilosc: normalizujIloscTekst(ilosc),
       kategoria,
-      powtarzaj,
     })
   }
 
@@ -881,46 +938,19 @@ function DodajProduktModal({ edycja, onClose, onSave, onDelete }) {
             autoFocus
           />
 
-          <div style={mod.rowSplit}>
-            <div style={{ flex: 1 }}>
-              <label style={mod.label}>Ilość (opcjonalnie)</label>
-              <input
-                style={mod.input}
-                type="text"
-                inputMode="decimal"
-                placeholder="—"
-                value={ilosc}
-                onChange={e => setIlosc(e.target.value)}
-              />
-            </div>
-            <div style={{ flex: 1 }}>
-              <label style={mod.label}>Jednostka</label>
-              <select style={mod.input} value={jednostka} onChange={e => setJednostka(e.target.value)}>
-                {JEDNOSTKI.map(j => <option key={j} value={j}>{j || '—'}</option>)}
-              </select>
-            </div>
-          </div>
+          <label style={mod.label}>Ilość / jednostka (opcjonalnie)</label>
+          <input
+            style={mod.input}
+            type="text"
+            placeholder="np. 1 szt., 2 l, opakowanie"
+            value={ilosc}
+            onChange={e => setIlosc(e.target.value)}
+          />
 
           <label style={mod.label}>Kategoria</label>
           <select style={mod.input} value={kategoria} onChange={e => setKategoria(e.target.value)}>
             {KATEGORIE.map(k => <option key={k.id} value={k.id}>{k.label}</option>)}
           </select>
-
-          <label style={mod.checkRow}>
-            <input
-              type="checkbox"
-              checked={powtarzaj}
-              onChange={e => setPowtarzaj(e.target.checked)}
-            />
-            <div>
-              <div style={mod.checkLabel}>Powtarzaj co tydzień</div>
-              <div style={mod.checkHelp}>
-                {powtarzaj
-                  ? 'Pojawi się na liście co tydzień, dopóki nie usuniesz.'
-                  : 'Zniknie z listy po odznaczeniu (jednorazowo).'}
-              </div>
-            </div>
-          </label>
         </div>
 
         <div style={mod.footer}>
