@@ -64,7 +64,7 @@ function emojiDania(n) {
 // ════════════════════════════════════════════════════════════
 //   GŁÓWNY KOMPONENT
 // ════════════════════════════════════════════════════════════
-export default function Kalendarz({ user, onBack, domyslnePorcje = 1, sledz, onSelectDanie }) {
+export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 1, sledz, onSelectDanie }) {
   const [tydzien, setTydzien] = useState(0)
   const [dania, setDania] = useState([])
   const [dodatki, setDodatki] = useState([])
@@ -101,6 +101,7 @@ export default function Kalendarz({ user, onBack, domyslnePorcje = 1, sledz, onS
   }, [tydzien])
 
   useEffect(() => {
+    if (!householdId) return
     let anulowane = false
     async function pobierz() {
       setLoading(true)
@@ -110,7 +111,7 @@ export default function Kalendarz({ user, onBack, domyslnePorcje = 1, sledz, onS
         // Wszystkie składniki — do search po składnikach
         supabase.from('dania').select('"Danie", "Składnik"'),
         supabase.from('kalendarz').select('*')
-          .eq('user_id', user.id)
+          .eq('household_id', householdId)
           .gte('data', formatData(dni[0]))
           .lte('data', formatData(dni[6])),
       ])
@@ -152,7 +153,34 @@ export default function Kalendarz({ user, onBack, domyslnePorcje = 1, sledz, onS
     }
     pobierz()
     return () => { anulowane = true }
-  }, [tydzien, user.id])
+  }, [tydzien, householdId])
+
+  // Realtime sync: gdy ktoś z rodziny zmieni plan, aktualizuj lokalnie.
+  useEffect(() => {
+    if (!householdId) return
+    const dataOd = formatData(dni[0])
+    const dataDo = formatData(dni[6])
+
+    const channel = supabase
+      .channel(`kalendarz:${householdId}`)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'kalendarz', filter: `household_id=eq.${householdId}` },
+        (payload) => {
+          const row = payload.new || payload.old
+          if (!row?.data || row.data < dataOd || row.data > dataDo) return
+          const klucz = `${row.data}_${row.posilek}`
+          if (payload.eventType === 'DELETE') {
+            setPlan(p => { const n = { ...p }; delete n[klucz]; return n })
+          } else {
+            setPlan(p => ({ ...p, [klucz]: payload.new }))
+          }
+        }
+      )
+      .subscribe()
+
+    return () => { supabase.removeChannel(channel) }
+  }, [householdId, dni])
 
   const daniaMap = useMemo(() => { const m = {}; dania.forEach(d => { m[d.Danie] = d }); return m }, [dania])
   const dodatkiMap = useMemo(() => { const m = {}; dodatki.forEach(d => { m[d.Dodatek] = d }); return m }, [dodatki])
@@ -187,7 +215,7 @@ export default function Kalendarz({ user, onBack, domyslnePorcje = 1, sledz, onS
       }
     } else {
       const { data } = await supabase.from('kalendarz')
-        .insert({ user_id: user.id, data: dataStr, posilek, danie: nazwa, dodatki: [] })
+        .insert({ household_id: householdId, user_id: user.id, data: dataStr, posilek, danie: nazwa, dodatki: [] })
         .select().single()
       if (data) setPlan(p => ({ ...p, [klucz]: data }))
       sledz?.('zaplanuj_posilek', { dzien: dataStr, posilek, danie: nazwa })
@@ -301,7 +329,7 @@ export default function Kalendarz({ user, onBack, domyslnePorcje = 1, sledz, onS
     const poprzedniPon = new Date(poniedzialek); poprzedniPon.setDate(poprzedniPon.getDate() - 7)
     const poprzedniNd = new Date(poprzedniPon); poprzedniNd.setDate(poprzedniNd.getDate() + 6)
     const { data: poprzedniPlan } = await supabase.from('kalendarz').select('*')
-      .eq('user_id', user.id)
+      .eq('household_id', householdId)
       .gte('data', formatData(poprzedniPon))
       .lte('data', formatData(poprzedniNd))
 
@@ -575,6 +603,32 @@ function WidokDnia({
     edgeScrollRaf.current = requestAnimationFrame(loop)
     return () => cancelAnimationFrame(edgeScrollRaf.current)
   }, [])
+
+  // ── Blokada scrolla strony, gdy kafelek jest podniesiony
+  // Bez tego touch-action: manipulation na kafelku galerii oddaje
+  // gest przeglądarce — pointermove staje się niecancelable i strona
+  // scrolluje się zamiast kafelka.
+  useEffect(() => {
+    if (!dragState?.podniesiony) return
+    const html = document.documentElement
+    const body = document.body
+    const prev = {
+      htmlOverflow: html.style.overflow,
+      bodyOverflow: body.style.overflow,
+      bodyTouchAction: body.style.touchAction,
+      bodyOverscroll: body.style.overscrollBehavior,
+    }
+    html.style.overflow = 'hidden'
+    body.style.overflow = 'hidden'
+    body.style.touchAction = 'none'
+    body.style.overscrollBehavior = 'contain'
+    return () => {
+      html.style.overflow = prev.htmlOverflow
+      body.style.overflow = prev.bodyOverflow
+      body.style.touchAction = prev.bodyTouchAction
+      body.style.overscrollBehavior = prev.bodyOverscroll
+    }
+  }, [dragState?.podniesiony])
 
   useEffect(() => {
     function handleMove(e) {
