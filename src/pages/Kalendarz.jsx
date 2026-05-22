@@ -12,17 +12,6 @@ const SLOT_KOLORY = {
   Kolacja:   'rgba(80, 110, 70, .92)',
 }
 
-// Posiłek → wartość kolumny `rodzaj` w bazie dań (do automatycznych sugestii w przyszłości)
-const POSILEK_RODZAJ = {
-  Śniadanie: 'sniadanie',
-  Obiad:     'obiad',
-  Kolacja:   'kolacja',
-}
-
-// Próg przewijania krawędziowego przy dragu (px od krawędzi ekranu)
-const EDGE_SCROLL_THRESHOLD = 80
-const EDGE_SCROLL_SPEED = 10
-
 // ── Helpery ─────────────────────────────────────────────────
 function getPoniedzialek(offset = 0) {
   const d = new Date()
@@ -69,21 +58,19 @@ export default function Kalendarz({ user, onBack, domyslnePorcje = 1, sledz, onS
   const [dania, setDania] = useState([])
   const [dodatki, setDodatki] = useState([])
   const [surowki, setSurowki] = useState([])
-  const [skladnikiDan, setSkladnikiDan] = useState({}) // { nazwaDania: Set('składnik1','składnik2') }
   const [plan, setPlan] = useState({})
   const [loading, setLoading] = useState(true)
   const [widok, setWidok] = useState('tydzien')
   const [aktywnyDzien, setAktywnyDzien] = useState(0)
   const [subTryb, setSubTryb] = useState(null)
   const [podmianaModal, setPodmianaModal] = useState(null)
-  const [kopiujModal, setKopiujModal] = useState(null) // { zDataStr } albo null
 
   const [toast, setToast] = useState(null)
   const toastTimer = useRef(null)
-  function pokazToast(msg, onUndo) {
+  function pokazToast(msg) {
     if (toastTimer.current) clearTimeout(toastTimer.current)
-    setToast({ msg, onUndo })
-    toastTimer.current = setTimeout(() => setToast(null), onUndo ? 4000 : 2200)
+    setToast(msg)
+    toastTimer.current = setTimeout(() => setToast(null), 2500)
   }
 
   const poniedzialek = getPoniedzialek(tydzien)
@@ -104,12 +91,10 @@ export default function Kalendarz({ user, onBack, domyslnePorcje = 1, sledz, onS
     let anulowane = false
     async function pobierz() {
       setLoading(true)
-      const [{ data: d }, { data: do_ }, { data: sur }, { data: skl }, planRes] = await Promise.all([
-        supabase.from('dania').select('"Danie", "TYP", rodzaj, zdjecie').order('"Danie"'),
+      const [{ data: d }, { data: do_ }, { data: sur }, planRes] = await Promise.all([
+        supabase.from('dania').select('"Danie", "TYP", zdjecie').order('"Danie"'),
         supabase.from('dodatki').select('"Dodatek", zdjecie').order('"Dodatek"'),
         supabase.from('surowki').select('"Surówka", zdjecie').order('"Surówka"'),
-        // Wszystkie składniki dań — do search po składnikach
-        supabase.from('dania').select('"Danie", "Składnik"'),
         supabase.from('kalendarz').select('*')
           .eq('user_id', user.id)
           .gte('data', formatData(dni[0]))
@@ -119,19 +104,9 @@ export default function Kalendarz({ user, onBack, domyslnePorcje = 1, sledz, onS
       const unikalDania = [...new Map((d || []).filter(x => x.Danie).map(x => [x.Danie, x])).values()]
       const unikalDodatki = [...new Map((do_ || []).filter(x => x.Dodatek).map(x => [x.Dodatek, x])).values()]
       const unikalSurowki = [...new Map((sur || []).filter(x => x['Surówka']).map(x => [x['Surówka'], x])).values()]
-
-      // Mapa: nazwa dania -> Set jego składników (do search)
-      const sklMapa = {}
-      ;(skl || []).forEach(row => {
-        if (!row.Danie || !row['Składnik']) return
-        if (!sklMapa[row.Danie]) sklMapa[row.Danie] = new Set()
-        sklMapa[row.Danie].add(row['Składnik'].toLowerCase())
-      })
-
       setDania(unikalDania)
       setDodatki(unikalDodatki)
       setSurowki(unikalSurowki)
-      setSkladnikiDan(sklMapa)
       const nowyPlan = {}
       ;(planRes.data || []).forEach(p => { nowyPlan[`${p.data}_${p.posilek}`] = p })
       setPlan(nowyPlan)
@@ -149,36 +124,18 @@ export default function Kalendarz({ user, onBack, domyslnePorcje = 1, sledz, onS
     const klucz = `${dataStr}_${posilek}`
     const istniejacy = plan[klucz]
     if (istniejacy) {
-      // Zachowaj kopię — undo gdy user nie chciał nadpisać
-      const kopia = { ...istniejacy }
       const { data } = await supabase.from('kalendarz')
         .update({ danie: nazwa, dodatek: null, surowka: null, podmiany: {} })
         .eq('id', istniejacy.id).select().single()
       if (data) setPlan(p => ({ ...p, [klucz]: data }))
-
-      // Undo tylko jeśli stary wpis miał danie (zmiana z czegoś na coś)
-      if (kopia.danie && kopia.danie !== nazwa) {
-        pokazToast(`Zmieniono na: ${nazwa}`, async () => {
-          await supabase.from('kalendarz')
-            .update({
-              danie: kopia.danie, dodatek: kopia.dodatek,
-              surowka: kopia.surowka, podmiany: kopia.podmiany || {},
-            })
-            .eq('id', istniejacy.id)
-          setPlan(p => ({ ...p, [klucz]: kopia }))
-          setToast(null)
-        })
-      } else {
-        pokazToast(`Zaplanowano: ${nazwa}`)
-      }
     } else {
       const { data } = await supabase.from('kalendarz')
         .insert({ user_id: user.id, data: dataStr, posilek, danie: nazwa })
         .select().single()
       if (data) setPlan(p => ({ ...p, [klucz]: data }))
       sledz?.('zaplanuj_posilek', { dzien: dataStr, posilek, danie: nazwa })
-      pokazToast(`Zaplanowano: ${nazwa}`)
     }
+    pokazToast(`${posilek}: ${nazwa}`)
   }
 
   async function ustawDodatek(dataStr, posilek, nazwa) {
@@ -205,18 +162,9 @@ export default function Kalendarz({ user, onBack, domyslnePorcje = 1, sledz, onS
     const klucz = `${dataStr}_${posilek}`
     const istniejacy = plan[klucz]
     if (!istniejacy) return
-    // Zachowaj kopię żeby móc przywrócić przy undo
-    const kopia = { ...istniejacy }
     await supabase.from('kalendarz').delete().eq('id', istniejacy.id)
     setPlan(p => { const n = { ...p }; delete n[klucz]; return n })
-
-    pokazToast(`${posilek} usunięty`, async () => {
-      // Insert spowrotem (zachowując wszystkie pola: danie, dodatek, surowka, porcje, podmiany)
-      const { id, created_at, ...doInsert } = kopia
-      const { data } = await supabase.from('kalendarz').insert(doInsert).select().single()
-      if (data) setPlan(p => ({ ...p, [klucz]: data }))
-      setToast(null)
-    })
+    pokazToast(`${posilek} usunięty`)
   }
 
   async function usunDodatek(dataStr, posilek) {
@@ -254,73 +202,6 @@ export default function Kalendarz({ user, onBack, domyslnePorcje = 1, sledz, onS
       const liczba = Object.keys(podmiany).filter(k => podmiany[k]).length
       if (liczba > 0) sledz?.('podmien_skladnik', { ile: liczba, danie: data.danie })
     }
-  }
-
-  // ── Kopiowanie planu ──
-  // Kopiuje wszystkie wpisy z dnia źródłowego do docelowego (nadpisuje istniejące).
-  async function kopiujDzien(zDataStr, naDataStr) {
-    const zrodlowe = Object.values(plan).filter(p => p.data === zDataStr && p.danie)
-    if (zrodlowe.length === 0) {
-      pokazToast('Dzień źródłowy jest pusty')
-      return
-    }
-    // Usuń istniejące w dniu docelowym (żeby nadpisać czysto)
-    const doUsuniecia = Object.values(plan).filter(p => p.data === naDataStr)
-    if (doUsuniecia.length > 0) {
-      await supabase.from('kalendarz').delete().in('id', doUsuniecia.map(p => p.id))
-    }
-    // Wstaw nowe (kopie bez id/created_at)
-    const noweWpisy = zrodlowe.map(p => {
-      const { id, created_at, ...rest } = p
-      return { ...rest, data: naDataStr }
-    })
-    const { data: utworzone } = await supabase.from('kalendarz').insert(noweWpisy).select()
-    // Zaktualizuj lokalny stan
-    setPlan(prev => {
-      const n = { ...prev }
-      doUsuniecia.forEach(p => { delete n[`${p.data}_${p.posilek}`] })
-      ;(utworzone || []).forEach(p => { n[`${p.data}_${p.posilek}`] = p })
-      return n
-    })
-    pokazToast(`Skopiowano ${zrodlowe.length} ${zrodlowe.length === 1 ? 'posiłek' : 'posiłki'}`)
-    sledz?.('kopiuj_dzien', { z: zDataStr, na: naDataStr, ile: zrodlowe.length })
-  }
-
-  // Kopiuje cały tydzień z poprzedniego (offset -1) do bieżącego.
-  async function kopiujTydzien() {
-    // Pobierz tydzień poprzedni
-    const poprzedniPon = new Date(poniedzialek); poprzedniPon.setDate(poprzedniPon.getDate() - 7)
-    const poprzedniNd = new Date(poprzedniPon); poprzedniNd.setDate(poprzedniNd.getDate() + 6)
-    const { data: poprzedniPlan } = await supabase.from('kalendarz').select('*')
-      .eq('user_id', user.id)
-      .gte('data', formatData(poprzedniPon))
-      .lte('data', formatData(poprzedniNd))
-
-    const zZawartoscia = (poprzedniPlan || []).filter(p => p.danie)
-    if (zZawartoscia.length === 0) {
-      pokazToast('Poprzedni tydzień jest pusty')
-      return
-    }
-
-    // Usuń istniejące w bieżącym tygodniu
-    const doUsuniecia = Object.values(plan).filter(p => p.id)
-    if (doUsuniecia.length > 0) {
-      await supabase.from('kalendarz').delete().in('id', doUsuniecia.map(p => p.id))
-    }
-
-    // Wstaw przesunięte o 7 dni
-    const noweWpisy = zZawartoscia.map(p => {
-      const { id, created_at, ...rest } = p
-      const d = new Date(p.data + 'T12:00:00')
-      d.setDate(d.getDate() + 7)
-      return { ...rest, data: formatData(d) }
-    })
-    const { data: utworzone } = await supabase.from('kalendarz').insert(noweWpisy).select()
-    const nowyPlan = {}
-    ;(utworzone || []).forEach(p => { nowyPlan[`${p.data}_${p.posilek}`] = p })
-    setPlan(nowyPlan)
-    pokazToast(`Skopiowano ${zZawartoscia.length} posiłków z ub. tygodnia`)
-    sledz?.('kopiuj_tydzien', { ile: zZawartoscia.length })
   }
 
   // isDzis importowane z dataHelpers
@@ -399,14 +280,12 @@ export default function Kalendarz({ user, onBack, domyslnePorcje = 1, sledz, onS
             daniaMap={daniaMap}
             onSelectDanie={onSelectDanie}
             onClickPusty={(di) => { setWidok('dzien'); setAktywnyDzien(di) }}
-            onKopiujTydzien={kopiujTydzien}
           />
         )}
 
         {widok === 'dzien' && (
           <WidokDnia
             dzien={dni[aktywnyDzien]}
-            dni={dni}
             plan={plan}
             daniaMap={daniaMap}
             dodatkiMap={dodatkiMap}
@@ -414,7 +293,6 @@ export default function Kalendarz({ user, onBack, domyslnePorcje = 1, sledz, onS
             dania={dania}
             dodatki={dodatki}
             surowki={surowki}
-            skladnikiDan={skladnikiDan}
             domyslnePorcje={domyslnePorcje}
             subTryb={subTryb}
             onSetSubTryb={setSubTryb}
@@ -427,21 +305,11 @@ export default function Kalendarz({ user, onBack, domyslnePorcje = 1, sledz, onS
             onUsunSurowke={usunSurowke}
             onZmienPorcje={zmienPorcje}
             onPodmien={(wpis) => setPodmianaModal(wpis)}
-            onKopiujDzien={(zDataStr) => setKopiujModal({ zDataStr })}
           />
         )}
       </div>
 
-      {toast && (
-        <div style={s.toast}>
-          <span style={s.toastMsg}>{toast.msg}</span>
-          {toast.onUndo && (
-            <button style={s.toastBtn} onClick={toast.onUndo}>
-              Cofnij
-            </button>
-          )}
-        </div>
-      )}
+      {toast && <div style={s.toast}>{toast}</div>}
 
       {podmianaModal?.danie && (
         <PodmianaModal
@@ -450,33 +318,14 @@ export default function Kalendarz({ user, onBack, domyslnePorcje = 1, sledz, onS
           onSave={(p) => { zapiszPodmiany(podmianaModal.id, p); setPodmianaModal(null) }}
         />
       )}
-
-      {kopiujModal && (
-        <KopiujModal
-          zDataStr={kopiujModal.zDataStr}
-          dni={dni}
-          plan={plan}
-          onClose={() => setKopiujModal(null)}
-          onWybierz={(naDataStr) => {
-            kopiujDzien(kopiujModal.zDataStr, naDataStr)
-            setKopiujModal(null)
-          }}
-        />
-      )}
     </div>
   )
 }
 
 // ════════════════════════════════════════════════════════════
-function WidokTygodnia({ dni, plan, daniaMap, onSelectDanie, onClickPusty, onKopiujTydzien }) {
-  const maZawartosc = Object.values(plan).some(p => p.danie)
+function WidokTygodnia({ dni, plan, daniaMap, onSelectDanie, onClickPusty }) {
   return (
     <div style={s.tydzienList}>
-      {!maZawartosc && (
-        <button style={s.kopiujTydzienBtn} onClick={onKopiujTydzien}>
-          ⎘ Skopiuj plan z poprzedniego tygodnia
-        </button>
-      )}
       {dni.map((dzien, di) => {
         const dataStr = formatData(dzien)
         const today = isDzis(dzien)
@@ -512,33 +361,24 @@ function WidokTygodnia({ dni, plan, daniaMap, onSelectDanie, onClickPusty, onKop
 
 // ════════════════════════════════════════════════════════════
 function WidokDnia({
-  dzien, dni, plan, daniaMap, dodatkiMap, surowkiMap,
-  dania, dodatki, surowki, skladnikiDan, domyslnePorcje,
+  dzien, plan, daniaMap, dodatkiMap, surowkiMap,
+  dania, dodatki, surowki, domyslnePorcje,
   subTryb, onSetSubTryb, onSelectDanie,
   onUstawDanie, onUstawDodatek, onUstawSurowke,
   onUsunPosilek, onUsunDodatek, onUsunSurowke,
-  onZmienPorcje, onPodmien, onKopiujDzien,
+  onZmienPorcje, onPodmien,
 }) {
   const dataStr = formatData(dzien)
   const [filtr, setFiltr] = useState('')
   const [dragState, setDragState] = useState(null)
 
-  // Refy do slotów (dla wykrywania drop): zarówno głównych jak i side-slotów
-  // Klucz: `${posilek}` dla dania, `${posilek}_side_${i}` dla side-slotów
   const slotRefs = useRef({})
   const longPressTimer = useRef(null)
   const startPos = useRef(null)
   const dragRef = useRef(null)
-  const edgeScrollRaf = useRef(null)
 
-  // Czy dzień ma cokolwiek (do "Kopiuj ten dzień")
-  const dzienMaZawartosc = useMemo(
-    () => Object.values(plan).some(p => p.data === dataStr && p.danie),
-    [plan, dataStr]
-  )
-
-  // Reset filtra przy zmianie sub-trybu / dnia
-  useEffect(() => { setFiltr('') }, [subTryb?.typ, subTryb?.posilek, dataStr])
+  // Reset filtra przy zmianie sub-trybu
+  useEffect(() => { setFiltr('') }, [subTryb?.typ, subTryb?.posilek])
 
   const startDrag = useCallback((nazwa, typ, meta, x, y) => {
     const stan = { nazwa, typ, meta, x, y, podniesiony: false }
@@ -553,29 +393,15 @@ function WidokDnia({
     longPressTimer.current = setTimeout(() => {
       startDrag(nazwa, typ, meta, x, y)
       if (navigator.vibrate) navigator.vibrate(20)
-    }, 250)
+    }, 200)
   }, [startDrag])
-
-  // ── Edge scroll: jak drag jest blisko góry/dołu, scrolluj okno
-  const edgeScrollDelta = useRef(0)
-  useEffect(() => {
-    function loop() {
-      if (edgeScrollDelta.current !== 0) {
-        window.scrollBy(0, edgeScrollDelta.current)
-      }
-      edgeScrollRaf.current = requestAnimationFrame(loop)
-    }
-    edgeScrollRaf.current = requestAnimationFrame(loop)
-    return () => cancelAnimationFrame(edgeScrollRaf.current)
-  }, [])
 
   useEffect(() => {
     function handleMove(e) {
       if (longPressTimer.current && startPos.current) {
         const dx = e.clientX - startPos.current.x
         const dy = e.clientY - startPos.current.y
-        // Większy próg + jeśli głównie pionowy ruch = scroll, anuluj long-press
-        if (Math.abs(dx) > 14 || Math.abs(dy) > 14) {
+        if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
           clearTimeout(longPressTimer.current)
           longPressTimer.current = null
           startPos.current = null
@@ -585,32 +411,16 @@ function WidokDnia({
         const stan = { ...dragRef.current, x: e.clientX, y: e.clientY, podniesiony: true }
         dragRef.current = stan
         setDragState(stan)
-
-        // Edge scroll: blisko górnej / dolnej krawędzi viewportu
-        const vh = window.innerHeight
-        if (e.clientY < EDGE_SCROLL_THRESHOLD) {
-          edgeScrollDelta.current = -EDGE_SCROLL_SPEED * (1 - e.clientY / EDGE_SCROLL_THRESHOLD)
-        } else if (e.clientY > vh - EDGE_SCROLL_THRESHOLD) {
-          edgeScrollDelta.current = EDGE_SCROLL_SPEED * (1 - (vh - e.clientY) / EDGE_SCROLL_THRESHOLD)
-        } else {
-          edgeScrollDelta.current = 0
-        }
-
         if (e.cancelable) e.preventDefault()
       }
     }
 
-    function znajdzCel(x, y) {
-      // Sprawdzaj side-sloty przed głównym (są na wierzchu wizualnie i mniejsze)
-      // Klucze: `${posilek}_side_0`, `${posilek}_side_1`, `${posilek}`
-      const keys = Object.keys(slotRefs.current)
-      // Sortuj: side przed głównym (po długości klucza)
-      keys.sort((a, b) => b.length - a.length)
-      for (const key of keys) {
-        const el = slotRefs.current[key]
+    function znajdzSlotPodPointerem(x, y) {
+      for (const posilek of POSILKI) {
+        const el = slotRefs.current[posilek]
         if (!el) continue
         const r = el.getBoundingClientRect()
-        if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) return key
+        if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) return posilek
       }
       return null
     }
@@ -620,41 +430,19 @@ function WidokDnia({
         clearTimeout(longPressTimer.current)
         longPressTimer.current = null
       }
-      edgeScrollDelta.current = 0
-
       if (dragRef.current) {
         const stan = dragRef.current
-        let targetKey = null
+        let target = null
+        // W sub-trybie cel jest predefiniowany (subTryb.posilek), nie sprawdzamy pozycji
         if (subTryb) {
-          // W sub-trybie cel jest predefiniowany — pierwszy pusty side-slot lub konkretny
-          targetKey = subTryb.posilek + '_side_' + (subTryb.slotIdx ?? 0)
+          target = subTryb.posilek
         } else {
-          targetKey = znajdzCel(e.clientX, e.clientY)
+          target = znajdzSlotPodPointerem(e.clientX, e.clientY)
         }
-
-        if (targetKey) {
-          // Parsuj key: "Obiad" lub "Obiad_side_0"
-          const sideMatch = targetKey.match(/^(.+)_side_(\d+)$/)
-          if (sideMatch) {
-            const posilek = sideMatch[1]
-            // Jeśli upuszczamy DANIE na side-slot — zignoruj (to nie pasuje)
-            if (stan.typ === 'danie') {
-              // No-op — feedback wizualny już dał info
-            } else if (stan.typ === 'dodatek') {
-              onUstawDodatek(dataStr, posilek, stan.nazwa)
-              onSetSubTryb(null)
-            } else if (stan.typ === 'surowka') {
-              onUstawSurowke(dataStr, posilek, stan.nazwa)
-              onSetSubTryb(null)
-            }
-          } else {
-            // Główny slot — przyjmuje tylko danie
-            const posilek = targetKey
-            if (stan.typ === 'danie') {
-              onUstawDanie(dataStr, posilek, stan.nazwa)
-            }
-            // dodatek/surowka na glowny slot — zignoruj (zapobiega bugowi #9)
-          }
+        if (target) {
+          if (stan.typ === 'danie')   onUstawDanie(dataStr, target, stan.nazwa)
+          if (stan.typ === 'dodatek') { onUstawDodatek(dataStr, target, stan.nazwa); onSetSubTryb(null) }
+          if (stan.typ === 'surowka') { onUstawSurowke(dataStr, target, stan.nazwa); onSetSubTryb(null) }
         }
         dragRef.current = null
         setDragState(null)
@@ -672,102 +460,61 @@ function WidokDnia({
     }
   }, [dataStr, subTryb, onUstawDanie, onUstawDodatek, onUstawSurowke, onSetSubTryb])
 
-  // ── Filtrowanie galerii ──
-  // Filtrowanie po typie posiłku: gdy nie jesteśmy w sub-trybie, można pokazać:
-  //  - tylko dania pasujące do "fokusu" (np. ostatnio dotkniętego slotu) — nie ma takiej koncepcji teraz
-  //  - filtr ręczny: chip "Wszystko / Śniadania / Obiady / Kolacje"
-  // Wybieram drugie: user-controlled, prosty toggle.
-  const [filtrRodzaj, setFiltrRodzaj] = useState('wszystko')
-
   const galeriaItems = useMemo(() => {
     let lista
-    if (subTryb?.typ === 'dodatek') {
-      lista = dodatki.map(d => ({ nazwa: d.Dodatek, zdjecie: d.zdjecie }))
-    } else if (subTryb?.typ === 'surowka') {
-      lista = surowki.map(d => ({ nazwa: d['Surówka'], zdjecie: d.zdjecie }))
-    } else {
-      lista = dania
-        .filter(d => {
-          if (filtrRodzaj === 'wszystko') return true
-          // 'przekaska' pasuje do wszystkich slotów — pokazuje się zawsze
-          if (d.rodzaj === 'przekaska') return true
-          return d.rodzaj === filtrRodzaj
-        })
-        .map(d => ({ nazwa: d.Danie, zdjecie: d.zdjecie, rodzaj: d.rodzaj }))
-    }
-    const q = filtr.trim().toLowerCase()
-    if (!q) return lista
-    return lista.filter(x => {
-      if (x.nazwa?.toLowerCase().includes(q)) return true
-      // Search po składnikach — tylko dla dań
-      if (!subTryb && skladnikiDan?.[x.nazwa]) {
-        for (const sk of skladnikiDan[x.nazwa]) {
-          if (sk.includes(q)) return true
-        }
-      }
-      return false
-    })
-  }, [subTryb, dania, dodatki, surowki, filtr, filtrRodzaj, skladnikiDan])
+    if (subTryb?.typ === 'dodatek') lista = dodatki.map(d => ({ nazwa: d.Dodatek, zdjecie: d.zdjecie }))
+    else if (subTryb?.typ === 'surowka') lista = surowki.map(d => ({ nazwa: d['Surówka'], zdjecie: d.zdjecie }))
+    else lista = dania.map(d => ({ nazwa: d.Danie, zdjecie: d.zdjecie }))
+    if (!filtr.trim()) return lista
+    const q = filtr.toLowerCase()
+    return lista.filter(x => x.nazwa?.toLowerCase().includes(q))
+  }, [subTryb, dania, dodatki, surowki, filtr])
 
   const typGalerii = subTryb?.typ || 'danie'
-  const tytulGalerii = typGalerii === 'dodatek' ? `Dodatek do: ${subTryb?.posilek}` :
-                       typGalerii === 'surowka' ? `Surówka do: ${subTryb?.posilek}` :
+  const tytulGalerii = typGalerii === 'dodatek' ? `Wybierz dodatek do: ${subTryb?.posilek}` :
+                       typGalerii === 'surowka' ? `Wybierz surówkę do: ${subTryb?.posilek}` :
                        'Galeria dań'
 
   return (
     <div style={{ position: 'relative' }}>
-      {/* STICKY: sloty z planem dnia na górze, zostają widoczne podczas scrolla */}
       <div style={{
-        ...s.slotyDuzeSticky,
-        opacity: subTryb ? 0.55 : 1,
+        ...s.slotyDuze,
+        opacity: subTryb ? 0.35 : 1,
         transition: 'opacity .2s',
+        pointerEvents: subTryb ? 'none' : 'auto',
       }}>
-        <div style={s.slotyDuze}>
-          {POSILKI.map(posilek => {
-            const wpis = plan[`${dataStr}_${posilek}`]
-            const dragTyp = dragState?.podniesiony ? dragState.typ : null
-            const podswietl = dragTyp === 'danie'
-            return (
-              <SlotDuzy
-                key={posilek}
-                setRef={(el) => { slotRefs.current[posilek] = el }}
-                setSideRef={(idx, el) => { slotRefs.current[`${posilek}_side_${idx}`] = el }}
-                posilek={posilek}
-                wpis={wpis}
-                daniaMeta={daniaMap[wpis?.danie]}
-                dodatkiMeta={dodatkiMap[wpis?.dodatek]}
-                surowkiMeta={surowkiMap[wpis?.surowka]}
-                domyslnePorcje={domyslnePorcje}
-                podswietlony={podswietl}
-                podswietlSide={dragTyp === 'dodatek' || dragTyp === 'surowka'}
-                onClick={() => wpis?.danie && onSelectDanie?.(wpis.danie)}
-                onUsun={() => onUsunPosilek(dataStr, posilek)}
-                onUsunDodatek={() => onUsunDodatek(dataStr, posilek)}
-                onUsunSurowke={() => onUsunSurowke(dataStr, posilek)}
-                onZmienPorcje={(p) => onZmienPorcje(dataStr, posilek, p)}
-                onPodmien={() => onPodmien(wpis)}
-                onWybierzSide={(slotIdx) => onSetSubTryb({ dataStr, posilek, typ: 'dodatek', slotIdx })}
-              />
-            )
-          })}
-        </div>
+        {POSILKI.map(posilek => {
+          const wpis = plan[`${dataStr}_${posilek}`]
+          const podswietl = !!dragState?.podniesiony && dragState.typ === 'danie'
+          return (
+            <SlotDuzy
+              key={posilek}
+              setRef={(el) => { slotRefs.current[posilek] = el }}
+              posilek={posilek}
+              wpis={wpis}
+              daniaMeta={daniaMap[wpis?.danie]}
+              dodatkiMeta={dodatkiMap[wpis?.dodatek]}
+              surowkiMeta={surowkiMap[wpis?.surowka]}
+              domyslnePorcje={domyslnePorcje}
+              podswietlony={podswietl}
+              onClick={() => wpis?.danie && onSelectDanie?.(wpis.danie)}
+              onUsun={() => onUsunPosilek(dataStr, posilek)}
+              onUsunDodatek={() => onUsunDodatek(dataStr, posilek)}
+              onUsunSurowke={() => onUsunSurowke(dataStr, posilek)}
+              onZmienPorcje={(p) => onZmienPorcje(dataStr, posilek, p)}
+              onPodmien={() => onPodmien(wpis)}
+              onWybierzDodatek={() => onSetSubTryb({ dataStr, posilek, typ: 'dodatek' })}
+              onWybierzSurowke={() => onSetSubTryb({ dataStr, posilek, typ: 'surowka' })}
+            />
+          )
+        })}
+      </div>
 
-        {/* Pasek akcji dla dnia (kopiuj, podpowiedź) — w sticky żeby zawsze widoczne */}
-        <div style={s.dzienAkcje}>
-          <button
-            style={s.dzienAkcjaBtn}
-            onClick={() => onKopiujDzien(dataStr)}
-            disabled={!dzienMaZawartosc}
-            title={dzienMaZawartosc ? 'Kopiuj ten dzień do innego' : 'Pusty dzień — nie ma czego kopiować'}
-          >
-            ⎘ Kopiuj dzień
-          </button>
-          {subTryb && (
-            <button style={s.dzienAkcjaBtnText} onClick={() => onSetSubTryb(null)}>
-              Anuluj wybór
-            </button>
-          )}
-        </div>
+      <div style={s.podpowiedz}>
+        {subTryb
+          ? <>Przytrzymaj i przeciągnij {typGalerii === 'dodatek' ? 'dodatek' : 'surówkę'} albo <strong>kliknij</strong>.</>
+          : <>Przytrzymaj danie i przeciągnij na slot. Krótki tap = przepis.</>
+        }
       </div>
 
       <section style={s.galeria}>
@@ -775,32 +522,12 @@ function WidokDnia({
           <h2 style={s.galeriaTytul}>{tytulGalerii}</h2>
           <input
             type="text"
-            placeholder={subTryb ? 'Szukaj…' : 'Szukaj po nazwie lub składniku…'}
+            placeholder="Szukaj…"
             value={filtr}
             onChange={e => setFiltr(e.target.value)}
             style={s.szukaj}
           />
         </div>
-
-        {/* Filtr-chipy po rodzaju (tylko dla galerii dań, nie dla sub-trybu) */}
-        {!subTryb && (
-          <div style={s.chipsRow}>
-            {[
-              { id: 'wszystko',  label: 'Wszystko' },
-              { id: 'sniadanie', label: 'Śniadania' },
-              { id: 'obiad',     label: 'Obiady' },
-              { id: 'kolacja',   label: 'Kolacje' },
-            ].map(c => (
-              <button
-                key={c.id}
-                style={{ ...s.chip, ...(filtrRodzaj === c.id ? s.chipOn : {}) }}
-                onClick={() => setFiltrRodzaj(c.id)}
-              >
-                {c.label}
-              </button>
-            ))}
-          </div>
-        )}
 
         <div style={s.galeriaGrid}>
           {galeriaItems.map(item => (
@@ -812,7 +539,6 @@ function WidokDnia({
               onTap={() => {
                 if (typGalerii === 'danie') onSelectDanie?.(item.nazwa)
                 else if (subTryb) {
-                  // Tap = wybór szybki, omijamy drag
                   if (typGalerii === 'dodatek') onUstawDodatek(subTryb.dataStr, subTryb.posilek, item.nazwa)
                   if (typGalerii === 'surowka') onUstawSurowke(subTryb.dataStr, subTryb.posilek, item.nazwa)
                   onSetSubTryb(null)
@@ -824,24 +550,6 @@ function WidokDnia({
         </div>
         {galeriaItems.length === 0 && (
           <div style={s.brakDan}>Brak pasujących pozycji.</div>
-        )}
-
-        {/* W sub-trybie: pokazujemy dwa taby do wyboru typu (dodatek vs surówka) */}
-        {subTryb && (
-          <div style={s.subTrybTaby}>
-            <button
-              style={{ ...s.subTrybTab, ...(subTryb.typ === 'dodatek' ? s.subTrybTabOn : {}) }}
-              onClick={() => onSetSubTryb({ ...subTryb, typ: 'dodatek' })}
-            >
-              Dodatki
-            </button>
-            <button
-              style={{ ...s.subTrybTab, ...(subTryb.typ === 'surowka' ? s.subTrybTabOn : {}) }}
-              onClick={() => onSetSubTryb({ ...subTryb, typ: 'surowka' })}
-            >
-              Surówki
-            </button>
-          </div>
         )}
       </section>
 
@@ -896,11 +604,11 @@ function KafelekPosilek({ posilek, wpis, daniaMeta, onClick }) {
 
 // ════════════════════════════════════════════════════════════
 function SlotDuzy({
-  setRef, setSideRef, posilek, wpis, daniaMeta, dodatkiMeta, surowkiMeta,
-  domyslnePorcje, podswietlony, podswietlSide,
+  setRef, posilek, wpis, daniaMeta, dodatkiMeta, surowkiMeta,
+  domyslnePorcje, podswietlony,
   onClick, onUsun, onUsunDodatek, onUsunSurowke,
   onZmienPorcje, onPodmien,
-  onWybierzSide,
+  onWybierzDodatek, onWybierzSurowke,
 }) {
   const masDanie = !!wpis?.danie
   const typDania = daniaMeta?.TYP
@@ -914,30 +622,9 @@ function SlotDuzy({
     onZmienPorcje(nowe === domyslnePorcje ? null : nowe)
   }
 
-  // Side-sloty: 2 sloty, każdy może być dodatkiem lub surówką.
-  // Slot 0 = dodatek (jeśli jest), Slot 1 = surówka (jeśli jest).
-  // Jeśli brak dodatku, slot 0 jest pusty (i może przyjąć dodatek LUB surówkę).
-  const sideSloty = [
-    {
-      idx: 0,
-      nazwa: wpis?.dodatek || null,
-      typ: wpis?.dodatek ? 'dodatek' : null,
-      meta: dodatkiMeta,
-      onUsun: onUsunDodatek,
-    },
-    {
-      idx: 1,
-      nazwa: wpis?.surowka || null,
-      typ: wpis?.surowka ? 'surowka' : null,
-      meta: surowkiMeta,
-      onUsun: onUsunSurowke,
-    },
-  ]
-
   return (
-    <div style={{ position: 'relative' }}>
+    <div ref={setRef} style={{ position: 'relative' }}>
       <button
-        ref={setRef}
         onClick={onClick}
         style={{
           ...s.slotDuzy,
@@ -985,38 +672,33 @@ function SlotDuzy({
 
       {masDanie && typDania === 'z_dodatkiem' && (
         <div style={s.miniSloty}>
-          {sideSloty.map(slot => (
-            <MiniSlot
-              key={slot.idx}
-              setRef={(el) => setSideRef(slot.idx, el)}
-              nazwa={slot.nazwa}
-              typ={slot.typ}
-              meta={slot.meta}
-              podswietlony={podswietlSide && !slot.nazwa}
-              onClickPelny={slot.onUsun}
-              onClickPusty={() => onWybierzSide(slot.idx)}
-            />
-          ))}
+          <MiniSlot
+            label="Dodatek"
+            nazwa={wpis.dodatek}
+            meta={dodatkiMeta}
+            onClickPelny={onUsunDodatek}
+            onClickPusty={onWybierzDodatek}
+          />
+          <MiniSlot
+            label="Surówka"
+            nazwa={wpis.surowka}
+            meta={surowkiMeta}
+            onClickPelny={onUsunSurowke}
+            onClickPusty={onWybierzSurowke}
+          />
         </div>
       )}
     </div>
   )
 }
 
-function MiniSlot({ setRef, nazwa, typ, meta, podswietlony, onClickPelny, onClickPusty }) {
+function MiniSlot({ label, nazwa, meta, onClickPelny, onClickPusty }) {
   const masWybor = !!nazwa
-  // Etykieta zależy od typu obecnej zawartości
-  const label = typ === 'dodatek' ? 'Dodatek' : typ === 'surowka' ? 'Surówka' : '+ Dodaj'
   return (
-    <button
-      ref={setRef}
-      onClick={masWybor ? onClickPelny : onClickPusty}
-      style={{
-        ...s.miniSlot,
-        ...(masWybor ? {} : s.miniSlotPusty),
-        ...(podswietlony ? s.miniSlotPodswietlony : {}),
-      }}
-    >
+    <button onClick={masWybor ? onClickPelny : onClickPusty} style={{
+      ...s.miniSlot,
+      ...(masWybor ? {} : s.miniSlotPusty),
+    }}>
       {masWybor ? (
         <>
           {meta?.zdjecie ? (
@@ -1030,7 +712,7 @@ function MiniSlot({ setRef, nazwa, typ, meta, podswietlony, onClickPelny, onClic
         </>
       ) : (
         <div style={s.miniSlotPustyInner}>
-          <span style={s.miniSlotPustyTxt}>{label}</span>
+          <span style={s.miniSlotPustyTxt}>+ {label.toLowerCase()}</span>
         </div>
       )}
     </button>
@@ -1070,56 +752,6 @@ function GaleriaItem({ item, onPointerDown, onTap, aktywnyDrag }) {
         )}
       </div>
       <div style={s.galeriaNazwa}>{item.nazwa}</div>
-    </div>
-  )
-}
-
-// ════════════════════════════════════════════════════════════
-function KopiujModal({ zDataStr, dni, plan, onClose, onWybierz }) {
-  const ileWZrodlowym = Object.values(plan).filter(p => p.data === zDataStr && p.danie).length
-
-  return (
-    <div style={modS.overlay} onClick={onClose}>
-      <div style={modS.modal} onClick={e => e.stopPropagation()}>
-        <div style={modS.header}>
-          <div>
-            <div style={modS.eyebrow}>KOPIUJ DZIEŃ</div>
-            <div style={modS.title}>Wybierz dzień docelowy</div>
-            <div style={modS.sub}>
-              Kopiowane: {ileWZrodlowym} {ileWZrodlowym === 1 ? 'posiłek' : 'posiłki'}.
-              Plan w dniu docelowym zostanie zastąpiony.
-            </div>
-          </div>
-          <button style={modS.close} onClick={onClose}>✕</button>
-        </div>
-        <div style={modS.lista}>
-          {dni.map((dzien, i) => {
-            const dStr = formatData(dzien)
-            const isSelf = dStr === zDataStr
-            const ileTam = Object.values(plan).filter(p => p.data === dStr && p.danie).length
-            return (
-              <button
-                key={dStr}
-                style={{
-                  ...modS.dzienRow,
-                  opacity: isSelf ? 0.4 : 1,
-                  cursor: isSelf ? 'not-allowed' : 'pointer',
-                }}
-                disabled={isSelf}
-                onClick={() => !isSelf && onWybierz(dStr)}
-              >
-                <span style={modS.dzienRowName}>
-                  {DNI_KROTKO[i]} {dzien.getDate()}
-                  {isSelf && <span style={modS.dzienRowSelf}> (źródło)</span>}
-                </span>
-                <span style={modS.dzienRowMeta}>
-                  {ileTam > 0 ? `${ileTam} posiłków — zostanie nadpisany` : 'pusty'}
-                </span>
-              </button>
-            )
-          })}
-        </div>
-      </div>
     </div>
   )
 }
@@ -1260,14 +892,7 @@ const s = {
   },
   kafelekPustyPlus: { fontFamily: fonts.serif, fontSize: 26, color: t.muteLight, lineHeight: 1 },
 
-  slotyDuzeSticky: {
-    position: 'sticky', top: 0, zIndex: 50,
-    background: t.bg,
-    paddingTop: 4, paddingBottom: 8,
-    // Lekka linia na dole gdy sticky się "przykleja" - subtelnie
-    boxShadow: '0 4px 12px -8px rgba(74,55,40,.15)',
-  },
-  slotyDuze: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 },
+  slotyDuze: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, marginBottom: 14 },
   slotDuzy: {
     position: 'relative', width: '100%', aspectRatio: '1', borderRadius: 16,
     background: t.surface, border: 'none', cursor: 'pointer', overflow: 'hidden', padding: 0,
@@ -1309,7 +934,6 @@ const s = {
     borderRadius: 10, background: t.surface, border: 'none',
     cursor: 'pointer', overflow: 'hidden', padding: 0,
     boxShadow: '0 1px 2px rgba(74,55,40,.06)',
-    transition: 'transform .15s, box-shadow .15s',
   },
   miniSlotLabel: {
     position: 'absolute', top: 4, left: 4,
@@ -1318,68 +942,17 @@ const s = {
     background: 'rgba(0,0,0,.55)',
   },
   miniSlotPusty: { background: t.surfaceAlt, border: `1px dashed ${t.border}`, boxShadow: 'none' },
-  miniSlotPodswietlony: {
-    transform: 'scale(1.06)',
-    boxShadow: `0 0 0 2px ${t.warm}, 0 4px 12px rgba(196,90,50,.25)`,
-    borderColor: t.warm,
-  },
   miniSlotPustyInner: { position: 'absolute', inset: 0, display: 'grid', placeItems: 'center' },
   miniSlotPustyTxt: { fontSize: 9.5, color: t.mute, fontFamily: fonts.sans, fontWeight: 600 },
 
-  // Pasek akcji dla dnia (kopiuj, anuluj sub-tryb)
-  dzienAkcje: {
-    display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 8,
-    marginTop: 10,
-  },
-  dzienAkcjaBtn: {
-    background: t.surface, border: `1px solid ${t.border}`,
-    borderRadius: 999, padding: '6px 12px',
-    fontFamily: fonts.sans, fontSize: 12, fontWeight: 600,
-    color: t.text, cursor: 'pointer',
-  },
-  dzienAkcjaBtnText: {
-    background: 'transparent', border: 'none',
-    fontFamily: fonts.sans, fontSize: 12, fontWeight: 600,
-    color: t.warm, cursor: 'pointer', padding: '6px 12px',
+  podpowiedz: {
+    background: t.surfaceAlt, color: t.mute,
+    fontFamily: fonts.sans, fontSize: 11.5, lineHeight: 1.4,
+    padding: '8px 12px', borderRadius: 10,
+    marginBottom: 16, textAlign: 'center',
   },
 
-  // Filtr-chipy galerii
-  chipsRow: {
-    display: 'flex', gap: 6, marginBottom: 12,
-    overflowX: 'auto', WebkitOverflowScrolling: 'touch',
-    scrollbarWidth: 'none', padding: '2px 0',
-  },
-  chip: {
-    background: t.surfaceAlt, border: 'none',
-    borderRadius: 999, padding: '6px 12px',
-    fontFamily: fonts.sans, fontSize: 12, fontWeight: 600,
-    color: t.mute, cursor: 'pointer', whiteSpace: 'nowrap',
-    flexShrink: 0,
-  },
-  chipOn: { background: t.warm, color: '#fff' },
-
-  // Taby w sub-trybie (dodatek/surówka)
-  subTrybTaby: {
-    display: 'flex', gap: 0, marginTop: 16,
-    background: t.surfaceAlt, borderRadius: 12, padding: 3,
-  },
-  subTrybTab: {
-    flex: 1, background: 'transparent', border: 'none',
-    borderRadius: 9, padding: '8px 12px',
-    fontFamily: fonts.sans, fontSize: 13, fontWeight: 600,
-    color: t.mute, cursor: 'pointer',
-  },
-  subTrybTabOn: { background: t.surface, color: t.text, boxShadow: '0 1px 2px rgba(74,55,40,.08)' },
-
-  kopiujTydzienBtn: {
-    background: t.surface, border: `1px dashed ${t.borderStrong}`,
-    borderRadius: 14, padding: '14px 16px',
-    fontFamily: fonts.sans, fontSize: 13.5, fontWeight: 600,
-    color: t.warm, cursor: 'pointer',
-    marginBottom: 6,
-  },
-
-  galeria: { marginTop: 14 },
+  galeria: { marginTop: 10 },
   galeriaHeader: { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 },
   galeriaTytul: { ...ui.h2, fontSize: 18, flex: 1 },
   szukaj: { ...ui.input, padding: '8px 12px', fontSize: 13, maxWidth: 140 },
@@ -1388,9 +961,7 @@ const s = {
     display: 'flex', flexDirection: 'column', gap: 6,
     background: 'transparent', border: 'none', padding: 0,
     cursor: 'pointer', fontFamily: fonts.sans, textAlign: 'left',
-    // touchAction: 'manipulation' pozwala na natywny scroll w osi Y,
-    // ale wycina double-tap-to-zoom. Drag startuje przez long-press w JS.
-    touchAction: 'manipulation', userSelect: 'none', WebkitUserSelect: 'none',
+    touchAction: 'none', userSelect: 'none', WebkitUserSelect: 'none',
   },
   galeriaThumb: {
     aspectRatio: '1', borderRadius: 14, overflow: 'hidden',
@@ -1425,19 +996,10 @@ const s = {
 
   toast: {
     position: 'fixed', bottom: 96, left: '50%', transform: 'translateX(-50%)',
-    background: t.text, color: '#fff', borderRadius: 12, padding: '10px 14px',
+    background: t.text, color: '#fff', borderRadius: 12, padding: '10px 18px',
     fontFamily: fonts.sans, fontSize: 13, fontWeight: 500,
     boxShadow: '0 8px 24px rgba(0,0,0,.2)', zIndex: 200,
-    maxWidth: 'calc(100vw - 32px)',
-    display: 'flex', alignItems: 'center', gap: 14,
-  },
-  toastMsg: { color: '#fff', flex: 1 },
-  toastBtn: {
-    background: 'none', border: 'none',
-    color: t.warmSoft || '#FBD3C2',
-    fontFamily: fonts.sans, fontSize: 13, fontWeight: 700,
-    cursor: 'pointer', padding: '4px 6px',
-    textTransform: 'uppercase', letterSpacing: 0.8,
+    maxWidth: 'calc(100vw - 32px)', textAlign: 'center',
   },
 
   loading: {
@@ -1475,15 +1037,4 @@ const modS = {
   arrow: { color: t.muteLight, fontSize: 12, flexShrink: 0 },
   input: { ...ui.input, flex: 1.2, padding: '8px 10px', fontSize: 13, marginBottom: 0 },
   btnRow: { display: 'flex', gap: 8 },
-
-  // KopiujModal: wiersze dni
-  dzienRow: {
-    display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12,
-    width: '100%', padding: '14px 4px',
-    background: 'transparent', border: 'none', borderBottom: `0.5px solid ${t.border}`,
-    fontFamily: fonts.sans, textAlign: 'left',
-  },
-  dzienRowName: { fontFamily: fonts.serif, fontSize: 16, color: t.text },
-  dzienRowSelf: { fontFamily: fonts.sans, fontSize: 11, color: t.mute, fontStyle: 'italic' },
-  dzienRowMeta: { fontFamily: fonts.sans, fontSize: 12, color: t.mute },
 }
