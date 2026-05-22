@@ -313,6 +313,125 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
     })
   }
 
+  async function przeniesPosilek(zDataStr, zPosilek, naDataStr, naPosilek) {
+    const zKlucz = `${zDataStr}_${zPosilek}`
+    const naKlucz = `${naDataStr}_${naPosilek}`
+    if (zKlucz === naKlucz) return
+
+    const zrodlo = plan[zKlucz]
+    const cel = plan[naKlucz]
+    if (!zrodlo?.danie) return
+
+    const bezTechnicznych = (row, noweData, nowyPosilek) => {
+      const { id, created_at, ...rest } = row
+      return { ...rest, data: noweData, posilek: nowyPosilek }
+    }
+
+    const snapshot = { ...plan }
+
+    // Pusty slot: zwykłe przeniesienie wpisu, zachowujemy id rekordu.
+    if (!cel?.danie) {
+      setPlan(prev => {
+        const n = { ...prev }
+        delete n[zKlucz]
+        n[naKlucz] = { ...zrodlo, data: naDataStr, posilek: naPosilek }
+        return n
+      })
+
+      const { data, error } = await supabase.from('kalendarz')
+        .update({ data: naDataStr, posilek: naPosilek })
+        .eq('id', zrodlo.id)
+        .select()
+        .single()
+
+      if (error) {
+        setPlan(snapshot)
+        pokazToast('Nie udało się przenieść posiłku')
+        return
+      }
+
+      if (data) {
+        setPlan(prev => {
+          const n = { ...prev }
+          delete n[zKlucz]
+          n[`${data.data}_${data.posilek}`] = data
+          return n
+        })
+      }
+
+      pokazToast(`Przeniesiono: ${zrodlo.danie}`, async () => {
+        const aktualny = data || { ...zrodlo, data: naDataStr, posilek: naPosilek }
+        const { data: cof } = await supabase.from('kalendarz')
+          .update({ data: zDataStr, posilek: zPosilek })
+          .eq('id', aktualny.id)
+          .select()
+          .single()
+
+        setPlan(prev => {
+          const n = { ...prev }
+          delete n[naKlucz]
+          n[zKlucz] = cof || zrodlo
+          return n
+        })
+        setToast(null)
+      })
+      return
+    }
+
+    // Zajęty slot: zamień miejscami całe wpisy.
+    // Robimy delete + insert, żeby nie wpaść na ewentualny unique constraint data+posilek.
+    setPlan(prev => {
+      const n = { ...prev }
+      delete n[zKlucz]
+      delete n[naKlucz]
+      n[naKlucz] = { ...zrodlo, data: naDataStr, posilek: naPosilek }
+      n[zKlucz] = { ...cel, data: zDataStr, posilek: zPosilek }
+      return n
+    })
+
+    const { error: delError } = await supabase.from('kalendarz')
+      .delete()
+      .in('id', [zrodlo.id, cel.id])
+
+    if (delError) {
+      setPlan(snapshot)
+      pokazToast('Nie udało się zamienić posiłków')
+      return
+    }
+
+    const noweWpisy = [
+      bezTechnicznych(zrodlo, naDataStr, naPosilek),
+      bezTechnicznych(cel, zDataStr, zPosilek),
+    ]
+
+    const { data: utworzone, error: insError } = await supabase.from('kalendarz')
+      .insert(noweWpisy)
+      .select()
+
+    if (insError) {
+      // Best effort rollback w bazie, żeby użytkownik nie stracił wpisów.
+      await supabase.from('kalendarz').insert([
+        bezTechnicznych(zrodlo, zDataStr, zPosilek),
+        bezTechnicznych(cel, naDataStr, naPosilek),
+      ])
+      setPlan(snapshot)
+      pokazToast('Nie udało się zamienić posiłków')
+      return
+    }
+
+    if (utworzone) {
+      setPlan(prev => {
+        const n = { ...prev }
+        delete n[zKlucz]
+        delete n[naKlucz]
+        utworzone.forEach(row => { n[`${row.data}_${row.posilek}`] = row })
+        return n
+      })
+    }
+
+    pokazToast(`Zamieniono: ${zrodlo.danie}`)
+  }
+
   async function zmienPorcje(dataStr, posilek, nowaWart) {
     const klucz = `${dataStr}_${posilek}`
     const istniejacy = plan[klucz]
@@ -480,6 +599,7 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
             onClickPusty={otworzDzien}
             onClickDzien={otworzDzien}
             onUsunPosilek={usunPosilek}
+            onPrzeniesPosilek={przeniesPosilek}
             onKopiujTydzien={kopiujTydzien}
           />
         )}
@@ -577,8 +697,230 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
 }
 
 // ════════════════════════════════════════════════════════════
-function WidokTygodnia({ dni, plan, daniaMap, onSelectDanie, onClickPusty, onClickDzien, onUsunPosilek, onKopiujTydzien }) {
+function WidokTygodnia({
+  dni, plan, daniaMap, onSelectDanie, onClickPusty, onClickDzien,
+  onUsunPosilek, onPrzeniesPosilek, onKopiujTydzien,
+}) {
   const maZawartosc = Object.values(plan).some(p => p.danie)
+  const [dragSet, setDragSet] = useState(null)
+  const [hoverKey, setHoverKey] = useState(null)
+
+  const slotRefs = useRef({})
+  const dragRef = useRef(null)
+  const startRef = useRef(null)
+  const longPressTimer = useRef(null)
+  const edgeScrollDelta = useRef(0)
+  const ignoreClickUntil = useRef(0)
+
+  const clearLongPress = useCallback(() => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current)
+      longPressTimer.current = null
+    }
+  }, [])
+
+  const wyczyscDrag = useCallback(() => {
+    clearLongPress()
+    dragRef.current = null
+    startRef.current = null
+    edgeScrollDelta.current = 0
+    setDragSet(null)
+    setHoverKey(null)
+  }, [clearLongPress])
+
+  useEffect(() => {
+    function loop() {
+      if (edgeScrollDelta.current !== 0) {
+        window.scrollBy(0, edgeScrollDelta.current)
+      }
+      const raf = requestAnimationFrame(loop)
+      edgeScrollDelta.raf = raf
+    }
+    const raf = requestAnimationFrame(loop)
+    edgeScrollDelta.raf = raf
+    return () => cancelAnimationFrame(edgeScrollDelta.raf)
+  }, [])
+
+  function slotKey(dataStr, posilek) {
+    return `${dataStr}__${posilek}`
+  }
+
+  function parsujSlotKey(key) {
+    const [dataStr, posilek] = key.split('__')
+    return { dataStr, posilek }
+  }
+
+  function ustawSlotRef(key, el) {
+    if (el) slotRefs.current[key] = el
+    else delete slotRefs.current[key]
+  }
+
+  function znajdzCel(x, y) {
+    for (const [key, el] of Object.entries(slotRefs.current)) {
+      if (!el) continue
+      const r = el.getBoundingClientRect()
+      if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) return key
+    }
+    return null
+  }
+
+  function podnies(start, x, y) {
+    clearLongPress()
+    const stan = {
+      ...start,
+      x,
+      y,
+      podniesiony: true,
+      sourceKey: slotKey(start.dataStr, start.posilek),
+    }
+    dragRef.current = stan
+    setDragSet(stan)
+    ignoreClickUntil.current = Date.now() + 900
+    navigator.vibrate?.(20)
+  }
+
+  function zacznijPointer(e, dataStr, posilek, wpis, meta) {
+    if (!wpis?.danie) return
+    if (e.pointerType === 'touch') return
+    if (e.button != null && e.button !== 0) return
+    if (e.target?.closest?.('button')) return
+
+    const start = { dataStr, posilek, wpis, meta, x0: e.clientX, y0: e.clientY, pointerId: e.pointerId, typ: 'pointer' }
+    startRef.current = start
+    clearLongPress()
+    longPressTimer.current = setTimeout(() => podnies(start, e.clientX, e.clientY), 220)
+  }
+
+  function zacznijTouch(e, dataStr, posilek, wpis, meta) {
+    if (!wpis?.danie) return
+    if (e.touches.length !== 1) return
+    if (e.target?.closest?.('button')) return
+
+    const touch = e.touches[0]
+    const start = { dataStr, posilek, wpis, meta, x0: touch.clientX, y0: touch.clientY, touchId: touch.identifier, typ: 'touch' }
+    startRef.current = start
+    clearLongPress()
+    longPressTimer.current = setTimeout(() => podnies(start, touch.clientX, touch.clientY), 320)
+  }
+
+  function aktualizujDrag(x, y) {
+    const obecny = dragRef.current
+    if (!obecny) return
+
+    const stan = { ...obecny, x, y, podniesiony: true }
+    dragRef.current = stan
+    setDragSet(stan)
+
+    const cel = znajdzCel(x, y)
+    setHoverKey(cel && cel !== obecny.sourceKey ? cel : null)
+
+    const vh = window.innerHeight
+    if (y < EDGE_SCROLL_THRESHOLD) {
+      edgeScrollDelta.current = -EDGE_SCROLL_SPEED * (1 - y / EDGE_SCROLL_THRESHOLD)
+    } else if (y > vh - EDGE_SCROLL_THRESHOLD) {
+      edgeScrollDelta.current = EDGE_SCROLL_SPEED * (1 - (vh - y) / EDGE_SCROLL_THRESHOLD)
+    } else {
+      edgeScrollDelta.current = 0
+    }
+  }
+
+  function upusc(x, y) {
+    const obecny = dragRef.current
+    if (!obecny) {
+      wyczyscDrag()
+      return
+    }
+
+    const cel = znajdzCel(x, y)
+    if (cel && cel !== obecny.sourceKey) {
+      const target = parsujSlotKey(cel)
+      onPrzeniesPosilek?.(obecny.dataStr, obecny.posilek, target.dataStr, target.posilek)
+    }
+
+    ignoreClickUntil.current = Date.now() + 600
+    wyczyscDrag()
+  }
+
+  useEffect(() => {
+    function pointerMove(e) {
+      const start = startRef.current
+
+      if (start?.typ === 'pointer' && !dragRef.current) {
+        const dx = Math.abs(e.clientX - start.x0)
+        const dy = Math.abs(e.clientY - start.y0)
+        if (dx > 9 || dy > 9) {
+          clearLongPress()
+          startRef.current = null
+        }
+        return
+      }
+
+      if (!dragRef.current || dragRef.current.typ !== 'pointer') return
+      if (dragRef.current.pointerId != null && e.pointerId !== dragRef.current.pointerId) return
+      aktualizujDrag(e.clientX, e.clientY)
+      if (e.cancelable) e.preventDefault()
+    }
+
+    function pointerUp(e) {
+      if (dragRef.current?.typ === 'pointer') {
+        upusc(e.clientX, e.clientY)
+        return
+      }
+      clearLongPress()
+      startRef.current = null
+    }
+
+    function touchMove(e) {
+      const start = startRef.current
+      const touch = Array.from(e.touches).find(t => t.identifier === (dragRef.current?.touchId ?? start?.touchId))
+      if (!touch) return
+
+      if (start?.typ === 'touch' && !dragRef.current) {
+        const dx = Math.abs(touch.clientX - start.x0)
+        const dy = Math.abs(touch.clientY - start.y0)
+        if (dx > 10 || dy > 10) {
+          clearLongPress()
+          startRef.current = null
+        }
+        return
+      }
+
+      if (!dragRef.current || dragRef.current.typ !== 'touch') return
+      aktualizujDrag(touch.clientX, touch.clientY)
+      if (e.cancelable) e.preventDefault()
+    }
+
+    function touchEnd(e) {
+      if (dragRef.current?.typ === 'touch') {
+        const touch = Array.from(e.changedTouches).find(t => t.identifier === dragRef.current.touchId) || e.changedTouches[0]
+        upusc(touch?.clientX ?? dragRef.current.x, touch?.clientY ?? dragRef.current.y)
+        return
+      }
+      clearLongPress()
+      startRef.current = null
+    }
+
+    function cancel() {
+      wyczyscDrag()
+    }
+
+    window.addEventListener('pointermove', pointerMove, { passive: false })
+    window.addEventListener('pointerup', pointerUp)
+    window.addEventListener('pointercancel', cancel)
+    window.addEventListener('touchmove', touchMove, { passive: false })
+    window.addEventListener('touchend', touchEnd)
+    window.addEventListener('touchcancel', cancel)
+
+    return () => {
+      window.removeEventListener('pointermove', pointerMove)
+      window.removeEventListener('pointerup', pointerUp)
+      window.removeEventListener('pointercancel', cancel)
+      window.removeEventListener('touchmove', touchMove)
+      window.removeEventListener('touchend', touchEnd)
+      window.removeEventListener('touchcancel', cancel)
+    }
+  }, [clearLongPress, onPrzeniesPosilek, wyczyscDrag])
+
   return (
     <div style={s.tydzienList}>
       {!maZawartosc && (
@@ -600,14 +942,21 @@ function WidokTygodnia({ dni, plan, daniaMap, onSelectDanie, onClickPusty, onCli
             </button>
             <div style={s.kafelkiRzad}>
               {POSILKI.map(posilek => {
+                const key = slotKey(dataStr, posilek)
                 const wpis = plan[`${dataStr}_${posilek}`]
                 return (
                   <KafelekPosilek
                     key={posilek}
+                    setRef={(el) => ustawSlotRef(key, el)}
                     posilek={posilek}
                     wpis={wpis}
                     daniaMeta={daniaMap[wpis?.danie]}
+                    podswietlony={hoverKey === key}
+                    przeciagany={dragSet?.sourceKey === key}
+                    onPointerDownDrag={(e) => zacznijPointer(e, dataStr, posilek, wpis, daniaMap[wpis?.danie])}
+                    onTouchStartDrag={(e) => zacznijTouch(e, dataStr, posilek, wpis, daniaMap[wpis?.danie])}
                     onClick={() => {
+                      if (Date.now() < ignoreClickUntil.current) return
                       if (wpis?.danie) onSelectDanie?.(wpis.danie)
                       else onClickPusty(di)
                     }}
@@ -619,10 +968,27 @@ function WidokTygodnia({ dni, plan, daniaMap, onSelectDanie, onClickPusty, onCli
           </section>
         )
       })}
+
+      {dragSet?.podniesiony && (
+        <div style={{ ...s.dragGhost, left: dragSet.x, top: dragSet.y }}>
+          <div style={s.dragGhostThumb}>
+            {dragSet.meta?.zdjecie ? (
+              <img src={dragSet.meta.zdjecie} alt="" style={s.dragGhostImg} />
+            ) : (
+              <div style={{ ...s.dragGhostImg, background: kolorDania(dragSet.wpis?.danie), display: 'grid', placeItems: 'center' }}>
+                <span style={{ fontSize: 24 }}>{emojiDania(dragSet.wpis?.danie)}</span>
+              </div>
+            )}
+          </div>
+          <div style={s.dragGhostName}>{dragSet.wpis?.danie}</div>
+          <div style={s.dragGhostSub}>{dragSet.posilek}</div>
+        </div>
+      )}
     </div>
   )
 }
 
+// ════════════════════════════════════════════════════════════
 // ════════════════════════════════════════════════════════════
 function WidokDnia({
   dzien, dni, plan, daniaMap, dodatkiMap, surowkiMap,
@@ -1311,7 +1677,7 @@ function WidokDnia({
 }
 
 // ════════════════════════════════════════════════════════════
-function KafelekPosilek({ posilek, wpis, daniaMeta, onClick, onDelete }) {
+function KafelekPosilek({ posilek, wpis, daniaMeta, onClick, onDelete, setRef, onPointerDownDrag, onTouchStartDrag, podswietlony, przeciagany }) {
   const masDanie = !!wpis?.danie
 
   function handleKeyDown(e) {
@@ -1323,11 +1689,19 @@ function KafelekPosilek({ posilek, wpis, daniaMeta, onClick, onDelete }) {
 
   return (
     <div
+      ref={setRef}
       role="button"
       tabIndex={0}
       onClick={onClick}
       onKeyDown={handleKeyDown}
-      style={{ ...s.kafelek, ...(masDanie ? {} : s.kafelekPusty) }}
+      onPointerDown={onPointerDownDrag}
+      onTouchStart={onTouchStartDrag}
+      style={{
+        ...s.kafelek,
+        ...(masDanie ? {} : s.kafelekPusty),
+        ...(podswietlony ? s.kafelekDropHover : {}),
+        opacity: przeciagany ? 0.35 : 1,
+      }}
     >
       {masDanie ? (
         <>
@@ -1345,6 +1719,8 @@ function KafelekPosilek({ posilek, wpis, daniaMeta, onClick, onDelete }) {
             <button
               type="button"
               style={s.kafelekDelete}
+              onPointerDown={(e) => e.stopPropagation()}
+              onTouchStart={(e) => e.stopPropagation()}
               onClick={(e) => {
                 e.stopPropagation()
                 onDelete()
@@ -1779,6 +2155,13 @@ const s = {
     background: t.surface, border: 'none', cursor: 'pointer',
     overflow: 'hidden', padding: 0, fontFamily: fonts.sans,
     boxShadow: '0 1px 2px rgba(74,55,40,.06), 0 6px 16px rgba(74,55,40,.06)',
+    touchAction: 'pan-y', userSelect: 'none', WebkitUserSelect: 'none', WebkitTouchCallout: 'none',
+  },
+  kafelekDropHover: {
+    outline: `3px solid ${t.warm}`,
+    outlineOffset: 2,
+    boxShadow: '0 0 0 5px rgba(196,90,50,.16), 0 8px 24px rgba(74,55,40,.18)',
+    transform: 'scale(1.015)',
   },
   kafelekImg: { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', display: 'block' },
   kafelekLabel: {
@@ -1989,6 +2372,10 @@ const s = {
     fontFamily: fonts.sans, fontSize: 10, color: t.text, fontWeight: 600,
     textAlign: 'center', lineHeight: 1.2,
     display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+  },
+  dragGhostSub: {
+    fontFamily: fonts.sans, fontSize: 9, color: t.mute,
+    fontWeight: 700, letterSpacing: 0.8, textTransform: 'uppercase',
   },
 
   toast: {
