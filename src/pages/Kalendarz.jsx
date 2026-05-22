@@ -669,7 +669,7 @@ function WidokDnia({
         if (e.cancelable) e.preventDefault()
       }
     }
-
+console.log('[MOVE]', e.clientX, e.clientY, 'drag?', !!dragRef.current, 'podniesiony?', dragRef.current?.podniesiony)
     function znajdzCel(x, y) {
       // Sprawdzaj side-sloty przed głównym (są na wierzchu wizualnie i mniejsze)
       // Klucze: `${posilek}_side_0`, `${posilek}_side_1`, `${posilek}`
