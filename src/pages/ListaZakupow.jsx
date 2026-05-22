@@ -287,6 +287,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
 
   const [toast, setToast] = useState(null)
   const toastTimer = useRef(null)
+  const blokujDodawanieDo = useRef(0)
   // Stan odznaczonych jest teraz w bazie (zakupy_historia, wspólne dla rodziny),
   // a nie w localStorage — funkcja zostaje jako no-op, żeby nie zmieniać call-site'ów.
   const storageKey = `lista_zakupow_${user.id}` // legacy, niezużywane
@@ -938,8 +939,18 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
 
   // Toggle uniwersalny
   function toggleAny(item) {
+    // Gdy ostatnia pozycja z listy znika spod palca, przeglądarka mobilna potrafi
+    // puścić końcowy click w element, który właśnie wskoczył pod palec. Blokujemy
+    // wtedy otwieranie formularza dodawania przez krótką chwilę.
+    blokujDodawanieDo.current = Date.now() + 650
     if (item.zrodlo === 'wlasne') return toggleWlasny(item.wlasnyData)
     return toggle(item)
+  }
+
+  function otworzDodawanieWlasnego() {
+    if (Date.now() < blokujDodawanieDo.current) return
+    setEdycjaWlasnego(null)
+    setPokazDodaj(true)
   }
 
   if (loading) return <div style={s.loading}>Generuję listę zakupów…</div>
@@ -994,14 +1005,6 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
           onClick={() => setPokazMamWDomu(true)}
         />
 
-        {usunieteProdukty.length > 0 && (
-          <UsunieteProdukty
-            items={usunieteProdukty}
-            onRestore={przywrocUsunietyProdukt}
-            onRestoreAll={przywrocWszystkieUsuniete}
-          />
-        )}
-
         {/* Główny CTA: Idę do sklepu */}
         {wszystkieItemy.length > 0 && (
           <button style={s.btnSklep} onClick={() => setTrybSklepu(true)}>
@@ -1015,7 +1018,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
             <p style={s.emptySub}>
               Wypełnij kalendarz albo dodaj własny produkt.
             </p>
-            <button style={s.emptyBtn} onClick={() => { setEdycjaWlasnego(null); setPokazDodaj(true) }}>
+            <button style={s.emptyBtn} onClick={otworzDodawanieWlasnego}>
               + Dodaj produkt
             </button>
           </div>
@@ -1040,10 +1043,13 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
               </section>
             ))}
 
-            {/* Dodaj własny produkt — przycisk pomiędzy kategoriami */}
-            <button style={s.btnDodajWlasny} onClick={() => { setEdycjaWlasnego(null); setPokazDodaj(true) }}>
-              + Dodaj własny produkt (papier, chemia, lek…)
-            </button>
+            {usunieteProdukty.length > 0 && (
+              <UsunieteProdukty
+                items={usunieteProdukty}
+                onRestore={przywrocUsunietyProdukt}
+                onRestoreAll={przywrocWszystkieUsuniete}
+              />
+            )}
 
             {kupione.length > 0 && (
               <section style={{ ...s.katSekcja, marginTop: 24 }}>
@@ -1071,6 +1077,10 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
                 Odśwież listę
               </button>
             </div>
+
+            <button style={s.btnDodajWlasny} onClick={otworzDodawanieWlasnego}>
+              + Dodaj własny produkt
+            </button>
           </>
         )}
       </div>
@@ -1974,7 +1984,7 @@ const s = {
   },
 
   btnDodajWlasny: {
-    width: '100%', padding: '14px 16px', marginTop: 4,
+    width: '100%', padding: '14px 16px', marginTop: 14,
     background: 'transparent', border: `1.5px dashed ${t.borderStrong}`,
     borderRadius: 14, color: t.mute, cursor: 'pointer',
     fontFamily: fonts.sans, fontSize: 13.5, fontWeight: 600,
