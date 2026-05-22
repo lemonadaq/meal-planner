@@ -557,7 +557,6 @@ function WidokDnia({
   const dataStr = formatData(dzien)
   const [filtr, setFiltr] = useState('')
   const [dragState, setDragState] = useState(null)
-  const [debug, setDebug] = useState('')
 
   // Refy do slotów (dla wykrywania drop): zarówno głównych jak i side-slotów
   // Klucz: `${posilek}` dla dania, `${posilek}_side_${i}` dla side-slotów
@@ -576,45 +575,66 @@ function WidokDnia({
   // Reset filtra przy zmianie sub-trybu / dnia
   useEffect(() => { setFiltr('') }, [subTryb?.typ, subTryb?.posilek, dataStr])
 
-  const startDrag = useCallback((nazwa, typ, meta, x, y) => {
-    const stan = { nazwa, typ, meta, x, y, podniesiony: false }
-    dragRef.current = stan
-    setDragState(stan)
+  const edgeScrollDelta = useRef(0)
+  const activePointerIdRef = useRef(null)
+  const capturedTargetRef = useRef(null)
+
+  const wyczyscGesture = useCallback(() => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current)
+      longPressTimer.current = null
+    }
+
+    edgeScrollDelta.current = 0
+
+    if (capturedTargetRef.current && activePointerIdRef.current != null) {
+      try {
+        capturedTargetRef.current.releasePointerCapture(activePointerIdRef.current)
+      } catch {}
+    }
+
+    capturedTargetRef.current = null
+    activePointerIdRef.current = null
+    startPos.current = null
   }, [])
 
-  // Ref do elementu który capture'ował pointer — żeby móc go release przy anulowaniu
-  const capturedTargetRef = useRef(null)
-  const capturedPointerIdRef = useRef(null)
+  const startDrag = useCallback((nazwa, typ, meta, x, y, target, pointerId) => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current)
+      longPressTimer.current = null
+    }
+
+    activePointerIdRef.current = pointerId
+
+    try {
+      target?.setPointerCapture?.(pointerId)
+      capturedTargetRef.current = target
+    } catch {}
+
+    const stan = { nazwa, typ, meta, x, y, podniesiony: true }
+    dragRef.current = stan
+    setDragState(stan)
+
+    navigator.vibrate?.(20)
+  }, [])
 
   const onPointerDownItem = useCallback((e, nazwa, typ, meta) => {
     if (e.pointerType === 'mouse' && e.button !== 0) return
-    const x = e.clientX, y = e.clientY
+
+    const x = e.clientX
+    const y = e.clientY
     const target = e.currentTarget
     const pointerId = e.pointerId
 
-    // Pointer capture OD RAZU — gwarantuje że dostaniemy wszystkie pointermove,
-    // nawet jeśli przeglądarka klasyfikuje gest jako scroll. Jeśli user zacznie
-    // scrollować (ruch >14px przed long-press), handleMove zrobi release capture.
-    let captureOk = false
-    try {
-      target.setPointerCapture(pointerId)
-      captureOk = true
-      capturedTargetRef.current = target
-      capturedPointerIdRef.current = pointerId
-    } catch (err) {
-      captureOk = false
-    }
-    setDebug(`down capture=${captureOk ? 'OK' : 'FAIL'} pid=${pointerId}`)
+    startPos.current = { x, y, nazwa, typ, meta, target, pointerId }
+    activePointerIdRef.current = pointerId
 
-    startPos.current = { x, y, nazwa, typ, meta }
     longPressTimer.current = setTimeout(() => {
-      startDrag(nazwa, typ, meta, x, y)
-      if (navigator.vibrate) navigator.vibrate(20)
-    }, 250)
+      startDrag(nazwa, typ, meta, x, y, target, pointerId)
+    }, 320)
   }, [startDrag])
 
   // ── Edge scroll: jak drag jest blisko góry/dołu, scrolluj okno
-  const edgeScrollDelta = useRef(0)
   useEffect(() => {
     function loop() {
       if (edgeScrollDelta.current !== 0) {
@@ -655,71 +675,77 @@ function WidokDnia({
   }, [dragState?.podniesiony])
 
   useEffect(() => {
-    function handleMove(e) {
-      setDebug(`x=${Math.round(e.clientX)} y=${Math.round(e.clientY)} drag=${!!dragRef.current} podn=${dragRef.current?.podniesiony ? 'T' : 'F'} timer=${!!longPressTimer.current}`)
-      if (longPressTimer.current && startPos.current) {
-        const dx = e.clientX - startPos.current.x
-        const dy = e.clientY - startPos.current.y
-        // Większy próg + jeśli głównie pionowy ruch = scroll, anuluj long-press
-        if (Math.abs(dx) > 14 || Math.abs(dy) > 14) {
-          clearTimeout(longPressTimer.current)
-          longPressTimer.current = null
-          startPos.current = null
-          // RELEASE pointer capture — user scrolluje galerię, daj browserowi
-          // przejąć gest jako scroll. Bez tego galeria stałaby w miejscu.
-          if (capturedTargetRef.current && capturedPointerIdRef.current != null) {
-            try {
-              capturedTargetRef.current.releasePointerCapture(capturedPointerIdRef.current)
-            } catch {}
-            capturedTargetRef.current = null
-            capturedPointerIdRef.current = null
-          }
-        }
-      }
-      if (dragRef.current) {
-        const stan = { ...dragRef.current, x: e.clientX, y: e.clientY, podniesiony: true }
-        dragRef.current = stan
-        setDragState(stan)
-
-        // Edge scroll: blisko górnej / dolnej krawędzi viewportu
-        const vh = window.innerHeight
-        if (e.clientY < EDGE_SCROLL_THRESHOLD) {
-          edgeScrollDelta.current = -EDGE_SCROLL_SPEED * (1 - e.clientY / EDGE_SCROLL_THRESHOLD)
-        } else if (e.clientY > vh - EDGE_SCROLL_THRESHOLD) {
-          edgeScrollDelta.current = EDGE_SCROLL_SPEED * (1 - (vh - e.clientY) / EDGE_SCROLL_THRESHOLD)
-        } else {
-          edgeScrollDelta.current = 0
-        }
-
-        if (e.cancelable) e.preventDefault()
-      }
-    }
-
     function znajdzCel(x, y) {
       // Sprawdzaj side-sloty przed głównym (są na wierzchu wizualnie i mniejsze)
       // Klucze: `${posilek}_side_0`, `${posilek}_side_1`, `${posilek}`
       const keys = Object.keys(slotRefs.current)
       // Sortuj: side przed głównym (po długości klucza)
       keys.sort((a, b) => b.length - a.length)
+
       for (const key of keys) {
         const el = slotRefs.current[key]
         if (!el) continue
+
         const r = el.getBoundingClientRect()
         if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) return key
       }
+
       return null
     }
 
-    function handleUp(e) {
-      if (longPressTimer.current) {
-        clearTimeout(longPressTimer.current)
-        longPressTimer.current = null
-      }
-      edgeScrollDelta.current = 0
+    function handleMove(e) {
+      if (activePointerIdRef.current != null && e.pointerId !== activePointerIdRef.current) return
 
-      if (dragRef.current) {
-        const stan = dragRef.current
+      if (longPressTimer.current && startPos.current && !dragRef.current) {
+        const dx = e.clientX - startPos.current.x
+        const dy = e.clientY - startPos.current.y
+
+        // Normalny ruch palcem po galerii = scroll. Wtedy anulujemy long-press.
+        if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
+          wyczyscGesture()
+        }
+
+        return
+      }
+
+      if (!dragRef.current) return
+
+      const stan = {
+        ...dragRef.current,
+        x: e.clientX,
+        y: e.clientY,
+        podniesiony: true,
+      }
+
+      dragRef.current = stan
+      setDragState(stan)
+
+      // Edge scroll: blisko górnej / dolnej krawędzi viewportu
+      const vh = window.innerHeight
+      if (e.clientY < EDGE_SCROLL_THRESHOLD) {
+        edgeScrollDelta.current = -EDGE_SCROLL_SPEED * (1 - e.clientY / EDGE_SCROLL_THRESHOLD)
+      } else if (e.clientY > vh - EDGE_SCROLL_THRESHOLD) {
+        edgeScrollDelta.current = EDGE_SCROLL_SPEED * (1 - (vh - e.clientY) / EDGE_SCROLL_THRESHOLD)
+      } else {
+        edgeScrollDelta.current = 0
+      }
+
+      if (e.cancelable) e.preventDefault()
+    }
+
+    function handleUp(e) {
+      if (activePointerIdRef.current != null && e.pointerId !== activePointerIdRef.current) return
+
+      if (longPressTimer.current && !dragRef.current) {
+        wyczyscGesture()
+        return
+      }
+
+      const stan = dragRef.current
+
+      if (stan) {
         let targetKey = null
+
         if (subTryb) {
           // W sub-trybie cel jest predefiniowany — pierwszy pusty side-slot lub konkretny
           targetKey = subTryb.posilek + '_side_' + (subTryb.slotIdx ?? 0)
@@ -730,56 +756,50 @@ function WidokDnia({
         if (targetKey) {
           // Parsuj key: "Obiad" lub "Obiad_side_0"
           const sideMatch = targetKey.match(/^(.+)_side_(\d+)$/)
+
           if (sideMatch) {
             const posilek = sideMatch[1]
             const slotIdx = parseInt(sideMatch[2], 10)
-            // Jeśli upuszczamy DANIE na side-slot — zignoruj
-            if (stan.typ === 'danie') {
-              // No-op
-            } else if (stan.typ === 'dodatek' || stan.typ === 'surowka') {
+
+            // Side-sloty przyjmują tylko dodatek/surówkę.
+            if (stan.typ === 'dodatek' || stan.typ === 'surowka') {
               onUstawSide(dataStr, posilek, slotIdx, stan.nazwa, stan.typ)
               onSetSubTryb(null)
             }
           } else {
-            // Główny slot — przyjmuje tylko danie
+            // Główny slot przyjmuje tylko danie.
             const posilek = targetKey
+
             if (stan.typ === 'danie') {
               onUstawDanie(dataStr, posilek, stan.nazwa)
             }
-            // dodatek/surowka na glowny slot — zignoruj
           }
         }
-        dragRef.current = null
-        setDragState(null)
       }
-      startPos.current = null
-      // Reset capture refs (już nieaktualne po pointerup)
-      capturedTargetRef.current = null
-      capturedPointerIdRef.current = null
+
+      dragRef.current = null
+      setDragState(null)
+      wyczyscGesture()
     }
 
     function handleCancel(e) {
-      // Ignoruj cancel gdy drag jest aktywny — przeglądarka czasem odpala
-      // pointercancel gdy uzna że gest stał się scrollem, mimo że my blokujemy scroll.
-      // Drag kończymy tylko świadomym podniesieniem palca (pointerup).
-      if (dragRef.current) return
+      if (activePointerIdRef.current != null && e.pointerId !== activePointerIdRef.current) return
 
-      if (longPressTimer.current) {
-        clearTimeout(longPressTimer.current)
-        longPressTimer.current = null
-      }
-      startPos.current = null
+      dragRef.current = null
+      setDragState(null)
+      wyczyscGesture()
     }
 
     window.addEventListener('pointermove', handleMove, { passive: false })
     window.addEventListener('pointerup', handleUp)
     window.addEventListener('pointercancel', handleCancel)
+
     return () => {
       window.removeEventListener('pointermove', handleMove)
       window.removeEventListener('pointerup', handleUp)
       window.removeEventListener('pointercancel', handleCancel)
     }
-  }, [dataStr, subTryb, onUstawDanie, onUstawSide, onSetSubTryb])
+  }, [dataStr, subTryb, onUstawDanie, onUstawSide, onSetSubTryb, wyczyscGesture])
 
   // ── Filtrowanie galerii ──
   // Filtrowanie po typie posiłku: gdy nie jesteśmy w sub-trybie, można pokazać:
@@ -823,11 +843,23 @@ function WidokDnia({
                        typGalerii === 'surowka' ? `Surówka do: ${subTryb?.posilek}` :
                        'Galeria dań'
 
+  const planStickyStyle = dragState?.podniesiony
+    ? {
+        ...s.slotyDuzeSticky,
+        position: 'fixed',
+        top: 'env(safe-area-inset-top, 0px)',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: 'min(424px, calc(100vw - 36px))',
+        zIndex: 9998,
+      }
+    : s.slotyDuzeSticky
+
   return (
     <div style={{ position: 'relative' }}>
       {/* STICKY: sloty z planem dnia na górze, zostają widoczne podczas scrolla */}
       <div style={{
-        ...s.slotyDuzeSticky,
+        ...planStickyStyle,
         opacity: subTryb ? 0.55 : 1,
         transition: 'opacity .2s',
       }}>
@@ -952,17 +984,6 @@ function WidokDnia({
           </div>
         )}
       </section>
-
-      {/* TYMCZASOWY DEBUG OVERLAY — usuń po diagnozie */}
-      <div style={{
-        position: 'fixed', top: 4, right: 4,
-        background: 'black', color: 'lime',
-        padding: 6, fontSize: 10, zIndex: 9999,
-        fontFamily: 'monospace', maxWidth: 280,
-        wordBreak: 'break-all', pointerEvents: 'none',
-      }}>
-        {debug || 'brak ruchu'}
-      </div>
 
       {dragState?.podniesiony && (
         <div style={{ ...s.dragGhost, left: dragState.x, top: dragState.y }}>
@@ -1505,9 +1526,8 @@ const s = {
     display: 'flex', flexDirection: 'column', gap: 6,
     background: 'transparent', border: 'none', padding: 0,
     cursor: 'pointer', fontFamily: fonts.sans, textAlign: 'left',
-    // touchAction: 'manipulation' pozwala na natywny scroll w osi Y,
-    // ale wycina double-tap-to-zoom. Drag startuje przez long-press w JS.
-    touchAction: 'manipulation', userSelect: 'none', WebkitUserSelect: 'none',
+    // pan-y zostawia natywny pionowy scroll galerii; drag startuje dopiero po long-press.
+    touchAction: 'pan-y', userSelect: 'none', WebkitUserSelect: 'none', WebkitTouchCallout: 'none',
   },
   galeriaThumb: {
     aspectRatio: '1', borderRadius: 14, overflow: 'hidden',
