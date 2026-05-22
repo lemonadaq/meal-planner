@@ -1342,12 +1342,12 @@ function SzybkieDodawanie({ value, onChange, onDodaj }) {
         style={s.quickAddInput}
         value={value}
         rows={1}
-        placeholder="np. Musztarda sarepska 1szt. albo Margaryna"
+        placeholder="np. Musztarda 1szt."
         onChange={handleChange}
         onKeyDown={handleKeyDown}
       />
       <div style={s.quickAddHelp}>
-        Enter dodaje produkt. Możesz wpisać też kilka po przecinku: „Woda, Musztarda sarepska 1szt., Margaryna”. Brak ilości też jest OK — produkt i tak trafi do „Inne”.
+        Enter dodaje produkt. Możesz wpisać też kilka po przecinku: „Woda, Musztarda 1szt., Margaryna”. Brak ilości też jest OK — produkt i tak trafi do „Inne”.
       </div>
     </section>
   )
