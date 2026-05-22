@@ -17,6 +17,17 @@ function dataPlus(d, dni) {
 }
 
 const POSILKI = ['Śniadanie', 'Obiad', 'Kolacja']
+const SUGESTIA_TYPY = [
+  { id: 'sniadanie', label: 'Śniadanie' },
+  { id: 'obiad', label: 'Obiad' },
+  { id: 'kolacja', label: 'Kolacja' },
+]
+
+const RODZAJ_LABEL = {
+  sniadanie: 'śniadanie',
+  obiad: 'obiad',
+  kolacja: 'kolację',
+}
 
 // Mały odcisk koloru dla dania — stabilny po nazwie (jak w DanieDetail)
 function getKolor(nazwa) {
@@ -48,8 +59,9 @@ export default function Home({ user, householdId, onTabChange, onUstawienia, onS
   const [powitanie] = useState(getPowitanie)
 
   const [planDni, setPlanDni] = useState({ dzis: [], jutro: [] })
-  const [sugestia, setSugestia] = useState(null) // { Danie, zdjecie, ostatnio }
+  const [sugestia, setSugestia] = useState(null) // { Danie, zdjecie, rodzaj, ostatnio }
   const [sugestieMozliwe, setSugestieMozliwe] = useState([]) // pula do losowania
+  const [typSugestii, setTypSugestii] = useState('obiad')
   const [loading, setLoading] = useState(true)
 
   const dzis = useMemo(() => new Date(), [])
@@ -78,8 +90,25 @@ export default function Home({ user, householdId, onTabChange, onUstawienia, onS
 
       if (anulowane) return
 
-      const dzisData = (plany || []).filter(p => p.data === dzisStr)
-      const jutroData = (plany || []).filter(p => p.data === jutroStr)
+      // Dociągam miniatury dla zaplanowanych dań, żeby Home był spójny z ekranem Przepisy.
+      const nazwyDan = [...new Set((plany || []).map(p => p.danie).filter(Boolean))]
+      const metaMap = {}
+      if (nazwyDan.length > 0) {
+        const { data: metaDania } = await supabase
+          .from('dania')
+          .select('"Danie", zdjecie')
+          .in('"Danie"', nazwyDan)
+
+        ;(metaDania || []).forEach(d => {
+          if (d.Danie && !metaMap[d.Danie]) metaMap[d.Danie] = d
+        })
+      }
+
+      if (anulowane) return
+
+      const wzbogac = p => ({ ...p, _meta: metaMap[p.danie] || null })
+      const dzisData = (plany || []).filter(p => p.data === dzisStr).map(wzbogac)
+      const jutroData = (plany || []).filter(p => p.data === jutroStr).map(wzbogac)
       setPlanDni({ dzis: dzisData, jutro: jutroData })
 
       // Sugestia "Może ugotujesz" — pobierz w tle (równolegle)
@@ -90,13 +119,13 @@ export default function Home({ user, householdId, onTabChange, onUstawienia, onS
       // 1) Wszystkie unikalne dania z bazy
       const { data: daniaRaw } = await supabase
         .from('dania')
-        .select('"Danie", zdjecie, "TYP"')
+        .select('"Danie", zdjecie, "TYP", rodzaj')
 
       if (anulowane || !daniaRaw) return
 
       const unikalne = [...new Map(
         daniaRaw
-          .filter(d => d.Danie)
+          .filter(d => d.Danie && ['sniadanie', 'obiad', 'kolacja'].includes(d.rodzaj))
           .map(d => [d.Danie, d])
       ).values()]
 
@@ -131,12 +160,6 @@ export default function Home({ user, householdId, onTabChange, onUstawienia, onS
         .filter(d => !d.ostatnio || d.ostatnio < dwaTygodnie)
 
       setSugestieMozliwe(pula)
-      // Losowo
-      if (pula.length > 0) {
-        setSugestia(pula[Math.floor(Math.random() * pula.length)])
-      } else {
-        setSugestia(null)
-      }
       setLoading(false)
     }
 
@@ -144,12 +167,25 @@ export default function Home({ user, householdId, onTabChange, onUstawienia, onS
     return () => { anulowane = true }
   }, [householdId, dzisStr, jutroStr, refreshKey])
 
+  useEffect(() => {
+    const pula = sugestieMozliwe.filter(d => d.rodzaj === typSugestii)
+    if (pula.length === 0) {
+      setSugestia(null)
+      return
+    }
+    setSugestia(prev => {
+      if (prev?.rodzaj === typSugestii && pula.some(d => d.Danie === prev.Danie)) return prev
+      return pula[Math.floor(Math.random() * pula.length)]
+    })
+  }, [sugestieMozliwe, typSugestii])
+
   function losujInne() {
-    if (sugestieMozliwe.length < 2) return
+    const pula = sugestieMozliwe.filter(d => d.rodzaj === typSugestii)
+    if (pula.length < 2) return
     let nowa
     do {
-      nowa = sugestieMozliwe[Math.floor(Math.random() * sugestieMozliwe.length)]
-    } while (nowa.Danie === sugestia?.Danie && sugestieMozliwe.length > 1)
+      nowa = pula[Math.floor(Math.random() * pula.length)]
+    } while (nowa.Danie === sugestia?.Danie && pula.length > 1)
     setSugestia(nowa)
   }
 
@@ -186,12 +222,14 @@ export default function Home({ user, householdId, onTabChange, onUstawienia, onS
         tytul="Dzisiaj"
         plan={planDni.dzis}
         onSlotClick={() => onTabChange('planer')}
+        onDanieClick={onSelectDanie}
       />
 
       <DzienSekcja
         tytul="Jutro"
         plan={planDni.jutro}
         onSlotClick={() => onTabChange('planer')}
+        onDanieClick={onSelectDanie}
         wyrozniony={false}
       />
 
@@ -199,15 +237,27 @@ export default function Home({ user, householdId, onTabChange, onUstawienia, onS
       {sugestia && (
         <section style={s.sugestiaSekcja}>
           <div style={s.sugestiaHeader}>
-            <h2 style={s.h2}>Może ugotujesz?</h2>
+            <h2 style={s.h2}>Może ugotujesz na {RODZAJ_LABEL[typSugestii]}?</h2>
             <button
               style={s.link}
               onClick={losujInne}
-              disabled={sugestieMozliwe.length < 2}
+              disabled={sugestieMozliwe.filter(d => d.rodzaj === typSugestii).length < 2}
               title="Pokaż inne"
             >
               🔄 Inne
             </button>
+          </div>
+
+          <div style={s.sugestiaTypy}>
+            {SUGESTIA_TYPY.map(typ => (
+              <button
+                key={typ.id}
+                style={{ ...s.sugestiaTypBtn, ...(typSugestii === typ.id ? s.sugestiaTypBtnAktywny : {}) }}
+                onClick={() => setTypSugestii(typ.id)}
+              >
+                {typ.label}
+              </button>
+            ))}
           </div>
 
           <button
@@ -245,7 +295,7 @@ export default function Home({ user, householdId, onTabChange, onUstawienia, onS
 }
 
 // ── Sekcja z planem dnia ──
-function DzienSekcja({ tytul, plan, onSlotClick, wyrozniony = true }) {
+function DzienSekcja({ tytul, plan, onSlotClick, onDanieClick, wyrozniony = true }) {
   return (
     <section style={s.dzienSekcja}>
       <h2 style={s.h2}>{tytul}</h2>
@@ -270,8 +320,15 @@ function DzienSekcja({ tytul, plan, onSlotClick, wyrozniony = true }) {
             )
           }
 
+          const zdjecie = wpis._meta?.zdjecie || wpis.zdjecie
+
           return (
-            <article key={posilek} style={s.posilekItem}>
+            <button
+              key={posilek}
+              style={s.posilekItem}
+              onClick={() => onDanieClick?.(wpis.danie)}
+            >
+              <MiniaturaDania nazwa={wpis.danie} zdjecie={zdjecie} />
               <div style={s.posilekInfo}>
                 <div style={s.posilekNazwa}>{posilek}</div>
                 <div style={s.posilekDanie}>{wpis.danie}</div>
@@ -281,11 +338,27 @@ function DzienSekcja({ tytul, plan, onSlotClick, wyrozniony = true }) {
                   </div>
                 )}
               </div>
-            </article>
+              <div style={s.posilekArrow}>›</div>
+            </button>
           )
         })}
       </div>
     </section>
+  )
+}
+
+function MiniaturaDania({ nazwa, zdjecie }) {
+  return (
+    <div
+      style={{
+        ...s.posilekThumb,
+        background: zdjecie ? 'transparent' : getKolor(nazwa),
+      }}
+    >
+      {zdjecie
+        ? <img src={zdjecie} alt="" style={s.posilekImg} />
+        : <span style={s.posilekEmoji}>{getEmoji(nazwa)}</span>}
+    </div>
   )
 }
 
@@ -326,9 +399,17 @@ const s = {
 
   posilkiLista: { display: 'flex', flexDirection: 'column', gap: 8 },
   posilekItem: {
-    ...ui.card, padding: '14px 16px',
-    display: 'flex', alignItems: 'center', gap: 14,
+    ...ui.card, padding: '10px 12px',
+    display: 'flex', alignItems: 'center', gap: 12,
+    width: '100%', border: 'none', cursor: 'pointer', textAlign: 'left',
+    fontFamily: fonts.sans, boxSizing: 'border-box',
   },
+  posilekThumb: {
+    width: 52, height: 52, borderRadius: 13,
+    display: 'grid', placeItems: 'center', overflow: 'hidden', flexShrink: 0,
+  },
+  posilekImg: { width: '100%', height: '100%', objectFit: 'cover', display: 'block' },
+  posilekEmoji: { fontSize: 26 },
   posilekInfo: { flex: 1, minWidth: 0 },
   posilekNazwa: { ...ui.slotLabel, marginBottom: 3 },
   posilekDanie: {
@@ -336,6 +417,7 @@ const s = {
     letterSpacing: -0.1, lineHeight: 1.15,
   },
   posilekExtra: { fontFamily: fonts.sans, fontSize: 12, color: t.mute, marginTop: 3 },
+  posilekArrow: { fontSize: 20, color: t.muteLight, fontFamily: fonts.serif, flexShrink: 0 },
 
   // Pusty slot — wizualnie wyraźnie inny od wypełnionego (dashed border, jaśniejszy)
   posilekPusty: {
@@ -371,6 +453,19 @@ const s = {
   sugestiaHeader: {
     display: 'flex', justifyContent: 'space-between',
     alignItems: 'baseline', marginBottom: 10,
+  },
+  sugestiaTypy: {
+    display: 'flex', gap: 6, marginBottom: 10,
+    overflowX: 'auto', WebkitOverflowScrolling: 'touch',
+  },
+  sugestiaTypBtn: {
+    border: `1px solid ${t.border}`, background: t.surface,
+    color: t.mute, borderRadius: 999, padding: '7px 10px',
+    fontFamily: fonts.sans, fontSize: 12, fontWeight: 600,
+    cursor: 'pointer', whiteSpace: 'nowrap',
+  },
+  sugestiaTypBtnAktywny: {
+    background: t.accent, borderColor: t.accent, color: '#fff',
   },
   sugestiaCard: {
     ...ui.card, padding: 12,

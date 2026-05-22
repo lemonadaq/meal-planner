@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { supabase } from './supabase'
 import Login from './pages/Login'
 import Dania from './pages/Dania'
@@ -83,6 +83,48 @@ function App() {
   const [ekran, setEkran] = useState(null) // 'ustawienia' | 'admin' | 'rodzina' | null
   const [homeRefresh, setHomeRefresh] = useState(0)
 
+  // Aktualny stan nawigacji trzymany w refie, żeby systemowy przycisk Wstecz
+  // na Androidzie/PWA zawsze widział najnowszy ekran bez zamykania aplikacji.
+  const navStateRef = useRef({ tab, ekran, wybraneD, dodajDanie })
+  const cofnijWApceRef = useRef(null)
+
+  useEffect(() => {
+    navStateRef.current = { tab, ekran, wybraneD, dodajDanie }
+  }, [tab, ekran, wybraneD, dodajDanie])
+
+  cofnijWApceRef.current = () => {
+    const st = navStateRef.current
+
+    if (st.ekran === 'admin' || st.ekran === 'rodzina') {
+      setEkran('ustawienia')
+      return true
+    }
+
+    if (st.ekran === 'ustawienia') {
+      setEkran(null)
+      return true
+    }
+
+    if (st.wybraneD) {
+      setWybraneD(null)
+      setHomeRefresh(k => k + 1)
+      return true
+    }
+
+    if (st.dodajDanie) {
+      setDodajDanie(false)
+      return true
+    }
+
+    if (st.tab !== 'home') {
+      setTab('home')
+      setHomeRefresh(k => k + 1)
+      return true
+    }
+
+    return false
+  }
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
@@ -97,6 +139,31 @@ function App() {
   const { ustawienia, zapisz: zapiszUstawienia } = useUstawienia(user)
   const { householdId, household, refresh: refreshHousehold } = useHousehold(user)
   useTabAnalytics(user, user ? tab : null)
+
+  function dodajBlokadeBackButton() {
+    if (typeof window === 'undefined') return
+    if (window.history.state?.smakujeBackGuard) return
+    window.history.pushState({ smakujeBackGuard: true }, '')
+  }
+
+  // Android/PWA: systemowy przycisk Wstecz najpierw cofa ekran aplikacji,
+  // a dopiero z Home pozwala wyjść/minimalizować aplikację.
+  useEffect(() => {
+    if (!user) return
+    dodajBlokadeBackButton()
+  }, [user, tab, ekran, wybraneD, dodajDanie])
+
+  useEffect(() => {
+    if (!user) return
+
+    function handlePopState() {
+      const cofnietoWApce = cofnijWApceRef.current?.()
+      if (cofnietoWApce) dodajBlokadeBackButton()
+    }
+
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [user])
 
   // Po akceptacji zaproszenia przeładuj household i bumpuj wszystkie ekrany
   function poZaakceptowaniu() {
