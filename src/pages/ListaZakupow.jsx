@@ -58,6 +58,21 @@ function toIlosc(raw) {
   return Number.isFinite(n) ? n : null
 }
 
+function bezpiecznaKategoria(kategoria) {
+  return KATEGORIE.some(k => k.id === kategoria) ? kategoria : '8_Inne'
+}
+
+function rozbijSzybkieLinie(tekst = '') {
+  // Obsługuje zarówno Enter, średnik, jak i szybkie wpisy po przecinku:
+  // „Woda, Musztarda sarepska 1szt., Margaryna”.
+  // Nie rozbija liczb dziesiętnych typu „1,5 kg”.
+  return tekst
+    .split(/\r?\n|;/)
+    .flatMap(linia => linia.split(/,\s+(?=[A-Za-zĄĆĘŁŃÓŚŹŻąćęłńóśźż])/u))
+    .map(x => x.trim())
+    .filter(Boolean)
+}
+
 function parsujSzybkiProdukt(linia) {
   // Ten parser celowo jest tolerancyjny. Każda niepusta linijka ma zostać dodana,
   // nawet jeśli użytkownik wpisze tylko „Margaryna” albo coś w stylu „Musztarda sarepska 1szt.”.
@@ -73,7 +88,7 @@ function parsujSzybkiProdukt(linia) {
     const nazwa = poprawNazwe(m[1])
     const ilosc = toIlosc(m[2])
     const jedn = normalizujJednostke(m[3] || '')
-    if (nazwa) return { nazwa, ilosc, jednostka: jedn, kategoria: rozpoznajKategorie(nazwa) }
+    if (nazwa) return { nazwa, ilosc, jednostka: jedn || null, kategoria: bezpiecznaKategoria(rozpoznajKategorie(nazwa)) }
   }
 
   // Format na początku: „1szt. Chleb”, „1 szt. Chleb”, „2 l Mleko”
@@ -82,15 +97,15 @@ function parsujSzybkiProdukt(linia) {
     const nazwa = poprawNazwe(m[3])
     const ilosc = toIlosc(m[1])
     const jedn = normalizujJednostke(m[2] || '')
-    if (nazwa) return { nazwa, ilosc, jednostka: jedn, kategoria: rozpoznajKategorie(nazwa) }
+    if (nazwa) return { nazwa, ilosc, jednostka: jedn || null, kategoria: bezpiecznaKategoria(rozpoznajKategorie(nazwa)) }
   }
 
   // Fallback: nie rozpoznałem ilości/jednostki, ale i tak dodaję produkt.
   return {
     nazwa: tekst,
     ilosc: null,
-    jednostka: '',
-    kategoria: rozpoznajKategorie(tekst),
+    jednostka: null,
+    kategoria: bezpiecznaKategoria(rozpoznajKategorie(tekst)),
   }
 }
 
@@ -369,10 +384,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
 
 
   async function dodajSzybkieProdukty(tekst) {
-    const linie = (tekst || '')
-      .split(/\r?\n/)
-      .map(x => x.trim())
-      .filter(Boolean)
+    const linie = rozbijSzybkieLinie(tekst)
 
     if (linie.length === 0) return
 
@@ -380,15 +392,16 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
       .map(parsujSzybkiProdukt)
       .filter(Boolean)
       .map(dane => ({
-        nazwa: dane.nazwa,
+        nazwa: poprawNazwe(dane.nazwa),
         ilosc: Number.isFinite(dane.ilosc) ? dane.ilosc : null,
-        jednostka: dane.jednostka || '',
-        kategoria: dane.kategoria || '8_Inne',
+        jednostka: dane.jednostka ? normalizujJednostke(dane.jednostka) : null,
+        kategoria: bezpiecznaKategoria(dane.kategoria),
         household_id: householdId,
         user_id: user.id,
         kupione: false,
         powtarzaj: false,
       }))
+      .filter(rekord => rekord.nazwa)
 
     if (rekordy.length === 0) return
 
@@ -397,18 +410,29 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
       .select()
 
     if (error) {
+      console.error('Błąd szybkiego dodawania produktów — bulk insert:', error, rekordy)
+
       // Gdyby jedna linijka wywaliła bulk insert, spróbuj zapisać pozostałe pojedynczo.
+      // To pole ma być odporne: jeden krzywy wpis nie może blokować reszty.
       const dodane = []
+      const bledy = []
+
       for (const rekord of rekordy) {
-        const { data: singleData } = await supabase.from('zakupy_wlasne')
+        const { data: singleData, error: singleError } = await supabase.from('zakupy_wlasne')
           .insert(rekord)
           .select()
           .single()
+
         if (singleData) dodane.push(singleData)
+        if (singleError) bledy.push({ rekord, error: singleError })
+      }
+
+      if (bledy.length > 0) {
+        console.error('Błędy szybkiego dodawania produktów — pojedyncze inserty:', bledy)
       }
 
       if (dodane.length === 0) {
-        pokazToast('Nie udało się dodać produktu')
+        pokazToast('Nie udało się dodać — sprawdź konsolę Supabase')
         return
       }
 
@@ -721,7 +745,7 @@ function SzybkieDodawanie({ value, onChange, onDodaj }) {
         onKeyDown={handleKeyDown}
       />
       <div style={s.quickAddHelp}>
-        Enter dodaje produkt. Może być samo „Margaryna” albo „Musztarda sarepska 1szt.” — parser nie blokuje nieidealnych wpisów.
+        Enter dodaje produkt. Możesz wpisać też kilka po przecinku: „Woda, Musztarda sarepska 1szt., Margaryna”. Brak jednostki trafia jako puste/null.
       </div>
     </section>
   )
