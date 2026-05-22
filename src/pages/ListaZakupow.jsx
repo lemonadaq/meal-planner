@@ -19,62 +19,77 @@ const JEDNOSTKI = ['', 'szt.', 'opak.', 'g', 'kg', 'ml', 'l', 'pęczek']
 
 function normalizujJednostke(raw = '') {
   const x = raw.toString().trim().toLowerCase().replace(/\.+$/, '')
-  if (!x) return null
+  if (!x) return ''
   if (['szt', 'sztuka', 'sztuki', 'sztuk'].includes(x)) return 'szt.'
-  if (['op', 'opak', 'opakowanie', 'opakowania'].includes(x)) return 'opak.'
+  if (['op', 'opak', 'opakowanie', 'opakowania', 'paczka', 'paczki', 'paczkę'].includes(x)) return 'opak.'
   if (['gram', 'gramy'].includes(x)) return 'g'
   if (['kilogram', 'kilogramy'].includes(x)) return 'kg'
+  if (['dekagram', 'dekagramy', 'dkg'].includes(x)) return 'dag'
   if (['mililitr', 'mililitry'].includes(x)) return 'ml'
   if (['litr', 'litry'].includes(x)) return 'l'
   if (['peczek', 'pęczek', 'peczki', 'pęczki'].includes(x)) return 'pęczek'
+  if (['sloik', 'słoik', 'sloiki', 'słoiki'].includes(x)) return 'słoik'
+  if (['butelka', 'butelki'].includes(x)) return 'but.'
   return raw.toString().trim()
 }
 
 function rozpoznajKategorie(nazwa = '') {
   const x = nazwa.toLowerCase()
   if (/chleb|buł|bul|bagiet|kajzer|pieczyw|tost|tortill/.test(x)) return '4_Pieczywo'
-  if (/mleko|jogurt|kefir|maślank|maslank|ser|twar[oó]g|śmietan|smietan|masło|maslo|jaj/.test(x)) return '3_Nabiał'
+  if (/mleko|jogurt|kefir|maślank|maslank|ser|twar[oó]g|śmietan|smietan|masło|maslo|margaryn|jaj/.test(x)) return '3_Nabiał'
   if (/pomidor|og[oó]rek|ziemni|marchew|cebula|czosnek|papryk|sałat|salat|jabł|jabl|banan|cytryn|limonk|awokado|broku|kalafior|kapust|cukini|bakła|bakla|pietruszk|koper|szczyp/.test(x)) return '1_Warzywa i owoce'
   if (/kurczak|wołow|wolow|wieprz|schab|kark[oó]w|mi[eę]so|mielon|szynk|boczek|kiełbas|kielbas|ryb|łosoś|losos|dorsz|tuńczyk|tunczyk/.test(x)) return '2_Mięso i ryby'
   if (/makaron|ryż|ryz|kasz|mąk|maka|cukier|płatki|platki|owsian|soczewic|ciecierzyc|fasol|groch/.test(x)) return '5_Produkty sypkie'
-  if (/konserw|puszk|słoik|sloik|passat|przecier|kukurydz|groszek|oliwk/.test(x)) return '6_Konserwy i słoiki'
+  if (/konserw|puszk|słoik|sloik|passat|przecier|kukurydz|groszek|oliwk|musztard|majonez|ketchup|chrzan/.test(x)) return '6_Konserwy i słoiki'
   if (/s[oó]l|pieprz|papryka słodka|papryka ostra|oregano|bazyl|curry|przypraw|zioł|ziol|cynamon/.test(x)) return '7_Przyprawy'
   return '8_Inne'
 }
 
-function parsujSzybkiProdukt(linia) {
-  const tekst = (linia || '')
+function poprawNazwe(nazwa = '') {
+  return nazwa
     .replace(/^[-•*]\s*/, '')
     .replace(/\s+/g, ' ')
+    .replace(/[;,.\s]+$/, '')
     .trim()
+}
 
+function toIlosc(raw) {
+  const n = parseFloat((raw || '').toString().replace(',', '.'))
+  return Number.isFinite(n) ? n : null
+}
+
+function parsujSzybkiProdukt(linia) {
+  // Ten parser celowo jest tolerancyjny. Każda niepusta linijka ma zostać dodana,
+  // nawet jeśli użytkownik wpisze tylko „Margaryna” albo coś w stylu „Musztarda sarepska 1szt.”.
+  const tekst = poprawNazwe(linia)
   if (!tekst) return null
 
   const liczba = '(\\d+(?:[,.]\\d+)?)'
   const jednostka = '([a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+\\.?)?'
 
-  // np. "Chleb 1szt.", "Chleb 1 szt.", "Chleb 1."
-  let m = tekst.match(new RegExp(`^(.+?)\\s+${liczba}\\s*${jednostka}\\.?$`))
+  // Format na końcu: „Musztarda sarepska 1szt.”, „Chleb 1 szt.”, „Chleb 1”
+  let m = tekst.match(new RegExp(`^(.+?)\\s+${liczba}\\s*${jednostka}\\.?$`, 'i'))
   if (m) {
-    const nazwa = m[1].trim()
-    const ilosc = parseFloat(m[2].replace(',', '.'))
+    const nazwa = poprawNazwe(m[1])
+    const ilosc = toIlosc(m[2])
     const jedn = normalizujJednostke(m[3] || '')
     if (nazwa) return { nazwa, ilosc, jednostka: jedn, kategoria: rozpoznajKategorie(nazwa) }
   }
 
-  // np. "1szt. Chleb", "1 szt. Chleb", "2 l Mleko"
-  m = tekst.match(new RegExp(`^${liczba}\\s*${jednostka}\\s+(.+)$`))
+  // Format na początku: „1szt. Chleb”, „1 szt. Chleb”, „2 l Mleko”
+  m = tekst.match(new RegExp(`^${liczba}\\s*${jednostka}\\s+(.+)$`, 'i'))
   if (m) {
-    const nazwa = m[3].trim()
-    const ilosc = parseFloat(m[1].replace(',', '.'))
+    const nazwa = poprawNazwe(m[3])
+    const ilosc = toIlosc(m[1])
     const jedn = normalizujJednostke(m[2] || '')
     if (nazwa) return { nazwa, ilosc, jednostka: jedn, kategoria: rozpoznajKategorie(nazwa) }
   }
 
+  // Fallback: nie rozpoznałem ilości/jednostki, ale i tak dodaję produkt.
   return {
     nazwa: tekst,
     ilosc: null,
-    jednostka: null,
+    jednostka: '',
     kategoria: rozpoznajKategorie(tekst),
   }
 }
@@ -365,7 +380,10 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
       .map(parsujSzybkiProdukt)
       .filter(Boolean)
       .map(dane => ({
-        ...dane,
+        nazwa: dane.nazwa,
+        ilosc: Number.isFinite(dane.ilosc) ? dane.ilosc : null,
+        jednostka: dane.jednostka || '',
+        kategoria: dane.kategoria || '8_Inne',
         household_id: householdId,
         user_id: user.id,
         kupione: false,
@@ -379,7 +397,26 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
       .select()
 
     if (error) {
-      pokazToast('Nie udało się dodać produktu')
+      // Gdyby jedna linijka wywaliła bulk insert, spróbuj zapisać pozostałe pojedynczo.
+      const dodane = []
+      for (const rekord of rekordy) {
+        const { data: singleData } = await supabase.from('zakupy_wlasne')
+          .insert(rekord)
+          .select()
+          .single()
+        if (singleData) dodane.push(singleData)
+      }
+
+      if (dodane.length === 0) {
+        pokazToast('Nie udało się dodać produktu')
+        return
+      }
+
+      setWlasne(prev => {
+        const ids = new Set(prev.map(w => w.id))
+        return [...prev, ...dodane.filter(w => !ids.has(w.id))]
+      })
+      pokazToast(dodane.length === 1 ? `Dodano: ${dodane[0].nazwa}` : `Dodano ${dodane.length} produktów`)
       return
     }
 
@@ -679,12 +716,12 @@ function SzybkieDodawanie({ value, onChange, onDodaj }) {
         style={s.quickAddInput}
         value={value}
         rows={1}
-        placeholder="np. Chleb 1 szt."
+        placeholder="np. Musztarda sarepska 1szt. albo Margaryna"
         onChange={handleChange}
         onKeyDown={handleKeyDown}
       />
       <div style={s.quickAddHelp}>
-        Enter dodaje produkt. Działa też: „Chleb 1szt.”, „Chleb 1 szt.”, „Chleb 1”, „2 l Mleko”.
+        Enter dodaje produkt. Może być samo „Margaryna” albo „Musztarda sarepska 1szt.” — parser nie blokuje nieidealnych wpisów.
       </div>
     </section>
   )
