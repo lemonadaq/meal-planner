@@ -104,10 +104,11 @@ export default function Kalendarz({ user, onBack, domyslnePorcje = 1, sledz, onS
     let anulowane = false
     async function pobierz() {
       setLoading(true)
-      const [{ data: wszystko }, { data: skl }, planRes] = await Promise.all([
-        // Wszystkie pozycje (dania, dodatki, surówki, przekąski) — jedna tabela
+      const [{ data: d }, { data: do_ }, { data: sur }, { data: skl }, planRes] = await Promise.all([
         supabase.from('dania').select('"Danie", "TYP", rodzaj, zdjecie').order('"Danie"'),
-        // Wszystkie składniki — do search po składnikach
+        supabase.from('dodatki').select('"Dodatek", zdjecie').order('"Dodatek"'),
+        supabase.from('surowki').select('"Surówka", zdjecie').order('"Surówka"'),
+        // Wszystkie składniki dań — do search po składnikach
         supabase.from('dania').select('"Danie", "Składnik"'),
         supabase.from('kalendarz').select('*')
           .eq('user_id', user.id)
@@ -115,23 +116,9 @@ export default function Kalendarz({ user, onBack, domyslnePorcje = 1, sledz, onS
           .lte('data', formatData(dni[6])),
       ])
       if (anulowane) return
-
-      // Dedup po nazwie
-      const unikalneWszystko = [...new Map(
-        (wszystko || []).filter(x => x.Danie).map(x => [x.Danie, x])
-      ).values()]
-
-      // Podział wg rodzaju:
-      // - 'dodatek' / 'surowka' -> osobne listy do galerii w sub-trybie
-      // - reszta (obiad/sniadanie/kolacja/przekaska) -> dania głównego wyboru
-      const unikalDania = unikalneWszystko.filter(d => d.rodzaj !== 'dodatek' && d.rodzaj !== 'surowka')
-      // Mapuję na strukturę zgodną z resztą kodu (klucz Dodatek/Surówka jak wcześniej)
-      const unikalDodatki = unikalneWszystko
-        .filter(d => d.rodzaj === 'dodatek')
-        .map(d => ({ Dodatek: d.Danie, zdjecie: d.zdjecie }))
-      const unikalSurowki = unikalneWszystko
-        .filter(d => d.rodzaj === 'surowka')
-        .map(d => ({ 'Surówka': d.Danie, zdjecie: d.zdjecie }))
+      const unikalDania = [...new Map((d || []).filter(x => x.Danie).map(x => [x.Danie, x])).values()]
+      const unikalDodatki = [...new Map((do_ || []).filter(x => x.Dodatek).map(x => [x.Dodatek, x])).values()]
+      const unikalSurowki = [...new Map((sur || []).filter(x => x['Surówka']).map(x => [x['Surówka'], x])).values()]
 
       // Mapa: nazwa dania -> Set jego składników (do search)
       const sklMapa = {}
@@ -165,7 +152,7 @@ export default function Kalendarz({ user, onBack, domyslnePorcje = 1, sledz, onS
       // Zachowaj kopię — undo gdy user nie chciał nadpisać
       const kopia = { ...istniejacy }
       const { data } = await supabase.from('kalendarz')
-        .update({ danie: nazwa, dodatki: [], podmiany: {} })
+        .update({ danie: nazwa, dodatek: null, surowka: null, podmiany: {} })
         .eq('id', istniejacy.id).select().single()
       if (data) setPlan(p => ({ ...p, [klucz]: data }))
 
@@ -174,9 +161,8 @@ export default function Kalendarz({ user, onBack, domyslnePorcje = 1, sledz, onS
         pokazToast(`Zmieniono na: ${nazwa}`, async () => {
           await supabase.from('kalendarz')
             .update({
-              danie: kopia.danie,
-              dodatki: kopia.dodatki || [],
-              podmiany: kopia.podmiany || {},
+              danie: kopia.danie, dodatek: kopia.dodatek,
+              surowka: kopia.surowka, podmiany: kopia.podmiany || {},
             })
             .eq('id', istniejacy.id)
           setPlan(p => ({ ...p, [klucz]: kopia }))
@@ -187,7 +173,7 @@ export default function Kalendarz({ user, onBack, domyslnePorcje = 1, sledz, onS
       }
     } else {
       const { data } = await supabase.from('kalendarz')
-        .insert({ user_id: user.id, data: dataStr, posilek, danie: nazwa, dodatki: [] })
+        .insert({ user_id: user.id, data: dataStr, posilek, danie: nazwa })
         .select().single()
       if (data) setPlan(p => ({ ...p, [klucz]: data }))
       sledz?.('zaplanuj_posilek', { dzien: dataStr, posilek, danie: nazwa })
@@ -195,36 +181,24 @@ export default function Kalendarz({ user, onBack, domyslnePorcje = 1, sledz, onS
     }
   }
 
-  // ── Side-sloty (dodatki/surówki) — tablica jsonb ──
-  // Format: dodatki = [{ nazwa: string, typ: 'dodatek' | 'surowka' }, ...]
-  // Każdy slot niezależnie — można mieć 2 dodatki, 2 surówki, mix, lub puste.
-  async function ustawSide(dataStr, posilek, slotIdx, nazwa, typ) {
+  async function ustawDodatek(dataStr, posilek, nazwa) {
     const klucz = `${dataStr}_${posilek}`
     const istniejacy = plan[klucz]
     if (!istniejacy) return
-    const aktualne = Array.isArray(istniejacy.dodatki) ? [...istniejacy.dodatki] : []
-    // Wypełnij dziury (gdy slotIdx=1 a aktualne=[]) pustym placeholderem na slot 0
-    while (aktualne.length < slotIdx) aktualne.push(null)
-    aktualne[slotIdx] = { nazwa, typ }
-    // Wyczyść końcowe nulle żeby tablica była zwarta
-    while (aktualne.length > 0 && !aktualne[aktualne.length - 1]) aktualne.pop()
     const { data } = await supabase.from('kalendarz')
-      .update({ dodatki: aktualne }).eq('id', istniejacy.id).select().single()
+      .update({ dodatek: nazwa }).eq('id', istniejacy.id).select().single()
     if (data) setPlan(p => ({ ...p, [klucz]: data }))
     pokazToast(`+ ${nazwa}`)
   }
 
-  async function usunSide(dataStr, posilek, slotIdx) {
+  async function ustawSurowke(dataStr, posilek, nazwa) {
     const klucz = `${dataStr}_${posilek}`
     const istniejacy = plan[klucz]
     if (!istniejacy) return
-    const aktualne = Array.isArray(istniejacy.dodatki) ? [...istniejacy.dodatki] : []
-    if (slotIdx >= aktualne.length) return
-    aktualne[slotIdx] = null
-    while (aktualne.length > 0 && !aktualne[aktualne.length - 1]) aktualne.pop()
     const { data } = await supabase.from('kalendarz')
-      .update({ dodatki: aktualne }).eq('id', istniejacy.id).select().single()
+      .update({ surowka: nazwa }).eq('id', istniejacy.id).select().single()
     if (data) setPlan(p => ({ ...p, [klucz]: data }))
+    pokazToast(`+ ${nazwa}`)
   }
 
   async function usunPosilek(dataStr, posilek) {
@@ -237,12 +211,29 @@ export default function Kalendarz({ user, onBack, domyslnePorcje = 1, sledz, onS
     setPlan(p => { const n = { ...p }; delete n[klucz]; return n })
 
     pokazToast(`${posilek} usunięty`, async () => {
-      // Insert spowrotem (zachowując wszystkie pola)
+      // Insert spowrotem (zachowując wszystkie pola: danie, dodatek, surowka, porcje, podmiany)
       const { id, created_at, ...doInsert } = kopia
       const { data } = await supabase.from('kalendarz').insert(doInsert).select().single()
       if (data) setPlan(p => ({ ...p, [klucz]: data }))
       setToast(null)
     })
+  }
+
+  async function usunDodatek(dataStr, posilek) {
+    const klucz = `${dataStr}_${posilek}`
+    const istniejacy = plan[klucz]
+    if (!istniejacy) return
+    const { data } = await supabase.from('kalendarz')
+      .update({ dodatek: null }).eq('id', istniejacy.id).select().single()
+    if (data) setPlan(p => ({ ...p, [klucz]: data }))
+  }
+  async function usunSurowke(dataStr, posilek) {
+    const klucz = `${dataStr}_${posilek}`
+    const istniejacy = plan[klucz]
+    if (!istniejacy) return
+    const { data } = await supabase.from('kalendarz')
+      .update({ surowka: null }).eq('id', istniejacy.id).select().single()
+    if (data) setPlan(p => ({ ...p, [klucz]: data }))
   }
 
   async function zmienPorcje(dataStr, posilek, nowaWart) {
@@ -429,9 +420,11 @@ export default function Kalendarz({ user, onBack, domyslnePorcje = 1, sledz, onS
             onSetSubTryb={setSubTryb}
             onSelectDanie={onSelectDanie}
             onUstawDanie={ustawDanie}
-            onUstawSide={ustawSide}
+            onUstawDodatek={ustawDodatek}
+            onUstawSurowke={ustawSurowke}
             onUsunPosilek={usunPosilek}
-            onUsunSide={usunSide}
+            onUsunDodatek={usunDodatek}
+            onUsunSurowke={usunSurowke}
             onZmienPorcje={zmienPorcje}
             onPodmien={(wpis) => setPodmianaModal(wpis)}
             onKopiujDzien={(zDataStr) => setKopiujModal({ zDataStr })}
@@ -522,8 +515,8 @@ function WidokDnia({
   dzien, dni, plan, daniaMap, dodatkiMap, surowkiMap,
   dania, dodatki, surowki, skladnikiDan, domyslnePorcje,
   subTryb, onSetSubTryb, onSelectDanie,
-  onUstawDanie, onUstawSide,
-  onUsunPosilek, onUsunSide,
+  onUstawDanie, onUstawDodatek, onUstawSurowke,
+  onUsunPosilek, onUsunDodatek, onUsunSurowke,
   onZmienPorcje, onPodmien, onKopiujDzien,
 }) {
   const dataStr = formatData(dzien)
@@ -644,12 +637,14 @@ function WidokDnia({
           const sideMatch = targetKey.match(/^(.+)_side_(\d+)$/)
           if (sideMatch) {
             const posilek = sideMatch[1]
-            const slotIdx = parseInt(sideMatch[2], 10)
-            // Jeśli upuszczamy DANIE na side-slot — zignoruj
+            // Jeśli upuszczamy DANIE na side-slot — zignoruj (to nie pasuje)
             if (stan.typ === 'danie') {
-              // No-op
-            } else if (stan.typ === 'dodatek' || stan.typ === 'surowka') {
-              onUstawSide(dataStr, posilek, slotIdx, stan.nazwa, stan.typ)
+              // No-op — feedback wizualny już dał info
+            } else if (stan.typ === 'dodatek') {
+              onUstawDodatek(dataStr, posilek, stan.nazwa)
+              onSetSubTryb(null)
+            } else if (stan.typ === 'surowka') {
+              onUstawSurowke(dataStr, posilek, stan.nazwa)
               onSetSubTryb(null)
             }
           } else {
@@ -658,7 +653,7 @@ function WidokDnia({
             if (stan.typ === 'danie') {
               onUstawDanie(dataStr, posilek, stan.nazwa)
             }
-            // dodatek/surowka na glowny slot — zignoruj
+            // dodatek/surowka na glowny slot — zignoruj (zapobiega bugowi #9)
           }
         }
         dragRef.current = null
@@ -675,7 +670,7 @@ function WidokDnia({
       window.removeEventListener('pointerup', handleUp)
       window.removeEventListener('pointercancel', handleUp)
     }
-  }, [dataStr, subTryb, onUstawDanie, onUstawSide, onSetSubTryb])
+  }, [dataStr, subTryb, onUstawDanie, onUstawDodatek, onUstawSurowke, onSetSubTryb])
 
   // ── Filtrowanie galerii ──
   // Filtrowanie po typie posiłku: gdy nie jesteśmy w sub-trybie, można pokazać:
@@ -740,14 +735,15 @@ function WidokDnia({
                 posilek={posilek}
                 wpis={wpis}
                 daniaMeta={daniaMap[wpis?.danie]}
-                dodatkiMap={dodatkiMap}
-                surowkiMap={surowkiMap}
+                dodatkiMeta={dodatkiMap[wpis?.dodatek]}
+                surowkiMeta={surowkiMap[wpis?.surowka]}
                 domyslnePorcje={domyslnePorcje}
                 podswietlony={podswietl}
                 podswietlSide={dragTyp === 'dodatek' || dragTyp === 'surowka'}
                 onClick={() => wpis?.danie && onSelectDanie?.(wpis.danie)}
                 onUsun={() => onUsunPosilek(dataStr, posilek)}
-                onUsunSide={(slotIdx) => onUsunSide(dataStr, posilek, slotIdx)}
+                onUsunDodatek={() => onUsunDodatek(dataStr, posilek)}
+                onUsunSurowke={() => onUsunSurowke(dataStr, posilek)}
                 onZmienPorcje={(p) => onZmienPorcje(dataStr, posilek, p)}
                 onPodmien={() => onPodmien(wpis)}
                 onWybierzSide={(slotIdx) => onSetSubTryb({ dataStr, posilek, typ: 'dodatek', slotIdx })}
@@ -817,8 +813,8 @@ function WidokDnia({
                 if (typGalerii === 'danie') onSelectDanie?.(item.nazwa)
                 else if (subTryb) {
                   // Tap = wybór szybki, omijamy drag
-                  const slotIdx = subTryb.slotIdx ?? 0
-                  onUstawSide(subTryb.dataStr, subTryb.posilek, slotIdx, item.nazwa, typGalerii)
+                  if (typGalerii === 'dodatek') onUstawDodatek(subTryb.dataStr, subTryb.posilek, item.nazwa)
+                  if (typGalerii === 'surowka') onUstawSurowke(subTryb.dataStr, subTryb.posilek, item.nazwa)
                   onSetSubTryb(null)
                 }
               }}
@@ -900,9 +896,9 @@ function KafelekPosilek({ posilek, wpis, daniaMeta, onClick }) {
 
 // ════════════════════════════════════════════════════════════
 function SlotDuzy({
-  setRef, setSideRef, posilek, wpis, daniaMeta, dodatkiMap, surowkiMap,
+  setRef, setSideRef, posilek, wpis, daniaMeta, dodatkiMeta, surowkiMeta,
   domyslnePorcje, podswietlony, podswietlSide,
-  onClick, onUsun, onUsunSide,
+  onClick, onUsun, onUsunDodatek, onUsunSurowke,
   onZmienPorcje, onPodmien,
   onWybierzSide,
 }) {
@@ -918,15 +914,25 @@ function SlotDuzy({
     onZmienPorcje(nowe === domyslnePorcje ? null : nowe)
   }
 
-  // Side-sloty: 2 niezależne sloty, każdy może być dodatkiem lub surówką
-  // (lub być pusty). Tablica wpis.dodatki = [{nazwa, typ}, ...]
-  const dodatkiTab = Array.isArray(wpis?.dodatki) ? wpis.dodatki : []
-  const sideSloty = [0, 1].map(idx => {
-    const slot = dodatkiTab[idx] || null
-    if (!slot) return { idx, nazwa: null, typ: null, meta: null }
-    const meta = slot.typ === 'dodatek' ? dodatkiMap[slot.nazwa] : surowkiMap[slot.nazwa]
-    return { idx, nazwa: slot.nazwa, typ: slot.typ, meta }
-  })
+  // Side-sloty: 2 sloty, każdy może być dodatkiem lub surówką.
+  // Slot 0 = dodatek (jeśli jest), Slot 1 = surówka (jeśli jest).
+  // Jeśli brak dodatku, slot 0 jest pusty (i może przyjąć dodatek LUB surówkę).
+  const sideSloty = [
+    {
+      idx: 0,
+      nazwa: wpis?.dodatek || null,
+      typ: wpis?.dodatek ? 'dodatek' : null,
+      meta: dodatkiMeta,
+      onUsun: onUsunDodatek,
+    },
+    {
+      idx: 1,
+      nazwa: wpis?.surowka || null,
+      typ: wpis?.surowka ? 'surowka' : null,
+      meta: surowkiMeta,
+      onUsun: onUsunSurowke,
+    },
+  ]
 
   return (
     <div style={{ position: 'relative' }}>
@@ -987,7 +993,7 @@ function SlotDuzy({
               typ={slot.typ}
               meta={slot.meta}
               podswietlony={podswietlSide && !slot.nazwa}
-              onClickPelny={() => onUsunSide(slot.idx)}
+              onClickPelny={slot.onUsun}
               onClickPusty={() => onWybierzSide(slot.idx)}
             />
           ))}
@@ -1126,25 +1132,17 @@ function PodmianaModal({ wpis, onClose, onSave }) {
 
   useEffect(() => {
     async function pobierz() {
-      // Lista wszystkich nazw do sprawdzenia: główne danie + każdy side-slot
-      const nazwy = []
-      if (wpis.danie) nazwy.push(wpis.danie)
-      const dodatkiTab = Array.isArray(wpis.dodatki) ? wpis.dodatki : []
-      dodatkiTab.forEach(d => { if (d?.nazwa) nazwy.push(d.nazwa) })
-
-      if (nazwy.length === 0) {
-        setSkladniki([])
-        setLoading(false)
-        return
-      }
-      const { data } = await supabase.from('dania')
-        .select('"Składnik"').in('"Danie"', nazwy)
-      const wszystkie = (data || []).map(x => x['Składnik']).filter(Boolean)
-      setSkladniki([...new Set(wszystkie)])
+      const promises = []
+      if (wpis.danie)   promises.push(supabase.from('dania').select('"Składnik"').eq('"Danie"', wpis.danie))
+      if (wpis.dodatek) promises.push(supabase.from('dodatki').select('"Składnik"').eq('"Dodatek"', wpis.dodatek))
+      if (wpis.surowka) promises.push(supabase.from('surowki').select('"Składnik"').eq('"Surówka"', wpis.surowka))
+      const wyniki = await Promise.all(promises)
+      const wszystkie = wyniki.flatMap(r => (r.data || []).map(x => x['Składnik']))
+      setSkladniki([...new Set(wszystkie.filter(Boolean))])
       setLoading(false)
     }
     pobierz()
-  }, [wpis.danie, JSON.stringify(wpis.dodatki || [])])
+  }, [wpis.danie, wpis.dodatek, wpis.surowka])
 
   function ustaw(sk, n) {
     setPodmiany(p => {
