@@ -715,6 +715,43 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     await usunWlasny(item)
   }
 
+  function przywrocUsunietyProdukt(item) {
+    if (!item?.bazaKlucz) return
+    const poprzednia = korektyZakupow[item.bazaKlucz]
+    if (!poprzednia?.usuniety) return
+
+    zapiszKorektyZakupow({
+      ...korektyZakupow,
+      [item.bazaKlucz]: {
+        ...poprzednia,
+        usuniety: false,
+      },
+    })
+
+    pokazToast(`Przywrócono: ${item.nazwa}`, () => {
+      const aktualne = wczytajKorektyZakupow(householdId, user?.id)
+      zapiszKorektyZakupow({ ...aktualne, [item.bazaKlucz]: poprzednia })
+      setToast(null)
+    })
+  }
+
+  function przywrocWszystkieUsuniete() {
+    const usuniete = Object.entries(korektyZakupow || {}).filter(([, korekta]) => korekta?.usuniety)
+    if (usuniete.length === 0) return
+
+    const poprzednie = { ...korektyZakupow }
+    const nowe = { ...korektyZakupow }
+    usuniete.forEach(([klucz, korekta]) => {
+      nowe[klucz] = { ...korekta, usuniety: false }
+    })
+    zapiszKorektyZakupow(nowe)
+
+    pokazToast(`Przywrócono ${usuniete.length} produktów`, () => {
+      zapiszKorektyZakupow(poprzednie)
+      setToast(null)
+    })
+  }
+
   async function dodajSzybkieProdukty(tekst) {
     const linie = rozbijSzybkieLinie(tekst)
 
@@ -796,6 +833,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
       setToast(null)
     })
     setEdycjaWlasnego(null)
+    setPokazDodaj(false)
   }
 
   async function zacznijOdNowa() {
@@ -856,6 +894,23 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     () => listaPoKorektach.filter(item => produktPasujeDoDomu(item.skladnik, produktyWDomuSet)),
     [listaPoKorektach, produktyWDomuSet]
   )
+
+  const usunieteProdukty = useMemo(() => {
+    return Object.entries(korektyZakupow || {})
+      .filter(([, korekta]) => korekta?.usuniety)
+      .map(([bazaKlucz, korekta]) => {
+        const oryginalny = lista.find(item => item.klucz === bazaKlucz)
+        const nazwa = poprawNazwe(korekta.nazwa || oryginalny?.skladnik || bazaKlucz.split('||')[0])
+        return {
+          bazaKlucz,
+          nazwa,
+          ilosc: normalizujIloscTekst(korekta.ilosc || tekstIlosciZItemu(oryginalny)),
+          kategoria: bezpiecznaKategoria(korekta.kategoria || oryginalny?.kategoria),
+        }
+      })
+      .filter(item => item.bazaKlucz && item.nazwa)
+      .sort((a, b) => a.nazwa.localeCompare(b.nazwa, 'pl'))
+  }, [korektyZakupow, lista])
 
   // Wszystkie itemy (plan + własne) razem. Produkty z „Mam w domu” ukrywamy
   // tylko z części wygenerowanej z planu — ręcznie dopisane produkty zostają.
@@ -938,6 +993,14 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
           ukryte={ukrytePrzezMamWDomu.length}
           onClick={() => setPokazMamWDomu(true)}
         />
+
+        {usunieteProdukty.length > 0 && (
+          <UsunieteProdukty
+            items={usunieteProdukty}
+            onRestore={przywrocUsunietyProdukt}
+            onRestoreAll={przywrocWszystkieUsuniete}
+          />
+        )}
 
         {/* Główny CTA: Idę do sklepu */}
         {wszystkieItemy.length > 0 && (
@@ -1060,6 +1123,37 @@ function MamWDomuShortcut({ ile, ukryte, onClick }) {
       </div>
       <span style={s.mamWDomuArrow}>›</span>
     </button>
+  )
+}
+
+function UsunieteProdukty({ items, onRestore, onRestoreAll }) {
+  if (!items?.length) return null
+
+  return (
+    <section style={s.restoreCard}>
+      <div style={s.restoreHeader}>
+        <div>
+          <div style={s.restoreEyebrow}>USUNIĘTE Z LISTY</div>
+          <div style={s.restoreTitle}>Możesz przywrócić ukryte pozycje</div>
+        </div>
+        <button style={s.restoreAllBtn} onClick={onRestoreAll}>
+          Przywróć wszystko
+        </button>
+      </div>
+      <div style={s.restoreList}>
+        {items.map(item => (
+          <button
+            key={item.bazaKlucz}
+            style={s.restoreItem}
+            onClick={() => onRestore(item)}
+          >
+            <span style={s.restoreItemName}>{item.nazwa}</span>
+            {item.ilosc && <span style={s.restoreItemQty}>{item.ilosc}</span>}
+            <span style={s.restoreItemAction}>Przywróć</span>
+          </button>
+        ))}
+      </div>
+    </section>
   )
 }
 
@@ -1767,6 +1861,40 @@ const s = {
     fontFamily: fonts.serif, fontSize: 24, color: t.mute,
     lineHeight: 1, paddingRight: 2,
   },
+
+  restoreCard: {
+    ...ui.card,
+    padding: 14,
+    marginBottom: 14,
+    border: `1px solid ${t.border}`,
+  },
+  restoreHeader: {
+    display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between',
+    gap: 10, marginBottom: 10,
+  },
+  restoreEyebrow: {
+    fontFamily: fonts.sans, fontSize: 9.5, fontWeight: 800,
+    letterSpacing: 1.2, textTransform: 'uppercase', color: t.warm || t.accent,
+    marginBottom: 3,
+  },
+  restoreTitle: { fontSize: 13.5, fontWeight: 700, color: t.text, fontFamily: fonts.sans },
+  restoreAllBtn: {
+    border: `1px solid ${t.border}`, borderRadius: 999,
+    background: t.surfaceAlt, color: t.text,
+    fontFamily: fonts.sans, fontSize: 11.5, fontWeight: 700,
+    padding: '7px 9px', cursor: 'pointer', flexShrink: 0,
+  },
+  restoreList: { display: 'flex', flexDirection: 'column', gap: 6 },
+  restoreItem: {
+    width: '100%', boxSizing: 'border-box',
+    display: 'flex', alignItems: 'center', gap: 8,
+    padding: '9px 10px', borderRadius: 10,
+    border: `1px solid ${t.border}`, background: t.surfaceAlt,
+    textAlign: 'left', cursor: 'pointer', fontFamily: fonts.sans,
+  },
+  restoreItemName: { flex: 1, minWidth: 0, fontSize: 13.5, fontWeight: 600, color: t.text },
+  restoreItemQty: { fontSize: 11.5, color: t.mute, whiteSpace: 'nowrap' },
+  restoreItemAction: { fontSize: 11.5, color: t.accent, fontWeight: 800, whiteSpace: 'nowrap' },
 
   empty: { ...ui.card, padding: '30px 24px', textAlign: 'center' },
   emptyTytul: { ...ui.h3, marginBottom: 6 },
