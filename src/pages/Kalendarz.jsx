@@ -595,11 +595,16 @@ function WidokDnia({
     // Pointer capture OD RAZU — gwarantuje że dostaniemy wszystkie pointermove,
     // nawet jeśli przeglądarka klasyfikuje gest jako scroll. Jeśli user zacznie
     // scrollować (ruch >14px przed long-press), handleMove zrobi release capture.
+    let captureOk = false
     try {
       target.setPointerCapture(pointerId)
+      captureOk = true
       capturedTargetRef.current = target
       capturedPointerIdRef.current = pointerId
-    } catch {}
+    } catch (err) {
+      captureOk = false
+    }
+    setDebug(`down capture=${captureOk ? 'OK' : 'FAIL'} pid=${pointerId}`)
 
     startPos.current = { x, y, nazwa, typ, meta }
     longPressTimer.current = setTimeout(() => {
@@ -622,21 +627,28 @@ function WidokDnia({
   }, [])
 
   // ── Blokada scrolla strony, gdy kafelek jest podniesiony
-  // Strategia: zamiast position:fixed na body (psuje sticky), używamy
-  // tylko touch-action:none + overscroll-behavior. Pointer capture na elemencie
-  // galerii (w startDrag) gwarantuje że dostajemy wszystkie eventy palca,
-  // więc preventDefault w pointermove skutecznie zatrzyma natywny scroll.
+  // Twarda blokada: overflow:hidden na html i body. Gwarantuje że strona
+  // NIE będzie się scrollować podczas dragu, niezależnie od tego co robi
+  // przeglądarka z eventami pointer. Działa też jako dodatkowa warstwa
+  // dla pointer capture (3 niezależne warstwy obrony).
   useEffect(() => {
     if (!dragState?.podniesiony) return
+    const html = document.documentElement
     const body = document.body
     const prev = {
+      htmlOverflow: html.style.overflow,
+      bodyOverflow: body.style.overflow,
       touchAction: body.style.touchAction,
       overscrollBehavior: body.style.overscrollBehavior,
     }
+    html.style.overflow = 'hidden'
+    body.style.overflow = 'hidden'
     body.style.touchAction = 'none'
     body.style.overscrollBehavior = 'contain'
 
     return () => {
+      html.style.overflow = prev.htmlOverflow
+      body.style.overflow = prev.bodyOverflow
       body.style.touchAction = prev.touchAction
       body.style.overscrollBehavior = prev.overscrollBehavior
     }
