@@ -55,7 +55,8 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack }) 
   const [wszystkie, setWszystkie] = useState([])
   const [loading, setLoading] = useState(true)
   const [szukaj, setSzukaj] = useState('')
-  const [filtr, setFiltr] = useState('wszystko')
+  const [filtry, setFiltry] = useState([]) // [] = Wszystko; można łączyć: ulubione + rodzaje
+  const [ulubioneNaGorze, setUlubioneNaGorze] = useState(true)
   const [widok, setWidok] = useState('siatka')
 
   // Menu kontekstowe (bottom sheet)
@@ -98,15 +99,32 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack }) 
     setLoading(false)
   }
 
-  async function wyloguj() { await supabase.auth.signOut() }
+  function toggleFiltr(id) {
+    if (id === 'wszystko') {
+      setFiltry([])
+      return
+    }
+    setFiltry(prev => prev.includes(id)
+      ? prev.filter(x => x !== id)
+      : [...prev, id]
+    )
+  }
 
-  // ── Filtrowanie ───────────────────────────
-  const filtrowane = wszystkie.filter(d => {
-    if (filtr === 'ulubione' && !d.ulubione) return false
-    if (filtr !== 'wszystko' && filtr !== 'ulubione' && d.rodzaj !== filtr) return false
-    if (szukaj && !d['Danie'].toLowerCase().includes(szukaj.toLowerCase())) return false
-    return true
-  })
+  // ── Filtrowanie + sortowanie ───────────────────────────
+  const aktywneRodzaje = filtry.filter(f => f !== 'ulubione')
+  const tylkoUlubione = filtry.includes('ulubione')
+
+  const filtrowane = wszystkie
+    .filter(d => {
+      if (tylkoUlubione && !d.ulubione) return false
+      if (aktywneRodzaje.length > 0 && !aktywneRodzaje.includes(d.rodzaj)) return false
+      if (szukaj && !d['Danie'].toLowerCase().includes(szukaj.toLowerCase())) return false
+      return true
+    })
+    .sort((a, b) => {
+      if (ulubioneNaGorze && !!b.ulubione !== !!a.ulubione) return Number(!!b.ulubione) - Number(!!a.ulubione)
+      return (a['Danie'] || '').localeCompare(b['Danie'] || '', 'pl', { sensitivity: 'base' })
+    })
 
   // ── Akcje ─────────────────────────────────
 
@@ -204,8 +222,10 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack }) 
 
   if (loading) return <div style={s.loading}>Ładowanie przepisów…</div>
 
-  const filtrCfg = FILTRY.find(f => f.id === filtr)
-  const showFeatured = widok === 'siatka' && filtr === 'wszystko' && filtrowane.length > 0
+  const aktywneFiltryLabel = filtry.length === 0
+    ? 'Wszystko'
+    : filtry.map(id => FILTRY.find(f => f.id === id)?.label || id).join(' + ')
+  const showFeatured = false
   const [featured, ...reszta] = filtrowane
   const tabela = showFeatured ? reszta : filtrowane
 
@@ -224,7 +244,6 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack }) 
             <button style={s.btnAdd} onClick={onDodaj} title="Dodaj nowy wpis">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
             </button>
-            <button style={s.btnLogout} onClick={wyloguj}>Wyloguj</button>
           </div>
         </header>
 
@@ -243,11 +262,11 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack }) 
         <div style={s.chipsRow}>
           <div style={s.chipsScroll}>
             {FILTRY.map(f => {
-              const on = filtr === f.id
+              const on = f.id === 'wszystko' ? filtry.length === 0 : filtry.includes(f.id)
               return (
                 <button key={f.id}
                   style={{ ...s.chip, ...(on ? s.chipOn : {}) }}
-                  onClick={() => setFiltr(f.id)}>
+                  onClick={() => toggleFiltr(f.id)}>
                   {f.label}
                 </button>
               )
@@ -258,9 +277,17 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack }) 
         {/* Liczba wyników + toggle widoku */}
         <div style={s.metaRow}>
           <span style={s.licznik}>
-            {filtrowane.length} {filtrowane.length === 1 ? 'wpis' : (filtrowane.length < 5 ? 'wpisy' : 'wpisów')}
+            {filtrowane.length} {filtrowane.length === 1 ? 'wpis' : (filtrowane.length < 5 ? 'wpisy' : 'wpisów')} · {aktywneFiltryLabel}
           </span>
-          <div style={s.viewToggle}>
+          <div style={s.metaActions}>
+            <button
+              style={{ ...s.sortBtn, ...(ulubioneNaGorze ? s.sortBtnOn : {}) }}
+              onClick={() => setUlubioneNaGorze(v => !v)}
+              title={ulubioneNaGorze ? 'Ulubione są na górze' : 'Sortuj tylko alfabetycznie'}
+            >
+              ★ na górze
+            </button>
+            <div style={s.viewToggle}>
             {['siatka', 'lista'].map(w => (
               <button key={w}
                 style={{ ...s.viewBtn, ...(widok === w ? s.viewBtnOn : {}) }}
@@ -273,6 +300,7 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack }) 
                 )}
               </button>
             ))}
+            </div>
           </div>
         </div>
 
@@ -281,9 +309,9 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack }) 
           <div style={s.empty}>
             {szukaj
               ? `Brak wyników dla „${szukaj}"`
-              : filtr === 'ulubione'
-                ? 'Brak ulubionych. Dodaj gwiazdkę w menu karty.'
-                : `Brak wpisów w kategorii „${filtrCfg.label}"`}
+              : tylkoUlubione
+                ? 'Brak pasujących ulubionych. Dodaj gwiazdkę w menu karty albo zmień filtry.'
+                : 'Brak wpisów dla wybranych filtrów.'}
           </div>
         ) : widok === 'siatka' ? (
           <>
@@ -331,9 +359,7 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack }) 
                   <div style={s.cardBody} onClick={() => onSelect(d['Danie'])}>
                     <h3 style={s.cardTitle}>{d['Danie']}</h3>
                     <div style={s.cardMeta}>
-                      {filtr === 'wszystko' || filtr === 'ulubione' ? (
-                        <span style={s.cardBadge}>{RODZAJ_LABEL[d.rodzaj]}</span>
-                      ) : null}
+                      <span style={s.cardBadge}>{RODZAJ_LABEL[d.rodzaj]}</span>
                       {d.czas_minuty > 0 && (
                         <span style={s.cardCzas}>⏱ {d.czas_minuty} min</span>
                       )}
@@ -528,11 +554,18 @@ const s = {
 
   metaRow: {
     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-    marginBottom: 14,
+    gap: 10, marginBottom: 14,
   },
+  metaActions: { display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 },
+  sortBtn: {
+    border: `0.5px solid ${t.border}`, background: t.surface, color: t.mute,
+    borderRadius: 999, padding: '6px 10px', cursor: 'pointer',
+    fontFamily: fonts.sans, fontSize: 11.5, fontWeight: 600, whiteSpace: 'nowrap',
+  },
+  sortBtnOn: { background: t.warmSoft, borderColor: t.warmSoft, color: t.warm },
   licznik: {
     fontFamily: fonts.sans, fontSize: 12, color: t.mute,
-    letterSpacing: 0.3,
+    letterSpacing: 0.3, minWidth: 0,
   },
   viewToggle: {
     display: 'inline-flex', padding: 2, borderRadius: 8,

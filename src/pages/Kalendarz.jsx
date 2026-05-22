@@ -77,6 +77,9 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
   const [subTryb, setSubTryb] = useState(null)
   const [podmianaModal, setPodmianaModal] = useState(null)
   const [kopiujModal, setKopiujModal] = useState(null) // { zDataStr } albo null
+  const [wyborDatyOpen, setWyborDatyOpen] = useState(false)
+  const [wybranaData, setWybranaData] = useState(() => formatData(new Date()))
+  const recznyWyborDniaRef = useRef(false)
 
   const [toast, setToast] = useState(null)
   const toastTimer = useRef(null)
@@ -91,7 +94,44 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
     const d = new Date(poniedzialek); d.setDate(d.getDate() + i); return d
   }), [poniedzialek])
 
+  function otworzDzien(di) {
+    setSubTryb(null)
+    setWidok('dzien')
+    setAktywnyDzien(di)
+  }
+
+  function otworzWyborDaty() {
+    setWybranaData(formatData(dni[aktywnyDzien] || dni[0] || new Date()))
+    setWyborDatyOpen(true)
+  }
+
+  function przejdzDoDaty(dataStr) {
+    if (!dataStr) return
+    const wybrana = new Date(dataStr + 'T12:00:00')
+    if (Number.isNaN(wybrana.getTime())) return
+
+    const wybranaPon = new Date(wybrana)
+    const day = wybranaPon.getDay() || 7
+    wybranaPon.setDate(wybranaPon.getDate() - day + 1)
+    wybranaPon.setHours(0, 0, 0, 0)
+
+    const aktualnyPon = getPoniedzialek(0)
+    const tydzOffset = Math.round((wybranaPon - aktualnyPon) / (7 * 24 * 60 * 60 * 1000))
+    const dzienIdx = (wybrana.getDay() || 7) - 1
+
+    recznyWyborDniaRef.current = true
+    setTydzien(tydzOffset)
+    setAktywnyDzien(dzienIdx)
+    setWidok('dzien')
+    setSubTryb(null)
+    setWyborDatyOpen(false)
+  }
+
   useEffect(() => {
+    if (recznyWyborDniaRef.current) {
+      recznyWyborDniaRef.current = false
+      return
+    }
     if (tydzien === 0) {
       const today = (new Date().getDay() || 7) - 1
       setAktywnyDzien(today)
@@ -373,7 +413,9 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
 
             <header style={s.header}>
               <div>
-                <div style={s.eyebrow}>{formatMiesiacRok(dni[3]).toUpperCase()}</div>
+                <button type="button" style={s.monthBtn} onClick={otworzWyborDaty}>
+                  {formatMiesiacRok(dni[3]).toUpperCase()} ▾
+                </button>
                 <h1 style={s.title}><em style={s.italic}>Twój</em> tydzień</h1>
               </div>
               <div style={s.headerActions}>
@@ -391,7 +433,7 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
                 return (
                   <button
                     key={i}
-                    onClick={() => { setWidok('dzien'); setAktywnyDzien(i) }}
+                    onClick={() => otworzDzien(i)}
                     style={{
                       ...s.dayPill,
                       background: active ? t.warm : 'transparent',
@@ -435,7 +477,9 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
             plan={plan}
             daniaMap={daniaMap}
             onSelectDanie={onSelectDanie}
-            onClickPusty={(di) => { setWidok('dzien'); setAktywnyDzien(di) }}
+            onClickPusty={otworzDzien}
+            onClickDzien={otworzDzien}
+            onUsunPosilek={usunPosilek}
             onKopiujTydzien={kopiujTydzien}
           />
         )}
@@ -486,6 +530,36 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
         />
       )}
 
+      {wyborDatyOpen && (
+        <div style={modS.overlay} onClick={() => setWyborDatyOpen(false)}>
+          <div style={modS.modal} onClick={e => e.stopPropagation()}>
+            <div style={modS.header}>
+              <div>
+                <div style={modS.eyebrow}>WYBIERZ DATĘ</div>
+                <div style={modS.title}>Przejdź do dnia</div>
+                <div style={modS.sub}>Wybierz datę, a planer otworzy odpowiedni tydzień i konkretny dzień.</div>
+              </div>
+              <button style={modS.close} onClick={() => setWyborDatyOpen(false)}>✕</button>
+            </div>
+            <input
+              type="date"
+              value={wybranaData}
+              onChange={e => setWybranaData(e.target.value)}
+              style={s.dateInput}
+              autoFocus
+            />
+            <div style={modS.btnRow}>
+              <button style={{ ...ui.btnGhost, flex: 1, padding: '12px 16px' }} onClick={() => setWyborDatyOpen(false)}>
+                Anuluj
+              </button>
+              <button style={{ ...ui.btnPrimary, flex: 1, padding: '12px 16px' }} onClick={() => przejdzDoDaty(wybranaData)}>
+                Pokaż dzień
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {kopiujModal && (
         <KopiujModal
           zDataStr={kopiujModal.zDataStr}
@@ -503,7 +577,7 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
 }
 
 // ════════════════════════════════════════════════════════════
-function WidokTygodnia({ dni, plan, daniaMap, onSelectDanie, onClickPusty, onKopiujTydzien }) {
+function WidokTygodnia({ dni, plan, daniaMap, onSelectDanie, onClickPusty, onClickDzien, onUsunPosilek, onKopiujTydzien }) {
   const maZawartosc = Object.values(plan).some(p => p.danie)
   return (
     <div style={s.tydzienList}>
@@ -517,10 +591,13 @@ function WidokTygodnia({ dni, plan, daniaMap, onSelectDanie, onClickPusty, onKop
         const today = isDzis(dzien)
         return (
           <section key={dataStr} style={s.dzienBlok}>
-            <div style={s.dzienHeader}>
-              <h3 style={s.dzienTytul}>{DNI_KROTKO[di]} {dzien.getDate()}</h3>
-              {today && <span style={s.todayChip}>DZIŚ</span>}
-            </div>
+            <button type="button" style={s.dzienHeaderBtn} onClick={() => onClickDzien(di)}>
+              <span style={s.dzienHeaderLeft}>
+                <span style={s.dzienTytul}>{DNI_KROTKO[di]} {dzien.getDate()}</span>
+                {today && <span style={s.todayChip}>DZIŚ</span>}
+              </span>
+              <span style={s.dzienHeaderHint}>Otwórz dzień</span>
+            </button>
             <div style={s.kafelkiRzad}>
               {POSILKI.map(posilek => {
                 const wpis = plan[`${dataStr}_${posilek}`]
@@ -534,6 +611,7 @@ function WidokTygodnia({ dni, plan, daniaMap, onSelectDanie, onClickPusty, onKop
                       if (wpis?.danie) onSelectDanie?.(wpis.danie)
                       else onClickPusty(di)
                     }}
+                    onDelete={wpis?.danie ? () => onUsunPosilek(dataStr, posilek) : null}
                   />
                 )
               })}
@@ -1233,10 +1311,24 @@ function WidokDnia({
 }
 
 // ════════════════════════════════════════════════════════════
-function KafelekPosilek({ posilek, wpis, daniaMeta, onClick }) {
+function KafelekPosilek({ posilek, wpis, daniaMeta, onClick, onDelete }) {
   const masDanie = !!wpis?.danie
+
+  function handleKeyDown(e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+      onClick?.()
+    }
+  }
+
   return (
-    <button onClick={onClick} style={{ ...s.kafelek, ...(masDanie ? {} : s.kafelekPusty) }}>
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={onClick}
+      onKeyDown={handleKeyDown}
+      style={{ ...s.kafelek, ...(masDanie ? {} : s.kafelekPusty) }}
+    >
       {masDanie ? (
         <>
           {daniaMeta?.zdjecie ? (
@@ -1249,6 +1341,20 @@ function KafelekPosilek({ posilek, wpis, daniaMeta, onClick }) {
           <span style={{ ...s.kafelekLabel, background: SLOT_KOLORY[posilek] }}>
             {posilek.toUpperCase()}
           </span>
+          {onDelete && (
+            <button
+              type="button"
+              style={s.kafelekDelete}
+              onClick={(e) => {
+                e.stopPropagation()
+                onDelete()
+              }}
+              aria-label={`Usuń ${posilek}`}
+              title="Usuń z planu"
+            >
+              ✕
+            </button>
+          )}
           <div style={s.kafelekNazwa}>
             <span style={s.kafelekNazwaTxt}>{wpis.danie}</span>
           </div>
@@ -1259,7 +1365,7 @@ function KafelekPosilek({ posilek, wpis, daniaMeta, onClick }) {
           <span style={s.kafelekPustyPlus}>+</span>
         </div>
       )}
-    </button>
+    </div>
   )
 }
 
@@ -1601,6 +1707,17 @@ const s = {
   back: { ...ui.btnText, padding: '0 0 10px', display: 'block' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, marginBottom: 14 },
   eyebrow: { ...ui.eyebrow, fontSize: 10.5, marginBottom: 6, color: t.warm },
+  monthBtn: {
+    ...ui.eyebrow,
+    fontSize: 10.5,
+    marginBottom: 6,
+    color: t.warm,
+    border: 'none',
+    background: 'transparent',
+    padding: 0,
+    cursor: 'pointer',
+    textAlign: 'left',
+  },
   title: { ...ui.h1, fontSize: 36, lineHeight: 0.95 },
   italic: { fontStyle: 'italic', color: t.text, fontFamily: fonts.serif },
   headerActions: { display: 'flex', gap: 8 },
@@ -1622,10 +1739,34 @@ const s = {
   dayPillDots: { display: 'flex', gap: 2.5, marginTop: 3 },
   dot: { width: 4, height: 4, borderRadius: 999 },
   wrocTydzienBtn: { ...ui.btnText, padding: '0 0 12px', display: 'inline-block', color: t.mute, fontSize: 12 },
+  dateInput: {
+    ...ui.input,
+    width: '100%',
+    boxSizing: 'border-box',
+    marginBottom: 16,
+    padding: '13px 14px',
+    fontSize: 16,
+  },
 
   tydzienList: { display: 'flex', flexDirection: 'column', gap: 16 },
   dzienBlok: {},
   dzienHeader: { display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 8, padding: '0 2px' },
+  dzienHeaderBtn: {
+    width: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
+    marginBottom: 8,
+    padding: '2px 4px',
+    border: 'none',
+    background: 'transparent',
+    cursor: 'pointer',
+    fontFamily: fonts.sans,
+    textAlign: 'left',
+  },
+  dzienHeaderLeft: { display: 'flex', alignItems: 'baseline', gap: 8, minWidth: 0 },
+  dzienHeaderHint: { fontSize: 10.5, color: t.muteLight, fontWeight: 600 },
   dzienTytul: { ...ui.h3, fontSize: 17, color: t.text, textTransform: 'capitalize' },
   todayChip: {
     fontFamily: fonts.sans, fontSize: 9, fontWeight: 800, color: t.warm, letterSpacing: 1.2,
@@ -1644,6 +1785,15 @@ const s = {
     position: 'absolute', top: 8, left: 8,
     color: '#fff', fontSize: 8, fontWeight: 800, letterSpacing: 1.2,
     padding: '3px 7px', borderRadius: 5,
+  },
+  kafelekDelete: {
+    position: 'absolute', top: 7, right: 7,
+    width: 26, height: 26, borderRadius: 999,
+    border: 'none', background: 'rgba(0,0,0,.58)', color: '#fff',
+    fontSize: 13, fontWeight: 800, lineHeight: '26px',
+    display: 'grid', placeItems: 'center',
+    cursor: 'pointer', zIndex: 3,
+    boxShadow: '0 3px 10px rgba(0,0,0,.2)',
   },
   kafelekNazwa: {
     position: 'absolute', bottom: 0, left: 0, right: 0, padding: '24px 8px 8px',

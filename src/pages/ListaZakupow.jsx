@@ -16,6 +16,75 @@ const KATEGORIE = [
 
 const JEDNOSTKI = ['', 'szt.', 'opak.', 'g', 'kg', 'ml', 'l', 'pęczek']
 
+const DOMYSLNE_PRODUKTY_W_DOMU = [
+  'Sól', 'Pieprz', 'Pieprz czarny', 'Olej', 'Oliwa',
+  'Cukier', 'Mąka', 'Papryka słodka', 'Oregano', 'Bazylia',
+]
+
+function normalizujProduktDomowy(nazwa = '') {
+  return nazwa
+    .toString()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .replace(/ł/g, 'l')
+    .replace(/^[-•*]\s*/, '')
+    .replace(/\s+/g, ' ')
+    .replace(/[;,.:\s]+$/g, '')
+    .trim()
+}
+
+function ladnaNazwaProduktuDomowego(nazwa = '') {
+  const czyste = poprawNazwe(nazwa)
+  if (!czyste) return ''
+  return czyste.charAt(0).toUpperCase() + czyste.slice(1)
+}
+
+function produktyWDomuStorageKey(householdId, userId) {
+  return `produkty_w_domu_${householdId || userId || 'local'}`
+}
+
+function unikalneProduktyWDomu(lista = []) {
+  const mapa = new Map()
+  lista.forEach(nazwa => {
+    const ladna = ladnaNazwaProduktuDomowego(nazwa)
+    const norm = normalizujProduktDomowy(ladna)
+    if (norm && !mapa.has(norm)) mapa.set(norm, ladna)
+  })
+  return [...mapa.values()].sort((a, b) => a.localeCompare(b, 'pl'))
+}
+
+function wczytajProduktyWDomu(householdId, userId) {
+  if (typeof localStorage === 'undefined') return DOMYSLNE_PRODUKTY_W_DOMU
+  const key = produktyWDomuStorageKey(householdId, userId)
+  const raw = localStorage.getItem(key)
+  if (!raw) {
+    const start = unikalneProduktyWDomu(DOMYSLNE_PRODUKTY_W_DOMU)
+    localStorage.setItem(key, JSON.stringify(start))
+    return start
+  }
+  try {
+    const parsed = JSON.parse(raw)
+    return unikalneProduktyWDomu(Array.isArray(parsed) ? parsed : DOMYSLNE_PRODUKTY_W_DOMU)
+  } catch {
+    return unikalneProduktyWDomu(DOMYSLNE_PRODUKTY_W_DOMU)
+  }
+}
+
+function produktPasujeDoDomu(nazwa, produktyWDomuSet) {
+  const n = normalizujProduktDomowy(nazwa)
+  if (!n || !produktyWDomuSet?.size) return false
+  if (produktyWDomuSet.has(n)) return true
+
+  for (const baza of produktyWDomuSet) {
+    if (!baza) continue
+    // Dzięki temu wpis „Olej” ukryje też „Olej rzepakowy”,
+    // ale nie ukryje przypadkowo środka wyrazu.
+    if (n === baza || n.startsWith(`${baza} `) || n.includes(` ${baza} `)) return true
+  }
+  return false
+}
+
 
 function normalizujJednostke(raw = '') {
   const x = raw.toString().trim().toLowerCase().replace(/\.+$/, '')
@@ -149,6 +218,8 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
   const [edycjaWlasnego, setEdycjaWlasnego] = useState(null)
   const [trybSklepu, setTrybSklepu] = useState(false)
   const [szybkiTekst, setSzybkiTekst] = useState('')
+  const [pokazMamWDomu, setPokazMamWDomu] = useState(false)
+  const [produktyWDomu, setProduktyWDomu] = useState([])
 
   const [toast, setToast] = useState(null)
   const toastTimer = useRef(null)
@@ -160,6 +231,35 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     if (toastTimer.current) clearTimeout(toastTimer.current)
     setToast({ msg, onUndo })
     toastTimer.current = setTimeout(() => setToast(null), 3500)
+  }
+
+  useEffect(() => {
+    setProduktyWDomu(wczytajProduktyWDomu(householdId, user?.id))
+  }, [householdId, user?.id])
+
+  const produktyWDomuSet = useMemo(
+    () => new Set(produktyWDomu.map(normalizujProduktDomowy).filter(Boolean)),
+    [produktyWDomu]
+  )
+
+  function zapiszProduktyWDomu(noweProdukty) {
+    const czyste = unikalneProduktyWDomu(noweProdukty)
+    setProduktyWDomu(czyste)
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(produktyWDomuStorageKey(householdId, user?.id), JSON.stringify(czyste))
+    }
+  }
+
+  function dodajDoMamWDomu(nazwa) {
+    const ladna = ladnaNazwaProduktuDomowego(nazwa)
+    if (!ladna) return
+    const poprzednie = produktyWDomu
+    const nowe = unikalneProduktyWDomu([...produktyWDomu, ladna])
+    zapiszProduktyWDomu(nowe)
+    pokazToast(`Mam w domu: ${ladna}`, () => {
+      zapiszProduktyWDomu(poprzednie)
+      setToast(null)
+    })
   }
 
   // ── Generowanie listy z planu + ładowanie własnych ──
@@ -542,7 +642,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     pokazToast(`Wyczyszczono ${snapshot.odznaczone.size} z koszyka`, async () => {
       setOdznaczone(snapshot.odznaczone)
       zapiszStanOdznaczenia(snapshot.odznaczone)
-      const itemsDoOdtworzenia = lista.filter(i => snapshot.odznaczone.has(i.klucz))
+      const itemsDoOdtworzenia = listaPoProduktachDomowych.filter(i => snapshot.odznaczone.has(i.klucz))
       if (itemsDoOdtworzenia.length > 0) {
         const { data } = await supabase.from('zakupy_historia').insert(
           itemsDoOdtworzenia.map(i => ({
@@ -572,10 +672,21 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     wlasnyData: w, // referencja do oryginalnego rekordu
   })), [wlasne])
 
-  // Wszystkie itemy (plan + własne) razem
+  const listaPoProduktachDomowych = useMemo(
+    () => lista.filter(item => !produktPasujeDoDomu(item.skladnik, produktyWDomuSet)),
+    [lista, produktyWDomuSet]
+  )
+
+  const ukrytePrzezMamWDomu = useMemo(
+    () => lista.filter(item => produktPasujeDoDomu(item.skladnik, produktyWDomuSet)),
+    [lista, produktyWDomuSet]
+  )
+
+  // Wszystkie itemy (plan + własne) razem. Produkty z „Mam w domu” ukrywamy
+  // tylko z części wygenerowanej z planu — ręcznie dopisane produkty zostają.
   const wszystkieItemy = useMemo(() => {
-    return [...lista, ...wlasneJakoItems]
-  }, [lista, wlasneJakoItems])
+    return [...listaPoProduktachDomowych, ...wlasneJakoItems]
+  }, [listaPoProduktachDomowych, wlasneJakoItems])
 
   // Czy item jest kupione? (różne źródło prawdy w zależności od zrodla)
   const czyKupione = useCallback((item) => {
@@ -647,6 +758,12 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
           onDodaj={dodajSzybkieProdukty}
         />
 
+        <MamWDomuShortcut
+          ile={produktyWDomu.length}
+          ukryte={ukrytePrzezMamWDomu.length}
+          onClick={() => setPokazMamWDomu(true)}
+        />
+
         {/* Główny CTA: Idę do sklepu */}
         {wszystkieItemy.length > 0 && (
           <button style={s.btnSklep} onClick={() => setTrybSklepu(true)}>
@@ -682,6 +799,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
                       onEdit={item.zrodlo === 'wlasne'
                         ? () => { setEdycjaWlasnego(item.wlasnyData); setPokazDodaj(true) }
                         : null}
+                      onHome={item.zrodlo === 'plan' ? () => dodajDoMamWDomu(item.skladnik) : null}
                     />
                   ))}
                 </div>
@@ -706,6 +824,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
                       onEdit={item.zrodlo === 'wlasne'
                         ? () => { setEdycjaWlasnego(item.wlasnyData); setPokazDodaj(true) }
                         : null}
+                      onHome={item.zrodlo === 'plan' ? () => dodajDoMamWDomu(item.skladnik) : null}
                     />
                   ))}
                 </div>
@@ -733,6 +852,20 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
         />
       )}
 
+      {pokazMamWDomu && (
+        <MamWDomuModal
+          produkty={produktyWDomu}
+          aktualneProdukty={lista}
+          ukryteProdukty={ukrytePrzezMamWDomu}
+          onClose={() => setPokazMamWDomu(false)}
+          onSave={(nowe) => {
+            zapiszProduktyWDomu(nowe)
+            setPokazMamWDomu(false)
+            pokazToast('Zaktualizowano produkty w domu')
+          }}
+        />
+      )}
+
       {toast && (
         <div style={s.toast}>
           <span style={s.toastMsg}>{toast.msg}</span>
@@ -741,6 +874,137 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
           )}
         </div>
       )}
+    </div>
+  )
+}
+
+// ════════════════════════════════════════════════════════════
+function MamWDomuShortcut({ ile, ukryte, onClick }) {
+  return (
+    <button style={s.mamWDomuShortcut} onClick={onClick}>
+      <div>
+        <div style={s.mamWDomuEyebrow}>MAM W DOMU</div>
+        <div style={s.mamWDomuTitle}>Produkty pomijane na liście</div>
+        <div style={s.mamWDomuSub}>
+          {ile} zapisanych produktów{ukryte > 0 ? ` · ukryto teraz: ${ukryte}` : ''}
+        </div>
+      </div>
+      <span style={s.mamWDomuArrow}>›</span>
+    </button>
+  )
+}
+
+function MamWDomuModal({ produkty, aktualneProdukty, ukryteProdukty, onClose, onSave }) {
+  const [lokalne, setLokalne] = useState(() => unikalneProduktyWDomu(produkty))
+  const [tekst, setTekst] = useState('')
+
+  const lokalneSet = useMemo(
+    () => new Set(lokalne.map(normalizujProduktDomowy).filter(Boolean)),
+    [lokalne]
+  )
+
+  const sugestie = useMemo(() => {
+    const mapa = new Map()
+    ;(aktualneProdukty || []).forEach(item => {
+      const ladna = ladnaNazwaProduktuDomowego(item.skladnik)
+      const norm = normalizujProduktDomowy(ladna)
+      if (norm && !lokalneSet.has(norm) && !mapa.has(norm)) mapa.set(norm, ladna)
+    })
+    return [...mapa.values()].sort((a, b) => a.localeCompare(b, 'pl')).slice(0, 18)
+  }, [aktualneProdukty, lokalneSet])
+
+  function dodajNazwy(raw) {
+    const nazwy = rozbijSzybkieLinie(raw)
+      .map(ladnaNazwaProduktuDomowego)
+      .filter(Boolean)
+    if (nazwy.length === 0) return
+    setLokalne(prev => unikalneProduktyWDomu([...prev, ...nazwy]))
+    setTekst('')
+  }
+
+  function usun(nazwa) {
+    const norm = normalizujProduktDomowy(nazwa)
+    setLokalne(prev => prev.filter(x => normalizujProduktDomowy(x) !== norm))
+  }
+
+  function handleKeyDown(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      dodajNazwy(tekst)
+    }
+  }
+
+  return (
+    <div style={mod.overlay} onClick={onClose}>
+      <div style={mod.modal} onClick={e => e.stopPropagation()}>
+        <div style={mod.header}>
+          <div>
+            <div style={mod.eyebrow}>MAM W DOMU</div>
+            <div style={mod.title}>Nie dodawaj do zakupów</div>
+          </div>
+          <button style={mod.close} onClick={onClose}>✕</button>
+        </div>
+
+        <p style={mod.helpText}>
+          Te produkty będą pomijane tylko z listy generowanej z przepisów. Produkty dopisane ręcznie zostają na liście.
+        </p>
+
+        {ukryteProdukty?.length > 0 && (
+          <div style={mod.infoBox}>
+            Teraz ukryto: {ukryteProdukty.slice(0, 5).map(i => i.skladnik).join(', ')}{ukryteProdukty.length > 5 ? ` +${ukryteProdukty.length - 5}` : ''}
+          </div>
+        )}
+
+        <label style={mod.label}>Dopisz produkt</label>
+        <div style={mod.inlineAddRow}>
+          <input
+            style={{ ...mod.input, flex: 1 }}
+            type="text"
+            placeholder="np. Sól, pieprz, olej"
+            value={tekst}
+            onChange={e => setTekst(e.target.value)}
+            onKeyDown={handleKeyDown}
+            autoFocus
+          />
+          <button style={mod.btnSmallSave} onClick={() => dodajNazwy(tekst)} disabled={!tekst.trim()}>
+            Dodaj
+          </button>
+        </div>
+
+        {sugestie.length > 0 && (
+          <>
+            <label style={mod.label}>Z aktualnej listy</label>
+            <div style={mod.chipCloud}>
+              {sugestie.map(nazwa => (
+                <button key={nazwa} style={mod.chipGhost} onClick={() => setLokalne(prev => unikalneProduktyWDomu([...prev, nazwa]))}>
+                  + {nazwa}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
+
+        <label style={mod.label}>Produkty w domu ({lokalne.length})</label>
+        <div style={mod.chipCloud}>
+          {lokalne.map(nazwa => (
+            <button key={nazwa} style={mod.chipOn} onClick={() => usun(nazwa)} title="Usuń z listy produktów w domu">
+              {nazwa} ×
+            </button>
+          ))}
+        </div>
+
+        <div style={mod.footerWrap}>
+          <button style={mod.btnCancel} onClick={() => setLokalne(unikalneProduktyWDomu(DOMYSLNE_PRODUKTY_W_DOMU))}>
+            Domyślne
+          </button>
+          <button style={mod.btnCancel} onClick={() => setLokalne([])}>
+            Wyczyść
+          </button>
+          <button style={mod.btnSave} onClick={() => onSave(lokalne)}>
+            Zapisz
+          </button>
+        </div>
+      </div>
     </div>
   )
 }
@@ -816,7 +1080,7 @@ function SzybkieDodawanie({ value, onChange, onDodaj }) {
 
 // ════════════════════════════════════════════════════════════
 // Pojedynczy wiersz listy — z long-pressem dla własnych
-function ItemRow({ item, kupione, onTap, onLongPress, onEdit }) {
+function ItemRow({ item, kupione, onTap, onLongPress, onEdit, onHome }) {
   const longPressTimer = useRef(null)
   const startPos = useRef(null)
   const triggered = useRef(false)
@@ -884,6 +1148,18 @@ function ItemRow({ item, kupione, onTap, onLongPress, onEdit }) {
             : (item.iloscOryginalna || item.jednostka || '—')}
         </div>
       </div>
+      {onHome && (
+        <button
+          style={s.itemHomeBtn}
+          onPointerDown={e => e.stopPropagation()}
+          onPointerUp={e => e.stopPropagation()}
+          onClick={e => { e.stopPropagation(); onHome() }}
+          aria-label={`Mam w domu ${item.skladnik}`}
+          title="Mam w domu — ukryj z listy"
+        >
+          🏠
+        </button>
+      )}
       {onEdit && (
         <button
           style={s.itemEditBtn}
@@ -1302,6 +1578,27 @@ const s = {
     color: t.mute,
   },
 
+  mamWDomuShortcut: {
+    ...ui.card,
+    width: '100%', boxSizing: 'border-box',
+    padding: '13px 14px', marginBottom: 14,
+    border: `1px solid ${t.border}`,
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12,
+    textAlign: 'left', cursor: 'pointer', fontFamily: fonts.sans,
+    background: t.surface,
+  },
+  mamWDomuEyebrow: {
+    fontSize: 9.5, fontWeight: 800, letterSpacing: 1.2,
+    textTransform: 'uppercase', color: t.warm || t.accent,
+    marginBottom: 3,
+  },
+  mamWDomuTitle: { fontSize: 13.5, fontWeight: 700, color: t.text },
+  mamWDomuSub: { fontSize: 11.5, color: t.mute, marginTop: 3 },
+  mamWDomuArrow: {
+    fontFamily: fonts.serif, fontSize: 24, color: t.mute,
+    lineHeight: 1, paddingRight: 2,
+  },
+
   empty: { ...ui.card, padding: '30px 24px', textAlign: 'center' },
   emptyTytul: { ...ui.h3, marginBottom: 6 },
   emptySub: { fontFamily: fonts.sans, fontSize: 13.5, color: t.mute, margin: '0 0 18px', lineHeight: 1.5 },
@@ -1347,6 +1644,16 @@ const s = {
     display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap',
   },
   itemIlosc: { fontSize: 12, color: t.mute, marginTop: 3, fontVariantNumeric: 'tabular-nums' },
+  itemHomeBtn: {
+    width: 30, height: 30, borderRadius: 999,
+    border: `1px solid ${t.border}`,
+    background: t.surfaceAlt,
+    color: t.mute,
+    display: 'grid', placeItems: 'center',
+    fontFamily: fonts.sans, fontSize: 13, fontWeight: 700,
+    cursor: 'pointer', flexShrink: 0,
+    marginRight: 0,
+  },
   itemEditBtn: {
     width: 30, height: 30, borderRadius: 999,
     border: `1px solid ${t.border}`,
@@ -1424,6 +1731,41 @@ const mod = {
     width: 32, height: 32, fontSize: 14, color: t.text, cursor: 'pointer',
   },
   body: { display: 'flex', flexDirection: 'column' },
+  helpText: {
+    margin: '0 0 12px',
+    fontFamily: fonts.sans, fontSize: 12.5, lineHeight: 1.45,
+    color: t.mute,
+  },
+  infoBox: {
+    padding: '10px 12px', borderRadius: 10,
+    background: t.surfaceAlt, color: t.text,
+    fontFamily: fonts.sans, fontSize: 12.5, lineHeight: 1.4,
+    marginBottom: 12,
+  },
+  inlineAddRow: { display: 'flex', gap: 8, alignItems: 'stretch' },
+  btnSmallSave: {
+    padding: '0 13px', background: t.accent, color: '#fff',
+    border: 'none', borderRadius: 12,
+    fontFamily: fonts.sans, fontSize: 13, fontWeight: 700,
+    cursor: 'pointer',
+  },
+  chipCloud: {
+    display: 'flex', flexWrap: 'wrap', gap: 7,
+    marginTop: 2, marginBottom: 4,
+  },
+  chipGhost: {
+    border: `1px solid ${t.border}`, background: t.surface,
+    color: t.text, borderRadius: 999,
+    padding: '7px 10px', fontFamily: fonts.sans,
+    fontSize: 12, fontWeight: 600, cursor: 'pointer',
+  },
+  chipOn: {
+    border: `1px solid ${t.accent}`, background: t.surfaceAlt,
+    color: t.accent, borderRadius: 999,
+    padding: '7px 10px', fontFamily: fonts.sans,
+    fontSize: 12, fontWeight: 700, cursor: 'pointer',
+  },
+  footerWrap: { display: 'flex', gap: 8, marginTop: 20, flexWrap: 'wrap' },
   label: {
     fontSize: 11, fontWeight: 600, letterSpacing: 1, textTransform: 'uppercase',
     color: t.mute, marginBottom: 6, marginTop: 12,
