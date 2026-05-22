@@ -752,13 +752,26 @@ function WidokDnia({
       startPos.current = null
     }
 
+    function handleCancel(e) {
+      // Ignoruj cancel gdy drag jest aktywny — przeglądarka czasem odpala
+      // pointercancel gdy uzna że gest stał się scrollem, mimo że my blokujemy scroll.
+      // Drag kończymy tylko świadomym podniesieniem palca (pointerup).
+      if (dragRef.current) return
+
+      if (longPressTimer.current) {
+        clearTimeout(longPressTimer.current)
+        longPressTimer.current = null
+      }
+      startPos.current = null
+    }
+
     window.addEventListener('pointermove', handleMove, { passive: false })
     window.addEventListener('pointerup', handleUp)
-    window.addEventListener('pointercancel', handleUp)
+    window.addEventListener('pointercancel', handleCancel)
     return () => {
       window.removeEventListener('pointermove', handleMove)
       window.removeEventListener('pointerup', handleUp)
-      window.removeEventListener('pointercancel', handleUp)
+      window.removeEventListener('pointercancel', handleCancel)
     }
   }, [dataStr, subTryb, onUstawDanie, onUstawSide, onSetSubTryb])
 
