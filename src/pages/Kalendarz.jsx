@@ -575,32 +575,18 @@ function WidokDnia({
   // Reset filtra przy zmianie sub-trybu / dnia
   useEffect(() => { setFiltr('') }, [subTryb?.typ, subTryb?.posilek, dataStr])
 
-  const startDrag = useCallback((nazwa, typ, meta, x, y, pointerEvent, pointerId) => {
-    const stan = { nazwa, typ, meta, x, y, podniesiony: false, pointerId }
+  const startDrag = useCallback((nazwa, typ, meta, x, y) => {
+    const stan = { nazwa, typ, meta, x, y, podniesiony: false }
     dragRef.current = stan
     setDragState(stan)
-    // Pointer capture — gwarantuje że dostaniemy wszystkie kolejne pointermove
-    // niezależnie od decyzji przeglądarki (np. że gest jest scrollem).
-    // Bez tego po długim wciśnięciu pierwszy ruch palca jest zjadany przez
-    // przeglądarkę, która klasyfikuje gest jako scroll i przestaje wysyłać eventy.
-    try {
-      pointerEvent?.target?.setPointerCapture?.(pointerId)
-    } catch {
-      // Niektóre przeglądarki rzucają jeśli element już nie jest w DOM
-    }
   }, [])
 
   const onPointerDownItem = useCallback((e, nazwa, typ, meta) => {
     if (e.pointerType === 'mouse' && e.button !== 0) return
     const x = e.clientX, y = e.clientY
-    const pointerId = e.pointerId
-    const target = e.currentTarget
-    // Zapamiętujemy event-like obiekt dla późniejszego capture (oryginalny e może
-    // być już "skonsumowany" gdy timeout się odpali)
-    const eventRef = { target, pointerId }
     startPos.current = { x, y, nazwa, typ, meta }
     longPressTimer.current = setTimeout(() => {
-      startDrag(nazwa, typ, meta, x, y, eventRef, pointerId)
+      startDrag(nazwa, typ, meta, x, y)
       if (navigator.vibrate) navigator.vibrate(20)
     }, 250)
   }, [startDrag])
@@ -618,26 +604,9 @@ function WidokDnia({
     return () => cancelAnimationFrame(edgeScrollRaf.current)
   }, [])
 
-  // ── Blokada scrolla strony, gdy kafelek jest podniesiony
-  // Strategia: zamiast position:fixed na body (psuje sticky), używamy
-  // tylko touch-action:none + overscroll-behavior. Pointer capture na elemencie
-  // galerii (w startDrag) gwarantuje że dostajemy wszystkie eventy palca,
-  // więc preventDefault w pointermove skutecznie zatrzyma natywny scroll.
-  useEffect(() => {
-    if (!dragState?.podniesiony) return
-    const body = document.body
-    const prev = {
-      touchAction: body.style.touchAction,
-      overscrollBehavior: body.style.overscrollBehavior,
-    }
-    body.style.touchAction = 'none'
-    body.style.overscrollBehavior = 'contain'
+  // Bez globalnej blokady scrolla. preventDefault() w pointermove (passive: false)
+  // wystarczy żeby zatrzymać scroll gdy drag jest aktywny.
 
-    return () => {
-      body.style.touchAction = prev.touchAction
-      body.style.overscrollBehavior = prev.overscrollBehavior
-    }
-  }, [dragState?.podniesiony])
 
   useEffect(() => {
     function handleMove(e) {
@@ -730,26 +699,13 @@ function WidokDnia({
       startPos.current = null
     }
 
-    function handleCancel(e) {
-      // Ignoruj cancel gdy drag jest aktywny — przeglądarka czasem odpala
-      // pointercancel gdy uzna że gest stał się scrollem, mimo że my blokujemy scroll.
-      // Drag kończymy tylko świadomym podniesieniem palca (pointerup).
-      if (dragRef.current) return
-
-      if (longPressTimer.current) {
-        clearTimeout(longPressTimer.current)
-        longPressTimer.current = null
-      }
-      startPos.current = null
-    }
-
     window.addEventListener('pointermove', handleMove, { passive: false })
     window.addEventListener('pointerup', handleUp)
-    window.addEventListener('pointercancel', handleCancel)
+    window.addEventListener('pointercancel', handleUp)
     return () => {
       window.removeEventListener('pointermove', handleMove)
       window.removeEventListener('pointerup', handleUp)
-      window.removeEventListener('pointercancel', handleCancel)
+      window.removeEventListener('pointercancel', handleUp)
     }
   }, [dataStr, subTryb, onUstawDanie, onUstawSide, onSetSubTryb])
 
@@ -1339,11 +1295,9 @@ const s = {
   kafelekPustyPlus: { fontFamily: fonts.serif, fontSize: 26, color: t.muteLight, lineHeight: 1 },
 
   slotyDuzeSticky: {
-    position: 'sticky', top: 0, zIndex: 50,
+    // Bez position:sticky — sloty scrollują razem ze stroną (prościej + brak konfliktów z drag&drop)
     background: t.bg,
     paddingTop: 4, paddingBottom: 8,
-    // Lekka linia na dole gdy sticky się "przykleja" - subtelnie
-    boxShadow: '0 4px 12px -8px rgba(74,55,40,.15)',
   },
   slotyDuze: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 },
   slotDuzy: {
