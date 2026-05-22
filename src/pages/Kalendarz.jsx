@@ -578,6 +578,7 @@ function WidokDnia({
   const edgeScrollDelta = useRef(0)
   const activePointerIdRef = useRef(null)
   const capturedTargetRef = useRef(null)
+  const lastTouchPointRef = useRef(null)
 
   const wyczyscGesture = useCallback(() => {
     if (longPressTimer.current) {
@@ -596,20 +597,25 @@ function WidokDnia({
     capturedTargetRef.current = null
     activePointerIdRef.current = null
     startPos.current = null
+    lastTouchPointRef.current = null
   }, [])
 
-  const startDrag = useCallback((nazwa, typ, meta, x, y, target, pointerId) => {
+  const startDrag = useCallback((nazwa, typ, meta, x, y, target = null, pointerId = null) => {
     if (longPressTimer.current) {
       clearTimeout(longPressTimer.current)
       longPressTimer.current = null
     }
 
-    activePointerIdRef.current = pointerId
-
-    try {
-      target?.setPointerCapture?.(pointerId)
-      capturedTargetRef.current = target
-    } catch {}
+    // Na desktopie / myszce przechwytujemy pointer dopiero po long-press.
+    // Na telefonie ruch obsługują touchmove/touchend, bo mobilne przeglądarki
+    // potrafią mimo pointer events przejąć gest jako scroll.
+    if (target && pointerId != null) {
+      activePointerIdRef.current = pointerId
+      try {
+        target.setPointerCapture?.(pointerId)
+        capturedTargetRef.current = target
+      } catch {}
+    }
 
     const stan = { nazwa, typ, meta, x, y, podniesiony: true }
     dragRef.current = stan
@@ -619,7 +625,11 @@ function WidokDnia({
   }, [])
 
   const onPointerDownItem = useCallback((e, nazwa, typ, meta) => {
+    // Touch obsługujemy osobnymi eventami touch*, bo to daje stabilny drag na telefonie.
+    if (e.pointerType === 'touch') return
     if (e.pointerType === 'mouse' && e.button !== 0) return
+
+    if (longPressTimer.current) clearTimeout(longPressTimer.current)
 
     const x = e.clientX
     const y = e.clientY
@@ -631,6 +641,24 @@ function WidokDnia({
 
     longPressTimer.current = setTimeout(() => {
       startDrag(nazwa, typ, meta, x, y, target, pointerId)
+    }, 320)
+  }, [startDrag])
+
+  const onTouchStartItem = useCallback((e, nazwa, typ, meta) => {
+    if (e.touches.length !== 1) return
+
+    if (longPressTimer.current) clearTimeout(longPressTimer.current)
+
+    const touch = e.touches[0]
+    const x = touch.clientX
+    const y = touch.clientY
+
+    startPos.current = { x, y, nazwa, typ, meta, isTouch: true }
+    lastTouchPointRef.current = { x, y }
+    activePointerIdRef.current = null
+
+    longPressTimer.current = setTimeout(() => {
+      startDrag(nazwa, typ, meta, x, y)
     }, 320)
   }, [startDrag])
 
@@ -653,24 +681,44 @@ function WidokDnia({
   // dla pointer capture (3 niezależne warstwy obrony).
   useEffect(() => {
     if (!dragState?.podniesiony) return
+
     const html = document.documentElement
     const body = document.body
+    const scrollY = window.scrollY
     const prev = {
       htmlOverflow: html.style.overflow,
       bodyOverflow: body.style.overflow,
+      bodyPosition: body.style.position,
+      bodyTop: body.style.top,
+      bodyLeft: body.style.left,
+      bodyRight: body.style.right,
+      bodyWidth: body.style.width,
       touchAction: body.style.touchAction,
       overscrollBehavior: body.style.overscrollBehavior,
     }
+
+    // Telefon: po podniesieniu kafelka strona nie może przejąć gestu jako scroll.
     html.style.overflow = 'hidden'
     body.style.overflow = 'hidden'
+    body.style.position = 'fixed'
+    body.style.top = `-${scrollY}px`
+    body.style.left = '0'
+    body.style.right = '0'
+    body.style.width = '100%'
     body.style.touchAction = 'none'
-    body.style.overscrollBehavior = 'contain'
+    body.style.overscrollBehavior = 'none'
 
     return () => {
       html.style.overflow = prev.htmlOverflow
       body.style.overflow = prev.bodyOverflow
+      body.style.position = prev.bodyPosition
+      body.style.top = prev.bodyTop
+      body.style.left = prev.bodyLeft
+      body.style.right = prev.bodyRight
+      body.style.width = prev.bodyWidth
       body.style.touchAction = prev.touchAction
       body.style.overscrollBehavior = prev.overscrollBehavior
+      window.scrollTo(0, scrollY)
     }
   }, [dragState?.podniesiony])
 
@@ -694,6 +742,7 @@ function WidokDnia({
     }
 
     function handleMove(e) {
+      if (e.pointerType === 'touch') return
       if (activePointerIdRef.current != null && e.pointerId !== activePointerIdRef.current) return
 
       if (longPressTimer.current && startPos.current && !dragRef.current) {
@@ -734,6 +783,7 @@ function WidokDnia({
     }
 
     function handleUp(e) {
+      if (e.pointerType === 'touch') return
       if (activePointerIdRef.current != null && e.pointerId !== activePointerIdRef.current) return
 
       if (longPressTimer.current && !dragRef.current) {
@@ -783,6 +833,7 @@ function WidokDnia({
     }
 
     function handleCancel(e) {
+      if (e.pointerType === 'touch') return
       if (activePointerIdRef.current != null && e.pointerId !== activePointerIdRef.current) return
 
       dragRef.current = null
@@ -798,6 +849,131 @@ function WidokDnia({
       window.removeEventListener('pointermove', handleMove)
       window.removeEventListener('pointerup', handleUp)
       window.removeEventListener('pointercancel', handleCancel)
+    }
+  }, [dataStr, subTryb, onUstawDanie, onUstawSide, onSetSubTryb, wyczyscGesture])
+
+  // ── Mobilny drag: osobna obsługa touch*, żeby scroll galerii był naturalny,
+  // a po long-press ruch palca przesuwał kafelek, nie stronę.
+  useEffect(() => {
+    function znajdzCel(x, y) {
+      const keys = Object.keys(slotRefs.current)
+      keys.sort((a, b) => b.length - a.length)
+
+      for (const key of keys) {
+        const el = slotRefs.current[key]
+        if (!el) continue
+
+        const r = el.getBoundingClientRect()
+        if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) return key
+      }
+
+      return null
+    }
+
+    function aktualizujDrag(x, y) {
+      if (!dragRef.current) return
+
+      const stan = {
+        ...dragRef.current,
+        x,
+        y,
+        podniesiony: true,
+      }
+
+      dragRef.current = stan
+      setDragState(stan)
+      lastTouchPointRef.current = { x, y }
+    }
+
+    function upusc(x, y) {
+      const stan = dragRef.current
+
+      if (stan) {
+        let targetKey = null
+
+        if (subTryb) {
+          targetKey = subTryb.posilek + '_side_' + (subTryb.slotIdx ?? 0)
+        } else {
+          targetKey = znajdzCel(x, y)
+        }
+
+        if (targetKey) {
+          const sideMatch = targetKey.match(/^(.+)_side_(\d+)$/)
+
+          if (sideMatch) {
+            const posilek = sideMatch[1]
+            const slotIdx = parseInt(sideMatch[2], 10)
+
+            if (stan.typ === 'dodatek' || stan.typ === 'surowka') {
+              onUstawSide(dataStr, posilek, slotIdx, stan.nazwa, stan.typ)
+              onSetSubTryb(null)
+            }
+          } else if (stan.typ === 'danie') {
+            onUstawDanie(dataStr, targetKey, stan.nazwa)
+          }
+        }
+      }
+
+      dragRef.current = null
+      setDragState(null)
+      wyczyscGesture()
+    }
+
+    function handleTouchMove(e) {
+      if (!startPos.current?.isTouch && !dragRef.current) return
+      if (e.touches.length !== 1) return
+
+      const touch = e.touches[0]
+      const x = touch.clientX
+      const y = touch.clientY
+
+      if (longPressTimer.current && startPos.current?.isTouch && !dragRef.current) {
+        const dx = x - startPos.current.x
+        const dy = y - startPos.current.y
+
+        // Ruch przed long-pressem = normalny scroll galerii. Niczego nie blokujemy.
+        if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
+          wyczyscGesture()
+        }
+
+        return
+      }
+
+      if (!dragRef.current || !startPos.current?.isTouch) return
+
+      // Po long-press to już jest drag — blokujemy natywny scroll telefonu.
+      if (e.cancelable) e.preventDefault()
+      aktualizujDrag(x, y)
+    }
+
+    function handleTouchEnd(e) {
+      if (!startPos.current?.isTouch && !dragRef.current) return
+
+      if (longPressTimer.current && !dragRef.current) {
+        wyczyscGesture()
+        return
+      }
+
+      const point = lastTouchPointRef.current || startPos.current
+      upusc(point.x, point.y)
+    }
+
+    function handleTouchCancel() {
+      if (!startPos.current?.isTouch && !dragRef.current) return
+
+      dragRef.current = null
+      setDragState(null)
+      wyczyscGesture()
+    }
+
+    window.addEventListener('touchmove', handleTouchMove, { passive: false })
+    window.addEventListener('touchend', handleTouchEnd, { passive: false })
+    window.addEventListener('touchcancel', handleTouchCancel, { passive: false })
+
+    return () => {
+      window.removeEventListener('touchmove', handleTouchMove)
+      window.removeEventListener('touchend', handleTouchEnd)
+      window.removeEventListener('touchcancel', handleTouchCancel)
     }
   }, [dataStr, subTryb, onUstawDanie, onUstawSide, onSetSubTryb, wyczyscGesture])
 
@@ -949,6 +1125,7 @@ function WidokDnia({
               item={item}
               typ={typGalerii}
               onPointerDown={(e) => onPointerDownItem(e, item.nazwa, typGalerii, item)}
+              onTouchStart={(e) => onTouchStartItem(e, item.nazwa, typGalerii, item)}
               onTap={() => {
                 if (typGalerii === 'danie') onSelectDanie?.(item.nazwa)
                 else if (subTryb) {
@@ -1168,26 +1345,64 @@ function MiniSlot({ setRef, nazwa, typ, meta, podswietlony, onClickPelny, onClic
 }
 
 // ════════════════════════════════════════════════════════════
-function GaleriaItem({ item, onPointerDown, onTap, aktywnyDrag }) {
+function GaleriaItem({ item, onPointerDown, onTouchStart, onTap, aktywnyDrag }) {
   const downPos = useRef(null)
-  function handleDown(e) {
+  const touchPos = useRef(null)
+
+  function handlePointerDown(e) {
+    // Touch ma osobny tor obsługi. Pointer zostaje dla myszy/trackpada.
+    if (e.pointerType === 'touch') return
+
     downPos.current = { x: e.clientX, y: e.clientY, t: Date.now() }
     onPointerDown(e)
   }
-  function handleUp(e) {
+
+  function handlePointerUp(e) {
+    if (e.pointerType === 'touch') return
+
     if (downPos.current && !aktywnyDrag) {
       const dt = Date.now() - downPos.current.t
       const dx = Math.abs(e.clientX - downPos.current.x)
       const dy = Math.abs(e.clientY - downPos.current.y)
       if (dt < 180 && dx < 10 && dy < 10) onTap()
     }
+
     downPos.current = null
+  }
+
+  function handleTouchStart(e) {
+    if (e.touches.length !== 1) return
+
+    const touch = e.touches[0]
+    touchPos.current = { x: touch.clientX, y: touch.clientY, t: Date.now(), moved: false }
+    onTouchStart(e)
+  }
+
+  function handleTouchMove(e) {
+    if (!touchPos.current || e.touches.length !== 1) return
+
+    const touch = e.touches[0]
+    const dx = Math.abs(touch.clientX - touchPos.current.x)
+    const dy = Math.abs(touch.clientY - touchPos.current.y)
+    if (dx > 10 || dy > 10) touchPos.current.moved = true
+  }
+
+  function handleTouchEnd() {
+    if (touchPos.current && !touchPos.current.moved && !aktywnyDrag) {
+      const dt = Date.now() - touchPos.current.t
+      if (dt < 180) onTap()
+    }
+
+    touchPos.current = null
   }
 
   return (
     <div
-      onPointerDown={handleDown}
-      onPointerUp={handleUp}
+      onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerUp}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
       style={{ ...s.galeriaItem, opacity: aktywnyDrag ? 0.3 : 1 }}
     >
       <div style={s.galeriaThumb}>
