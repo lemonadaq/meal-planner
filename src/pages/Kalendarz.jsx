@@ -582,9 +582,25 @@ function WidokDnia({
     setDragState(stan)
   }, [])
 
+  // Ref do elementu który capture'ował pointer — żeby móc go release przy anulowaniu
+  const capturedTargetRef = useRef(null)
+  const capturedPointerIdRef = useRef(null)
+
   const onPointerDownItem = useCallback((e, nazwa, typ, meta) => {
     if (e.pointerType === 'mouse' && e.button !== 0) return
     const x = e.clientX, y = e.clientY
+    const target = e.currentTarget
+    const pointerId = e.pointerId
+
+    // Pointer capture OD RAZU — gwarantuje że dostaniemy wszystkie pointermove,
+    // nawet jeśli przeglądarka klasyfikuje gest jako scroll. Jeśli user zacznie
+    // scrollować (ruch >14px przed long-press), handleMove zrobi release capture.
+    try {
+      target.setPointerCapture(pointerId)
+      capturedTargetRef.current = target
+      capturedPointerIdRef.current = pointerId
+    } catch {}
+
     startPos.current = { x, y, nazwa, typ, meta }
     longPressTimer.current = setTimeout(() => {
       startDrag(nazwa, typ, meta, x, y)
@@ -637,6 +653,15 @@ function WidokDnia({
           clearTimeout(longPressTimer.current)
           longPressTimer.current = null
           startPos.current = null
+          // RELEASE pointer capture — user scrolluje galerię, daj browserowi
+          // przejąć gest jako scroll. Bez tego galeria stałaby w miejscu.
+          if (capturedTargetRef.current && capturedPointerIdRef.current != null) {
+            try {
+              capturedTargetRef.current.releasePointerCapture(capturedPointerIdRef.current)
+            } catch {}
+            capturedTargetRef.current = null
+            capturedPointerIdRef.current = null
+          }
         }
       }
       if (dragRef.current) {
@@ -716,6 +741,9 @@ function WidokDnia({
         setDragState(null)
       }
       startPos.current = null
+      // Reset capture refs (już nieaktualne po pointerup)
+      capturedTargetRef.current = null
+      capturedPointerIdRef.current = null
     }
 
     function handleCancel(e) {
