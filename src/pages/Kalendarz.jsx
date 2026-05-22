@@ -575,42 +575,42 @@ function WidokDnia({
   // Reset filtra przy zmianie sub-trybu / dnia
   useEffect(() => { setFiltr('') }, [subTryb?.typ, subTryb?.posilek, dataStr])
 
-  const startDrag = useCallback((nazwa, typ, meta, x, y) => {
-    const stan = { nazwa, typ, meta, x, y, podniesiony: false }
+  const startDrag = useCallback((nazwa, typ, meta, x, y, pointerEvent, pointerId) => {
+    const stan = { nazwa, typ, meta, x, y, podniesiony: false, pointerId }
     dragRef.current = stan
     setDragState(stan)
+    // Pointer capture — gwarantuje że dostaniemy wszystkie kolejne pointermove
+    // niezależnie od decyzji przeglądarki (np. że gest jest scrollem).
+    // Bez tego po długim wciśnięciu pierwszy ruch palca jest zjadany przez
+    // przeglądarkę, która klasyfikuje gest jako scroll i przestaje wysyłać eventy.
+    try {
+      pointerEvent?.target?.setPointerCapture?.(pointerId)
+    } catch {
+      // Niektóre przeglądarki rzucają jeśli element już nie jest w DOM
+    }
   }, [])
 
   const onPointerDownItem = useCallback((e, nazwa, typ, meta) => {
     if (e.pointerType === 'mouse' && e.button !== 0) return
     const x = e.clientX, y = e.clientY
+    const pointerId = e.pointerId
+    const target = e.currentTarget
+    // Zapamiętujemy event-like obiekt dla późniejszego capture (oryginalny e może
+    // być już "skonsumowany" gdy timeout się odpali)
+    const eventRef = { target, pointerId }
     startPos.current = { x, y, nazwa, typ, meta }
     longPressTimer.current = setTimeout(() => {
-      startDrag(nazwa, typ, meta, x, y)
+      startDrag(nazwa, typ, meta, x, y, eventRef, pointerId)
       if (navigator.vibrate) navigator.vibrate(20)
     }, 250)
   }, [startDrag])
 
   // ── Edge scroll: jak drag jest blisko góry/dołu, scrolluj okno
-  // UWAGA: gdy drag jest aktywny, body jest w position: fixed (iOS-safe pattern),
-  // więc window.scrollBy nie zadziała. W tym trybie modyfikujemy body.style.top
-  // (które reprezentuje "zamrożoną" pozycję scrolla — gdy ją zmieniamy, treść
-  // wizualnie przesuwa się w górę/dół).
   const edgeScrollDelta = useRef(0)
   useEffect(() => {
     function loop() {
       if (edgeScrollDelta.current !== 0) {
-        const body = document.body
-        if (body.style.position === 'fixed') {
-          // Drag aktywny — przesuwamy zamrożoną pozycję
-          const current = parseFloat(body.style.top || '0') // ujemna wartość
-          const max = -(document.documentElement.scrollHeight - window.innerHeight)
-          const nowy = Math.max(max, Math.min(0, current - edgeScrollDelta.current))
-          body.style.top = `${nowy}px`
-        } else {
-          // Normalny scroll (np. drag nie wystartował jeszcze)
-          window.scrollBy(0, edgeScrollDelta.current)
-        }
+        window.scrollBy(0, edgeScrollDelta.current)
       }
       edgeScrollRaf.current = requestAnimationFrame(loop)
     }
@@ -619,45 +619,23 @@ function WidokDnia({
   }, [])
 
   // ── Blokada scrolla strony, gdy kafelek jest podniesiony
-  // UWAGA: nie używamy overflow: hidden bo to psuje position: sticky
-  // (sticky-element wymaga scrollującego przodka). Zamiast tego zapamiętujemy
-  // pozycję scrolla, ustawiamy body w position: fixed (iOS-safe pattern),
-  // a po puszczeniu kafelka przywracamy pozycję.
+  // Strategia: zamiast position:fixed na body (psuje sticky), używamy
+  // tylko touch-action:none + overscroll-behavior. Pointer capture na elemencie
+  // galerii (w startDrag) gwarantuje że dostajemy wszystkie eventy palca,
+  // więc preventDefault w pointermove skutecznie zatrzyma natywny scroll.
   useEffect(() => {
     if (!dragState?.podniesiony) return
     const body = document.body
-    const scrollY = window.scrollY
     const prev = {
-      position: body.style.position,
-      top: body.style.top,
-      left: body.style.left,
-      right: body.style.right,
-      width: body.style.width,
       touchAction: body.style.touchAction,
       overscrollBehavior: body.style.overscrollBehavior,
     }
-    body.style.position = 'fixed'
-    body.style.top = `-${scrollY}px`
-    body.style.left = '0'
-    body.style.right = '0'
-    body.style.width = '100%'
     body.style.touchAction = 'none'
     body.style.overscrollBehavior = 'contain'
 
     return () => {
-      // Odczytaj aktualne body.style.top — mogło zostać zmienione przez edge-scroll
-      const ostatniTop = parseFloat(body.style.top || '0')
-      const docelowyScrollY = ostatniTop ? Math.abs(ostatniTop) : scrollY
-
-      body.style.position = prev.position
-      body.style.top = prev.top
-      body.style.left = prev.left
-      body.style.right = prev.right
-      body.style.width = prev.width
       body.style.touchAction = prev.touchAction
       body.style.overscrollBehavior = prev.overscrollBehavior
-      // Przywróć pozycję scrolla (uwzględniając edge-scroll w trakcie dragu)
-      window.scrollTo(0, docelowyScrollY)
     }
   }, [dragState?.podniesiony])
 
