@@ -1381,7 +1381,6 @@ function DodajProduktModal({ edycja, onClose, onSave, onDelete }) {
             placeholder="np. Papier toaletowy"
             value={nazwa}
             onChange={e => setNazwa(e.target.value)}
-            autoFocus
           />
 
           <label style={mod.label}>Ilość / jednostka (opcjonalnie)</label>
