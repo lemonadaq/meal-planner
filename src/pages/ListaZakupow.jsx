@@ -17,9 +17,13 @@ const KATEGORIE = [
 const JEDNOSTKI = ['', 'szt.', 'opak.', 'g', 'kg', 'ml', 'l', 'pęczek']
 
 const DOMYSLNE_PRODUKTY_W_DOMU = [
-  'Sól', 'Pieprz', 'Pieprz czarny', 'Olej', 'Oliwa',
-  'Cukier', 'Mąka', 'Papryka słodka', 'Oregano', 'Bazylia',
+  'Olej', 'Oliwa', 'Cukier', 'Mąka',
+  'Papryka słodka', 'Oregano', 'Bazylia',
 ]
+
+// Te składniki mogą zostać w przepisach, ale nie powinny wpadać na listę zakupów.
+// Dotyczy tylko pozycji wygenerowanych z przepisów — ręcznie dopisany produkt zostaje na liście.
+const ZAWSZE_UKRYTE_Z_PRZEPISOW = ['Sól', 'Pieprz']
 
 function normalizujProduktDomowy(nazwa = '') {
   return nazwa
@@ -50,6 +54,43 @@ function unikalneProduktyWDomu(lista = []) {
   return [...mapa.values()].sort((a, b) => a.localeCompare(b, 'pl'))
 }
 
+function kluczZakupu(skladnik, jednostka = '') {
+  return `${poprawNazwe(skladnik)}||${jednostka || ''}`
+}
+
+function tekstIlosciZItemu(item) {
+  if (!item) return ''
+  if (item.iloscOryginalna != null && item.iloscOryginalna !== '') return item.iloscOryginalna.toString()
+  if (item.ilosc != null) return `${item.ilosc}${item.jednostka ? ` ${item.jednostka}` : ''}`.trim()
+  if (item.jednostka) return item.jednostka.toString()
+  return ''
+}
+
+function zastosujKorekteZakupu(item, korekta) {
+  if (!item) return null
+  const bazaKlucz = item.bazaKlucz || item.klucz
+  if (!korekta) return { ...item, bazaKlucz }
+  if (korekta.usuniety) return null
+
+  const nazwa = poprawNazwe(korekta.nazwa || item.skladnik)
+  if (!nazwa) return null
+
+  const iloscTekst = normalizujIloscTekst(korekta.ilosc)
+  const kategoria = bezpiecznaKategoria(korekta.kategoria || item.kategoria)
+
+  return {
+    ...item,
+    bazaKlucz,
+    klucz: kluczZakupu(nazwa, ''),
+    skladnik: nazwa,
+    ilosc: null,
+    iloscOryginalna: iloscTekst || '',
+    jednostka: '',
+    kategoria,
+    edytowany: true,
+  }
+}
+
 function produktPasujeDoDomu(nazwa, produktyWDomuSet) {
   const n = normalizujProduktDomowy(nazwa)
   if (!n || !produktyWDomuSet?.size) return false
@@ -57,13 +98,15 @@ function produktPasujeDoDomu(nazwa, produktyWDomuSet) {
 
   for (const baza of produktyWDomuSet) {
     if (!baza) continue
-    // Dzięki temu wpis „Olej” ukryje też „Olej rzepakowy”,
-    // ale nie ukryje przypadkowo środka wyrazu.
     if (n === baza || n.startsWith(`${baza} `) || n.includes(` ${baza} `)) return true
   }
   return false
 }
 
+function produktZawszeUkrytyZPrzepisow(nazwa) {
+  const staleUkryte = new Set(ZAWSZE_UKRYTE_Z_PRZEPISOW.map(normalizujProduktDomowy).filter(Boolean))
+  return produktPasujeDoDomu(nazwa, staleUkryte)
+}
 
 function normalizujJednostke(raw = '') {
   const x = raw.toString().trim().toLowerCase().replace(/\.+$/, '')
@@ -151,15 +194,12 @@ function rozbijSzybkieLinie(tekst = '') {
 }
 
 function parsujSzybkiProdukt(linia) {
-  // Ten parser celowo jest tolerancyjny. Każda niepusta linijka ma zostać dodana,
-  // nawet jeśli użytkownik wpisze tylko „Margaryna” albo coś w stylu „Musztarda sarepska 1szt.”.
   const tekst = poprawNazwe(linia)
   if (!tekst) return null
 
   const liczba = '(\\d+(?:[,.]\\d+)?)'
   const jednostka = '([a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+\\.?)?'
 
-  // Format na końcu: „Musztarda sarepska 1szt.”, „Chleb 1 szt.”, „Chleb 1”
   let m = tekst.match(new RegExp(`^(.+?)\\s+${liczba}\\s*${jednostka}\\.?$`, 'i'))
   if (m) {
     const nazwa = poprawNazwe(m[1])
@@ -168,7 +208,6 @@ function parsujSzybkiProdukt(linia) {
     if (nazwa) return { nazwa, ilosc, jednostka: jedn || null, kategoria: bezpiecznaKategoria(rozpoznajKategorie(nazwa)) }
   }
 
-  // Format na początku: „1szt. Chleb”, „1 szt. Chleb”, „2 l Mleko”
   m = tekst.match(new RegExp(`^${liczba}\\s*${jednostka}\\s+(.+)$`, 'i'))
   if (m) {
     const nazwa = poprawNazwe(m[3])
@@ -177,7 +216,6 @@ function parsujSzybkiProdukt(linia) {
     if (nazwa) return { nazwa, ilosc, jednostka: jedn || null, kategoria: bezpiecznaKategoria(rozpoznajKategorie(nazwa)) }
   }
 
-  // Fallback: nie rozpoznałem ilości/jednostki, ale i tak dodaję produkt.
   return {
     nazwa: tekst,
     ilosc: null,
@@ -199,12 +237,16 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
   const [trybSklepu, setTrybSklepu] = useState(false)
   const [szybkiTekst, setSzybkiTekst] = useState('')
   const [pokazMamWDomu, setPokazMamWDomu] = useState(false)
-  // Produkty „mam w domu” — z tabeli produkty_w_domu (per-household, realtime)
-  // Trzymam jako pełne rekordy {id, nazwa, nazwa_norm}, żeby ogarniać delete po id.
+  // Produkty „mam w domu” — z tabeli produkty_w_domu (per-household, realtime).
+  // Trzymam pełne rekordy {id, nazwa, nazwa_norm}, żeby ogarniać delete po id.
   const [produktyWDomuRows, setProduktyWDomuRows] = useState([])
+  // Korekty pozycji wygenerowanych z planu — z tabeli korekty_zakupow (per-household, realtime).
+  // Mapa: baza_klucz -> {id, nazwa, ilosc, kategoria, usuniety}
+  const [korektyZakupow, setKorektyZakupow] = useState({})
 
   const [toast, setToast] = useState(null)
   const toastTimer = useRef(null)
+  const blokujDodawanieDo = useRef(0)
   // Stan odznaczonych jest teraz w bazie (zakupy_historia, wspólne dla rodziny),
   // a nie w localStorage — funkcja zostaje jako no-op, żeby nie zmieniać call-site'ów.
   const storageKey = `lista_zakupow_${user.id}` // legacy, niezużywane
@@ -215,7 +257,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     toastTimer.current = setTimeout(() => setToast(null), 3500)
   }
 
-  // ── Produkty „mam w domu” — ładowanie z bazy + realtime ──
+  // ── Produkty „mam w domu” — ładowanie z bazy ──
   useEffect(() => {
     if (!householdId) return
     let anulowane = false
@@ -230,6 +272,34 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     return () => { anulowane = true }
   }, [householdId])
 
+  // ── Korekty zakupów — ładowanie z bazy (filtrowane do bieżącego tygodnia) ──
+  useEffect(() => {
+    if (!householdId) return
+    let anulowane = false
+    async function pobierz() {
+      const tydzien = aktualnyTydzienZakupow()
+      const { data } = await supabase.from('korekty_zakupow')
+        .select('*')
+        .eq('household_id', householdId)
+        .eq('tydzien', tydzien)
+      if (!anulowane) {
+        const mapa = {}
+        ;(data || []).forEach(r => {
+          mapa[r.baza_klucz] = {
+            id: r.id,
+            nazwa: r.nazwa,
+            ilosc: r.ilosc,
+            kategoria: r.kategoria,
+            usuniety: !!r.usuniety,
+          }
+        })
+        setKorektyZakupow(mapa)
+      }
+    }
+    pobierz()
+    return () => { anulowane = true }
+  }, [householdId])
+
   // Tablica nazw (do UI) wyprodukowana z rows, posortowana i zdedupowana.
   const produktyWDomu = useMemo(
     () => unikalneProduktyWDomu(produktyWDomuRows.map(r => r.nazwa)),
@@ -237,7 +307,10 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
   )
 
   const produktyWDomuSet = useMemo(
-    () => new Set(produktyWDomuRows.map(r => r.nazwa_norm).filter(Boolean)),
+    () => new Set([
+      ...produktyWDomuRows.map(r => r.nazwa_norm).filter(Boolean),
+      ...ZAWSZE_UKRYTE_Z_PRZEPISOW.map(normalizujProduktDomowy).filter(Boolean),
+    ]),
     [produktyWDomuRows]
   )
 
@@ -248,7 +321,6 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     const norm = normalizujProduktDomowy(ladna)
     if (!norm) return
 
-    // Już mam w domu? Toast informacyjny, kończymy.
     if (produktyWDomuSet.has(norm)) {
       pokazToast(`Już w domu: ${ladna}`)
       return
@@ -266,8 +338,6 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
       .select().single()
 
     if (error) {
-      // Conflict na unique (household_id, nazwa_norm) = ktoś z rodziny dodał równolegle.
-      // Realtime to dociągnie. Pokażmy łagodny toast.
       if (error.code === '23505') {
         pokazToast(`Już w domu: ${ladna}`)
         return
@@ -287,7 +357,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     }
   }
 
-  // Zapis całej listy z modalu „Mam w domu” — robi diff i odpala minimalny insert/delete.
+  // Zapis całej listy z modalu „Mam w domu” — robi diff i odpala insert/delete.
   async function zapiszProduktyWDomu(noweNazwy) {
     const czyste = unikalneProduktyWDomu(noweNazwy)
     const noweNormy = new Set(czyste.map(normalizujProduktDomowy).filter(Boolean))
@@ -319,7 +389,6 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
         .insert(doDodania)
         .select()
       if (error) {
-        // Conflict to OK — realtime dociągnie resztę.
         if (error.code !== '23505') {
           console.error('Błąd zapisu produktów w domu:', error, doDodania)
           pokazToast('Część produktów się nie zapisała — odśwież')
@@ -333,7 +402,109 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     }
   }
 
-  // ── Generowanie listy z planu + ładowanie własnych ──
+  // ── Zapis korekty pozycji z planu (upsert do bazy) ──
+  // korekta: {nazwa, ilosc, kategoria, usuniety}
+  async function zapiszKorekteZakupu(bazaKlucz, korekta) {
+    if (!bazaKlucz) return
+    const tydzien = aktualnyTydzienZakupow()
+    const istniejaca = korektyZakupow[bazaKlucz]
+    const rekord = {
+      household_id: householdId,
+      tydzien,
+      baza_klucz: bazaKlucz,
+      nazwa: korekta.nazwa || null,
+      ilosc: korekta.ilosc || null,
+      kategoria: korekta.kategoria || null,
+      usuniety: !!korekta.usuniety,
+      created_by: user.id,
+      updated_at: new Date().toISOString(),
+    }
+
+    // Optymistycznie aktualizuję stan
+    setKorektyZakupow(prev => ({
+      ...prev,
+      [bazaKlucz]: {
+        id: istniejaca?.id,
+        nazwa: rekord.nazwa,
+        ilosc: rekord.ilosc,
+        kategoria: rekord.kategoria,
+        usuniety: rekord.usuniety,
+      },
+    }))
+
+    if (istniejaca?.id) {
+      const { data, error } = await supabase.from('korekty_zakupow')
+        .update(rekord)
+        .eq('id', istniejaca.id)
+        .select().single()
+      if (error) {
+        console.error('Błąd update korekty:', error, rekord)
+        pokazToast('Nie udało się zapisać zmiany')
+      } else if (data) {
+        setKorektyZakupow(prev => ({
+          ...prev,
+          [bazaKlucz]: {
+            id: data.id, nazwa: data.nazwa, ilosc: data.ilosc,
+            kategoria: data.kategoria, usuniety: !!data.usuniety,
+          },
+        }))
+      }
+    } else {
+      const { data, error } = await supabase.from('korekty_zakupow')
+        .insert(rekord)
+        .select().single()
+      if (error) {
+        // Konflikt na unique (mogło wleźć przez realtime od żony) — odśwież.
+        if (error.code === '23505') {
+          const { data: refresh } = await supabase.from('korekty_zakupow')
+            .select('*')
+            .eq('household_id', householdId)
+            .eq('tydzien', tydzien)
+            .eq('baza_klucz', bazaKlucz)
+            .single()
+          if (refresh) {
+            setKorektyZakupow(prev => ({
+              ...prev,
+              [bazaKlucz]: {
+                id: refresh.id, nazwa: refresh.nazwa, ilosc: refresh.ilosc,
+                kategoria: refresh.kategoria, usuniety: !!refresh.usuniety,
+              },
+            }))
+          }
+        } else {
+          console.error('Błąd insert korekty:', error, rekord)
+          pokazToast('Nie udało się zapisać zmiany')
+        }
+      } else if (data) {
+        setKorektyZakupow(prev => ({
+          ...prev,
+          [bazaKlucz]: {
+            id: data.id, nazwa: data.nazwa, ilosc: data.ilosc,
+            kategoria: data.kategoria, usuniety: !!data.usuniety,
+          },
+        }))
+      }
+    }
+  }
+
+  // Usuwa korektę z bazy (powrót do oryginalnej pozycji z planu).
+  async function usunKorekteZakupu(bazaKlucz) {
+    if (!bazaKlucz) return
+    const istniejaca = korektyZakupow[bazaKlucz]
+    if (!istniejaca) return
+
+    setKorektyZakupow(prev => {
+      const n = { ...prev }
+      delete n[bazaKlucz]
+      return n
+    })
+
+    if (istniejaca.id) {
+      await supabase.from('korekty_zakupow').delete().eq('id', istniejaca.id)
+    }
+  }
+
+  // ── Generowanie listy z planu + ładowanie własnych + cyklicznych ──
   const generuj = useCallback(async () => {
     setLoading(true)
 
@@ -346,7 +517,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     niedziela.setDate(niedziela.getDate() + 6)
     const niedzielaStr = formatDataLocal(niedziela)
 
-    const [{ data: planData }, { data: wlasneData }, { data: historiaData }, { data: cyklicneData }] = await Promise.all([
+    const [{ data: planData }, { data: wlasneData }, { data: historiaData }, { data: cykliczneData }] = await Promise.all([
       supabase.from('kalendarz').select('*')
         .eq('household_id', householdId)
         .gte('data', poniedzialek)
@@ -355,6 +526,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
         .eq('household_id', householdId)
         .eq('tydzien', poniedzialek)
         .order('created_at'),
+      // Historia ograniczona do bieżącego tygodnia — żeby cykliczne się resetowały co poniedziałek.
       supabase.from('zakupy_historia').select('*')
         .eq('household_id', householdId)
         .gte('data_kupienia', poniedzialek),
@@ -364,7 +536,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     ])
 
     setWlasne(wlasneData || [])
-    setCykliczne(cyklicneData || [])
+    setCykliczne(cykliczneData || [])
 
     // Zbieram porcje
     const porcjeWszystkich = {}
@@ -431,8 +603,18 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
       a.kategoria.localeCompare(b.kategoria) || a.skladnik.localeCompare(b.skladnik)
     )
 
-    // Odtwórz stan odznaczonych z bazy (zakupy_historia jest wspólne dla rodziny)
-    const aktualneKlucze = new Set(posortowane.map(i => i.klucz))
+    // Odtwórz stan odznaczonych z bazy. Bierzemy pod uwagę także lokalnie edytowane pozycje z planu.
+    const aktualneKlucze = new Set()
+    posortowane.forEach(i => {
+      aktualneKlucze.add(i.klucz)
+      const poKorekcie = zastosujKorekteZakupu(i, korektyZakupow[i.klucz])
+      if (poKorekcie?.klucz) aktualneKlucze.add(poKorekcie.klucz)
+    })
+    // Cykliczne — odhaczanie też idzie do zakupy_historia (klucz `${nazwa}||`).
+    ;(cykliczneData || []).forEach(c => {
+      aktualneKlucze.add(kluczZakupu(c.nazwa, ''))
+    })
+
     const odtworzone = new Set()
     const mapaHistoriaId = {}
     ;(historiaData || []).forEach(h => {
@@ -447,15 +629,12 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     setOdznaczone(odtworzone)
     setHistoriaIds(mapaHistoriaId)
     setLoading(false)
-  }, [householdId, domyslnePorcje])
+  }, [householdId, domyslnePorcje, korektyZakupow])
 
   useEffect(() => { generuj() }, [generuj])
 
   // Realtime: gdy partner odhaczy/doda coś, aktualizuj lokalnie bez pełnego reloadu.
-  // - zakupy_historia:   ktoś odhaczył składnik → dodaj klucz do odznaczonych
-  // - zakupy_wlasne:     ktoś dodał/zmienił/usunął własny produkt → odśwież listę wlasne
-  // - zakupy_cykliczne:  ktoś dodał/usunął/zmienił cykliczny → odśwież cykliczne
-  // - produkty_w_domu:   ktoś dodał/usunął produkt domowy → odśwież rows
+  // Cztery kanały: zakupy_historia, zakupy_wlasne, zakupy_cykliczne, produkty_w_domu, korekty_zakupow.
   useEffect(() => {
     if (!householdId) return
 
@@ -525,6 +704,32 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
           }
         }
       )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'korekty_zakupow', filter: `household_id=eq.${householdId}` },
+        (payload) => {
+          const row = payload.new || payload.old
+          if (row?.tydzien && row.tydzien !== aktualnyTydzienZakupow()) return
+
+          if (payload.eventType === 'DELETE') {
+            const bazaKlucz = payload.old?.baza_klucz
+            if (!bazaKlucz) return
+            setKorektyZakupow(prev => {
+              if (!(bazaKlucz in prev)) return prev
+              const n = { ...prev }; delete n[bazaKlucz]; return n
+            })
+          } else {
+            const r = payload.new
+            setKorektyZakupow(prev => ({
+              ...prev,
+              [r.baza_klucz]: {
+                id: r.id, nazwa: r.nazwa, ilosc: r.ilosc,
+                kategoria: r.kategoria, usuniety: !!r.usuniety,
+              },
+            }))
+          }
+        }
+      )
       .subscribe()
 
     return () => { supabase.removeChannel(channel) }
@@ -534,7 +739,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     // No-op — stan jest w bazie (zakupy_historia) i synchronizowany przez Realtime.
   }
 
-  // ── Toggle zwykłego skladnika (z planu) ──
+  // ── Toggle zwykłego skladnika (z planu lub cyklicznego) — zapisuje w zakupy_historia ──
   async function toggle(item) {
     const klucz = item.klucz
     const byloOdznaczone = odznaczone.has(klucz)
@@ -602,8 +807,12 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     }
   }
 
-  // ── Dodawanie / edycja własnego produktu (zwykłego lub cyklicznego) ──
-  // dane: { nazwa, ilosc, kategoria, cykliczny: bool }
+  // ── Dodawanie / edycja produktu ──
+  // Trzy ścieżki:
+  // 1. Korekta pozycji z planu (zmiana 12 buraków → 4) → zapis do korekty_zakupow
+  // 2. Edycja własnego produktu → update zakupy_wlasne (lub zakupy_cykliczne)
+  // 3. Nowy produkt → insert do zakupy_wlasne / zakupy_cykliczne (w zależności od checkboxa)
+  // Plus: zmiana flagi „cykliczny” przy edycji = przeniesienie między tabelami.
   async function zapiszWlasny(dane) {
     const daneDoZapisu = {
       nazwa: poprawNazwe(dane.nazwa),
@@ -615,12 +824,30 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
 
     const chceCykliczny = !!dane.cykliczny
 
+    // Ścieżka 1: korekta pozycji z planu
+    if (edycjaWlasnego?.__zrodlo === 'plan') {
+      const bazaKlucz = edycjaWlasnego.bazaKlucz || edycjaWlasnego.klucz
+      if (!bazaKlucz) return
+
+      await zapiszKorekteZakupu(bazaKlucz, {
+        nazwa: daneDoZapisu.nazwa,
+        ilosc: daneDoZapisu.ilosc,
+        kategoria: daneDoZapisu.kategoria,
+        usuniety: false,
+      })
+      pokazToast(`Zmieniono: ${daneDoZapisu.nazwa}`)
+      setEdycjaWlasnego(null)
+      setPokazDodaj(false)
+      return
+    }
+
+    // Ścieżka 2: edycja istniejącego produktu
     if (edycjaWlasnego) {
-      const bylCykliczny = edycjaWlasnego.zrodlo_cykliczne === true
+      const bylCykliczny = edycjaWlasnego.__zrodlo === 'cykliczne'
       const id = edycjaWlasnego.id
 
       if (chceCykliczny === bylCykliczny) {
-        // Edycja w obrębie tej samej tabeli — zwykły UPDATE.
+        // Edycja w obrębie tej samej tabeli
         const tabela = chceCykliczny ? 'zakupy_cykliczne' : 'zakupy_wlasne'
         const { data, error } = await supabase.from(tabela)
           .update(daneDoZapisu).eq('id', id).select().single()
@@ -637,9 +864,9 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
         }
         pokazToast(`Zmieniono: ${daneDoZapisu.nazwa}`)
       } else {
-        // Zmiana flagi „powtarzaj co tydzień” = przenosimy do innej tabeli.
+        // Zmiana flagi „powtarzaj co tydzień” = przenosimy do innej tabeli
         if (chceCykliczny) {
-          // Z zakupy_wlasne → zakupy_cykliczne
+          // zakupy_wlasne → zakupy_cykliczne
           const rekord = {
             ...daneDoZapisu,
             household_id: householdId,
@@ -657,7 +884,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
           if (data) setCykliczne(prev => prev.some(c => c.id === data.id) ? prev : [...prev, data])
           pokazToast(`Powtarza się co tydzień: ${daneDoZapisu.nazwa}`)
         } else {
-          // Z zakupy_cykliczne → zakupy_wlasne (na ten tydzień)
+          // zakupy_cykliczne → zakupy_wlasne (na ten tydzień)
           const rekord = {
             ...daneDoZapisu,
             household_id: householdId,
@@ -679,7 +906,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
         }
       }
     } else {
-      // Nowy produkt — od razu do właściwej tabeli.
+      // Ścieżka 3: nowy produkt
       if (chceCykliczny) {
         const rekord = {
           ...daneDoZapisu,
@@ -723,6 +950,109 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     setPokazDodaj(false)
   }
 
+  function rozpocznijEdycjeItemu(item) {
+    if (!item) return
+    if (item.zrodlo === 'wlasne') {
+      setEdycjaWlasnego({ ...item.wlasnyData, __zrodlo: 'wlasne', cykliczny: false })
+    } else if (item.zrodlo === 'cykliczne') {
+      setEdycjaWlasnego({ ...item.cyklicneData, __zrodlo: 'cykliczne', cykliczny: true })
+    } else {
+      setEdycjaWlasnego({
+        __zrodlo: 'plan',
+        bazaKlucz: item.bazaKlucz || item.klucz,
+        klucz: item.klucz,
+        nazwa: item.skladnik,
+        ilosc: tekstIlosciZItemu(item),
+        kategoria: item.kategoria || '8_Inne',
+        cykliczny: false,
+      })
+    }
+    setPokazDodaj(true)
+  }
+
+  async function usunEdytowanyProdukt(item) {
+    if (!item) return
+
+    // Korekta z planu → oznacz jako usunięty (i schowaj z listy)
+    if (item.__zrodlo === 'plan') {
+      const bazaKlucz = item.bazaKlucz || item.klucz
+      if (!bazaKlucz) return
+      const poprzednia = korektyZakupow[bazaKlucz]
+      const kluczWidoku = kluczZakupu(item.nazwa, '')
+      const histId = historiaIds[kluczWidoku] || historiaIds[item.klucz]
+
+      await zapiszKorekteZakupu(bazaKlucz, {
+        nazwa: item.nazwa,
+        ilosc: item.ilosc,
+        kategoria: item.kategoria,
+        usuniety: true,
+      })
+      setOdznaczone(prev => {
+        const n = new Set(prev)
+        n.delete(kluczWidoku)
+        if (item.klucz) n.delete(item.klucz)
+        return n
+      })
+      if (histId) {
+        await supabase.from('zakupy_historia').delete().eq('id', histId)
+        setHistoriaIds(prev => {
+          const n = { ...prev }
+          delete n[kluczWidoku]
+          if (item.klucz) delete n[item.klucz]
+          return n
+        })
+      }
+      setEdycjaWlasnego(null)
+      setPokazDodaj(false)
+      pokazToast(`Usunięto: ${item.nazwa}`, async () => {
+        if (poprzednia) {
+          await zapiszKorekteZakupu(bazaKlucz, poprzednia)
+        } else {
+          await usunKorekteZakupu(bazaKlucz)
+        }
+        setToast(null)
+      })
+      return
+    }
+
+    await usunWlasny(item)
+  }
+
+  function przywrocUsunietyProdukt(item) {
+    if (!item?.bazaKlucz) return
+    const poprzednia = korektyZakupow[item.bazaKlucz]
+    if (!poprzednia?.usuniety) return
+
+    // Cofamy flagę „usuniety” — pozostaw nazwę/ilość/kategorię jeśli były edytowane
+    zapiszKorekteZakupu(item.bazaKlucz, {
+      nazwa: poprzednia.nazwa,
+      ilosc: poprzednia.ilosc,
+      kategoria: poprzednia.kategoria,
+      usuniety: false,
+    })
+
+    pokazToast(`Przywrócono: ${item.nazwa}`, async () => {
+      await zapiszKorekteZakupu(item.bazaKlucz, poprzednia)
+      setToast(null)
+    })
+  }
+
+  function przywrocWszystkieUsuniete() {
+    const usuniete = Object.entries(korektyZakupow || {}).filter(([, korekta]) => korekta?.usuniety)
+    if (usuniete.length === 0) return
+
+    const poprzednie = { ...korektyZakupow }
+    usuniete.forEach(([bazaKlucz, korekta]) => {
+      zapiszKorekteZakupu(bazaKlucz, { ...korekta, usuniety: false })
+    })
+
+    pokazToast(`Przywrócono ${usuniete.length} produktów`, async () => {
+      for (const [bazaKlucz, korekta] of Object.entries(poprzednie)) {
+        if (korekta?.usuniety) await zapiszKorekteZakupu(bazaKlucz, korekta)
+      }
+      setToast(null)
+    })
+  }
 
   async function dodajSzybkieProdukty(tekst) {
     const linie = rozbijSzybkieLinie(tekst)
@@ -752,7 +1082,6 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     if (error) {
       console.error('Błąd szybkiego dodawania produktów — bulk insert:', error, rekordy)
 
-      // Gdyby jedna linijka wywaliła bulk insert, spróbuj zapisać pozostałe pojedynczo.
       const dodane = []
       const bledy = []
 
@@ -795,7 +1124,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
   }
 
   async function usunWlasny(item) {
-    const cykliczny = item.zrodlo_cykliczne === true
+    const cykliczny = item.__zrodlo === 'cykliczne'
     const tabela = cykliczny ? 'zakupy_cykliczne' : 'zakupy_wlasne'
 
     await supabase.from(tabela).delete().eq('id', item.id)
@@ -803,8 +1132,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     else setWlasne(prev => prev.filter(w => w.id !== item.id))
 
     pokazToast(`Usunięto: ${item.nazwa}`, async () => {
-      // Przywróć (bez id, bo będzie nowy)
-      const { id, created_at, zrodlo_cykliczne, ...rest } = item
+      const { id, created_at, __zrodlo, cykliczny: _c, ...rest } = item
       const { data } = await supabase.from(tabela).insert(rest).select().single()
       if (data) {
         if (cykliczny) setCykliczne(prev => [...prev, data])
@@ -813,6 +1141,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
       setToast(null)
     })
     setEdycjaWlasnego(null)
+    setPokazDodaj(false)
   }
 
   async function zacznijOdNowa() {
@@ -844,7 +1173,6 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
   }
 
   // ── Łączenie list (plan + własne + cykliczne) do widoku ──
-  // Każdy własny produkt mapuję na strukturę zgodną z item z planu
   const wlasneJakoItems = useMemo(() => wlasne.map(w => ({
     klucz: `wlasny_${w.id}`,
     skladnik: w.nazwa,
@@ -854,15 +1182,14 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     kategoria: w.kategoria || '8_Inne',
     podmieniono: false,
     zrodlo: 'wlasne',
-    wlasnyData: w, // referencja do oryginalnego rekordu
+    wlasnyData: w,
   })), [wlasne])
 
-  // Cykliczne produkty — wyświetlamy jak własne, ale z flagą do różnicowania.
-  // Klucz musi być różny od ewentualnego wlasny_X żeby się nie zderzyły.
+  // Cykliczne — wyświetlamy jak własne, ale z flagą do różnicowania.
   // Odhaczanie cyklicznych zapisujemy w zakupy_historia (jak składniki z planu),
   // dzięki czemu „Zacznij od nowa” je automatycznie resetuje.
   const cyklicneJakoItems = useMemo(() => cykliczne.map(c => ({
-    klucz: `cykliczny_${c.id}`,
+    klucz: kluczZakupu(c.nazwa, ''), // ten sam klucz co w zakupy_historia
     skladnik: c.nazwa,
     ilosc: null,
     iloscOryginalna: c.ilosc || '',
@@ -870,29 +1197,52 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     kategoria: c.kategoria || '8_Inne',
     podmieniono: false,
     zrodlo: 'cykliczne',
-    cyklicneData: c, // referencja do oryginalnego rekordu (do edycji/usuwania)
+    cyklicneData: c,
   })), [cykliczne])
 
+  const listaPoKorektach = useMemo(
+    () => lista
+      .map(item => zastosujKorekteZakupu(item, korektyZakupow[item.klucz]))
+      .filter(Boolean),
+    [lista, korektyZakupow]
+  )
+
   const listaPoProduktachDomowych = useMemo(
-    () => lista.filter(item => !produktPasujeDoDomu(item.skladnik, produktyWDomuSet)),
-    [lista, produktyWDomuSet]
+    () => listaPoKorektach.filter(item => !produktPasujeDoDomu(item.skladnik, produktyWDomuSet)),
+    [listaPoKorektach, produktyWDomuSet]
   )
 
   const ukrytePrzezMamWDomu = useMemo(
-    () => lista.filter(item => produktPasujeDoDomu(item.skladnik, produktyWDomuSet)),
-    [lista, produktyWDomuSet]
+    () => listaPoKorektach.filter(item => produktPasujeDoDomu(item.skladnik, produktyWDomuSet)),
+    [listaPoKorektach, produktyWDomuSet]
   )
 
-  // Wszystkie itemy (plan + własne + cykliczne) razem. Produkty z „Mam w domu”
-  // ukrywamy tylko z części wygenerowanej z planu — ręcznie dopisane (zwykłe
-  // i cykliczne) zostają na liście, bo to świadoma decyzja użytkownika.
+  const usunieteProdukty = useMemo(() => {
+    return Object.entries(korektyZakupow || {})
+      .filter(([, korekta]) => korekta?.usuniety)
+      .map(([bazaKlucz, korekta]) => {
+        const oryginalny = lista.find(item => item.klucz === bazaKlucz)
+        const nazwa = poprawNazwe(korekta.nazwa || oryginalny?.skladnik || bazaKlucz.split('||')[0])
+        return {
+          bazaKlucz,
+          nazwa,
+          ilosc: normalizujIloscTekst(korekta.ilosc || tekstIlosciZItemu(oryginalny)),
+          kategoria: bezpiecznaKategoria(korekta.kategoria || oryginalny?.kategoria),
+        }
+      })
+      .filter(item => item.bazaKlucz && item.nazwa)
+      .sort((a, b) => a.nazwa.localeCompare(b.nazwa, 'pl'))
+  }, [korektyZakupow, lista])
+
+  // Wszystkie itemy razem: plan (po korektach, po Mam w domu) + własne + cykliczne.
+  // Cykliczne i własne zostają nawet jeśli pasują do „Mam w domu” — to świadoma decyzja.
   const wszystkieItemy = useMemo(() => {
     return [...listaPoProduktachDomowych, ...wlasneJakoItems, ...cyklicneJakoItems]
   }, [listaPoProduktachDomowych, wlasneJakoItems, cyklicneJakoItems])
 
-  // Czy item jest kupione? (różne źródło prawdy w zależności od zrodla)
+  // Czy item jest kupione?
   // - 'wlasne' → kolumna `odznaczone` w zakupy_wlasne
-  // - 'plan' i 'cykliczne' → zakupy_historia (przez Set `odznaczone` po kluczu)
+  // - 'plan' i 'cykliczne' → zakupy_historia (przez Set odznaczone po kluczu)
   const czyKupione = useCallback((item) => {
     if (item.zrodlo === 'wlasne') return !!item.wlasnyData.odznaczone
     return odznaczone.has(item.klucz)
@@ -910,35 +1260,20 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     kategorie[katLabel].items.push(item)
   })
 
-  // Toggle uniwersalny. Cykliczne idą tą samą ścieżką co plan (zakupy_historia),
-  // dzięki czemu „Zacznij od nowa” je automatycznie czyści.
   function toggleAny(item) {
+    blokujDodawanieDo.current = Date.now() + 650
     if (item.zrodlo === 'wlasne') return toggleWlasny(item.wlasnyData)
     return toggle(item)
   }
 
-  // Z itema na liście zrób payload dla modalu edycji.
-  // Dla cyklicznych dodaję flagę `cykliczny: true` żeby modal wiedział,
-  // a `zapiszWlasny` / `usunWlasny` rozpoznały z której tabeli czytać.
-  function payloadDoEdycji(item) {
-    if (item.zrodlo === 'cykliczne') {
-      const c = item.cyklicneData
-      return {
-        id: c.id, nazwa: c.nazwa, ilosc: c.ilosc, kategoria: c.kategoria,
-        cykliczny: true, zrodlo_cykliczne: true,
-      }
-    }
-    // 'wlasne'
-    const w = item.wlasnyData
-    return {
-      id: w.id, nazwa: w.nazwa, ilosc: w.ilosc, kategoria: w.kategoria,
-      cykliczny: false, zrodlo_cykliczne: false,
-    }
+  function otworzDodawanieWlasnego() {
+    if (Date.now() < blokujDodawanieDo.current) return
+    setEdycjaWlasnego(null)
+    setPokazDodaj(true)
   }
 
   if (loading) return <div style={s.loading}>Generuję listę zakupów…</div>
 
-  // ── Tryb sklepu (przejmuje cały ekran) ──
   if (trybSklepu) {
     return (
       <TrybSklepu
@@ -983,12 +1318,11 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
         />
 
         <MamWDomuShortcut
-          ile={produktyWDomu.length}
+          ile={listaPoKorektach.length}
           ukryte={ukrytePrzezMamWDomu.length}
           onClick={() => setPokazMamWDomu(true)}
         />
 
-        {/* Główny CTA: Idę do sklepu */}
         {wszystkieItemy.length > 0 && (
           <button style={s.btnSklep} onClick={() => setTrybSklepu(true)}>
             🛒 Idę do sklepu
@@ -1001,7 +1335,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
             <p style={s.emptySub}>
               Wypełnij kalendarz albo dodaj własny produkt.
             </p>
-            <button style={s.emptyBtn} onClick={() => { setEdycjaWlasnego(null); setPokazDodaj(true) }}>
+            <button style={s.emptyBtn} onClick={otworzDodawanieWlasnego}>
               + Dodaj produkt
             </button>
           </div>
@@ -1017,12 +1351,8 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
                       item={item}
                       kupione={false}
                       onTap={() => toggleAny(item)}
-                      onLongPress={(item.zrodlo === 'wlasne' || item.zrodlo === 'cykliczne')
-                        ? () => { setEdycjaWlasnego(payloadDoEdycji(item)); setPokazDodaj(true) }
-                        : null}
-                      onEdit={(item.zrodlo === 'wlasne' || item.zrodlo === 'cykliczne')
-                        ? () => { setEdycjaWlasnego(payloadDoEdycji(item)); setPokazDodaj(true) }
-                        : null}
+                      onLongPress={() => rozpocznijEdycjeItemu(item)}
+                      onEdit={() => rozpocznijEdycjeItemu(item)}
                       onHome={item.zrodlo === 'plan' ? () => dodajDoMamWDomu(item.skladnik) : null}
                     />
                   ))}
@@ -1030,10 +1360,13 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
               </section>
             ))}
 
-            {/* Dodaj własny produkt — przycisk pomiędzy kategoriami */}
-            <button style={s.btnDodajWlasny} onClick={() => { setEdycjaWlasnego(null); setPokazDodaj(true) }}>
-              + Dodaj własny produkt (papier, chemia, lek…)
-            </button>
+            {usunieteProdukty.length > 0 && (
+              <UsunieteProdukty
+                items={usunieteProdukty}
+                onRestore={przywrocUsunietyProdukt}
+                onRestoreAll={przywrocWszystkieUsuniete}
+              />
+            )}
 
             {kupione.length > 0 && (
               <section style={{ ...s.katSekcja, marginTop: 24 }}>
@@ -1045,9 +1378,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
                       item={item}
                       kupione={true}
                       onTap={() => toggleAny(item)}
-                      onEdit={(item.zrodlo === 'wlasne' || item.zrodlo === 'cykliczne')
-                        ? () => { setEdycjaWlasnego(payloadDoEdycji(item)); setPokazDodaj(true) }
-                        : null}
+                      onEdit={() => rozpocznijEdycjeItemu(item)}
                       onHome={item.zrodlo === 'plan' ? () => dodajDoMamWDomu(item.skladnik) : null}
                     />
                   ))}
@@ -1063,6 +1394,10 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
                 Odśwież listę
               </button>
             </div>
+
+            <button style={s.btnDodajWlasny} onClick={otworzDodawanieWlasnego}>
+              + Dodaj własny produkt (papier, chemia, lek…)
+            </button>
           </>
         )}
       </div>
@@ -1072,14 +1407,14 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
           edycja={edycjaWlasnego}
           onClose={() => { setPokazDodaj(false); setEdycjaWlasnego(null) }}
           onSave={zapiszWlasny}
-          onDelete={edycjaWlasnego ? () => usunWlasny(edycjaWlasnego) : null}
+          onDelete={edycjaWlasnego ? () => usunEdytowanyProdukt(edycjaWlasnego) : null}
         />
       )}
 
       {pokazMamWDomu && (
         <MamWDomuModal
           produkty={produktyWDomu}
-          aktualneProdukty={lista}
+          aktualneProdukty={listaPoKorektach}
           ukryteProdukty={ukrytePrzezMamWDomu}
           onClose={() => setPokazMamWDomu(false)}
           onSave={(nowe) => {
@@ -1108,9 +1443,9 @@ function MamWDomuShortcut({ ile, ukryte, onClick }) {
     <button style={s.mamWDomuShortcut} onClick={onClick}>
       <div>
         <div style={s.mamWDomuEyebrow}>MAM W DOMU</div>
-        <div style={s.mamWDomuTitle}>Produkty pomijane na liście</div>
+        <div style={s.mamWDomuTitle}>Odklikaj produkty z aktualnej listy</div>
         <div style={s.mamWDomuSub}>
-          {ile} zapisanych produktów{ukryte > 0 ? ` · ukryto teraz: ${ukryte}` : ''}
+          {ile} produktów z przepisów{ukryte > 0 ? ` · ukryto teraz: ${ukryte}` : ''}
         </div>
       </div>
       <span style={s.mamWDomuArrow}>›</span>
@@ -1118,44 +1453,80 @@ function MamWDomuShortcut({ ile, ukryte, onClick }) {
   )
 }
 
+function UsunieteProdukty({ items, onRestore, onRestoreAll }) {
+  if (!items?.length) return null
+
+  return (
+    <section style={s.restoreCard}>
+      <div style={s.restoreHeader}>
+        <div>
+          <div style={s.restoreEyebrow}>USUNIĘTE Z LISTY</div>
+          <div style={s.restoreTitle}>Możesz przywrócić ukryte pozycje</div>
+        </div>
+        <button style={s.restoreAllBtn} onClick={onRestoreAll}>
+          Przywróć wszystko
+        </button>
+      </div>
+      <div style={s.restoreList}>
+        {items.map(item => (
+          <button
+            key={item.bazaKlucz}
+            style={s.restoreItem}
+            onClick={() => onRestore(item)}
+          >
+            <span style={s.restoreItemName}>{item.nazwa}</span>
+            {item.ilosc && <span style={s.restoreItemQty}>{item.ilosc}</span>}
+            <span style={s.restoreItemAction}>Przywróć</span>
+          </button>
+        ))}
+      </div>
+    </section>
+  )
+}
+
 function MamWDomuModal({ produkty, aktualneProdukty, ukryteProdukty, onClose, onSave }) {
   const [lokalne, setLokalne] = useState(() => unikalneProduktyWDomu(produkty))
-  const [tekst, setTekst] = useState('')
 
   const lokalneSet = useMemo(
     () => new Set(lokalne.map(normalizujProduktDomowy).filter(Boolean)),
     [lokalne]
   )
 
-  const sugestie = useMemo(() => {
+  const aktualneLista = useMemo(() => {
     const mapa = new Map()
     ;(aktualneProdukty || []).forEach(item => {
+      if (produktZawszeUkrytyZPrzepisow(item.skladnik)) return
       const ladna = ladnaNazwaProduktuDomowego(item.skladnik)
       const norm = normalizujProduktDomowy(ladna)
-      if (norm && !lokalneSet.has(norm) && !mapa.has(norm)) mapa.set(norm, ladna)
+      if (!norm || mapa.has(norm)) return
+      mapa.set(norm, {
+        norm,
+        nazwa: ladna,
+        kategoria: item.kategoria,
+        ilosc: item.ilosc != null
+          ? `${item.ilosc} ${item.jednostka || ''}`.trim()
+          : (item.iloscOryginalna || item.jednostka || ''),
+      })
     })
-    return [...mapa.values()].sort((a, b) => a.localeCompare(b, 'pl')).slice(0, 18)
-  }, [aktualneProdukty, lokalneSet])
+    return [...mapa.values()].sort((a, b) => a.nazwa.localeCompare(b.nazwa, 'pl'))
+  }, [aktualneProdukty])
 
-  function dodajNazwy(raw) {
-    const nazwy = rozbijSzybkieLinie(raw)
-      .map(ladnaNazwaProduktuDomowego)
-      .filter(Boolean)
-    if (nazwy.length === 0) return
-    setLokalne(prev => unikalneProduktyWDomu([...prev, ...nazwy]))
-    setTekst('')
+  function toggle(nazwa) {
+    const ladna = ladnaNazwaProduktuDomowego(nazwa)
+    const norm = normalizujProduktDomowy(ladna)
+    if (!norm) return
+    setLokalne(prev => {
+      const ma = prev.some(x => normalizujProduktDomowy(x) === norm)
+      if (ma) return prev.filter(x => normalizujProduktDomowy(x) !== norm)
+      return unikalneProduktyWDomu([...prev, ladna])
+    })
   }
 
-  function usun(nazwa) {
-    const norm = normalizujProduktDomowy(nazwa)
-    setLokalne(prev => prev.filter(x => normalizujProduktDomowy(x) !== norm))
-  }
-
-  function handleKeyDown(e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault()
-      dodajNazwy(tekst)
-    }
+  function zapiszAktualne() {
+    const zaznaczoneZAktualnejListy = aktualneLista
+      .filter(item => lokalneSet.has(item.norm))
+      .map(item => item.nazwa)
+    onSave(zaznaczoneZAktualnejListy)
   }
 
   return (
@@ -1164,13 +1535,13 @@ function MamWDomuModal({ produkty, aktualneProdukty, ukryteProdukty, onClose, on
         <div style={mod.header}>
           <div>
             <div style={mod.eyebrow}>MAM W DOMU</div>
-            <div style={mod.title}>Nie dodawaj do zakupów</div>
+            <div style={mod.title}>Odklikaj z aktualnej listy</div>
           </div>
           <button style={mod.close} onClick={onClose}>✕</button>
         </div>
 
         <p style={mod.helpText}>
-          Te produkty będą pomijane tylko z listy generowanej z przepisów. Produkty dopisane ręcznie zostają na liście.
+          Pokazuję tylko produkty wygenerowane z przepisów na ten tydzień. Produkty dopisane ręcznie zostają na zakupach, bo zakładamy, że skoro je dopisałeś, to ich brakuje.
         </p>
 
         {ukryteProdukty?.length > 0 && (
@@ -1179,52 +1550,45 @@ function MamWDomuModal({ produkty, aktualneProdukty, ukryteProdukty, onClose, on
           </div>
         )}
 
-        <label style={mod.label}>Dopisz produkt</label>
-        <div style={mod.inlineAddRow}>
-          <input
-            style={{ ...mod.input, flex: 1 }}
-            type="text"
-            placeholder="np. Sól, pieprz, olej"
-            value={tekst}
-            onChange={e => setTekst(e.target.value)}
-            onKeyDown={handleKeyDown}
-            autoFocus
-          />
-          <button style={mod.btnSmallSave} onClick={() => dodajNazwy(tekst)} disabled={!tekst.trim()}>
-            Dodaj
-          </button>
-        </div>
+        <label style={mod.label}>Produkty z wygenerowanej listy ({aktualneLista.length})</label>
 
-        {sugestie.length > 0 && (
-          <>
-            <label style={mod.label}>Z aktualnej listy</label>
-            <div style={mod.chipCloud}>
-              {sugestie.map(nazwa => (
-                <button key={nazwa} style={mod.chipGhost} onClick={() => setLokalne(prev => unikalneProduktyWDomu([...prev, nazwa]))}>
-                  + {nazwa}
+        {aktualneLista.length === 0 ? (
+          <div style={mod.loading}>Brak produktów wygenerowanych z przepisów.</div>
+        ) : (
+          <div style={mod.choiceList}>
+            {aktualneLista.map(item => {
+              const checked = lokalneSet.has(item.norm)
+              return (
+                <button
+                  key={item.norm}
+                  style={{ ...mod.choiceRow, ...(checked ? mod.choiceRowOn : {}) }}
+                  onClick={() => toggle(item.nazwa)}
+                >
+                  <span style={{ ...mod.choiceCheck, ...(checked ? mod.choiceCheckOn : {}) }}>
+                    {checked ? '✓' : ''}
+                  </span>
+                  <span style={mod.choiceText}>
+                    <span style={mod.choiceName}>{item.nazwa}</span>
+                    {item.ilosc && <span style={mod.choiceQty}>{item.ilosc}</span>}
+                  </span>
                 </button>
-              ))}
-            </div>
-          </>
+              )
+            })}
+          </div>
         )}
 
-        <label style={mod.label}>Produkty w domu ({lokalne.length})</label>
-        <div style={mod.chipCloud}>
-          {lokalne.map(nazwa => (
-            <button key={nazwa} style={mod.chipOn} onClick={() => usun(nazwa)} title="Usuń z listy produktów w domu">
-              {nazwa} ×
-            </button>
-          ))}
-        </div>
-
         <div style={mod.footerWrap}>
-          <button style={mod.btnCancel} onClick={() => setLokalne(unikalneProduktyWDomu(DOMYSLNE_PRODUKTY_W_DOMU))}>
-            Domyślne
-          </button>
           <button style={mod.btnCancel} onClick={() => setLokalne([])}>
-            Wyczyść
+            Nic nie mam
           </button>
-          <button style={mod.btnSave} onClick={() => onSave(lokalne)}>
+          <button
+            style={mod.btnCancel}
+            onClick={() => setLokalne(aktualneLista.map(item => item.nazwa))}
+            disabled={aktualneLista.length === 0}
+          >
+            Mam wszystko
+          </button>
+          <button style={mod.btnSave} onClick={zapiszAktualne}>
             Zapisz
           </button>
         </div>
@@ -1249,7 +1613,6 @@ function SzybkieDodawanie({ value, onChange, onDodaj }) {
   async function handleChange(e) {
     const next = e.target.value
 
-    // Obsługa wklejenia wielu linii albo Enter na klawiaturze mobilnej.
     if (/\r?\n/.test(next)) {
       const parts = next.split(/\r?\n/)
       const gotowe = parts.slice(0, -1).map(x => x.trim()).filter(Boolean)
@@ -1303,7 +1666,7 @@ function SzybkieDodawanie({ value, onChange, onDodaj }) {
 }
 
 // ════════════════════════════════════════════════════════════
-// Pojedynczy wiersz listy — z long-pressem dla własnych
+// Pojedynczy wiersz listy — z long-pressem dla edycji
 function ItemRow({ item, kupione, onTap, onLongPress, onEdit, onHome }) {
   const longPressTimer = useRef(null)
   const startPos = useRef(null)
@@ -1365,6 +1728,7 @@ function ItemRow({ item, kupione, onTap, onLongPress, onEdit, onHome }) {
         <div style={{ ...s.itemNazwa, ...(kupione ? { textDecoration: 'line-through', color: t.muteLight } : {}) }}>
           {item.skladnik}
           {item.podmieniono && <span style={s.podmianaIcon} title="Składnik podmieniony">↻</span>}
+          {item.edytowany && <span style={s.tagJednorazowo} title="Pozycja zmieniona na liście">edytowane</span>}
           {isWlasny && <span style={s.tagJednorazowo} title="Produkt dopisany ręcznie">własne</span>}
           {isCykliczny && <span style={s.tagPowtarzaj} title="Powtarza się co tydzień">↻ co tydzień</span>}
         </div>
@@ -1393,7 +1757,7 @@ function ItemRow({ item, kupione, onTap, onLongPress, onEdit, onHome }) {
           onPointerUp={e => e.stopPropagation()}
           onClick={e => { e.stopPropagation(); onEdit() }}
           aria-label={`Edytuj ${item.skladnik}`}
-          title="Edytuj ilość"
+          title="Edytuj nazwę / ilość / usuń"
         >
           ✎
         </button>
@@ -1403,13 +1767,16 @@ function ItemRow({ item, kupione, onTap, onLongPress, onEdit, onHome }) {
 }
 
 // ════════════════════════════════════════════════════════════
-// Modal: dodaj/edytuj własny produkt (jednorazowy lub cykliczny).
-// edycja może mieć dodatkowo flagę `cykliczny: true` (gdy przyszło z zakupy_cykliczne).
+// Modal: dodaj/edytuj produkt — z opcją „powtarzaj co tydzień”.
+// Checkbox jest ukryty dla korekt z planu (te zawsze pozostają korektami).
 function DodajProduktModal({ edycja, onClose, onSave, onDelete }) {
   const [nazwa, setNazwa] = useState(edycja?.nazwa || '')
   const [ilosc, setIlosc] = useState(edycja?.ilosc?.toString() || '')
   const [kategoria, setKategoria] = useState(edycja?.kategoria || '8_Inne')
   const [cykliczny, setCykliczny] = useState(!!edycja?.cykliczny)
+
+  // Korekta pozycji z planu nie ma sensu jako „cykliczna” — to inny mechanizm
+  const pokazCykliczny = edycja?.__zrodlo !== 'plan'
 
   function submit() {
     if (!nazwa.trim()) return
@@ -1417,7 +1784,7 @@ function DodajProduktModal({ edycja, onClose, onSave, onDelete }) {
       nazwa: nazwa.trim(),
       ilosc: normalizujIloscTekst(ilosc),
       kategoria,
-      cykliczny,
+      cykliczny: pokazCykliczny ? cykliczny : false,
     })
   }
 
@@ -1440,7 +1807,6 @@ function DodajProduktModal({ edycja, onClose, onSave, onDelete }) {
             placeholder="np. Papier toaletowy"
             value={nazwa}
             onChange={e => setNazwa(e.target.value)}
-            autoFocus
           />
 
           <label style={mod.label}>Ilość / jednostka (opcjonalnie)</label>
@@ -1457,25 +1823,27 @@ function DodajProduktModal({ edycja, onClose, onSave, onDelete }) {
             {KATEGORIE.map(k => <option key={k.id} value={k.id}>{k.label}</option>)}
           </select>
 
-          <label
-            style={mod.checkRow}
-            onClick={e => { e.preventDefault(); setCykliczny(v => !v) }}
-          >
-            <input
-              type="checkbox"
-              checked={cykliczny}
-              onChange={e => setCykliczny(e.target.checked)}
-              style={{ marginTop: 2, accentColor: t.accent, width: 18, height: 18, flexShrink: 0 }}
-              onClick={e => e.stopPropagation()}
-            />
-            <div>
-              <div style={mod.checkLabel}>Powtarzaj co tydzień</div>
-              <div style={mod.checkHelp}>
-                Produkt automatycznie pojawi się na liście w każdym nowym tygodniu.
-                Po zakupie odhaczony, w poniedziałek wraca jako do kupienia.
+          {pokazCykliczny && (
+            <label
+              style={mod.checkRow}
+              onClick={e => { e.preventDefault(); setCykliczny(v => !v) }}
+            >
+              <input
+                type="checkbox"
+                checked={cykliczny}
+                onChange={e => setCykliczny(e.target.checked)}
+                style={{ marginTop: 2, accentColor: t.accent, width: 18, height: 18, flexShrink: 0 }}
+                onClick={e => e.stopPropagation()}
+              />
+              <div>
+                <div style={mod.checkLabel}>Powtarzaj co tydzień</div>
+                <div style={mod.checkHelp}>
+                  Produkt automatycznie pojawi się na liście w każdym nowym tygodniu.
+                  Po zakupie odhaczony, w poniedziałek wraca jako do kupienia.
+                </div>
               </div>
-            </div>
-          </label>
+            </label>
+          )}
         </div>
 
         <div style={mod.footer}>
@@ -1512,7 +1880,6 @@ function TrybSklepu({ wszystkieItemy, czyKupione, onToggle, onClose }) {
       }
     }
     lock()
-    // Re-request gdy strona wraca z tła
     function onVisible() {
       if (document.visibilityState === 'visible') lock()
     }
@@ -1530,7 +1897,6 @@ function TrybSklepu({ wszystkieItemy, czyKupione, onToggle, onClose }) {
   const doKupienia = wszystkieItemy.filter(i => !czyKupione(i))
   const kupione = wszystkieItemy.filter(i => czyKupione(i))
 
-  // Pogrupuj do kupienia po kategoriach
   const kategorie = {}
   doKupienia.forEach(item => {
     const katId = item.kategoria
@@ -1594,7 +1960,7 @@ function TrybSklepu({ wszystkieItemy, czyKupione, onToggle, onClose }) {
       </div>
 
       <div style={sklep.hint}>
-        Przesuń produkt w prawo, żeby {/* */}{doKupienia.length > 0 ? 'wrzucić do koszyka' : 'przywrócić'}
+        Przesuń produkt w prawo, żeby {doKupienia.length > 0 ? 'wrzucić do koszyka' : 'przywrócić'}
       </div>
     </div>
   )
@@ -1616,7 +1982,6 @@ function SwipeItem({ item, kupione, onSwipeRight }) {
 
   function progZaliczenia() {
     const szerokosc = itemRef.current?.offsetWidth || window.innerWidth || 320
-    // Celowo bez „szybkiego flicka”: zalicza dopiero świadome przesunięcie prawie do połowy.
     return Math.min(240, Math.max(115, szerokosc * 0.45))
   }
 
@@ -1639,7 +2004,6 @@ function SwipeItem({ item, kupione, onSwipeRight }) {
     const absX = Math.abs(dx)
     const absY = Math.abs(dy)
 
-    // Najpierw rozpoznaj kierunek. Pion = normalny scroll listy. Poziom = swipe produktu.
     if (!swipe.current.kierunek) {
       if (absX < 8 && absY < 8) return
       swipe.current.kierunek = absX > absY + 4 ? 'x' : 'y'
@@ -1681,7 +2045,6 @@ function SwipeItem({ item, kupione, onSwipeRight }) {
   }
 
   function pointerDown(e) {
-    // Dotyk obsługują onTouch*, żeby mobilne przeglądarki nie przejmowały gestu.
     if (e.pointerType === 'touch') return
     if (e.button != null && e.button !== 0) return
     pointerIdRef.current = e.pointerId
@@ -1715,7 +2078,6 @@ function SwipeItem({ item, kupione, onSwipeRight }) {
 
   return (
     <div style={sklep.itemWrapper}>
-      {/* Tło które pokazuje się przy swipe */}
       <div style={{
         ...sklep.itemBg,
         opacity: Math.min(1, translateX / progZaliczenia()),
@@ -1724,7 +2086,6 @@ function SwipeItem({ item, kupione, onSwipeRight }) {
         <span style={sklep.itemBgTxt}>{kupione ? 'Przywróć' : 'Do koszyka'}</span>
       </div>
 
-      {/* Sam item */}
       <div
         ref={itemRef}
         onPointerDown={pointerDown}
@@ -1848,6 +2209,40 @@ const s = {
     lineHeight: 1, paddingRight: 2,
   },
 
+  restoreCard: {
+    ...ui.card,
+    padding: 14,
+    marginBottom: 14,
+    border: `1px solid ${t.border}`,
+  },
+  restoreHeader: {
+    display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between',
+    gap: 10, marginBottom: 10,
+  },
+  restoreEyebrow: {
+    fontFamily: fonts.sans, fontSize: 9.5, fontWeight: 800,
+    letterSpacing: 1.2, textTransform: 'uppercase', color: t.warm || t.accent,
+    marginBottom: 3,
+  },
+  restoreTitle: { fontSize: 13.5, fontWeight: 700, color: t.text, fontFamily: fonts.sans },
+  restoreAllBtn: {
+    border: `1px solid ${t.border}`, borderRadius: 999,
+    background: t.surfaceAlt, color: t.text,
+    fontFamily: fonts.sans, fontSize: 11.5, fontWeight: 700,
+    padding: '7px 9px', cursor: 'pointer', flexShrink: 0,
+  },
+  restoreList: { display: 'flex', flexDirection: 'column', gap: 6 },
+  restoreItem: {
+    width: '100%', boxSizing: 'border-box',
+    display: 'flex', alignItems: 'center', gap: 8,
+    padding: '9px 10px', borderRadius: 10,
+    border: `1px solid ${t.border}`, background: t.surfaceAlt,
+    textAlign: 'left', cursor: 'pointer', fontFamily: fonts.sans,
+  },
+  restoreItemName: { flex: 1, minWidth: 0, fontSize: 13.5, fontWeight: 600, color: t.text },
+  restoreItemQty: { fontSize: 11.5, color: t.mute, whiteSpace: 'nowrap' },
+  restoreItemAction: { fontSize: 11.5, color: t.accent, fontWeight: 800, whiteSpace: 'nowrap' },
+
   empty: { ...ui.card, padding: '30px 24px', textAlign: 'center' },
   emptyTytul: { ...ui.h3, marginBottom: 6 },
   emptySub: { fontFamily: fonts.sans, fontSize: 13.5, color: t.mute, margin: '0 0 18px', lineHeight: 1.5 },
@@ -1926,7 +2321,7 @@ const s = {
   },
 
   btnDodajWlasny: {
-    width: '100%', padding: '14px 16px', marginTop: 4,
+    width: '100%', padding: '14px 16px', marginTop: 14,
     background: 'transparent', border: `1.5px dashed ${t.borderStrong}`,
     borderRadius: 14, color: t.mute, cursor: 'pointer',
     fontFamily: fonts.sans, fontSize: 13.5, fontWeight: 600,
@@ -2014,6 +2409,28 @@ const mod = {
     padding: '7px 10px', fontFamily: fonts.sans,
     fontSize: 12, fontWeight: 700, cursor: 'pointer',
   },
+  loading: {
+    padding: '20px 0', textAlign: 'center',
+    fontFamily: fonts.sans, fontSize: 13, color: t.mute,
+  },
+  choiceList: { display: 'flex', flexDirection: 'column', gap: 8, marginTop: 8, maxHeight: '42vh', overflowY: 'auto', paddingRight: 2 },
+  choiceRow: {
+    width: '100%', display: 'flex', alignItems: 'center', gap: 10,
+    padding: '11px 12px', borderRadius: 12, border: `1px solid ${t.border}`,
+    background: t.surfaceAlt, color: t.text, textAlign: 'left', cursor: 'pointer',
+    fontFamily: fonts.sans, boxSizing: 'border-box',
+  },
+  choiceRowOn: { background: t.warmSoft || t.surfaceAlt, borderColor: t.warm || t.accent },
+  choiceCheck: {
+    width: 22, height: 22, borderRadius: 999, flexShrink: 0,
+    border: `1.5px solid ${t.borderStrong}`, background: t.surface,
+    display: 'grid', placeItems: 'center', fontSize: 13, fontWeight: 800,
+    color: '#fff', boxSizing: 'border-box',
+  },
+  choiceCheckOn: { background: t.accent, borderColor: t.accent },
+  choiceText: { minWidth: 0, display: 'flex', flexDirection: 'column', gap: 2 },
+  choiceName: { fontSize: 13.5, fontWeight: 650, color: t.text, lineHeight: 1.2 },
+  choiceQty: { fontSize: 11.5, color: t.mute, fontVariantNumeric: 'tabular-nums' },
   footerWrap: { display: 'flex', gap: 8, marginTop: 20, flexWrap: 'wrap' },
   label: {
     fontSize: 11, fontWeight: 600, letterSpacing: 1, textTransform: 'uppercase',
