@@ -281,7 +281,7 @@ export default function KonfiguracjaSlotow({ householdId, onBack }) {
                   <div
                     key={slot.id}
                     ref={el => { slotItemRefs.current[`${dzien}_${slot.id}`] = el }}
-                    style={{ ...s.slot, borderLeftColor: slot.kolor, opacity: isThisDragged ? 0.4 : 1, outline: isDropTarget ? `2px solid ${t.accent}` : 'none', outlineOffset: -2 }}
+                    style={{ ...s.slot, borderLeftColor: slot.kolor, opacity: isThisDragged ? 0.85 : 1, transform: isThisDragged ? 'scale(1.03)' : 'none', boxShadow: isThisDragged ? '0 8px 24px rgba(74,55,40,.18)' : s.slot.boxShadow, zIndex: isThisDragged ? 10 : 'auto', outline: isDropTarget ? `2px solid ${t.accent}` : 'none', outlineOffset: -2, transition: 'transform .15s, box-shadow .15s' }}
                   >
                     <div
                       style={s.dragHandle}
