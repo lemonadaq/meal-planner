@@ -2,21 +2,18 @@ import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { supabase } from '../supabase'
 import { t, fonts, ui } from '../theme'
 import { formatDataLocal as formatData, isDzis } from '../dataHelpers'
+import { useSloty, slotyWDniu, kluczDnia, sanityzuj } from '../useSloty'
 
 const DNI_KROTKO = ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Nd']
-const POSILKI = ['Śniadanie', 'Obiad', 'Kolacja']
 
-const SLOT_KOLORY = {
-  Śniadanie: 'rgba(196, 90, 50, .92)',
-  Obiad:     'rgba(140, 100, 50, .92)',
-  Kolacja:   'rgba(80, 110, 70, .92)',
-}
-
-// Posiłek → wartość kolumny `rodzaj` w bazie dań (do automatycznych sugestii w przyszłości)
-const POSILEK_RODZAJ = {
-  Śniadanie: 'sniadanie',
-  Obiad:     'obiad',
-  Kolacja:   'kolacja',
+// Konwersja hex koloru na rgba dla overlayu labeli na kafelkach
+function hexNaRgba(hex, alpha = 0.92) {
+  const h = (hex || '').replace('#', '')
+  if (h.length !== 6) return `rgba(120, 100, 70, ${alpha})`
+  const r = parseInt(h.slice(0, 2), 16)
+  const g = parseInt(h.slice(2, 4), 16)
+  const b = parseInt(h.slice(4, 6), 16)
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`
 }
 
 // Próg przewijania krawędziowego przy dragu (px od krawędzi ekranu)
@@ -58,7 +55,6 @@ function emojiDania(n) {
   if (x.includes('musli') || x.includes('granola') || x.includes('owsianka')) return '🥣'
   if (x.includes('chleb') || x.includes('tost') || x.includes('kanapk')) return '🥪'
   if (x.includes('naleśnik') || x.includes('placuszek') || x.includes('pancake')) return '🥞'
-  if (x.includes('tort') || x.includes('ciast') || x.includes('sernik') || x.includes('deser') || x.includes('mus ') || x.includes('pączk') || x.includes('drożdż') || x.includes('brownie') || x.includes('panna cotta') || x.includes('tirami')) return '🍰'
   return '🍽️'
 }
 
@@ -81,6 +77,31 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
   const [wyborDatyOpen, setWyborDatyOpen] = useState(false)
   const [wybranaData, setWybranaData] = useState(() => formatData(new Date()))
   const recznyWyborDniaRef = useRef(false)
+
+  // Konfiguracja slotów (per household) — dynamiczna lista posiłków per dzień tygodnia
+  const { config: slotyConfig } = useSloty(householdId)
+
+  // Helper: lista ID slotów dla podanego dnia (string YYYY-MM-DD lub obiekt Date)
+  const slotyDlaDnia = useCallback((dataLubStr) => {
+    const klucz = kluczDnia(dataLubStr)
+    return slotyWDniu(slotyConfig, klucz).map(s => s.id)
+  }, [slotyConfig])
+
+  // Helper: zwraca pełny obiekt slotu po ID (z konfiguracji)
+  const znajdzSlot = useCallback((slotId) => {
+    return sanityzuj(slotyConfig).sloty.find(s => s.id === slotId) || null
+  }, [slotyConfig])
+
+  // Helper: nazwa slotu po ID (fallback do ID jeśli slot zniknął)
+  const nazwaSlotu = useCallback((slotId) => {
+    return znajdzSlot(slotId)?.nazwa || slotId
+  }, [znajdzSlot])
+
+  // Helper: kolor labela slotu (rgba na overlay) — z fallbackiem
+  const kolorSlotu = useCallback((slotId) => {
+    const slot = znajdzSlot(slotId)
+    return hexNaRgba(slot?.kolor || '#806040', 0.92)
+  }, [znajdzSlot])
 
   const [toast, setToast] = useState(null)
   const toastTimer = useRef(null)
@@ -305,7 +326,7 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
     await supabase.from('kalendarz').delete().eq('id', istniejacy.id)
     setPlan(p => { const n = { ...p }; delete n[klucz]; return n })
 
-    pokazToast(`${posilek} usunięty`, async () => {
+    pokazToast(`${nazwaSlotu(posilek)} usunięty`, async () => {
       // Insert spowrotem (zachowując wszystkie pola)
       const { id, created_at, ...doInsert } = kopia
       const { data } = await supabase.from('kalendarz').insert(doInsert).select().single()
@@ -549,7 +570,8 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
                 const dataStr = formatData(dzien)
                 const today = isDzis(dzien)
                 const active = widok === 'dzien' && aktywnyDzien === i
-                const wypelnione = POSILKI.map(p => !!plan[`${dataStr}_${p}`]?.danie)
+                const slotyTegoDnia = slotyDlaDnia(dzien)
+                const wypelnione = slotyTegoDnia.map(slotId => !!plan[`${dataStr}_${slotId}`]?.danie)
                 return (
                   <button
                     key={i}
@@ -602,6 +624,9 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
             onUsunPosilek={usunPosilek}
             onPrzeniesPosilek={przeniesPosilek}
             onKopiujTydzien={kopiujTydzien}
+            slotyDlaDnia={slotyDlaDnia}
+            nazwaSlotu={nazwaSlotu}
+            kolorSlotu={kolorSlotu}
           />
         )}
 
@@ -628,6 +653,9 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
             onZmienPorcje={zmienPorcje}
             onPodmien={(wpis) => setPodmianaModal(wpis)}
             onKopiujDzien={(zDataStr) => setKopiujModal({ zDataStr })}
+            slotyDlaDnia={slotyDlaDnia}
+            nazwaSlotu={nazwaSlotu}
+            kolorSlotu={kolorSlotu}
           />
         )}
       </div>
@@ -701,6 +729,7 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
 function WidokTygodnia({
   dni, plan, daniaMap, onSelectDanie, onClickPusty, onClickDzien,
   onUsunPosilek, onPrzeniesPosilek, onKopiujTydzien,
+  slotyDlaDnia, nazwaSlotu, kolorSlotu,
 }) {
   const maZawartosc = Object.values(plan).some(p => p.danie)
   const [dragSet, setDragSet] = useState(null)
@@ -942,7 +971,7 @@ function WidokTygodnia({
               <span style={s.dzienHeaderHint}>Otwórz dzień</span>
             </button>
             <div style={s.kafelkiRzad}>
-              {POSILKI.map(posilek => {
+              {slotyDlaDnia(dzien).map(posilek => {
                 const key = slotKey(dataStr, posilek)
                 const wpis = plan[`${dataStr}_${posilek}`]
                 return (
@@ -950,6 +979,8 @@ function WidokTygodnia({
                     key={posilek}
                     setRef={(el) => ustawSlotRef(key, el)}
                     posilek={posilek}
+                    posilekLabel={nazwaSlotu(posilek)}
+                    posilekKolor={kolorSlotu(posilek)}
                     wpis={wpis}
                     daniaMeta={daniaMap[wpis?.danie]}
                     podswietlony={hoverKey === key}
@@ -982,7 +1013,7 @@ function WidokTygodnia({
             )}
           </div>
           <div style={s.dragGhostName}>{dragSet.wpis?.danie}</div>
-          <div style={s.dragGhostSub}>{dragSet.posilek}</div>
+          <div style={s.dragGhostSub}>{nazwaSlotu ? nazwaSlotu(dragSet.posilek) : dragSet.posilek}</div>
         </div>
       )}
     </div>
@@ -998,6 +1029,7 @@ function WidokDnia({
   onUstawDanie, onUstawSide,
   onUsunPosilek, onUsunSide,
   onZmienPorcje, onPodmien, onKopiujDzien,
+  slotyDlaDnia, nazwaSlotu, kolorSlotu,
 }) {
   const dataStr = formatData(dzien)
   const [filtr, setFiltr] = useState('')
@@ -1526,6 +1558,17 @@ function WidokDnia({
       }
     : s.slotyDuzeSticky
 
+  // Sloty dnia z konfiguracji household
+  const slotyTegoDnia = useMemo(() => slotyDlaDnia(dzien), [slotyDlaDnia, dzien])
+  // Liczba kolumn dopasowana do liczby slotów — żeby ładnie wyglądało
+  const kolumnGrida = useMemo(() => {
+    const n = slotyTegoDnia.length
+    if (n <= 3) return 3
+    if (n === 4) return 4
+    if (n <= 6) return 3
+    return 4
+  }, [slotyTegoDnia.length])
+
   return (
     <div style={{ position: 'relative' }}>
       {/* STICKY: sloty z planem dnia na górze, zostają widoczne podczas scrolla */}
@@ -1534,8 +1577,8 @@ function WidokDnia({
         opacity: subTryb ? 0.55 : 1,
         transition: 'opacity .2s',
       }}>
-        <div style={s.slotyDuze}>
-          {POSILKI.map(posilek => {
+        <div style={{ ...s.slotyDuze, gridTemplateColumns: `repeat(${kolumnGrida}, 1fr)` }}>
+          {slotyTegoDnia.map(posilek => {
             const wpis = plan[`${dataStr}_${posilek}`]
             const dragTyp = dragState?.podniesiony ? dragState.typ : null
             const podswietl = dragTyp === 'danie'
@@ -1545,6 +1588,8 @@ function WidokDnia({
                 setRef={(el) => { slotRefs.current[posilek] = el }}
                 setSideRef={(idx, el) => { slotRefs.current[`${posilek}_side_${idx}`] = el }}
                 posilek={posilek}
+                posilekLabel={nazwaSlotu(posilek)}
+                posilekKolor={kolorSlotu(posilek)}
                 wpis={wpis}
                 daniaMeta={daniaMap[wpis?.danie]}
                 dodatkiMap={dodatkiMap}
@@ -1678,8 +1723,10 @@ function WidokDnia({
 }
 
 // ════════════════════════════════════════════════════════════
-function KafelekPosilek({ posilek, wpis, daniaMeta, onClick, onDelete, setRef, onPointerDownDrag, onTouchStartDrag, podswietlony, przeciagany }) {
+function KafelekPosilek({ posilek, posilekLabel, posilekKolor, wpis, daniaMeta, onClick, onDelete, setRef, onPointerDownDrag, onTouchStartDrag, podswietlony, przeciagany }) {
   const masDanie = !!wpis?.danie
+  const label = (posilekLabel || posilek || '').toUpperCase()
+  const kolor = posilekKolor || 'rgba(120,100,70,.92)'
 
   function handleKeyDown(e) {
     if (e.key === 'Enter' || e.key === ' ') {
@@ -1713,8 +1760,8 @@ function KafelekPosilek({ posilek, wpis, daniaMeta, onClick, onDelete, setRef, o
               <span style={{ fontSize: 36 }}>{emojiDania(wpis.danie)}</span>
             </div>
           )}
-          <span style={{ ...s.kafelekLabel, background: SLOT_KOLORY[posilek] }}>
-            {posilek.toUpperCase()}
+          <span style={{ ...s.kafelekLabel, background: kolor }}>
+            {label}
           </span>
           {onDelete && (
             <button
@@ -1726,7 +1773,7 @@ function KafelekPosilek({ posilek, wpis, daniaMeta, onClick, onDelete, setRef, o
                 e.stopPropagation()
                 onDelete()
               }}
-              aria-label={`Usuń ${posilek}`}
+              aria-label={`Usuń ${label}`}
               title="Usuń z planu"
             >
               ✕
@@ -1738,7 +1785,7 @@ function KafelekPosilek({ posilek, wpis, daniaMeta, onClick, onDelete, setRef, o
         </>
       ) : (
         <div style={s.kafelekPustyInner}>
-          <span style={s.kafelekPustyLabel}>{posilek.toUpperCase()}</span>
+          <span style={s.kafelekPustyLabel}>{label}</span>
           <span style={s.kafelekPustyPlus}>+</span>
         </div>
       )}
@@ -1748,7 +1795,7 @@ function KafelekPosilek({ posilek, wpis, daniaMeta, onClick, onDelete, setRef, o
 
 // ════════════════════════════════════════════════════════════
 function SlotDuzy({
-  setRef, setSideRef, posilek, wpis, daniaMeta, dodatkiMap, surowkiMap,
+  setRef, setSideRef, posilek, posilekLabel, posilekKolor, wpis, daniaMeta, dodatkiMap, surowkiMap,
   domyslnePorcje, podswietlony, podswietlSide,
   onClick, onUsun, onUsunSide,
   onZmienPorcje, onPodmien,
@@ -1759,6 +1806,8 @@ function SlotDuzy({
   const porcje = wpis?.porcje != null ? wpis.porcje : domyslnePorcje
   const porcjeRozne = wpis?.porcje != null && wpis.porcje !== domyslnePorcje
   const liczbaPodmian = wpis?.podmiany ? Object.keys(wpis.podmiany).filter(k => wpis.podmiany[k]).length : 0
+  const label = (posilekLabel || posilek || '').toUpperCase()
+  const kolor = posilekKolor || 'rgba(120,100,70,.92)'
 
   function navPorcje(delta, e) {
     e.stopPropagation()
@@ -1796,8 +1845,8 @@ function SlotDuzy({
                 <span style={{ fontSize: 48 }}>{emojiDania(wpis.danie)}</span>
               </div>
             )}
-            <span style={{ ...s.kafelekLabel, background: SLOT_KOLORY[posilek] }}>
-              {posilek.toUpperCase()}
+            <span style={{ ...s.kafelekLabel, background: kolor }}>
+              {label}
             </span>
             <div style={s.kafelekNazwa}>
               <span style={s.kafelekNazwaTxt}>{wpis.danie}</span>
@@ -1805,7 +1854,7 @@ function SlotDuzy({
           </>
         ) : (
           <div style={s.kafelekPustyInner}>
-            <span style={s.kafelekPustyLabel}>{posilek.toUpperCase()}</span>
+            <span style={s.kafelekPustyLabel}>{label}</span>
             <span style={s.kafelekPustyPlus}>+</span>
           </div>
         )}

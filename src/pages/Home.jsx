@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react'
 import { supabase } from '../supabase'
 import { t, fonts, ui, avatarBg } from '../theme'
 import { formatDataLocal as formatData } from '../dataHelpers'
+import { useSloty, slotyWDniu, kluczDnia, sanityzuj } from '../useSloty'
 
 function getPowitanie() {
   const h = new Date().getHours()
@@ -16,7 +17,6 @@ function dataPlus(d, dni) {
   const n = new Date(d); n.setDate(n.getDate() + dni); return n
 }
 
-const POSILKI = ['Śniadanie', 'Obiad', 'Kolacja']
 const SUGESTIA_TYPY = [
   { id: 'sniadanie', label: 'Śniadanie' },
   { id: 'obiad', label: 'Obiad' },
@@ -29,10 +29,43 @@ const RODZAJ_LABEL = {
   kolacja: 'kolację',
 }
 
-const POSILEK_DLA_RODZAJU = {
+// Preferowana nazwa slotu dla każdego rodzaju (do dopasowania w runtime).
+// Jeśli userka ma slot o tej nazwie — sugestia tam wyląduje. Jeśli nie —
+// fallback do pierwszego slotu z keyword w nazwie, potem do pierwszego slotu w ogóle.
+const POSILEK_PREFEROWANA_NAZWA = {
   sniadanie: 'Śniadanie',
   obiad: 'Obiad',
   kolacja: 'Kolacja',
+}
+
+// Heurystyka dopasowania rodzaju do slotu (gdy preferowana nazwa nie istnieje).
+// Po lowercase, partial match — żeby „Drugie śniadanie" też pasowało do rodzaju sniadanie.
+const POSILEK_KEYWORDS = {
+  sniadanie: ['śniadanie', 'sniadanie', 'breakfast', 'brunch'],
+  obiad:     ['obiad', 'lunch'],
+  kolacja:   ['kolacja', 'dinner', 'kolacj'],
+}
+
+// Znajdź pasujący slot ID dla rodzaju w slotach dnia. Zwraca ID slotu lub null.
+function dopasujSlotDoRodzaju(slotyDnia, rodzaj) {
+  if (!slotyDnia?.length) return null
+
+  // 1. Dokładna nazwa
+  const preferowana = POSILEK_PREFEROWANA_NAZWA[rodzaj]
+  if (preferowana) {
+    const exact = slotyDnia.find(s => s.nazwa.toLowerCase() === preferowana.toLowerCase())
+    if (exact) return exact.id
+  }
+
+  // 2. Keyword match
+  const keywords = POSILEK_KEYWORDS[rodzaj] || []
+  for (const slot of slotyDnia) {
+    const n = slot.nazwa.toLowerCase()
+    if (keywords.some(k => n.includes(k))) return slot.id
+  }
+
+  // 3. Fallback do pierwszego slotu
+  return slotyDnia[0]?.id || null
 }
 
 // Mały odcisk koloru dla dania — stabilny po nazwie (jak w DanieDetail)
@@ -57,7 +90,6 @@ function getEmoji(nazwa) {
   if (n.includes('ziem') || n.includes('placki')) return '🥔'
   if (n.includes('tortilla') || n.includes('burrito') || n.includes('quesadilla')) return '🌯'
   if (n.includes('kebab') || n.includes('gyros')) return '🥙'
-  if (n.includes('tort') || n.includes('ciast') || n.includes('sernik') || n.includes('deser') || n.includes('mus ') || n.includes('pączk') || n.includes('drożdż') || n.includes('brownie') || n.includes('panna cotta') || n.includes('tirami')) return '🍰'
   return '🍽️'
 }
 
@@ -73,9 +105,27 @@ export default function Home({ user, householdId, onTabChange, onUstawienia, onS
   const [planowanie, setPlanowanie] = useState(null)
   const [toast, setToast] = useState(null)
 
+  // Konfiguracja slotów posiłków — dynamiczna lista per dzień tygodnia
+  const { config: slotyConfig } = useSloty(householdId)
+
   const dzis = useMemo(() => new Date(), [])
   const dzisStr = formatData(dzis)
   const jutroStr = formatData(dataPlus(dzis, 1))
+
+  // Sloty dla dzisiaj i jutra (z konfiguracji) — to dyktuje co pokazujemy
+  const slotyDzis = useMemo(() => slotyWDniu(slotyConfig, kluczDnia(dzis)), [slotyConfig, dzis])
+  const slotyJutro = useMemo(() => slotyWDniu(slotyConfig, kluczDnia(dataPlus(dzis, 1))), [slotyConfig, dzis])
+
+  // ID slotu dla bieżącej sugestii — wynika z typSugestii i konfiguracji dnia.
+  // Liczone dla dzisiaj i jutra osobno (bo mogą mieć różne sloty).
+  const slotDocelowyDzis = useMemo(
+    () => dopasujSlotDoRodzaju(slotyDzis, typSugestii),
+    [slotyDzis, typSugestii]
+  )
+  const slotDocelowyJutro = useMemo(
+    () => dopasujSlotDoRodzaju(slotyJutro, typSugestii),
+    [slotyJutro, typSugestii]
+  )
 
   const dzisiejszaData = dzis.toLocaleDateString('pl-PL', {
     weekday: 'long', day: 'numeric', month: 'long',
@@ -201,7 +251,13 @@ export default function Home({ user, householdId, onTabChange, onUstawienia, onS
   async function zaplanujSugestie(dataStr, kiedyLabel) {
     if (!sugestia || !householdId || !user?.id) return
 
-    const posilek = POSILEK_DLA_RODZAJU[typSugestii] || 'Obiad'
+    // Wybierz docelowy slot w zależności od dnia (dzisiaj/jutro mogą mieć różne sloty)
+    const posilek = dataStr === dzisStr ? slotDocelowyDzis : slotDocelowyJutro
+    if (!posilek) {
+      setToast('Brak skonfigurowanych posiłków na ten dzień')
+      setTimeout(() => setToast(null), 2400)
+      return
+    }
     const bucket = dataStr === dzisStr ? 'dzis' : 'jutro'
     const istniejacy = planDni[bucket]?.find(p => p.posilek === posilek)
 
@@ -292,6 +348,7 @@ export default function Home({ user, householdId, onTabChange, onUstawienia, onS
       <DzienSekcja
         tytul="Dzisiaj"
         plan={planDni.dzis}
+        sloty={slotyDzis}
         onSlotClick={() => onTabChange('planer')}
         onDanieClick={onSelectDanie}
       />
@@ -299,6 +356,7 @@ export default function Home({ user, householdId, onTabChange, onUstawienia, onS
       <DzienSekcja
         tytul="Jutro"
         plan={planDni.jutro}
+        sloty={slotyJutro}
         onSlotClick={() => onTabChange('planer')}
         onDanieClick={onSelectDanie}
         wyrozniony={false}
@@ -356,16 +414,16 @@ export default function Home({ user, householdId, onTabChange, onUstawienia, onS
             <button
               style={s.sugestiaPlanBtn}
               onClick={() => zaplanujSugestie(dzisStr, 'dziś')}
-              disabled={!!planowanie}
+              disabled={!!planowanie || !slotDocelowyDzis}
             >
-              {planowanie === `${dzisStr}_${POSILEK_DLA_RODZAJU[typSugestii]}` ? 'Planuję…' : 'Zaplanuj na dziś'}
+              {planowanie === `${dzisStr}_${slotDocelowyDzis}` ? 'Planuję…' : 'Zaplanuj na dziś'}
             </button>
             <button
               style={s.sugestiaPlanBtnAlt}
               onClick={() => zaplanujSugestie(jutroStr, 'jutro')}
-              disabled={!!planowanie}
+              disabled={!!planowanie || !slotDocelowyJutro}
             >
-              {planowanie === `${jutroStr}_${POSILEK_DLA_RODZAJU[typSugestii]}` ? 'Planuję…' : 'Zaplanuj na jutro'}
+              {planowanie === `${jutroStr}_${slotDocelowyJutro}` ? 'Planuję…' : 'Zaplanuj na jutro'}
             </button>
           </div>
         </section>
@@ -389,23 +447,29 @@ export default function Home({ user, householdId, onTabChange, onUstawienia, onS
 }
 
 // ── Sekcja z planem dnia ──
-function DzienSekcja({ tytul, plan, onSlotClick, onDanieClick, wyrozniony = true }) {
+function DzienSekcja({ tytul, plan, sloty, onSlotClick, onDanieClick, wyrozniony = true }) {
   return (
     <section style={s.dzienSekcja}>
       <h2 style={s.h2}>{tytul}</h2>
       <div style={s.posilkiLista}>
-        {POSILKI.map(posilek => {
-          const wpis = plan.find(d => d.posilek === posilek)
+        {(!sloty || sloty.length === 0) && (
+          <div style={s.brakSlotow}>
+            Brak skonfigurowanych posiłków na ten dzień.
+            Możesz to zmienić w Ustawieniach → Konfiguracja tygodnia.
+          </div>
+        )}
+        {(sloty || []).map(slot => {
+          const wpis = plan.find(d => d.posilek === slot.id)
           const masDanie = !!wpis?.danie
 
           if (!masDanie) {
             return (
               <button
-                key={posilek}
+                key={slot.id}
                 style={s.posilekPusty}
                 onClick={onSlotClick}
               >
-                <div style={s.posilekPustyLabel}>{posilek}</div>
+                <div style={s.posilekPustyLabel}>{slot.nazwa}</div>
                 <div style={s.posilekPustyPlus}>
                   <span style={s.posilekPustyTxt}>Zaplanuj</span>
                   <span style={s.posilekPustyIcon}>+</span>
@@ -418,13 +482,13 @@ function DzienSekcja({ tytul, plan, onSlotClick, onDanieClick, wyrozniony = true
 
           return (
             <button
-              key={posilek}
+              key={slot.id}
               style={s.posilekItem}
               onClick={() => onDanieClick?.(wpis.danie)}
             >
               <MiniaturaDania nazwa={wpis.danie} zdjecie={zdjecie} />
               <div style={s.posilekInfo}>
-                <div style={s.posilekNazwa}>{posilek}</div>
+                <div style={s.posilekNazwa}>{slot.nazwa}</div>
                 <div style={s.posilekDanie}>{wpis.danie}</div>
                 {Array.isArray(wpis.dodatki) && wpis.dodatki.filter(d => d?.nazwa).length > 0 && (
                   <div style={s.posilekExtra}>
@@ -512,6 +576,13 @@ const s = {
   },
   posilekExtra: { fontFamily: fonts.sans, fontSize: 12, color: t.mute, marginTop: 3 },
   posilekArrow: { fontSize: 20, color: t.muteLight, fontFamily: fonts.serif, flexShrink: 0 },
+
+  brakSlotow: {
+    padding: '14px 16px',
+    background: t.surfaceAlt, borderRadius: 14,
+    fontFamily: fonts.sans, fontSize: 12.5, color: t.mute,
+    lineHeight: 1.5, textAlign: 'center',
+  },
 
   // Pusty slot — wizualnie wyraźnie inny od wypełnionego (dashed border, jaśniejszy)
   posilekPusty: {

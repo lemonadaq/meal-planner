@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../supabase'
 import { t, fonts, ui, avatarBg } from '../theme'
 
-export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin, onRodzina, jestAdmin }) {
+export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin, onRodzina, onSloty, jestAdmin }) {
   const imie = user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || ''
   const [porcje, setPorcje] = useState(ustawienia?.domyslne_porcje ?? 1)
   const [zapisano, setZapisano] = useState(false)
@@ -55,6 +55,17 @@ export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin
             </div>
             <button style={s.porcjeBtn} onClick={() => zmienPorcje(0.5)} disabled={porcje >= 20}>+</button>
           </div>
+        </section>
+
+        <section style={s.section}>
+          <h2 style={s.sectionTitle}>Konfiguracja tygodnia</h2>
+          <p style={s.sectionSub}>
+            Każdy dzień może mieć inne posiłki — dodaj zupę w niedzielę,
+            deser w weekend, drugie śniadanie w soboty. Co tylko chcesz.
+          </p>
+          <button style={s.btnRodzina} onClick={onSloty}>
+            🍽 Edytuj posiłki dnia
+          </button>
         </section>
 
         <section style={s.section}>

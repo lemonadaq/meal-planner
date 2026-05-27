@@ -11,6 +11,7 @@ import Home from './pages/Home'
 import Ustawienia from './pages/Ustawienia'
 import Admin from './pages/Admin'
 import Rodzina from './pages/Rodzina'
+import KonfiguracjaSlotow from './pages/KonfiguracjaSlotow'
 import ZaproszenieModal from './components/ZaproszenieModal'
 import { useUstawienia } from './useUstawienia'
 import { useHousehold } from './useHousehold'
@@ -80,7 +81,7 @@ function App() {
   const [tab, setTab] = useState('home')
   const [wybraneD, setWybraneD] = useState(null)
   const [dodajDanie, setDodajDanie] = useState(false)
-  const [ekran, setEkran] = useState(null) // 'ustawienia' | 'admin' | 'rodzina' | null
+  const [ekran, setEkran] = useState(null) // 'ustawienia' | 'admin' | 'rodzina' | 'sloty' | null
   const [homeRefresh, setHomeRefresh] = useState(0)
 
   // Aktualny stan nawigacji trzymany w refie, żeby systemowy przycisk Wstecz
@@ -95,7 +96,7 @@ function App() {
   cofnijWApceRef.current = () => {
     const st = navStateRef.current
 
-    if (st.ekran === 'admin' || st.ekran === 'rodzina') {
+    if (st.ekran === 'admin' || st.ekran === 'rodzina' || st.ekran === 'sloty') {
       setEkran('ustawienia')
       return true
     }
@@ -201,6 +202,7 @@ function App() {
           onBack={() => setEkran(null)}
           onAdmin={() => setEkran('admin')}
           onRodzina={() => setEkran('rodzina')}
+          onSloty={() => setEkran('sloty')}
           jestAdmin={jestAdmin}
         />
         <ZaproszenieModal user={user} onZaakceptowano={poZaakceptowaniu} />
@@ -217,6 +219,14 @@ function App() {
         householdId={householdId}
         onBack={() => setEkran('ustawienia')}
         onZmianaHousehold={poZaakceptowaniu}
+      />
+    )
+  }
+  if (ekran === 'sloty') {
+    return (
+      <KonfiguracjaSlotow
+        householdId={householdId}
+        onBack={() => setEkran('ustawienia')}
       />
     )
   }

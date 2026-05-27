@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { supabase } from '../supabase'
 import { t, fonts, ui } from '../theme'
 import { formatDataLocal as formatData } from '../dataHelpers'
+import { useSloty, slotyWDniu, kluczDnia } from '../useSloty'
 
 function getKolor(nazwa) {
   const kolory = ['#F4E2D8','#E7E9D5','#EFE0DA','#E4E2D4','#F0DDC9','#E0E3D6','#F4D9CC','#DCE5D2']
@@ -24,6 +25,7 @@ function getEmoji(nazwa) {
   if (n.includes('ziem') || n.includes('placki')) return '🥔'
   if (n.includes('tortilla') || n.includes('burrito') || n.includes('quesadilla')) return '🌯'
   if (n.includes('kebab') || n.includes('gyros')) return '🥙'
+  if (n.includes('tort') || n.includes('ciast') || n.includes('sernik') || n.includes('deser') || n.includes('mus ') || n.includes('pączk') || n.includes('drożdż') || n.includes('brownie') || n.includes('panna cotta') || n.includes('tirami')) return '🍰'
   return '🍽️'
 }
 
@@ -34,7 +36,6 @@ const KATEGORIE = [
 ]
 const DNI = ['Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota', 'Niedziela']
 const DNI_KROTKO = ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Nd']
-const POSILKI = ['Śniadanie', 'Obiad', 'Kolacja']
 
 function getPoniedzialek(offset = 0) {
   const d = new Date()
@@ -62,10 +63,33 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
   const [pokazKalendarz, setPokazKalendarz] = useState(false)
   const [tydzien, setTydzien] = useState(0)
   const [wybranyDzien, setWybranyDzien] = useState(null)
-  const [wybranyPosilek, setWybranyPosilek] = useState('Obiad')
+  // wybranyPosilek = ID slotu (np. 'sn'), nie nazwa. null póki user nie wybierze dnia.
+  const [wybranyPosilek, setWybranyPosilek] = useState(null)
   const [dodawanie, setDodawanie] = useState(false)
   const [sukces, setSukces] = useState(false)
   const [planTygodnia, setPlanTygodnia] = useState({})
+
+  // Konfiguracja slotów (per household)
+  const { config: slotyConfig } = useSloty(householdId)
+
+  // Sloty dostępne dla wybranego dnia
+  const slotyWybranegoDnia = useMemo(() => {
+    if (!wybranyDzien) return []
+    return slotyWDniu(slotyConfig, kluczDnia(wybranyDzien))
+  }, [slotyConfig, wybranyDzien])
+
+  // Gdy user zmienia dzień, a aktualnie wybrany slot nie istnieje w tym dniu —
+  // wybierz pierwszy dostępny slot.
+  useEffect(() => {
+    if (!wybranyDzien) return
+    if (slotyWybranegoDnia.length === 0) {
+      setWybranyPosilek(null)
+      return
+    }
+    if (!wybranyPosilek || !slotyWybranegoDnia.some(s => s.id === wybranyPosilek)) {
+      setWybranyPosilek(slotyWybranegoDnia[0].id)
+    }
+  }, [wybranyDzien, slotyWybranegoDnia, wybranyPosilek])
 
   const poniedzialek = getPoniedzialek(tydzien)
   const dni = Array.from({ length: 7 }, (_, i) => {
@@ -259,7 +283,7 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
                   {dni.map((dzien, i) => {
                     const dataStr = formatData(dzien)
                     const aktywny = wybranyDzien === dataStr
-                    const zaplanowane = planTygodnia[`${dataStr}_${wybranyPosilek}`]
+                    const zaplanowane = wybranyPosilek ? planTygodnia[`${dataStr}_${wybranyPosilek}`] : null
                     return (
                       <button key={dataStr}
                         style={{ ...s.dzienBtn, ...(aktywny ? s.dzienBtnOn : {}) }}
@@ -281,18 +305,23 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
                 </div>
 
                 <div style={s.posilkiRow}>
-                  {POSILKI.map(p => (
-                    <button key={p}
-                      style={{ ...s.posilekBtn, ...(wybranyPosilek === p ? s.posilekBtnOn : {}) }}
-                      onClick={() => setWybranyPosilek(p)}>
-                      {p}
+                  {slotyWybranegoDnia.length === 0 && wybranyDzien && (
+                    <div style={s.brakSlotow}>
+                      Brak skonfigurowanych posiłków w wybrany dzień
+                    </div>
+                  )}
+                  {slotyWybranegoDnia.map(slot => (
+                    <button key={slot.id}
+                      style={{ ...s.posilekBtn, ...(wybranyPosilek === slot.id ? s.posilekBtnOn : {}) }}
+                      onClick={() => setWybranyPosilek(slot.id)}>
+                      {slot.nazwa}
                     </button>
                   ))}
                 </div>
 
-                <button style={{ ...s.btnDodajKal, opacity: wybranyDzien ? 1 : 0.5 }}
+                <button style={{ ...s.btnDodajKal, opacity: (wybranyDzien && wybranyPosilek) ? 1 : 0.5 }}
                   onClick={dodajDoKalendarza}
-                  disabled={!wybranyDzien || dodawanie}>
+                  disabled={!wybranyDzien || !wybranyPosilek || dodawanie}>
                   {dodawanie ? 'Dodaję…' : 'Dodaj do kalendarza'}
                 </button>
               </>
@@ -586,9 +615,14 @@ const s = {
     overflow: 'hidden', display: '-webkit-box',
     WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', textAlign: 'center', lineHeight: 1.2,
   },
-  posilkiRow: { display: 'flex', gap: 6, marginBottom: 16 },
+  posilkiRow: { display: 'flex', gap: 6, marginBottom: 16, flexWrap: 'wrap' },
+  brakSlotow: {
+    flex: 1, padding: '10px 12px', borderRadius: 10,
+    background: t.surfaceAlt, fontFamily: fonts.sans, fontSize: 12, color: t.mute,
+    textAlign: 'center', lineHeight: 1.4,
+  },
   posilekBtn: {
-    flex: 1, padding: '10px 0', borderRadius: 10,
+    flex: '1 1 auto', minWidth: 80, padding: '10px 6px', borderRadius: 10,
     background: t.surfaceAlt, border: 'none', cursor: 'pointer',
     fontFamily: fonts.sans, fontSize: 13, color: t.text, fontWeight: 500,
   },
