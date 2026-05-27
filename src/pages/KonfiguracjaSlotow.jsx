@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef } from 'react'
 import { supabase } from '../supabase'
 import { t, fonts, ui } from '../theme'
 import {
@@ -22,6 +22,11 @@ export default function KonfiguracjaSlotow({ householdId, onBack }) {
   // Edycja slotu (modal)
   const [edytowanySlot, setEdytowanySlot] = useState(null)
   // { mode: 'new' | 'edit', dzien?: 'pon'|..., slot: {id, nazwa, kolor} }
+
+  const [dragSlot, setDragSlot] = useState(null)
+  // { dzien, startIdx, overIdx }
+  const dragRef = useRef(null)
+  const slotItemRefs = useRef({})
 
   // Potwierdzenie usunięcia slotu z dnia (jak są wpisy w kalendarzu)
   const [potwierdz, setPotwierdz] = useState(null)
@@ -168,6 +173,52 @@ export default function KonfiguracjaSlotow({ householdId, onBack }) {
     setEdytowanySlot(null)
   }
 
+  // ── Drag & drop kolejności slotów ──────────────────────────
+
+  async function reorderSlotWDniu(dzien, noweIds) {
+    const nowa = JSON.parse(JSON.stringify(sanityzuj(config)))
+    nowa.dni[dzien] = noweIds
+    await zapisz(nowa)
+  }
+
+  function startDrag(dzien, idx, e) {
+    e.preventDefault()
+    e.currentTarget.setPointerCapture(e.pointerId)
+    dragRef.current = { dzien, startIdx: idx, overIdx: idx }
+    setDragSlot({ dzien, startIdx: idx, overIdx: idx })
+  }
+
+  function moveDrag(dzien, slotyDnia, e) {
+    if (!dragRef.current || dragRef.current.dzien !== dzien) return
+    const y = e.clientY
+    let newOver = dragRef.current.startIdx
+    for (let i = 0; i < slotyDnia.length; i++) {
+      const el = slotItemRefs.current[`${dzien}_${slotyDnia[i].id}`]
+      if (!el) continue
+      const rect = el.getBoundingClientRect()
+      if (y < rect.top + rect.height / 2) { newOver = i; break }
+      newOver = i + 1
+    }
+    newOver = Math.min(newOver, slotyDnia.length - 1)
+    if (dragRef.current.overIdx !== newOver) {
+      dragRef.current.overIdx = newOver
+      setDragSlot({ ...dragRef.current })
+    }
+  }
+
+  async function endDrag(dzien, slotyDnia, e) {
+    if (!dragRef.current || dragRef.current.dzien !== dzien) return
+    const { startIdx, overIdx } = dragRef.current
+    dragRef.current = null
+    setDragSlot(null)
+    if (startIdx !== overIdx) {
+      const newIds = slotyDnia.map(s => s.id)
+      const [moved] = newIds.splice(startIdx, 1)
+      newIds.splice(overIdx, 0, moved)
+      await reorderSlotWDniu(dzien, newIds)
+    }
+  }
+
   // Skopiuj konfigurację z jednego dnia do innych
   const [pokazKopiuj, setPokazKopiuj] = useState(null) // { zDnia: 'sob' }
 
@@ -222,8 +273,22 @@ export default function KonfiguracjaSlotow({ householdId, onBack }) {
               )}
 
               <div style={s.slotyGrid}>
-                {slotyDnia.map(slot => (
-                  <div key={slot.id} style={{ ...s.slot, borderLeftColor: slot.kolor }}>
+                {slotyDnia.map((slot, idx) => {
+                  const isDragging = dragSlot?.dzien === dzien
+                  const isThisDragged = isDragging && dragSlot.startIdx === idx
+                  const isDropTarget = isDragging && dragSlot.overIdx === idx && !isThisDragged
+                  return (
+                  <div
+                    key={slot.id}
+                    ref={el => { slotItemRefs.current[`${dzien}_${slot.id}`] = el }}
+                    style={{ ...s.slot, borderLeftColor: slot.kolor, opacity: isThisDragged ? 0.4 : 1, outline: isDropTarget ? `2px solid ${t.accent}` : 'none', outlineOffset: -2 }}
+                  >
+                    <div
+                      style={s.dragHandle}
+                      onPointerDown={(e) => startDrag(dzien, idx, e)}
+                      onPointerMove={(e) => moveDrag(dzien, slotyDnia, e)}
+                      onPointerUp={(e) => endDrag(dzien, slotyDnia, e)}
+                    >⠿</div>
                     <button
                       style={s.slotEdit}
                       onClick={() => otworzEdycjeSlotu(slot.id)}
@@ -240,7 +305,8 @@ export default function KonfiguracjaSlotow({ householdId, onBack }) {
                       ×
                     </button>
                   </div>
-                ))}
+                  )
+                })}
 
                 {slotyDnia.length < MAX_SLOTOW_W_DNIU && (
                   <button style={s.btnDodaj} onClick={() => otworzNowySlot(dzien)}>
@@ -505,6 +571,11 @@ const s = {
   },
 
   slotyGrid: { display: 'flex', flexDirection: 'column', gap: 6 },
+  dragHandle: {
+    padding: '0 10px 0 12px', display: 'flex', alignItems: 'center',
+    color: t.mute, fontSize: 18, cursor: 'grab', touchAction: 'none',
+    userSelect: 'none', WebkitUserSelect: 'none',
+  },
   slot: {
     display: 'flex', alignItems: 'stretch',
     background: t.surface,

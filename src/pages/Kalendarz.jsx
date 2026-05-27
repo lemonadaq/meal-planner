@@ -971,12 +971,18 @@ function WidokTygodnia({
               <span style={s.dzienHeaderHint}>Otwórz dzień</span>
             </button>
             <div style={s.kafelkiRzad}>
-              {slotyDlaDnia(dzien).map(posilek => {
+              {(() => {
+                const slotyDnia = slotyDlaDnia(dzien)
+                const n = slotyDnia.length
+                const cols = n <= 4 ? n : 3
+                const kafelekFlex = `0 0 calc(${(100/cols).toFixed(3)}% - ${((6*(cols-1))/cols).toFixed(2)}px)`
+                return slotyDnia.map(posilek => {
                 const key = slotKey(dataStr, posilek)
                 const wpis = plan[`${dataStr}_${posilek}`]
                 return (
                   <KafelekPosilek
                     key={posilek}
+                    style={{ flex: kafelekFlex }}
                     setRef={(el) => ustawSlotRef(key, el)}
                     posilek={posilek}
                     posilekLabel={nazwaSlotu(posilek)}
@@ -995,7 +1001,8 @@ function WidokTygodnia({
                     onDelete={wpis?.danie ? () => onUsunPosilek(dataStr, posilek) : null}
                   />
                 )
-              })}
+              })
+              })()}
             </div>
           </section>
         )
@@ -1725,7 +1732,7 @@ function WidokDnia({
 }
 
 // ════════════════════════════════════════════════════════════
-function KafelekPosilek({ posilek, posilekLabel, posilekKolor, wpis, daniaMeta, onClick, onDelete, setRef, onPointerDownDrag, onTouchStartDrag, podswietlony, przeciagany }) {
+function KafelekPosilek({ posilek, posilekLabel, posilekKolor, wpis, daniaMeta, onClick, onDelete, setRef, onPointerDownDrag, onTouchStartDrag, podswietlony, przeciagany, style }) {
   const masDanie = !!wpis?.danie
   const label = (posilekLabel || posilek || '').toUpperCase()
   const kolor = posilekKolor || 'rgba(120,100,70,.92)'
@@ -1748,6 +1755,7 @@ function KafelekPosilek({ posilek, posilekLabel, posilekKolor, wpis, daniaMeta, 
       onTouchStart={onTouchStartDrag}
       style={{
         ...s.kafelek,
+        ...style,
         ...(masDanie ? {} : s.kafelekPusty),
         ...(podswietlony ? s.kafelekDropHover : {}),
         opacity: przeciagany ? 0.35 : 1,
@@ -2203,7 +2211,6 @@ const s = {
   kafelkiRzad: { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 6 },
 
   kafelek: {
-    flex: '0 0 calc(33.333% - 4px)',
     position: 'relative', aspectRatio: '1', borderRadius: 16,
     background: t.surface, border: 'none', cursor: 'pointer',
     overflow: 'hidden', padding: 0, fontFamily: fonts.sans,
