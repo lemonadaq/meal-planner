@@ -57,6 +57,7 @@ function getEmoji(nazwa) {
   if (n.includes('ziem') || n.includes('placki')) return '🥔'
   if (n.includes('tortilla') || n.includes('burrito') || n.includes('quesadilla')) return '🌯'
   if (n.includes('kebab') || n.includes('gyros')) return '🥙'
+  if (n.includes('tort') || n.includes('ciast') || n.includes('sernik') || n.includes('deser') || n.includes('mus ') || n.includes('pączk') || n.includes('drożdż') || n.includes('brownie') || n.includes('panna cotta') || n.includes('tirami')) return '🍰'
   return '🍽️'
 }
 

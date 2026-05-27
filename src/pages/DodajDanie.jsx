@@ -15,17 +15,19 @@ const KATEGORIE = {
   'Inne':               '8_Inne',
 }
 
-// Rodzaje — 6 wartości, wszystko ląduje w tabeli `dania` (rodzaj decyduje o filtrach)
+// Rodzaje — wszystko ląduje w tabeli `dania` (rodzaj decyduje o filtrach)
 const RODZAJE = [
   { id: 'obiad',     label: 'Obiad',     placeholder: 'np. Makaron z dynią i szałwią' },
   { id: 'sniadanie', label: 'Śniadanie', placeholder: 'np. Owsianka z bananem' },
   { id: 'kolacja',   label: 'Kolacja',   placeholder: 'np. Tosty z awokado' },
+  { id: 'zupa',      label: 'Zupa',      placeholder: 'np. Pomidorowa z makaronem' },
+  { id: 'deser',     label: 'Deser',     placeholder: 'np. Sernik na zimno' },
   { id: 'przekaska', label: 'Przekąska', placeholder: 'np. Hummus z marchewką' },
   { id: 'dodatek',   label: 'Dodatek',   placeholder: 'np. Ryż basmati' },
   { id: 'surowka',   label: 'Surówka',   placeholder: 'np. Surówka z marchewki' },
 ]
 
-// Rodzaje, które mogą być "z dodatkiem" — dla dodatek/surowka nie ma sensu
+// Rodzaje, które mogą być "z dodatkiem" — dla dodatek/surowka/zupa/deser nie ma sensu
 const RODZAJE_GLOWNE = ['obiad', 'sniadanie', 'kolacja', 'przekaska']
 
 export default function DodajDanie({ onBack, onZapisano }) {

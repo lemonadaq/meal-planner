@@ -9,6 +9,8 @@ const FILTRY = [
   { id: 'obiad',     label: 'Obiady' },
   { id: 'sniadanie', label: 'Śniadania' },
   { id: 'kolacja',   label: 'Kolacje' },
+  { id: 'zupa',      label: 'Zupy' },
+  { id: 'deser',     label: 'Desery' },
   { id: 'przekaska', label: 'Przekąski' },
   { id: 'dodatek',   label: 'Dodatki' },
   { id: 'surowka',   label: 'Surówki' },
@@ -16,6 +18,7 @@ const FILTRY = [
 
 const RODZAJ_LABEL = {
   obiad: 'Obiad', sniadanie: 'Śniadanie', kolacja: 'Kolacja',
+  zupa: 'Zupa', deser: 'Deser',
   przekaska: 'Przekąska', dodatek: 'Dodatek', surowka: 'Surówka',
 }
 
@@ -48,6 +51,7 @@ function getEmoji(nazwa) {
   if (n.includes('owsian') || n.includes('musli') || n.includes('granol')) return '🥣'
   if (n.includes('jogurt') || n.includes('smoothie') || n.includes('koktajl')) return '🥤'
   if (n.includes('owoc') || n.includes('banan') || n.includes('jabłk')) return '🍎'
+  if (n.includes('tort') || n.includes('ciast') || n.includes('sernik') || n.includes('deser') || n.includes('mus ') || n.includes('pączk') || n.includes('drożdż') || n.includes('brownie') || n.includes('panna cotta') || n.includes('tirami')) return '🍰'
   return '🍽️'
 }
 

@@ -58,6 +58,7 @@ function emojiDania(n) {
   if (x.includes('musli') || x.includes('granola') || x.includes('owsianka')) return '🥣'
   if (x.includes('chleb') || x.includes('tost') || x.includes('kanapk')) return '🥪'
   if (x.includes('naleśnik') || x.includes('placuszek') || x.includes('pancake')) return '🥞'
+  if (x.includes('tort') || x.includes('ciast') || x.includes('sernik') || x.includes('deser') || x.includes('mus ') || x.includes('pączk') || x.includes('drożdż') || x.includes('brownie') || x.includes('panna cotta') || x.includes('tirami')) return '🍰'
   return '🍽️'
 }
 

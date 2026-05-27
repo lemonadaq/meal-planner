@@ -88,6 +88,7 @@ function zastosujKorekteZakupu(item, korekta) {
     jednostka: '',
     kategoria,
     edytowany: true,
+    opakowania: null, // korekta nadpisuje — user wpisał własną ilość, nie zaokrąglamy
   }
 }
 
@@ -191,6 +192,114 @@ function rozbijSzybkieLinie(tekst = '') {
     .flatMap(linia => linia.split(/,\s+(?=[A-Za-zĄĆĘŁŃÓŚŹŻąćęłńóśźż])/u))
     .map(x => x.trim())
     .filter(Boolean)
+}
+
+// ════════════════════════════════════════════════════════════
+// SKLADNIKI_META — normalizacja, konwersja jednostek, opakowania
+// ════════════════════════════════════════════════════════════
+
+// Normalizacja MUSI być identyczna z SQL:
+// trim(regexp_replace(lower(translate(nazwa, polskie→ascii)), '[^a-z0-9]+', ' ', 'g'))
+function normalizujNazweMeta(nazwa = '') {
+  return nazwa
+    .toString()
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/ł/g, 'l')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim()
+}
+
+// Konwersja między jednostkami zgodnymi (g↔kg, ml↔l).
+// Zwraca: { ilosc, jednostka } w jednostce docelowej, albo null jeśli nie da się.
+function przeliczDoBazowej(ilosc, jednostkaZ, jednostkaDo) {
+  if (ilosc == null) return null
+  const z = (jednostkaZ || '').toString().trim().toLowerCase().replace(/\.+$/, '')
+  const d = (jednostkaDo || '').toString().trim().toLowerCase().replace(/\.+$/, '')
+
+  // Te same → bez konwersji
+  if (z === d) return { ilosc, jednostka: jednostkaDo }
+
+  // Tabela przeliczników — wartość = ile jednostek docelowych w 1 jednostce źródłowej
+  const PRZELICZNIKI = {
+    // do gramów
+    'kg→g': 1000,
+    'dag→g': 10,
+    'g→g': 1,
+    // gramy do większych — głównie do display, ale tu nie używamy
+    'g→kg': 0.001,
+    // do mililitrów
+    'l→ml': 1000,
+    'ml→ml': 1,
+    'ml→l': 0.001,
+  }
+
+  const klucz = `${z}→${d}`
+  const mnoznik = PRZELICZNIKI[klucz]
+  if (mnoznik == null) return null
+
+  return { ilosc: ilosc * mnoznik, jednostka: jednostkaDo }
+}
+
+// Znajdź wpis skladniki_meta dla danej nazwy składnika.
+// Strategia: normalizacja → exact match po nazwa_norm → match po aliasach.
+function dopasujMeta(nazwaSkladnika, wszystkieMeta) {
+  if (!nazwaSkladnika || !wszystkieMeta?.length) return null
+  const norm = normalizujNazweMeta(nazwaSkladnika)
+  if (!norm) return null
+
+  // Najpierw exact match po nazwa_norm
+  const byName = wszystkieMeta.find(m => m.nazwa_norm === norm)
+  if (byName) return byName
+
+  // Potem aliasy
+  const byAlias = wszystkieMeta.find(m => Array.isArray(m.aliasy) && m.aliasy.includes(norm))
+  return byAlias || null
+}
+
+// Policz ile opakowań kupić.
+// Zwraca: { liczbaOpakowan, opisOpakowania, oryginalna: {ilosc, jednostka} }
+// albo null jeśli nie da się policzyć (brak meta, niezgodne jednostki, ilość 0/null).
+function policzOpakowania(item, meta) {
+  if (!meta || !meta.zaokraglaj) return null // brak meta albo wyłączone zaokrąglanie
+  if (item.ilosc == null || !Number.isFinite(item.ilosc) || item.ilosc <= 0) return null
+
+  const rozmiar = parseFloat(meta.rozmiar_opakowania)
+  if (!Number.isFinite(rozmiar) || rozmiar <= 0) return null
+
+  // Spróbuj przekonwertować ilość z jednostki przepisu do jednostki bazowej meta
+  const przelicz = przeliczDoBazowej(item.ilosc, item.jednostka || meta.jednostka_bazowa, meta.jednostka_bazowa)
+  if (!przelicz) return null
+
+  const liczba = Math.ceil(przelicz.ilosc / rozmiar)
+  if (!Number.isFinite(liczba) || liczba <= 0) return null
+
+  return {
+    liczbaOpakowan: liczba,
+    opisOpakowania: meta.jednostka_opakowania || '',
+    oryginalna: {
+      ilosc: item.ilosc,
+      jednostka: item.jednostka || meta.jednostka_bazowa,
+    },
+  }
+}
+
+// Sformatuj „1 karton 1l" albo „2 puszki 400g".
+// Liczba mnoga w polskim jest niewdzięczna, więc używamy „× N" dla > 1.
+function formatujOpakowania(opak) {
+  if (!opak) return ''
+  const { liczbaOpakowan, opisOpakowania } = opak
+  if (liczbaOpakowan === 1) return opisOpakowania || '1 szt.'
+  return `${liczbaOpakowan} × ${opisOpakowania || 'szt.'}`
+}
+
+// Sformatuj „potrzeba 750 ml" — oryginalna ilość z przepisu jako podpowiedź.
+function formatujOryginalnaIlosc(opak) {
+  if (!opak?.oryginalna) return ''
+  const { ilosc, jednostka } = opak.oryginalna
+  if (ilosc == null) return ''
+  const liczba = Number.isInteger(ilosc) ? String(ilosc) : String(Math.round(ilosc * 100) / 100).replace('.', ',')
+  return `${liczba}${jednostka ? ` ${jednostka}` : ''}`.trim()
 }
 
 function parsujSzybkiProdukt(linia) {
@@ -517,7 +626,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     niedziela.setDate(niedziela.getDate() + 6)
     const niedzielaStr = formatDataLocal(niedziela)
 
-    const [{ data: planData }, { data: wlasneData }, { data: historiaData }, { data: cykliczneData }] = await Promise.all([
+    const [{ data: planData }, { data: wlasneData }, { data: historiaData }, { data: cykliczneData }, { data: metaData }] = await Promise.all([
       supabase.from('kalendarz').select('*')
         .eq('household_id', householdId)
         .gte('data', poniedzialek)
@@ -533,10 +642,13 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
       supabase.from('zakupy_cykliczne').select('*')
         .eq('household_id', householdId)
         .order('created_at'),
+      // skladniki_meta — globalna, do liczenia opakowań
+      supabase.from('skladniki_meta').select('*'),
     ])
 
     setWlasne(wlasneData || [])
     setCykliczne(cykliczneData || [])
+    const wszystkieMeta = metaData || []
 
     // Zbieram porcje
     const porcjeWszystkich = {}
@@ -597,6 +709,12 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
 
     Object.values(skladnikiMap).forEach(item => {
       if (item.ilosc != null) item.ilosc = Math.round(item.ilosc * 100) / 100
+      // Dolicz info o opakowaniach na podstawie skladniki_meta
+      const meta = dopasujMeta(item.skladnik, wszystkieMeta)
+      if (meta) {
+        item.opakowania = policzOpakowania(item, meta)
+        item.metaJednostka = meta.jednostka_bazowa
+      }
     })
 
     const posortowane = Object.values(skladnikiMap).sort((a, b) =>
@@ -1732,11 +1850,24 @@ function ItemRow({ item, kupione, onTap, onLongPress, onEdit, onHome }) {
           {isWlasny && <span style={s.tagJednorazowo} title="Produkt dopisany ręcznie">własne</span>}
           {isCykliczny && <span style={s.tagPowtarzaj} title="Powtarza się co tydzień">↻ co tydzień</span>}
         </div>
-        <div style={{ ...s.itemIlosc, ...(kupione ? { color: t.muteLight } : {}) }}>
-          {item.ilosc != null
-            ? `${item.ilosc} ${item.jednostka || ''}`
-            : (item.iloscOryginalna || item.jednostka || '—')}
-        </div>
+        {item.opakowania ? (
+          <>
+            <div style={{ ...s.itemIlosc, ...(kupione ? { color: t.muteLight } : {}) }}>
+              <strong style={{ color: kupione ? t.muteLight : t.text, fontWeight: 600 }}>
+                {formatujOpakowania(item.opakowania)}
+              </strong>
+              <span style={s.itemIloscHint}>
+                {' '}potrzeba {formatujOryginalnaIlosc(item.opakowania)}
+              </span>
+            </div>
+          </>
+        ) : (
+          <div style={{ ...s.itemIlosc, ...(kupione ? { color: t.muteLight } : {}) }}>
+            {item.ilosc != null
+              ? `${item.ilosc} ${item.jednostka || ''}`
+              : (item.iloscOryginalna || item.jednostka || '—')}
+          </div>
+        )}
       </div>
       {onHome && (
         <button
@@ -2104,11 +2235,22 @@ function SwipeItem({ item, kupione, onSwipeRight }) {
         }}
       >
         <div style={sklep.itemNazwa}>{item.skladnik}</div>
-        <div style={sklep.itemIlosc}>
-          {item.ilosc != null
-            ? `${item.ilosc} ${item.jednostka || ''}`
-            : (item.iloscOryginalna || item.jednostka || '')}
-        </div>
+        {item.opakowania ? (
+          <div style={sklep.itemIlosc}>
+            <strong style={{ color: '#fff', fontWeight: 600 }}>
+              {formatujOpakowania(item.opakowania)}
+            </strong>
+            <span style={{ opacity: 0.7, fontSize: 12, marginLeft: 6 }}>
+              potrzeba {formatujOryginalnaIlosc(item.opakowania)}
+            </span>
+          </div>
+        ) : (
+          <div style={sklep.itemIlosc}>
+            {item.ilosc != null
+              ? `${item.ilosc} ${item.jednostka || ''}`
+              : (item.iloscOryginalna || item.jednostka || '')}
+          </div>
+        )}
       </div>
     </div>
   )
@@ -2288,6 +2430,7 @@ const s = {
     display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap',
   },
   itemIlosc: { fontSize: 12, color: t.mute, marginTop: 3, fontVariantNumeric: 'tabular-nums' },
+  itemIloscHint: { fontSize: 11, color: t.muteLight || t.mute, fontWeight: 400 },
   itemHomeBtn: {
     width: 30, height: 30, borderRadius: 999,
     border: `1px solid ${t.border}`,
