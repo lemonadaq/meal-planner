@@ -1577,14 +1577,16 @@ function WidokDnia({
         opacity: subTryb ? 0.55 : 1,
         transition: 'opacity .2s',
       }}>
-        <div style={{ ...s.slotyDuze, gridTemplateColumns: `repeat(${kolumnGrida}, 1fr)` }}>
+        <div style={s.slotyDuze}>
           {slotyTegoDnia.map(posilek => {
             const wpis = plan[`${dataStr}_${posilek}`]
             const dragTyp = dragState?.podniesiony ? dragState.typ : null
             const podswietl = dragTyp === 'danie'
+            const slotItemWidth = kolumnGrida === 4 ? 'calc(25% - 6px)' : 'calc(33.333% - 6px)'
             return (
               <SlotDuzy
                 key={posilek}
+                style={{ flex: `0 0 ${slotItemWidth}`, maxWidth: slotItemWidth }}
                 setRef={(el) => { slotRefs.current[posilek] = el }}
                 setSideRef={(idx, el) => { slotRefs.current[`${posilek}_side_${idx}`] = el }}
                 posilek={posilek}
@@ -1799,7 +1801,7 @@ function SlotDuzy({
   domyslnePorcje, podswietlony, podswietlSide,
   onClick, onUsun, onUsunSide,
   onZmienPorcje, onPodmien,
-  onWybierzSide,
+  onWybierzSide, style,
 }) {
   const masDanie = !!wpis?.danie
   const typDania = daniaMeta?.TYP
@@ -1826,7 +1828,7 @@ function SlotDuzy({
   })
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div style={{ position: 'relative', ...style }}>
       <button
         ref={setRef}
         onClick={onClick}
@@ -2198,9 +2200,10 @@ const s = {
     fontFamily: fonts.sans, fontSize: 9, fontWeight: 800, color: t.warm, letterSpacing: 1.2,
     padding: '1px 6px', background: t.warmSoft, borderRadius: 4,
   },
-  kafelkiRzad: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6 },
+  kafelkiRzad: { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 6 },
 
   kafelek: {
+    flex: '0 0 calc(33.333% - 4px)',
     position: 'relative', aspectRatio: '1', borderRadius: 16,
     background: t.surface, border: 'none', cursor: 'pointer',
     overflow: 'hidden', padding: 0, fontFamily: fonts.sans,
@@ -2255,7 +2258,7 @@ const s = {
     // Lekka linia na dole gdy sticky się "przykleja" - subtelnie
     boxShadow: '0 4px 12px -8px rgba(74,55,40,.15)',
   },
-  slotyDuze: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 },
+  slotyDuze: { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 8 },
   slotDuzy: {
     position: 'relative', width: '100%', aspectRatio: '1', borderRadius: 16,
     background: t.surface, border: 'none', cursor: 'pointer', overflow: 'hidden', padding: 0,
@@ -2385,10 +2388,8 @@ const s = {
   galeriaHeader: { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 },
   galeriaTytul: { ...ui.h2, fontSize: 18, flex: 1 },
   szukaj: { ...ui.input, padding: '8px 12px', fontSize: 13, maxWidth: 140 },
-  galeriaGrid: { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 8, outline: '2px solid red' },
+  galeriaGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 },
   galeriaItem: {
-    flex: '0 0 calc(33.333% - 6px)',
-    maxWidth: 'calc(33.333% - 6px)',
     display: 'flex', flexDirection: 'column', gap: 6,
     background: 'transparent', border: 'none', padding: 0,
     cursor: 'pointer', fontFamily: fonts.sans, textAlign: 'left',
