@@ -181,11 +181,11 @@ export default function KonfiguracjaSlotow({ householdId, onBack }) {
     await zapisz(nowa)
   }
 
-  function startDrag(dzien, idx, e) {
+  function startDrag(dzien, idx, slot, e) {
     e.preventDefault()
     e.currentTarget.setPointerCapture(e.pointerId)
-    dragRef.current = { dzien, startIdx: idx, overIdx: idx }
-    setDragSlot({ dzien, startIdx: idx, overIdx: idx })
+    dragRef.current = { dzien, startIdx: idx, overIdx: idx, x: e.clientX, y: e.clientY, slotNazwa: slot.nazwa, slotKolor: slot.kolor }
+    setDragSlot({ ...dragRef.current })
   }
 
   function moveDrag(dzien, slotyDnia, e) {
@@ -200,10 +200,10 @@ export default function KonfiguracjaSlotow({ householdId, onBack }) {
       newOver = i + 1
     }
     newOver = Math.min(newOver, slotyDnia.length - 1)
-    if (dragRef.current.overIdx !== newOver) {
-      dragRef.current.overIdx = newOver
-      setDragSlot({ ...dragRef.current })
-    }
+    dragRef.current.overIdx = newOver
+    dragRef.current.x = e.clientX
+    dragRef.current.y = e.clientY
+    setDragSlot({ ...dragRef.current })
   }
 
   async function endDrag(dzien, slotyDnia, e) {
@@ -256,7 +256,7 @@ export default function KonfiguracjaSlotow({ householdId, onBack }) {
         {DNI_KLUCZE.map(dzien => {
           const slotyDnia = slotyWDniu(sanit, dzien)
           return (
-            <section key={dzien} style={s.dzien}>
+            <section key={dzien} style={{ ...s.dzien, ...(dragSlot && dragSlot.dzien !== dzien ? { filter: 'blur(2px)', opacity: 0.45, pointerEvents: 'none' } : {}), transition: 'filter .2s, opacity .2s' }}>
               <div style={s.dzienHeader}>
                 <h2 style={s.dzienTytul}>{DNI_LABELS[dzien]}</h2>
                 <button
@@ -281,11 +281,11 @@ export default function KonfiguracjaSlotow({ householdId, onBack }) {
                   <div
                     key={slot.id}
                     ref={el => { slotItemRefs.current[`${dzien}_${slot.id}`] = el }}
-                    style={{ ...s.slot, borderLeftColor: slot.kolor, opacity: isThisDragged ? 0.85 : 1, transform: isThisDragged ? 'scale(1.03)' : 'none', boxShadow: isThisDragged ? '0 8px 24px rgba(74,55,40,.18)' : s.slot.boxShadow, zIndex: isThisDragged ? 10 : 'auto', outline: isDropTarget ? `2px solid ${t.accent}` : 'none', outlineOffset: -2, transition: 'transform .15s, box-shadow .15s' }}
+                    style={{ ...s.slot, borderLeftColor: slot.kolor, opacity: isThisDragged ? 0.3 : 1, outline: isDropTarget ? `2px solid ${t.accent}` : 'none', outlineOffset: -2 }}
                   >
                     <div
                       style={s.dragHandle}
-                      onPointerDown={(e) => startDrag(dzien, idx, e)}
+                      onPointerDown={(e) => startDrag(dzien, idx, slot, e)}
                       onPointerMove={(e) => moveDrag(dzien, slotyDnia, e)}
                       onPointerUp={(e) => endDrag(dzien, slotyDnia, e)}
                     >⠿</div>
@@ -328,6 +328,13 @@ export default function KonfiguracjaSlotow({ householdId, onBack }) {
           )
         })}
       </div>
+
+      {dragSlot && (
+        <div style={{ ...s.dragGhost, left: dragSlot.x, top: dragSlot.y }}>
+          <div style={{ ...s.dragGhostPasek, background: dragSlot.slotKolor }} />
+          <span style={s.dragGhostNazwa}>{dragSlot.slotNazwa}</span>
+        </div>
+      )}
 
       {/* Modal: dodawanie / edycja slotu */}
       {edytowanySlot && (
@@ -627,6 +634,18 @@ const s = {
     fontFamily: fonts.sans, fontSize: 12, fontWeight: 600,
     color: t.text, cursor: 'pointer',
   },
+
+  dragGhost: {
+    position: 'fixed', zIndex: 9999, pointerEvents: 'none',
+    transform: 'translate(-50%, -50%) scale(1.05)',
+    background: t.surface, borderRadius: 10,
+    boxShadow: '0 12px 32px rgba(0,0,0,.25)',
+    padding: '10px 16px 10px 12px',
+    display: 'flex', alignItems: 'center', gap: 10,
+    minWidth: 140,
+  },
+  dragGhostPasek: { width: 4, height: 28, borderRadius: 2, flexShrink: 0 },
+  dragGhostNazwa: { fontFamily: fonts.sans, fontSize: 14, fontWeight: 600, color: t.text },
 
   loading: {
     textAlign: 'center', padding: 80, color: t.mute,
