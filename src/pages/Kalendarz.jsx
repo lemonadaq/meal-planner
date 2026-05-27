@@ -2385,9 +2385,10 @@ const s = {
   galeriaHeader: { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 },
   galeriaTytul: { ...ui.h2, fontSize: 18, flex: 1 },
   szukaj: { ...ui.input, padding: '8px 12px', fontSize: 13, maxWidth: 140 },
-  galeriaGrid: { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 8 },
+  galeriaGrid: { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 8, outline: '2px solid red' },
   galeriaItem: {
-    width: 'calc(33.333% - 6px)',
+    flex: '0 0 calc(33.333% - 6px)',
+    maxWidth: 'calc(33.333% - 6px)',
     display: 'flex', flexDirection: 'column', gap: 6,
     background: 'transparent', border: 'none', padding: 0,
     cursor: 'pointer', fontFamily: fonts.sans, textAlign: 'left',
