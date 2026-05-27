@@ -961,6 +961,9 @@ function WidokTygodnia({
       {dni.map((dzien, di) => {
         const dataStr = formatData(dzien)
         const today = isDzis(dzien)
+        const slotyDnia = slotyDlaDnia(dzien)
+        const cols = slotyDnia.length <= 4 ? slotyDnia.length : 3
+        const tileW = cols > 0 ? `calc(${(100/cols).toFixed(3)}% - ${((6*(cols-1))/cols).toFixed(2)}px)` : '100%'
         return (
           <section key={dataStr} style={s.dzienBlok}>
             <button type="button" style={s.dzienHeaderBtn} onClick={() => onClickDzien(di)}>
@@ -971,38 +974,32 @@ function WidokTygodnia({
               <span style={s.dzienHeaderHint}>Otwórz dzień</span>
             </button>
             <div style={s.kafelkiRzad}>
-              {(() => {
-                const slotyDnia = slotyDlaDnia(dzien)
-                const n = slotyDnia.length
-                const cols = n <= 4 ? n : 3
-                const kafelekFlex = `0 0 calc(${(100/cols).toFixed(3)}% - ${((6*(cols-1))/cols).toFixed(2)}px)`
-                return slotyDnia.map(posilek => {
+              {slotyDnia.map(posilek => {
                 const key = slotKey(dataStr, posilek)
                 const wpis = plan[`${dataStr}_${posilek}`]
                 return (
-                  <KafelekPosilek
-                    key={posilek}
-                    style={{ flex: kafelekFlex }}
-                    setRef={(el) => ustawSlotRef(key, el)}
-                    posilek={posilek}
-                    posilekLabel={nazwaSlotu(posilek)}
-                    posilekKolor={kolorSlotu(posilek)}
-                    wpis={wpis}
-                    daniaMeta={daniaMap[wpis?.danie]}
-                    podswietlony={hoverKey === key}
-                    przeciagany={dragSet?.sourceKey === key}
-                    onPointerDownDrag={(e) => zacznijPointer(e, dataStr, posilek, wpis, daniaMap[wpis?.danie])}
-                    onTouchStartDrag={(e) => zacznijTouch(e, dataStr, posilek, wpis, daniaMap[wpis?.danie])}
-                    onClick={() => {
-                      if (Date.now() < ignoreClickUntil.current) return
-                      if (wpis?.danie) onSelectDanie?.(wpis.danie)
-                      else onClickPusty(di)
-                    }}
-                    onDelete={wpis?.danie ? () => onUsunPosilek(dataStr, posilek) : null}
-                  />
+                  <div key={posilek} style={{ flex: `0 0 ${tileW}`, maxWidth: tileW }}>
+                    <KafelekPosilek
+                      setRef={(el) => ustawSlotRef(key, el)}
+                      posilek={posilek}
+                      posilekLabel={nazwaSlotu(posilek)}
+                      posilekKolor={kolorSlotu(posilek)}
+                      wpis={wpis}
+                      daniaMeta={daniaMap[wpis?.danie]}
+                      podswietlony={hoverKey === key}
+                      przeciagany={dragSet?.sourceKey === key}
+                      onPointerDownDrag={(e) => zacznijPointer(e, dataStr, posilek, wpis, daniaMap[wpis?.danie])}
+                      onTouchStartDrag={(e) => zacznijTouch(e, dataStr, posilek, wpis, daniaMap[wpis?.danie])}
+                      onClick={() => {
+                        if (Date.now() < ignoreClickUntil.current) return
+                        if (wpis?.danie) onSelectDanie?.(wpis.danie)
+                        else onClickPusty(di)
+                      }}
+                      onDelete={wpis?.danie ? () => onUsunPosilek(dataStr, posilek) : null}
+                    />
+                  </div>
                 )
-              })
-              })()}
+              })}
             </div>
           </section>
         )
