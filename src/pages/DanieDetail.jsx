@@ -4,6 +4,29 @@ import { t, fonts, ui } from '../theme'
 import { formatDataLocal as formatData } from '../dataHelpers'
 import { useSloty, slotyWDniu, kluczDnia } from '../useSloty'
 
+async function kompresujObraz(plik, maxSzerokosc = 1200, jakosc = 0.82) {
+  return new Promise(resolve => {
+    const img = new Image()
+    img.onload = () => {
+      let { width, height } = img
+      if (width > maxSzerokosc) { height = Math.round(height * maxSzerokosc / width); width = maxSzerokosc }
+      const canvas = document.createElement('canvas')
+      canvas.width = width; canvas.height = height
+      canvas.getContext('2d').drawImage(img, 0, 0, width, height)
+      canvas.toBlob(resolve, 'image/jpeg', jakosc)
+    }
+    img.src = URL.createObjectURL(plik)
+  })
+}
+
+async function uploadujZdjecie(plik, slug) {
+  const blob = await kompresujObraz(plik)
+  const sciezka = `dania/${slug}-${Date.now()}.jpg`
+  const { error } = await supabase.storage.from('dania-zdjecia').upload(sciezka, blob, { contentType: 'image/jpeg', upsert: true })
+  if (error) throw error
+  return supabase.storage.from('dania-zdjecia').getPublicUrl(sciezka).data.publicUrl
+}
+
 function getKolor(nazwa) {
   const kolory = ['#F4E2D8','#E7E9D5','#EFE0DA','#E4E2D4','#F0DDC9','#E0E3D6','#F4D9CC','#DCE5D2']
   let hash = 0
@@ -31,8 +54,8 @@ function getEmoji(nazwa) {
 
 const JEDNOSTKI = ['g', 'kg', 'ml', 'l', 'szt.', 'opak.', 'łyżka', 'łyżki', 'łyżeczka', 'szklanka', 'ząbki', 'pęczek', 'garść', 'do smaku']
 const KATEGORIE = [
-  '1_Mięso i ryby', '2_Warzywa', '3_Owoce', '4_Nabiał',
-  '5_Pieczywo', '6_Sypkie', '7_Przyprawy', '8_Inne',
+  '1_Warzywa i owoce', '2_Mięso i ryby', '3_Nabiał', '4_Pieczywo',
+  '5_Produkty sypkie', '6_Konserwy i słoiki', '7_Przyprawy', '8_Inne',
 ]
 const DNI = ['Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota', 'Niedziela']
 const DNI_KROTKO = ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Nd']
@@ -59,6 +82,10 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
   const [edSkladniki, setEdSkladniki] = useState([])
   const [edPrzepis, setEdPrzepis] = useState([])
   const [nowyKrok, setNowyKrok] = useState('')
+
+  const [edZdjecie, setEdZdjecie] = useState(null)
+  const [edZdjeciePlik, setEdZdjeciePlik] = useState(null)
+  const [edZdjeciePreview, setEdZdjeciePreview] = useState(null)
 
   const [pokazKalendarz, setPokazKalendarz] = useState(false)
   const [tydzien, setTydzien] = useState(0)
@@ -140,6 +167,9 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
       _nowy: false,
     })))
     setEdPrzepis([...przepis])
+    setEdZdjecie(heroZdj || null)
+    setEdZdjeciePlik(null)
+    setEdZdjeciePreview(null)
     setEdycja(true)
   }
 
@@ -161,9 +191,20 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
       setNazwa(aktualnaNazwa)
     }
 
+    // Upload zdjęcia przed głównym zapisem
+    let noweZdjecieUrl = edZdjecie ?? null
+    if (edZdjeciePlik) {
+      try {
+        const slug = aktualnaNazwa.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '').slice(0, 40)
+        noweZdjecieUrl = await uploadujZdjecie(edZdjeciePlik, slug)
+      } catch (e) {
+        console.error('Błąd uploadu zdjęcia:', e)
+      }
+    }
+
     const operacje = []
     operacje.push(
-      supabase.from('dania').update({ 'Przepis': przepisTekst }).eq('"Danie"', aktualnaNazwa)
+      supabase.from('dania').update({ 'Przepis': przepisTekst, 'zdjecie': noweZdjecieUrl }).eq('"Danie"', aktualnaNazwa)
     )
 
     edSkladniki.filter(sk => sk.id && !sk._nowy).forEach(sk => {
@@ -188,13 +229,14 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
         'Kategoria': sk.Kategoria,
         'Przepis': przepisTekst,
         'TYP': wzor['TYP'] || null,
-        'zdjecie': wzor['zdjecie'] || null,
+        'zdjecie': noweZdjecieUrl,
       }))
       operacje.push(supabase.from('dania').insert(wiersze))
     }
 
     await Promise.all(operacje)
     sledz?.('edytuj_danie', { danie: aktualnaNazwa, nowe_skladniki: noweSkladniki.length })
+    setEdZdjeciePlik(null); setEdZdjeciePreview(null)
     await pobierz()
     setEdycja(false); setSaving(false)
   }
@@ -342,16 +384,39 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
         </div>
 
         <article style={s.hero}>
-          <div style={{ ...s.heroImg, background: heroZdj ? 'transparent' : getKolor(nazwa) }}>
-            {heroZdj
-              ? <img src={heroZdj} alt={nazwa} style={s.heroImgInner} />
-              : <span style={s.heroEmoji}>{getEmoji(nazwa)}</span>}
+          <div style={{ ...s.heroImg, background: (edycja ? (edZdjeciePreview || edZdjecie) : heroZdj) ? 'transparent' : getKolor(nazwa), position: 'relative', overflow: 'hidden' }}>
+            {(() => {
+              const zdj = edycja ? (edZdjeciePreview || edZdjecie) : heroZdj
+              return zdj
+                ? <img src={zdj} alt={nazwa} style={s.heroImgInner} />
+                : <span style={s.heroEmoji}>{getEmoji(nazwa)}</span>
+            })()}
+            {edycja && (
+              <label style={s.zdjecieOverlay}>
+                {edZdjeciePreview || edZdjecie ? 'Zmień zdjęcie' : '+ Dodaj zdjęcie'}
+                <input type="file" accept="image/*" style={{ display: 'none' }}
+                  onChange={e => {
+                    const plik = e.target.files?.[0]
+                    if (!plik) return
+                    setEdZdjeciePlik(plik)
+                    setEdZdjeciePreview(URL.createObjectURL(plik))
+                  }}
+                />
+              </label>
+            )}
           </div>
 
           <div style={s.heroInfo}>
             <div style={s.eyebrow}>Przepis</div>
             {edycja ? (
-              <input style={s.inputNazwa} value={edNazwa} onChange={e => setEdNazwa(e.target.value)} />
+              <>
+                <input style={s.inputNazwa} value={edNazwa} onChange={e => setEdNazwa(e.target.value)} />
+                {(edZdjecie || edZdjeciePreview) && (
+                  <button style={s.btnUsunZdj} onClick={() => { setEdZdjecie(null); setEdZdjeciePlik(null); setEdZdjeciePreview(null) }}>
+                    Usuń zdjęcie
+                  </button>
+                )}
+              </>
             ) : (
               <h1 style={s.heroTytul}>{nazwa}</h1>
             )}
@@ -427,17 +492,28 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
               {edPrzepis.map((krok, i) => (
                 <div key={i} style={s.edKrokRow}>
                   <span style={s.edKrokNr}>{String(i + 1).padStart(2, '0')}</span>
-                  <input style={{ ...s.edInput, flex: 1 }} value={krok}
-                    onChange={e => { const n = [...edPrzepis]; n[i] = e.target.value; setEdPrzepis(n) }} />
-                  <button style={s.btnMini} onClick={() => przesunKrok(i, -1)}>↑</button>
-                  <button style={s.btnMini} onClick={() => przesunKrok(i, 1)}>↓</button>
-                  <button style={s.btnUsun} onClick={() => usunKrok(i)}>✕</button>
+                  <textarea
+                    style={{ ...s.edInput, flex: 1, minHeight: 48, resize: 'vertical', lineHeight: 1.5 }}
+                    rows={2}
+                    value={krok}
+                    onChange={e => { const n = [...edPrzepis]; n[i] = e.target.value; setEdPrzepis(n) }}
+                  />
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    <button style={s.btnMini} onClick={() => przesunKrok(i, -1)}>↑</button>
+                    <button style={s.btnMini} onClick={() => przesunKrok(i, 1)}>↓</button>
+                    <button style={s.btnUsun} onClick={() => usunKrok(i)}>✕</button>
+                  </div>
                 </div>
               ))}
               <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
-                <input style={{ ...s.edInput, flex: 1 }} placeholder="Nowy krok…"
-                  value={nowyKrok} onChange={e => setNowyKrok(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && dodajKrok()} />
+                <textarea
+                  style={{ ...s.edInput, flex: 1, minHeight: 48, resize: 'vertical' }}
+                  rows={2}
+                  placeholder="Nowy krok…"
+                  value={nowyKrok}
+                  onChange={e => setNowyKrok(e.target.value)}
+                  onKeyDown={e => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); dodajKrok() } }}
+                />
                 <button style={s.btnDodajKrok} onClick={dodajKrok}>+ Dodaj</button>
               </div>
             </div>
@@ -460,7 +536,7 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
             <button style={{ ...ui.btnPrimary, flex: 1 }} onClick={zapiszZmiany} disabled={saving}>
               {saving ? 'Zapisuję…' : 'Zapisz zmiany'}
             </button>
-            <button style={{ ...ui.btnGhost, padding: '14px 20px' }} onClick={() => setEdycja(false)}>
+            <button style={{ ...ui.btnGhost, padding: '14px 20px' }} onClick={() => { setEdZdjeciePlik(null); setEdZdjeciePreview(null); setEdycja(false) }}>
               Anuluj
             </button>
           </div>
@@ -491,6 +567,19 @@ const s = {
   },
   heroImgInner: { width: '100%', height: '100%', objectFit: 'cover', display: 'block' },
   heroEmoji: { fontSize: 88 },
+  zdjecieOverlay: {
+    position: 'absolute', inset: 0,
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    background: 'rgba(0,0,0,.35)', color: '#fff',
+    fontFamily: fonts.sans, fontSize: 15, fontWeight: 600, cursor: 'pointer',
+    letterSpacing: 0.2,
+  },
+  btnUsunZdj: {
+    display: 'block', marginTop: 10,
+    background: 'none', border: `0.5px solid ${t.border}`,
+    borderRadius: 20, padding: '6px 14px',
+    fontFamily: fonts.sans, fontSize: 12, color: t.mute, cursor: 'pointer',
+  },
   heroInfo: { padding: '20px 22px 22px' },
   eyebrow: { ...ui.eyebrow, marginBottom: 6 },
   heroTytul: { ...ui.h1, fontSize: 30, lineHeight: 1.05, margin: 0 },

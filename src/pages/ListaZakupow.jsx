@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { supabase } from '../supabase'
 import { t, fonts, ui } from '../theme'
-import { formatDataLocal } from '../dataHelpers'
+import { formatDataLocal, dzisLocal } from '../dataHelpers'
 
 const KATEGORIE = [
   { id: '1_Warzywa i owoce',   label: 'Warzywa i owoce' },
@@ -629,7 +629,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     const [{ data: planData }, { data: wlasneData }, { data: historiaData }, { data: cykliczneData }, { data: metaData }] = await Promise.all([
       supabase.from('kalendarz').select('*')
         .eq('household_id', householdId)
-        .gte('data', poniedzialek)
+        .gte('data', dzisLocal())
         .lte('data', niedzielaStr),
       supabase.from('zakupy_wlasne').select('*')
         .eq('household_id', householdId)

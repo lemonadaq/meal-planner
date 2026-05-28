@@ -2,6 +2,29 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../supabase'
 import { t, fonts, ui } from '../theme'
 
+async function kompresujObraz(plik, maxSzerokosc = 1200, jakosc = 0.82) {
+  return new Promise(resolve => {
+    const img = new Image()
+    img.onload = () => {
+      let { width, height } = img
+      if (width > maxSzerokosc) { height = Math.round(height * maxSzerokosc / width); width = maxSzerokosc }
+      const canvas = document.createElement('canvas')
+      canvas.width = width; canvas.height = height
+      canvas.getContext('2d').drawImage(img, 0, 0, width, height)
+      canvas.toBlob(resolve, 'image/jpeg', jakosc)
+    }
+    img.src = URL.createObjectURL(plik)
+  })
+}
+
+async function uploadujZdjecie(plik, slug) {
+  const blob = await kompresujObraz(plik)
+  const sciezka = `dania/${slug}-${Date.now()}.jpg`
+  const { error } = await supabase.storage.from('dania-zdjecia').upload(sciezka, blob, { contentType: 'image/jpeg', upsert: true })
+  if (error) throw error
+  return supabase.storage.from('dania-zdjecia').getPublicUrl(sciezka).data.publicUrl
+}
+
 const JEDNOSTKI = ['g', 'kg', 'ml', 'l', 'szt.', 'opak.', 'łyżka', 'łyżki', 'łyżeczka', 'szklanka', 'ząbki', 'pęczek', 'garść', 'do smaku']
 
 const KATEGORIE = {
@@ -46,6 +69,9 @@ export default function DodajDanie({ onBack, onZapisano }) {
   const [kroki, setKroki] = useState([])
   const [nowyKrok, setNowyKrok] = useState('')
 
+  const [zdjeciePlik, setZdjeciePlik] = useState(null)
+  const [zdjeciePreview, setZdjeciePreview] = useState(null)
+
   const [saving, setSaving] = useState(false)
   const [blad, setBlad] = useState('')
 
@@ -89,6 +115,7 @@ export default function DodajDanie({ onBack, onZapisano }) {
     setNowyS({ nazwa: '', ilosc: '', jednostka: 'g', kategoria: '1_Warzywa i owoce' })
     setNowyKrok('')
     setBlad(''); setPodpowiedzi([])
+    setZdjeciePlik(null); setZdjeciePreview(null)
   }
 
   function dodajSkladnik() {
@@ -141,6 +168,17 @@ export default function DodajDanie({ onBack, onZapisano }) {
       ? kroki.map((k, i) => `${i + 1}. ${k}`).join('\n')
       : null
 
+    let zdjecieUrl = null
+    if (zdjeciePlik) {
+      try {
+        const slug = nazwa.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '').slice(0, 40)
+        zdjecieUrl = await uploadujZdjecie(zdjeciePlik, slug)
+      } catch (e) {
+        setBlad('Błąd uploadu zdjęcia: ' + e.message)
+        setSaving(false); return
+      }
+    }
+
     const wspolne = {
       'Danie': nazwa.trim(),
       'Przepis': przepisTekst,
@@ -148,6 +186,7 @@ export default function DodajDanie({ onBack, onZapisano }) {
       'czas_minuty': czasMinuty ? parseInt(czasMinuty, 10) || null : null,
       'porcje_bazowe': porcjeBazowe ? parseInt(porcjeBazowe, 10) || 4 : 4,
       'notatki': notatki.trim() || null,
+      'zdjecie': zdjecieUrl,
     }
 
     const rows = skladniki.map((sk, i) => ({
@@ -397,6 +436,31 @@ export default function DodajDanie({ onBack, onZapisano }) {
           />
         </section>
 
+        {/* Zdjęcie */}
+        <section style={s.section}>
+          <label style={s.label}>Zdjęcie (opcjonalne)</label>
+          {zdjeciePreview ? (
+            <div style={s.zdjecieWrap}>
+              <img src={zdjeciePreview} alt="Podgląd" style={s.zdjecieImg} />
+              <button style={s.btnUsunZdj} onClick={() => { setZdjeciePlik(null); setZdjeciePreview(null) }}>
+                Usuń
+              </button>
+            </div>
+          ) : (
+            <label style={s.btnDodajZdj}>
+              + Dodaj zdjęcie
+              <input type="file" accept="image/*" style={{ display: 'none' }}
+                onChange={e => {
+                  const plik = e.target.files?.[0]
+                  if (!plik) return
+                  setZdjeciePlik(plik)
+                  setZdjeciePreview(URL.createObjectURL(plik))
+                }}
+              />
+            </label>
+          )}
+        </section>
+
         {blad && <div style={s.blad}>{blad}</div>}
 
         <div style={s.bottomRow}>
@@ -539,6 +603,23 @@ const s = {
     background: t.surfaceAlt, border: 'none', borderRadius: 6,
     padding: '3px 7px', fontSize: 11, cursor: 'pointer',
     color: t.text, fontFamily: fonts.sans, lineHeight: 1,
+  },
+
+  zdjecieWrap: { position: 'relative', borderRadius: 14, overflow: 'hidden' },
+  zdjecieImg: { width: '100%', aspectRatio: '5/3', objectFit: 'cover', display: 'block' },
+  btnUsunZdj: {
+    position: 'absolute', top: 8, right: 8,
+    background: 'rgba(0,0,0,.5)', color: '#fff',
+    border: 'none', borderRadius: 20, padding: '6px 12px',
+    fontFamily: fonts.sans, fontSize: 12, fontWeight: 500, cursor: 'pointer',
+  },
+  btnDodajZdj: {
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    width: '100%', padding: '20px',
+    background: t.surfaceAlt, color: t.mute,
+    border: `1.5px dashed ${t.border}`, borderRadius: 14,
+    fontFamily: fonts.sans, fontSize: 14, fontWeight: 500, cursor: 'pointer',
+    boxSizing: 'border-box',
   },
 
   blad: {

@@ -58,10 +58,10 @@ function getEmoji(nazwa) {
 export default function Dania({ onSelect, user, householdId, onDodaj, onBack }) {
   const [wszystkie, setWszystkie] = useState([])
   const [loading, setLoading] = useState(true)
-  const [szukaj, setSzukaj] = useState('')
-  const [filtry, setFiltry] = useState([]) // [] = Wszystko; można łączyć: ulubione + rodzaje
-  const [ulubioneNaGorze, setUlubioneNaGorze] = useState(true)
-  const [widok, setWidok] = useState('siatka')
+  const [szukaj, setSzukaj] = useState(() => sessionStorage.getItem('dania_szukaj') || '')
+  const [filtry, setFiltry] = useState(() => { try { return JSON.parse(sessionStorage.getItem('dania_filtry') || '[]') } catch { return [] } })
+  const [ulubioneNaGorze, setUlubioneNaGorze] = useState(() => sessionStorage.getItem('dania_ulubione') !== 'false')
+  const [widok, setWidok] = useState(() => sessionStorage.getItem('dania_widok') || 'siatka')
 
   // Menu kontekstowe (bottom sheet)
   const [menuDla, setMenuDla] = useState(null) // obiekt dania lub null
@@ -83,6 +83,11 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack }) 
     if (toastTimer.current) clearTimeout(toastTimer.current)
     setToast(null)
   }
+
+  useEffect(() => { sessionStorage.setItem('dania_szukaj', szukaj) }, [szukaj])
+  useEffect(() => { sessionStorage.setItem('dania_filtry', JSON.stringify(filtry)) }, [filtry])
+  useEffect(() => { sessionStorage.setItem('dania_widok', widok) }, [widok])
+  useEffect(() => { sessionStorage.setItem('dania_ulubione', String(ulubioneNaGorze)) }, [ulubioneNaGorze])
 
   useEffect(() => {
     pobierzDane()
