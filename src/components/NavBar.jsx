@@ -1,4 +1,4 @@
-import { t, fonts } from './theme'
+import { t, fonts } from '../theme'
 
 export default function NavBar({ aktywny, onChange }) {
   const tabs = [
