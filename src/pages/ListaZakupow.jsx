@@ -23,7 +23,16 @@ const DOMYSLNE_PRODUKTY_W_DOMU = [
 
 // Te składniki mogą zostać w przepisach, ale nie powinny wpadać na listę zakupów.
 // Dotyczy tylko pozycji wygenerowanych z przepisów — ręcznie dopisany produkt zostaje na liście.
-const ZAWSZE_UKRYTE_Z_PRZEPISOW = ['Sól', 'Pieprz']
+const ZAWSZE_UKRYTE_Z_PRZEPISOW = [
+  // Podstawowe przyprawy — zawsze w szafce
+  'Sól', 'Pieprz', 'Oregano', 'Bazylia', 'Majeranek', 'Tymianek',
+  'Rozmaryn', 'Curry', 'Kumin mielony', 'Kumin', 'Gałka muszkatołowa',
+  'Cynamon', 'Papryka słodka mielona', 'Papryka słodka w proszku',
+  'Papryka ostra w proszku', 'Papryka wędzona', 'Przyprawa gyros',
+  'Ziele angielskie', 'Liść laurowy',
+  // Oleje i octy — zawsze w domu
+  'Olej', 'Oliwa', 'Oliwa z oliwek', 'Ocet winny', 'Ocet balsamiczny',
+]
 
 function normalizujProduktDomowy(nazwa = '') {
   return nazwa
