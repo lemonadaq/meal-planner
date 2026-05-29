@@ -55,7 +55,7 @@ function unikalneProduktyWDomu(lista = []) {
 }
 
 function kluczZakupu(skladnik, jednostka = '') {
-  return `${poprawNazwe(skladnik)}||${jednostka || ''}`
+  return `${normalizujNazweMeta(poprawNazwe(skladnik))}||${normalizujJednostke(jednostka || '')}`
 }
 
 function tekstIlosciZItemu(item) {
