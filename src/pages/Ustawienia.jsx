@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { supabase } from './supabase'
-import { t, fonts, ui, avatarBg } from './theme'
+import { supabase } from '../supabase'
+import { t, fonts, ui, avatarBg } from '../theme'
 
 export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin, onRodzina, onSloty, jestAdmin }) {
   const imie = user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || ''
