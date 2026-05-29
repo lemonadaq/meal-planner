@@ -143,8 +143,8 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
 
   async function pobierz() {
     setLoading(true)
-    const { data } = await supabase.from('dania').select('*')
-      .eq('"Danie"', nazwaProp).order('"Kategoria"')
+const { data } = await supabase.from('dania').select('*')
+  .eq('Danie', nazwaProp).order('Kategoria')
     if (data && data.length > 0) {
       setSkladniki(data)
       const przepisTekst = data.find(d => d['Przepis'])?.['Przepis'] || ''
@@ -162,12 +162,12 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
       id: sk.id,
       Skladnik: sk['Składnik'] || '',
       Ilosc: sk['Ilość na 1 porcję'] || '',
-      Jednostka: sk['Jednostka'] || 'szt.',
+      Jednostka: sk['Jednostka'] || 'g',
       Kategoria: sk['Kategoria'] || '8_Inne',
       _nowy: false,
     })))
     setEdPrzepis([...przepis])
-    setEdZdjecie(heroZdj || null)
+    setEdZdjecie(skladniki.find(sk => sk.zdjecie)?.zdjecie || null)
     setEdZdjeciePlik(null)
     setEdZdjeciePreview(null)
     setEdycja(true)
@@ -176,7 +176,7 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
   function dodajPustySkladnik() {
     setEdSkladniki(prev => [
       ...prev,
-      { id: null, Skladnik: '', Ilosc: '', Jednostka: 'szt.', Kategoria: '8_Inne', _nowy: true }
+      { id: null, Skladnik: '', Ilosc: '', Jednostka: 'g', Kategoria: '8_Inne', _nowy: true }
     ])
   }
 
@@ -186,7 +186,7 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
 
     let aktualnaNazwa = nazwa
     if (edNazwa !== nazwa && edNazwa.trim()) {
-      await supabase.from('dania').update({ 'Danie': edNazwa.trim() }).eq('"Danie"', nazwa)
+      await supabase.from('dania').update({ 'Danie': edNazwa.trim() }).eq('Danie', nazwa)
       aktualnaNazwa = edNazwa.trim()
       setNazwa(aktualnaNazwa)
     }
@@ -204,7 +204,7 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
 
     const operacje = []
     operacje.push(
-      supabase.from('dania').update({ 'Przepis': przepisTekst, 'zdjecie': noweZdjecieUrl }).eq('"Danie"', aktualnaNazwa)
+      supabase.from('dania').update({ 'Przepis': przepisTekst, 'zdjecie': noweZdjecieUrl }).eq('Danie', aktualnaNazwa)
     )
 
     edSkladniki.filter(sk => sk.id && !sk._nowy).forEach(sk => {
