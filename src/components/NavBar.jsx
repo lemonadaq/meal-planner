@@ -1,7 +1,4 @@
-import { t, fonts } from '../theme'
-
-// Same prop signature as your original NavBar: `aktywny` is the active tab id,
-// `onChange(id)` fires when the user taps another tab.
+import { t, fonts } from './theme'
 
 export default function NavBar({ aktywny, onChange }) {
   const tabs = [
@@ -10,6 +7,9 @@ export default function NavBar({ aktywny, onChange }) {
     { id: 'przepisy', label: 'Przepisy', Icon: BookIcon },
     { id: 'zakupy',   label: 'Zakupy',   Icon: CartIcon },
   ]
+
+  // s liczymy w ciele komponentu, żeby czytało bieżące tokeny po zmianie motywu
+  const s = makeS()
 
   return (
     <>
@@ -42,6 +42,42 @@ export default function NavBar({ aktywny, onChange }) {
   )
 }
 
+function makeS() {
+  return {
+    spacer: { height: 84 },
+
+    navWrap: {
+      position: 'fixed', bottom: 0, left: 0, right: 0,
+      background: t.surface,
+      borderTop: `0.5px solid ${t.border}`,
+      boxShadow: '0 -2px 14px rgba(0,0,0,0.35)',
+      padding: '8px 0 calc(20px + env(safe-area-inset-bottom, 0px))',
+      zIndex: 100,
+    },
+    nav: {
+      display: 'flex',
+      maxWidth: 760,
+      margin: '0 auto',
+      padding: '0 20px',
+      boxSizing: 'border-box',
+    },
+    tab: {
+      flex: 1, display: 'flex', flexDirection: 'column',
+      alignItems: 'center', justifyContent: 'center', gap: 4,
+      padding: '6px 4px',
+      background: 'none', border: 'none', cursor: 'pointer',
+      fontFamily: fonts.sans,
+      transition: 'color .15s ease',
+    },
+    ikona: { display: 'grid', placeItems: 'center' },
+    label: {
+      fontFamily: fonts.sans, fontSize: 10.5, letterSpacing: 0.1,
+      lineHeight: 1, color: 'inherit',
+    },
+  }
+}
+
+// ─── ikony SVG ─────────────────────────────────────────────────────────────
 const HomeIcon = ({ active }) => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
     stroke="currentColor" strokeWidth={active ? 2 : 1.6}
@@ -74,38 +110,3 @@ const CartIcon = ({ active }) => (
     <circle cx="18" cy="21" r="1.2"/>
   </svg>
 )
-
-const s = {
-  spacer: { height: 84 },
-
-  // Wrapper bierze pełną szerokość ekranu (białe tło + cień),
-  // a nav w środku jest scentrowany i ograniczony do szerokości aplikacji.
-  navWrap: {
-    position: 'fixed', bottom: 0, left: 0, right: 0,
-    background: t.surface,
-    borderTop: `0.5px solid ${t.border}`,
-    boxShadow: '0 -4px 24px rgba(74,55,40,.04)',
-    padding: '8px 0 calc(20px + env(safe-area-inset-bottom, 0px))',
-    zIndex: 100,
-  },
-  nav: {
-    display: 'flex',
-    maxWidth: 760,     // ← zgodny z najszerszą stroną (Kalendarz / DanieDetail)
-    margin: '0 auto',
-    padding: '0 20px', // ← te same 20px co kontener stron
-    boxSizing: 'border-box',
-  },
-  tab: {
-    flex: 1, display: 'flex', flexDirection: 'column',
-    alignItems: 'center', justifyContent: 'center', gap: 4,
-    padding: '6px 4px',
-    background: 'none', border: 'none', cursor: 'pointer',
-    fontFamily: fonts.sans,
-    transition: 'color .15s ease',
-  },
-  ikona: { display: 'grid', placeItems: 'center' },
-  label: {
-    fontFamily: fonts.sans, fontSize: 10.5, letterSpacing: 0.1,
-    lineHeight: 1, color: 'inherit',
-  },
-}

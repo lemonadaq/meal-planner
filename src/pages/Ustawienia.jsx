@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
-import { supabase } from '../supabase'
-import { t, fonts, ui, avatarBg } from '../theme'
+import { supabase } from './supabase'
+import { t, fonts, ui, avatarBg } from './theme'
 
 export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin, onRodzina, onSloty, jestAdmin }) {
   const imie = user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || ''
   const [porcje, setPorcje] = useState(ustawienia?.domyslne_porcje ?? 1)
   const [zapisano, setZapisano] = useState(false)
+  const motyw = ustawienia?.motyw ?? 'system'
 
   useEffect(() => {
     setPorcje(ustawienia?.domyslne_porcje ?? 1)
@@ -19,9 +20,22 @@ export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin
     setTimeout(() => setZapisano(false), 1200)
   }
 
+  function zmienMotyw(nowy) {
+    onZapisz({ motyw: nowy })
+  }
+
   async function wyloguj() {
     await supabase.auth.signOut()
   }
+
+  // s liczymy w ciele komponentu — odświeżą się po zmianie motywu
+  const s = makeS()
+
+  const TRYBY = [
+    { id: 'light',  label: '☀️ Jasny'    },
+    { id: 'system', label: '⚙️ System'   },
+    { id: 'dark',   label: '🌙 Ciemny'   },
+  ]
 
   return (
     <div style={s.outer}>
@@ -36,6 +50,23 @@ export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin
             <div style={s.email}>{user?.email}</div>
           </div>
         </header>
+
+        {/* Motyw */}
+        <section style={s.section}>
+          <h2 style={s.sectionTitle}>Motyw</h2>
+          <p style={s.sectionSub}>Jasny, ciemny lub zgodny z ustawieniami telefonu.</p>
+          <div style={s.segRow}>
+            {TRYBY.map(tr => (
+              <button
+                key={tr.id}
+                style={{ ...s.segBtn, ...(motyw === tr.id ? s.segBtnActive : {}) }}
+                onClick={() => zmienMotyw(tr.id)}
+              >
+                {tr.label}
+              </button>
+            ))}
+          </div>
+        </section>
 
         {/* Domyślne porcje */}
         <section style={s.section}>
@@ -82,9 +113,7 @@ export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin
         {jestAdmin && (
           <section style={s.section}>
             <h2 style={s.sectionTitle}>Admin</h2>
-            <p style={s.sectionSub}>
-              Panel analityki — dostępny tylko dla Ciebie.
-            </p>
+            <p style={s.sectionSub}>Panel analityki — dostępny tylko dla Ciebie.</p>
             <button style={s.btnAdmin} onClick={onAdmin}>
               📊 Otwórz panel admina
             </button>
@@ -101,82 +130,103 @@ export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin
   )
 }
 
-const s = {
-  outer: { background: t.bg, minHeight: '100vh', fontFamily: fonts.sans },
-  container: {
-    padding: '20px 20px 32px',
-    maxWidth: 600, margin: '0 auto', boxSizing: 'border-box',
-  },
-  back: { ...ui.btnText, padding: '0 0 14px', display: 'block' },
+function makeS() {
+  return {
+    outer: { background: t.bg, minHeight: '100vh', fontFamily: fonts.sans },
+    container: {
+      padding: '20px 20px 32px',
+      maxWidth: 600, margin: '0 auto', boxSizing: 'border-box',
+    },
+    back: { ...ui.btnText, padding: '0 0 14px', display: 'block' },
 
-  header: {
-    display: 'flex', alignItems: 'center', gap: 16,
-    marginBottom: 28,
-  },
-  avatar: {
-    width: 64, height: 64, borderRadius: '50%',
-    background: avatarBg('avatar:ust'),
-    color: '#fff',
-    display: 'grid', placeItems: 'center',
-    fontFamily: fonts.serif, fontSize: 26, fontWeight: 500,
-    flexShrink: 0,
-    boxShadow: '0 4px 12px rgba(74,55,40,.12)',
-  },
-  eyebrow: { ...ui.eyebrow, marginBottom: 4 },
-  title: { ...ui.h1, fontSize: 26, lineHeight: 1.1 },
-  email: { fontFamily: fonts.sans, fontSize: 13, color: t.mute, marginTop: 4 },
+    header: {
+      display: 'flex', alignItems: 'center', gap: 16,
+      marginBottom: 28,
+    },
+    avatar: {
+      width: 64, height: 64, borderRadius: '50%',
+      background: avatarBg('avatar:ust'),
+      color: '#fff',
+      display: 'grid', placeItems: 'center',
+      fontFamily: fonts.serif, fontSize: 26, fontWeight: 500,
+      flexShrink: 0,
+      boxShadow: '0 4px 12px rgba(74,55,40,.12)',
+    },
+    eyebrow: { ...ui.eyebrow, marginBottom: 4 },
+    title: { ...ui.h1, fontSize: 26, lineHeight: 1.1 },
+    email: { fontFamily: fonts.sans, fontSize: 13, color: t.mute, marginTop: 4 },
 
-  section: { ...ui.card, padding: 20, marginBottom: 14 },
-  sectionHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
-  sectionTitle: { ...ui.h2, fontSize: 18 },
-  sectionSub: {
-    fontFamily: fonts.sans, fontSize: 13, color: t.mute,
-    lineHeight: 1.5, margin: '0 0 16px',
-  },
+    section: { ...ui.card, padding: 20, marginBottom: 14 },
+    sectionHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
+    sectionTitle: { ...ui.h2, fontSize: 18 },
+    sectionSub: {
+      fontFamily: fonts.sans, fontSize: 13, color: t.mute,
+      lineHeight: 1.5, margin: '0 0 16px',
+    },
 
-  zapisanoChip: {
-    fontFamily: fonts.sans, fontSize: 10.5, fontWeight: 700,
-    letterSpacing: 1, textTransform: 'uppercase', color: t.accent,
-    background: t.accentSoft, padding: '3px 8px', borderRadius: 999,
-  },
+    zapisanoChip: {
+      fontFamily: fonts.sans, fontSize: 10.5, fontWeight: 700,
+      letterSpacing: 1, textTransform: 'uppercase', color: t.accent,
+      background: t.accentSoft, padding: '3px 8px', borderRadius: 999,
+    },
 
-  porcjeRow: {
-    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-    gap: 12,
-  },
-  porcjeBtn: {
-    width: 48, height: 48, borderRadius: '50%',
-    background: t.surface, border: `0.5px solid ${t.border}`,
-    color: t.text, fontSize: 22, fontFamily: fonts.serif, cursor: 'pointer',
-    display: 'grid', placeItems: 'center',
-    transition: 'transform .1s',
-  },
-  porcjeWart: {
-    flex: 1, textAlign: 'center',
-    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2,
-  },
-  porcjeNum: {
-    fontFamily: fonts.serif, fontSize: 42, color: t.text,
-    lineHeight: 1, fontVariantNumeric: 'tabular-nums', fontStyle: 'italic',
-  },
-  porcjeUnit: {
-    fontFamily: fonts.sans, fontSize: 11, fontWeight: 600,
-    letterSpacing: 1, textTransform: 'uppercase', color: t.mute,
-  },
+    // Segmentowany przełącznik motywu
+    segRow: {
+      display: 'flex', gap: 8,
+    },
+    segBtn: {
+      flex: 1,
+      fontFamily: fonts.sans, fontSize: 13, fontWeight: 500,
+      padding: '10px 6px', borderRadius: 10, cursor: 'pointer',
+      border: `1px solid ${t.border}`,
+      background: t.surfaceAlt, color: t.mute,
+      transition: 'all .15s',
+    },
+    segBtnActive: {
+      background: t.accentSoft,
+      border: `1px solid ${t.accent}`,
+      color: t.accent,
+      fontWeight: 700,
+    },
 
-  btnAdmin: {
-    ...ui.btnPrimary, width: '100%', padding: '12px 16px', fontSize: 14,
-  },
-  btnRodzina: {
-    background: t.surface, border: `1px solid ${t.borderStrong}`,
-    color: t.text, borderRadius: 12, padding: '12px 16px',
-    fontFamily: fonts.sans, fontSize: 14, fontWeight: 600,
-    cursor: 'pointer', width: '100%',
-  },
-  btnWyloguj: {
-    background: 'none', border: `1px solid ${t.border}`,
-    color: t.danger, borderRadius: 12, padding: '12px 16px',
-    fontFamily: fonts.sans, fontSize: 14, fontWeight: 500,
-    cursor: 'pointer', width: '100%',
-  },
+    porcjeRow: {
+      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      gap: 12,
+    },
+    porcjeBtn: {
+      width: 48, height: 48, borderRadius: '50%',
+      background: t.surface, border: `0.5px solid ${t.border}`,
+      color: t.text, fontSize: 22, fontFamily: fonts.serif, cursor: 'pointer',
+      display: 'grid', placeItems: 'center',
+      transition: 'transform .1s',
+    },
+    porcjeWart: {
+      flex: 1, textAlign: 'center',
+      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2,
+    },
+    porcjeNum: {
+      fontFamily: fonts.serif, fontSize: 42, color: t.text,
+      lineHeight: 1, fontVariantNumeric: 'tabular-nums', fontStyle: 'italic',
+    },
+    porcjeUnit: {
+      fontFamily: fonts.sans, fontSize: 11, fontWeight: 600,
+      letterSpacing: 1, textTransform: 'uppercase', color: t.mute,
+    },
+
+    btnAdmin: {
+      ...ui.btnPrimary, width: '100%', padding: '12px 16px', fontSize: 14,
+    },
+    btnRodzina: {
+      background: t.surface, border: `1px solid ${t.borderStrong}`,
+      color: t.text, borderRadius: 12, padding: '12px 16px',
+      fontFamily: fonts.sans, fontSize: 14, fontWeight: 600,
+      cursor: 'pointer', width: '100%',
+    },
+    btnWyloguj: {
+      background: 'none', border: `1px solid ${t.border}`,
+      color: t.danger, borderRadius: 12, padding: '12px 16px',
+      fontFamily: fonts.sans, fontSize: 14, fontWeight: 500,
+      cursor: 'pointer', width: '100%',
+    },
+  }
 }

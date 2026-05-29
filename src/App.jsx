@@ -16,6 +16,7 @@ import ZaproszenieModal from './components/ZaproszenieModal'
 import { useUstawienia } from './useUstawienia'
 import { useHousehold } from './useHousehold'
 import { useTabAnalytics, sledz } from './analytics'
+import { t, useThemeVersion } from './theme'
 
 // ⚠️ ZMIEŃ NA SWÓJ EMAIL — to email który ma dostęp do panelu admina
 const ADMIN_EMAILE = ['wojownik157@gmail.com']
@@ -41,22 +42,22 @@ function IOSInstallBaner() {
   return (
     <div style={{
       position: 'fixed', bottom: 70, left: 12, right: 12,
-      background: 'white', padding: '16px 20px',
+      background: t.surface, padding: '16px 20px',
       boxShadow: '0 -4px 20px rgba(0,0,0,0.15)',
       zIndex: 9999, fontFamily: 'sans-serif',
       borderRadius: 16,
     }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div style={{ flex: 1 }}>
-          <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 6 }}>
+          <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 6, color: t.text }}>
             📲 Dodaj do ekranu głównego
           </div>
           {jestChrome ? (
-            <div style={{ fontSize: 13, color: '#666', lineHeight: 1.5 }}>
+            <div style={{ fontSize: 13, color: t.mute, lineHeight: 1.5 }}>
               Na iPhone działa tylko przez <strong>Safari</strong>. Otwórz tę stronę w Safari, kliknij <strong>□↑</strong> i <strong>"Dodaj do ekranu głównego"</strong>
             </div>
           ) : (
-            <div style={{ fontSize: 13, color: '#666', lineHeight: 1.5 }}>
+            <div style={{ fontSize: 13, color: t.mute, lineHeight: 1.5 }}>
               Kliknij <strong>□↑</strong> na dole ekranu, a następnie <strong>"Dodaj do ekranu głównego"</strong>
             </div>
           )}
@@ -66,7 +67,7 @@ function IOSInstallBaner() {
             localStorage.setItem('banerUkryty', '1')
             setPokaz(false)
           }}
-          style={{ background: 'none', border: 'none', fontSize: 20, color: '#aaa', cursor: 'pointer', padding: '0 0 0 12px' }}
+          style={{ background: 'none', border: 'none', fontSize: 20, color: t.mute, cursor: 'pointer', padding: '0 0 0 12px' }}
         >
           ✕
         </button>
@@ -84,8 +85,9 @@ function App() {
   const [ekran, setEkran] = useState(null) // 'ustawienia' | 'admin' | 'rodzina' | 'sloty' | null
   const [homeRefresh, setHomeRefresh] = useState(0)
 
-  // Aktualny stan nawigacji trzymany w refie, żeby systemowy przycisk Wstecz
-  // na Androidzie/PWA zawsze widział najnowszy ekran bez zamykania aplikacji.
+  // Subskrypcja zmian motywu — wymusza re-render całego drzewa
+  useThemeVersion()
+
   const navStateRef = useRef({ tab, ekran, wybraneD, dodajDanie })
   const cofnijWApceRef = useRef(null)
 
@@ -147,8 +149,6 @@ function App() {
     window.history.pushState({ smakujeBackGuard: true }, '')
   }
 
-  // Android/PWA: systemowy przycisk Wstecz najpierw cofa ekran aplikacji,
-  // a dopiero z Home pozwala wyjść/minimalizować aplikację.
   useEffect(() => {
     if (!user) return
     dodajBlokadeBackButton()
@@ -166,13 +166,11 @@ function App() {
     return () => window.removeEventListener('popstate', handlePopState)
   }, [user])
 
-  // Po akceptacji zaproszenia przeładuj household i bumpuj wszystkie ekrany
   function poZaakceptowaniu() {
     refreshHousehold()
     setHomeRefresh(k => k + 1)
   }
 
-  // Bumpuje refresh dla Home gdy wracamy z innej zakładki
   function zmienTab(nowyTab) {
     if (nowyTab === 'home' && tab !== 'home') {
       setHomeRefresh(k => k + 1)
@@ -260,7 +258,7 @@ function App() {
   )
 
   return (
-    <div style={{ paddingBottom: 80, minHeight: '100vh', background: '#FAF6F0' }}>
+    <div style={{ paddingBottom: 80, minHeight: '100vh', background: t.bg }}>
       {tab === 'home' && (
         <Home
           user={user}

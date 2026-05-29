@@ -1,9 +1,37 @@
 import { useEffect, useState, useCallback } from 'react'
 import { supabase } from './supabase'
+import { applyTheme } from './theme'
+
+// Rozwiązanie trybu 'system':
+// matchMedia('(prefers-color-scheme: dark)') z nasłuchem 'change'.
+// Wywołujemy applyTheme() przy każdej zmianie ustawienia lub preferencji systemu.
+function resolveMotyw(motyw) {
+  if (motyw === 'dark')  return 'dark'
+  if (motyw === 'light') return 'light'
+  // 'system' lub undefined
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+}
 
 export function useUstawienia(user) {
-  const [ustawienia, setUstawienia] = useState({ domyslne_porcje: 1 })
+  const [ustawienia, setUstawienia] = useState({ domyslne_porcje: 1, motyw: 'system' })
   const [loading, setLoading] = useState(true)
+
+  // Nasłuch systemowej preferencji — aktywny tylko gdy motyw === 'system'
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-color-scheme: dark)')
+    function onChange() {
+      if (ustawienia.motyw === 'system' || !ustawienia.motyw) {
+        applyTheme(mq.matches ? 'dark' : 'light')
+      }
+    }
+    mq.addEventListener('change', onChange)
+    return () => mq.removeEventListener('change', onChange)
+  }, [ustawienia.motyw])
+
+  // Zastosuj motyw przy każdej zmianie ustawień
+  useEffect(() => {
+    applyTheme(resolveMotyw(ustawienia.motyw))
+  }, [ustawienia.motyw])
 
   useEffect(() => {
     if (!user?.id) return
@@ -21,10 +49,9 @@ export function useUstawienia(user) {
       if (data) {
         setUstawienia(data)
       } else if (!error) {
-        // Pierwszy raz — utwórz domyślne
         const { data: nowe } = await supabase
           .from('ustawienia')
-          .insert({ id: user.id, domyslne_porcje: 1 })
+          .insert({ id: user.id, domyslne_porcje: 1, motyw: 'system' })
           .select()
           .single()
         if (!anulowane && nowe) setUstawienia(nowe)
