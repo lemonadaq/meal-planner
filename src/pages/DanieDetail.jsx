@@ -287,11 +287,11 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
     acc[kat].push(sk); return acc
   }, {})
 
+      const s = makeS()
   if (loading) return <div style={s.loading}>Ładowanie…</div>
 
   const heroZdj = skladniki.find(sk => sk.zdjecie)?.zdjecie
 
-  const s = makeS()
 
   return (
     <div style={s.outer}>

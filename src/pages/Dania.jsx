@@ -228,6 +228,7 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack }) 
       </div>
     )
   }
+    const s = makeS()
 
   if (loading) return <div style={s.loading}>Ładowanie przepisów…</div>
 
@@ -238,7 +239,7 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack }) 
   const [featured, ...reszta] = filtrowane
   const tabela = showFeatured ? reszta : filtrowane
 
-  const s = makeS()
+
 
   return (
     <div style={s.outer}>

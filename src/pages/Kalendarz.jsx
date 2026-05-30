@@ -590,10 +590,11 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
   }
 
   // isDzis importowane z dataHelpers
+  const s = makeS()
 
   if (loading) return <div style={s.loading}>Ładowanie planu…</div>
 
-  const s = makeS()
+
 
   return (
     <div style={s.outer}>

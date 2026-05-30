@@ -1407,6 +1407,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     setPokazDodaj(true)
   }
 
+    const s = makeS()
   if (loading) return <div style={s.loading}>Generuję listę zakupów…</div>
 
   if (trybSklepu) {
@@ -1420,7 +1421,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     )
   }
 
-  const s = makeS()
+
 
   return (
     <div style={s.outer}>
