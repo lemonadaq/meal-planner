@@ -325,6 +325,8 @@ export default function Home({ user, householdId, onTabChange, onUstawienia, onS
     return 'Ostatnio dawno temu'
   }
 
+  const s = makeS()
+
   return (
     <div style={s.container}>
       <header style={s.header}>
@@ -448,6 +450,7 @@ export default function Home({ user, householdId, onTabChange, onUstawienia, onS
 
 // ── Sekcja z planem dnia ──
 function DzienSekcja({ tytul, plan, sloty, onSlotClick, onDanieClick, wyrozniony = true }) {
+  const s = makeS()
   return (
     <section style={s.dzienSekcja}>
       <h2 style={s.h2}>{tytul}</h2>
@@ -506,6 +509,7 @@ function DzienSekcja({ tytul, plan, sloty, onSlotClick, onDanieClick, wyrozniony
 }
 
 function MiniaturaDania({ nazwa, zdjecie }) {
+  const s = makeS()
   return (
     <div
       style={{
@@ -520,7 +524,8 @@ function MiniaturaDania({ nazwa, zdjecie }) {
   )
 }
 
-const s = {
+function makeS() {
+  return {
   container: {
     padding: '20px 20px 24px',
     fontFamily: fonts.sans, color: t.text,
@@ -681,4 +686,5 @@ const s = {
     height: 88, borderRadius: 16,
     background: t.surfaceAlt, opacity: 0.6,
   },
+}
 }

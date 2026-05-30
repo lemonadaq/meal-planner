@@ -61,8 +61,17 @@ function emojiDania(n) {
 // ════════════════════════════════════════════════════════════
 //   GŁÓWNY KOMPONENT
 // ════════════════════════════════════════════════════════════
-export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 1, sledz, onSelectDanie }) {
-  const [tydzien, setTydzien] = useState(0)
+export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 1, sledz, onSelectDanie, tydzien: tydzienProp = 0, onTydzienChange }) {
+  const [tydzien, _setTydzien] = useState(tydzienProp)
+
+  // Synchronizuj tydzien z propem (gdy wraca z DanieDetail)
+  useEffect(() => { _setTydzien(tydzienProp) }, [tydzienProp])
+
+  function setTydzien(val) {
+    const nowy = typeof val === 'function' ? val(tydzien) : val
+    _setTydzien(nowy)
+    onTydzienChange?.(nowy)
+  }
   const [dania, setDania] = useState([])
   const [dodatki, setDodatki] = useState([])
   const [surowki, setSurowki] = useState([])
@@ -76,6 +85,8 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
   const [kopiujModal, setKopiujModal] = useState(null) // { zDataStr } albo null
   const [wyborDatyOpen, setWyborDatyOpen] = useState(false)
   const [wybranaData, setWybranaData] = useState(() => formatData(new Date()))
+  // Modal wyboru wielu dni przy planowaniu z galerii
+  const [wieloDniModal, setWieloDniModal] = useState(null) // { danie, posilek, dataStr } | null
   const recznyWyborDniaRef = useRef(false)
 
   // Konfiguracja slotów (per household) — dynamiczna lista posiłków per dzień tygodnia
@@ -283,6 +294,43 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
       sledz?.('zaplanuj_posilek', { dzien: dataStr, posilek, danie: nazwa })
       pokazToast(`Zaplanowano: ${nazwa}`)
     }
+  }
+
+  // ── Planowanie na wiele dni naraz (z multi-dni modala) ──
+  async function zaplanujNaWieleDni(danie, posilek, dniDoZapisania) {
+    // dniDoZapisania: tablica stringów YYYY-MM-DD
+    if (!danie || !posilek || !dniDoZapisania?.length) return
+
+    const inserty = []
+    const updaty = []
+
+    for (const dataStr of dniDoZapisania) {
+      const klucz = `${dataStr}_${posilek}`
+      const istniejacy = plan[klucz]
+      if (istniejacy) {
+        updaty.push({ id: istniejacy.id, dataStr, posilek })
+      } else {
+        inserty.push({ household_id: householdId, user_id: user.id, data: dataStr, posilek, danie, dodatki: [] })
+      }
+    }
+
+    const wyniki = {}
+
+    if (inserty.length > 0) {
+      const { data } = await supabase.from('kalendarz').insert(inserty).select()
+      ;(data || []).forEach(r => { wyniki[`${r.data}_${r.posilek}`] = r })
+    }
+    for (const u of updaty) {
+      const { data } = await supabase.from('kalendarz')
+        .update({ danie, dodatki: [], podmiany: {} })
+        .eq('id', u.id).select().single()
+      if (data) wyniki[`${data.data}_${data.posilek}`] = data
+    }
+
+    setPlan(p => ({ ...p, ...wyniki }))
+    const ile = dniDoZapisania.length
+    pokazToast(`Zaplanowano na ${ile} ${ile === 1 ? 'dzień' : ile < 5 ? 'dni' : 'dni'}: ${danie}`)
+    sledz?.('zaplanuj_wiele_dni', { danie, ile })
   }
 
   // ── Side-sloty (dodatki/surówki) — tablica jsonb ──
@@ -545,6 +593,8 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
 
   if (loading) return <div style={s.loading}>Ładowanie planu…</div>
 
+  const s = makeS()
+
   return (
     <div style={s.outer}>
       <div style={s.container}>
@@ -656,6 +706,9 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
             slotyDlaDnia={slotyDlaDnia}
             nazwaSlotu={nazwaSlotu}
             kolorSlotu={kolorSlotu}
+            wieloDniModal={wieloDniModal}
+            onWieloDniModal={setWieloDniModal}
+            onZaplanujWieleDni={zaplanujNaWieleDni}
           />
         )}
       </div>
@@ -731,6 +784,7 @@ function WidokTygodnia({
   onUsunPosilek, onPrzeniesPosilek, onKopiujTydzien,
   slotyDlaDnia, nazwaSlotu, kolorSlotu,
 }) {
+  const s = makeS()
   const maZawartosc = Object.values(plan).some(p => p.danie)
   const [dragSet, setDragSet] = useState(null)
   const [hoverKey, setHoverKey] = useState(null)
@@ -1034,7 +1088,9 @@ function WidokDnia({
   onUsunPosilek, onUsunSide,
   onZmienPorcje, onPodmien, onKopiujDzien,
   slotyDlaDnia, nazwaSlotu, kolorSlotu,
+  wieloDniModal, onWieloDniModal, onZaplanujWieleDni,
 }) {
+  const s = makeS()
   const dataStr = formatData(dzien)
   const [filtr, setFiltr] = useState('')
   const [dragState, setDragState] = useState(null)
@@ -1692,8 +1748,10 @@ function WidokDnia({
               onPointerDown={(e) => onPointerDownItem(e, item.nazwa, typGalerii, item)}
               onTouchStart={(e) => onTouchStartItem(e, item.nazwa, typGalerii, item)}
               onTap={() => {
-                if (typGalerii === 'danie') onSelectDanie?.(item.nazwa)
-                else if (subTryb) {
+                if (typGalerii === 'danie') {
+                  // Tap = planuj (z wyborem dni), długie przytrzymanie = podgląd przepisu
+                  setWieloDniModal({ danie: item.nazwa, posilek: subTryb?.posilek || slotyTegoDnia[0], dataStr })
+                } else if (subTryb) {
                   // Tap = wybór szybki, omijamy drag
                   const slotIdx = subTryb.slotIdx ?? 0
                   onUstawSide(subTryb.dataStr, subTryb.posilek, slotIdx, item.nazwa, typGalerii)
@@ -1724,12 +1782,30 @@ function WidokDnia({
           <div style={s.dragGhostName}>{dragState.nazwa}</div>
         </div>
       )}
+
+      {wieloDniModal && (
+        <WieloDniModal
+          danie={wieloDniModal.danie}
+          posilek={wieloDniModal.posilek}
+          domyslnaData={wieloDniModal.dataStr}
+          dni={dni}
+          plan={plan}
+          nazwaSlotu={nazwaSlotu}
+          onClose={() => onWieloDniModal(null)}
+          onPodgladDania={() => { onWieloDniModal(null); onSelectDanie?.(wieloDniModal.danie) }}
+          onZatwierdz={(wybraneDni) => {
+            onZaplanujWieleDni(wieloDniModal.danie, wieloDniModal.posilek, wybraneDni)
+            onWieloDniModal(null)
+          }}
+        />
+      )}
     </div>
   )
 }
 
 // ════════════════════════════════════════════════════════════
 function KafelekPosilek({ posilek, posilekLabel, posilekKolor, wpis, daniaMeta, onClick, onDelete, setRef, onPointerDownDrag, onTouchStartDrag, podswietlony, przeciagany, style }) {
+  const s = makeS()
   const masDanie = !!wpis?.danie
   const label = (posilekLabel || posilek || '').toUpperCase()
   const kolor = posilekKolor || 'rgba(120,100,70,.92)'
@@ -1808,6 +1884,7 @@ function SlotDuzy({
   onZmienPorcje, onPodmien,
   onWybierzSide, style,
 }) {
+  const s = makeS()
   const masDanie = !!wpis?.danie
   const typDania = daniaMeta?.TYP
   const porcje = wpis?.porcje != null ? wpis.porcje : domyslnePorcje
@@ -1902,6 +1979,7 @@ function SlotDuzy({
 }
 
 function MiniSlot({ setRef, nazwa, typ, meta, podswietlony, onClickPelny, onClickPusty }) {
+  const s = makeS()
   const masWybor = !!nazwa
   // Etykieta zależy od typu obecnej zawartości
   const label = typ === 'dodatek' ? 'Dodatek' : typ === 'surowka' ? 'Surówka' : '+ Dodaj'
@@ -1937,6 +2015,7 @@ function MiniSlot({ setRef, nazwa, typ, meta, podswietlony, onClickPelny, onClic
 
 // ════════════════════════════════════════════════════════════
 function GaleriaItem({ item, onPointerDown, onTouchStart, onTap, aktywnyDrag }) {
+  const s = makeS()
   const downPos = useRef(null)
   const touchPos = useRef(null)
 
@@ -2011,6 +2090,86 @@ function GaleriaItem({ item, onPointerDown, onTouchStart, onTap, aktywnyDrag }) 
 }
 
 // ════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════
+// Modal: zaplanuj danie na wiele dni tygodnia naraz
+function WieloDniModal({ danie, posilek, domyslnaData, dni, plan, nazwaSlotu, onClose, onPodgladDania, onZatwierdz }) {
+  const nazwaP = nazwaSlotu(posilek) || posilek
+
+  // Domyślnie zaznacz dzień z którego otwarto modal
+  const domyslnyIdx = dni.findIndex(d => formatData(d) === domyslnaData)
+  const [zaznaczone, setZaznaczone] = useState(
+    new Set(domyslnyIdx >= 0 ? [domyslnyIdx] : [])
+  )
+
+  function toggleDzien(i) {
+    setZaznaczone(prev => {
+      const n = new Set(prev)
+      n.has(i) ? n.delete(i) : n.add(i)
+      return n
+    })
+  }
+
+  function zatwierdz() {
+    const wybraneDni = [...zaznaczone].sort((a, b) => a - b).map(i => formatData(dni[i]))
+    if (wybraneDni.length === 0) return
+    onZatwierdz(wybraneDni)
+  }
+
+  const s = makeS()
+
+  return (
+    <div style={s.modalOverlay} onClick={onClose}>
+      <div style={s.wieloDniSheet} onClick={e => e.stopPropagation()}>
+        <div style={s.wieloDniHeader}>
+          <div>
+            <div style={s.wieloDniEyebrow}>{nazwaP.toUpperCase()}</div>
+            <div style={s.wieloDniTytul}>{danie}</div>
+          </div>
+          <button style={s.wieloDniClose} onClick={onClose}>✕</button>
+        </div>
+
+        <div style={s.wieloDniSub}>Wybierz dni tygodnia</div>
+
+        <div style={s.wieloDniDni}>
+          {DNI_KROTKO.map((label, i) => {
+            const dataStr = formatData(dni[i])
+            const zaznaczony = zaznaczone.has(i)
+            const maJuz = !!plan[`${dataStr}_${posilek}`]?.danie
+            return (
+              <button
+                key={i}
+                style={{
+                  ...s.wieloDniBtn,
+                  ...(zaznaczony ? s.wieloDniBtnAktywny : {}),
+                  ...(maJuz && !zaznaczony ? s.wieloDniBtnMaJuz : {}),
+                }}
+                onClick={() => toggleDzien(i)}
+              >
+                <span style={s.wieloDniBtnLabel}>{label}</span>
+                <span style={s.wieloDniBtnDate}>{dni[i].getDate()}</span>
+                {maJuz && <span style={s.wieloDniKropka} />}
+              </button>
+            )
+          })}
+        </div>
+
+        <div style={s.wieloDniAkcje}>
+          <button style={s.wieloDniBtnPodglad} onClick={onPodgladDania}>
+            Zobacz przepis
+          </button>
+          <button
+            style={{ ...s.wieloDniBtnZatwierdz, opacity: zaznaczone.size === 0 ? 0.45 : 1 }}
+            onClick={zatwierdz}
+            disabled={zaznaczone.size === 0}
+          >
+            Zaplanuj ({zaznaczone.size})
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function KopiujModal({ zDataStr, dni, plan, onClose, onWybierz }) {
   const ileWZrodlowym = Object.values(plan).filter(p => p.data === zDataStr && p.danie).length
 
@@ -2134,7 +2293,8 @@ function PodmianaModal({ wpis, onClose, onSave }) {
 }
 
 // ════════════════════════════════════════════════════════════
-const s = {
+function makeS() {
+  return {
   outer: { background: t.bg, minHeight: '100vh', fontFamily: fonts.sans },
   container: { padding: '20px 18px 32px', maxWidth: 460, margin: '0 auto', boxSizing: 'border-box' },
   back: { ...ui.btnText, padding: '0 0 10px', display: 'block' },
@@ -2457,6 +2617,80 @@ const s = {
     fontFamily: fonts.sans, fontSize: 15, color: t.mute,
     background: t.bg, minHeight: '100vh',
   },
+
+  // WieloDniModal
+  modalOverlay: {
+    position: 'fixed', inset: 0, zIndex: 1100,
+    background: 'rgba(20,15,10,.5)', backdropFilter: 'blur(6px)',
+    display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
+  },
+  wieloDniSheet: {
+    background: t.surface, borderRadius: '22px 22px 0 0',
+    padding: '22px 20px 32px', width: '100%', maxWidth: 540,
+    boxShadow: '0 -12px 40px rgba(0,0,0,.25)',
+    fontFamily: fonts.sans,
+  },
+  wieloDniHeader: {
+    display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start',
+    marginBottom: 4,
+  },
+  wieloDniEyebrow: { ...ui.eyebrow, marginBottom: 3 },
+  wieloDniTytul: {
+    fontFamily: fonts.serif, fontSize: 20, color: t.text,
+    letterSpacing: -0.2, lineHeight: 1.15,
+  },
+  wieloDniClose: {
+    background: t.surfaceAlt, border: 'none', borderRadius: 999,
+    width: 32, height: 32, fontSize: 14, color: t.mute, cursor: 'pointer',
+    flexShrink: 0,
+  },
+  wieloDniSub: {
+    fontFamily: fonts.sans, fontSize: 12, color: t.mute,
+    marginBottom: 14, marginTop: 2,
+  },
+  wieloDniDni: {
+    display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 6,
+    marginBottom: 18,
+  },
+  wieloDniBtn: {
+    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2,
+    padding: '8px 4px', borderRadius: 12,
+    background: t.surfaceAlt, border: `1px solid ${t.border}`,
+    cursor: 'pointer', position: 'relative',
+  },
+  wieloDniBtnAktywny: {
+    background: t.accentSoft, borderColor: t.accent,
+  },
+  wieloDniBtnMaJuz: {
+    borderStyle: 'dashed',
+  },
+  wieloDniBtnLabel: {
+    fontFamily: fonts.sans, fontSize: 9.5, fontWeight: 700,
+    letterSpacing: 0.5, textTransform: 'uppercase', color: t.mute,
+  },
+  wieloDniBtnDate: {
+    fontFamily: fonts.serif, fontSize: 16, color: t.text, lineHeight: 1,
+  },
+  wieloDniKropka: {
+    position: 'absolute', bottom: 4,
+    width: 4, height: 4, borderRadius: '50%',
+    background: t.accent,
+  },
+  wieloDniAkcje: {
+    display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8,
+  },
+  wieloDniBtnPodglad: {
+    background: t.surfaceAlt, border: `1px solid ${t.border}`,
+    color: t.textSoft, borderRadius: 13,
+    padding: '12px 10px', fontFamily: fonts.sans, fontSize: 13, fontWeight: 600,
+    cursor: 'pointer',
+  },
+  wieloDniBtnZatwierdz: {
+    background: t.accent, color: '#fff', border: 'none', borderRadius: 13,
+    padding: '12px 10px', fontFamily: fonts.sans, fontSize: 13, fontWeight: 700,
+    cursor: 'pointer',
+  },
+  }
 }
 
 const modS = {

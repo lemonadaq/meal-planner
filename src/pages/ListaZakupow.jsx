@@ -23,16 +23,7 @@ const DOMYSLNE_PRODUKTY_W_DOMU = [
 
 // Te składniki mogą zostać w przepisach, ale nie powinny wpadać na listę zakupów.
 // Dotyczy tylko pozycji wygenerowanych z przepisów — ręcznie dopisany produkt zostaje na liście.
-const ZAWSZE_UKRYTE_Z_PRZEPISOW = [
-  // Podstawowe przyprawy — zawsze w szafce
-  'Sól', 'Pieprz', 'Oregano', 'Bazylia', 'Majeranek', 'Tymianek',
-  'Rozmaryn', 'Curry', 'Kumin mielony', 'Kumin', 'Gałka muszkatołowa',
-  'Cynamon', 'Papryka słodka mielona', 'Papryka słodka w proszku',
-  'Papryka ostra w proszku', 'Papryka wędzona', 'Przyprawa gyros',
-  'Ziele angielskie', 'Liść laurowy',
-  // Oleje i octy — zawsze w domu
-  'Olej', 'Oliwa', 'Oliwa z oliwek', 'Ocet winny', 'Ocet balsamiczny',
-]
+const ZAWSZE_UKRYTE_Z_PRZEPISOW = ['Sól', 'Pieprz']
 
 function normalizujProduktDomowy(nazwa = '') {
   return nazwa
@@ -64,7 +55,7 @@ function unikalneProduktyWDomu(lista = []) {
 }
 
 function kluczZakupu(skladnik, jednostka = '') {
-  return `${normalizujNazweMeta(poprawNazwe(skladnik))}||${normalizujJednostke(jednostka || '')}`
+  return `${poprawNazwe(skladnik)}||${jednostka || ''}`
 }
 
 function tekstIlosciZItemu(item) {
@@ -172,12 +163,25 @@ function bezJednostkiKolumny(rekord) {
   return reszta
 }
 
-function aktualnyTydzienZakupow() {
+// Zwraca poniedziałek tygodnia na podstawie offsetu (0 = bieżący, 1 = następny, -1 = poprzedni)
+function tydzienZakupowZOffsetem(offset = 0) {
   const d = new Date()
-  const day = d.getDay() || 7
-  d.setDate(d.getDate() - day + 1)
+  const day = d.getDay() // 0=nd, 6=sob
+  const cofniecie = day === 0 ? 6 : Math.max(0, day - 1)
+  d.setDate(d.getDate() - cofniecie + offset * 7)
   d.setHours(0, 0, 0, 0)
   return formatDataLocal(d)
+}
+
+// Fallback bez argumentu — używany w miejscach gdzie nie mamy dostępu do propa
+function aktualnyTydzienZakupow() {
+  return tydzienZakupowZOffsetem(0)
+}
+
+function czyZakupyNaNastepnyTydzien(tydzienKalendarza = 0) {
+  if (tydzienKalendarza !== 0) return tydzienKalendarza > 0
+  const day = new Date().getDay()
+  return day === 0 || day === 6
 }
 
 function tekstIlosciSzybkiej(dane) {
@@ -342,7 +346,7 @@ function parsujSzybkiProdukt(linia) {
   }
 }
 
-export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje = 1, sledz }) {
+export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje = 1, sledz, tydzienKalendarza = 0 }) {
   const [lista, setLista] = useState([])
   const [wlasne, setWlasne] = useState([]) // z tabeli zakupy_wlasne
   const [cykliczne, setCykliczne] = useState([]) // z tabeli zakupy_cykliczne
@@ -626,19 +630,23 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
   const generuj = useCallback(async () => {
     setLoading(true)
 
-    const d = new Date()
-    const day = d.getDay() || 7
-    d.setDate(d.getDate() - day + 1)
-    d.setHours(0, 0, 0, 0)
-    const poniedzialek = formatDataLocal(d)
-    const niedziela = new Date(d)
+    // Wyznacz tydzień: jeśli kalendarz jest na konkretnym offsetcie — użyj go.
+    // Jeśli offset=0 ale jest weekend — automatycznie pokaż następny tydzień.
+    const day = new Date().getDay()
+    const czyWeekendBezOffsetem = tydzienKalendarza === 0 && (day === 0 || day === 6)
+    const efektywnyOffset = czyWeekendBezOffsetem ? 1 : tydzienKalendarza
+
+    const poniedzialek = tydzienZakupowZOffsetem(efektywnyOffset)
+    const niedziela = new Date(poniedzialek + 'T12:00:00')
     niedziela.setDate(niedziela.getDate() + 6)
     const niedzielaStr = formatDataLocal(niedziela)
+    // Od poniedziałku gdy patrzymy w przyszłość, od dziś gdy bieżący tydzień
+    const dataOd = efektywnyOffset > 0 ? poniedzialek : dzisLocal()
 
     const [{ data: planData }, { data: wlasneData }, { data: historiaData }, { data: cykliczneData }, { data: metaData }] = await Promise.all([
       supabase.from('kalendarz').select('*')
         .eq('household_id', householdId)
-        .gte('data', dzisLocal())
+        .gte('data', dataOd)
         .lte('data', niedzielaStr),
       supabase.from('zakupy_wlasne').select('*')
         .eq('household_id', householdId)
@@ -756,7 +764,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     setOdznaczone(odtworzone)
     setHistoriaIds(mapaHistoriaId)
     setLoading(false)
-  }, [householdId, domyslnePorcje, korektyZakupow])
+  }, [householdId, domyslnePorcje, korektyZakupow, tydzienKalendarza])
 
   useEffect(() => { generuj() }, [generuj])
 
@@ -1412,6 +1420,8 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     )
   }
 
+  const s = makeS()
+
   return (
     <div style={s.outer}>
       <div style={s.container}>
@@ -1420,7 +1430,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
         <header style={s.headerCard}>
           <div style={s.headerTop}>
             <div>
-              <div style={s.headerEyebrow}>LISTA NA TEN TYDZIEŃ</div>
+              <div style={s.headerEyebrow}>{czyZakupyNaNastepnyTydzien(tydzienKalendarza) ? 'LISTA NA NASTĘPNY TYDZIEŃ' : 'LISTA NA TEN TYDZIEŃ'}</div>
               <h1 style={s.title}>Zakupy</h1>
             </div>
             <div style={s.progressRing}>
@@ -1566,6 +1576,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
 
 // ════════════════════════════════════════════════════════════
 function MamWDomuShortcut({ ile, ukryte, onClick }) {
+  const s = makeS()
   return (
     <button style={s.mamWDomuShortcut} onClick={onClick}>
       <div>
@@ -1581,6 +1592,7 @@ function MamWDomuShortcut({ ile, ukryte, onClick }) {
 }
 
 function UsunieteProdukty({ items, onRestore, onRestoreAll }) {
+  const s = makeS()
   if (!items?.length) return null
 
   return (
@@ -1727,6 +1739,7 @@ function MamWDomuModal({ produkty, aktualneProdukty, ukryteProdukty, onClose, on
 // ════════════════════════════════════════════════════════════
 // Szybkie dodawanie: Enter dodaje produkt i zostawia pole aktywne.
 function SzybkieDodawanie({ value, onChange, onDodaj }) {
+  const s = makeS()
   const textareaRef = useRef(null)
 
   async function dodajAktualne() {
@@ -1795,6 +1808,7 @@ function SzybkieDodawanie({ value, onChange, onDodaj }) {
 // ════════════════════════════════════════════════════════════
 // Pojedynczy wiersz listy — z long-pressem dla edycji
 function ItemRow({ item, kupione, onTap, onLongPress, onEdit, onHome }) {
+  const s = makeS()
   const longPressTimer = useRef(null)
   const startPos = useRef(null)
   const triggered = useRef(false)
@@ -2266,7 +2280,8 @@ function SwipeItem({ item, kupione, onSwipeRight }) {
 }
 
 // ════════════════════════════════════════════════════════════
-const s = {
+function makeS() {
+  return {
   outer: { background: t.bg, minHeight: '100vh', fontFamily: fonts.sans, position: 'relative' },
   container: { padding: '20px 20px 32px', maxWidth: 620, margin: '0 auto', boxSizing: 'border-box' },
   back: { ...ui.btnText, padding: '0 0 14px', display: 'block' },
@@ -2502,6 +2517,7 @@ const s = {
     fontFamily: fonts.sans, fontSize: 15, color: t.mute,
     background: t.bg, minHeight: '100vh',
   },
+  }
 }
 
 const mod = {

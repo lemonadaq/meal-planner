@@ -16,7 +16,8 @@ import ZaproszenieModal from './components/ZaproszenieModal'
 import { useUstawienia } from './useUstawienia'
 import { useHousehold } from './useHousehold'
 import { useTabAnalytics, sledz } from './analytics'
-import { t, useThemeVersion } from './theme'
+import { t } from './theme'
+import { useThemeVersion } from './useThemeVersion'
 
 // ⚠️ ZMIEŃ NA SWÓJ EMAIL — to email który ma dostęp do panelu admina
 const ADMIN_EMAILE = ['wojownik157@gmail.com']
@@ -84,6 +85,7 @@ function App() {
   const [dodajDanie, setDodajDanie] = useState(false)
   const [ekran, setEkran] = useState(null) // 'ustawienia' | 'admin' | 'rodzina' | 'sloty' | null
   const [homeRefresh, setHomeRefresh] = useState(0)
+  const [tydzienKalendarza, setTydzienKalendarza] = useState(0)
 
   // Subskrypcja zmian motywu — wymusza re-render całego drzewa
   useThemeVersion()
@@ -277,6 +279,8 @@ function App() {
           domyslnePorcje={ustawienia?.domyslne_porcje ?? 1}
           sledz={sledzAkcje}
           onSelectDanie={setWybraneD}
+          tydzien={tydzienKalendarza}
+          onTydzienChange={setTydzienKalendarza}
         />
       )}
       {tab === 'przepisy' && (
@@ -295,6 +299,7 @@ function App() {
           onBack={() => zmienTab('home')}
           domyslnePorcje={ustawienia?.domyslne_porcje ?? 1}
           sledz={sledzAkcje}
+          tydzienKalendarza={tydzienKalendarza}
         />
       )}
       <NavBar aktywny={tab} onChange={zmienTab} />

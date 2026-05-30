@@ -208,6 +208,8 @@ export default function DodajDanie({ onBack, onZapisano }) {
     }
   }
 
+  const s = makeS()
+
   return (
     <div style={s.outer}>
       <div style={s.container}>
@@ -476,7 +478,8 @@ export default function DodajDanie({ onBack, onZapisano }) {
   )
 }
 
-const s = {
+function makeS() {
+  return {
   outer: { background: t.bg, minHeight: '100vh', fontFamily: fonts.sans },
   container: {
     padding: '20px 20px 40px',
@@ -629,4 +632,5 @@ const s = {
   },
 
   bottomRow: { display: 'flex', gap: 8, marginTop: 8 },
+}
 }

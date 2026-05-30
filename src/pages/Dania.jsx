@@ -238,6 +238,8 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack }) 
   const [featured, ...reszta] = filtrowane
   const tabela = showFeatured ? reszta : filtrowane
 
+  const s = makeS()
+
   return (
     <div style={s.outer}>
       <div style={s.container}>
@@ -511,7 +513,8 @@ const DotsIcon = () => (
   </svg>
 )
 
-const s = {
+function makeS() {
+  return {
   outer: { background: t.bg, minHeight: '100vh', fontFamily: fonts.sans },
   container: {
     padding: '20px 20px 32px',
@@ -809,4 +812,5 @@ const s = {
     textTransform: 'uppercase', cursor: 'pointer',
     flexShrink: 0,
   },
+}
 }

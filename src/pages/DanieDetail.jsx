@@ -52,7 +52,7 @@ function getEmoji(nazwa) {
   return '🍽️'
 }
 
-const JEDNOSTKI = ['g', 'kg', 'ml', 'l', 'szt.', 'szt', 'opak.', 'łyżka', 'łyżki', 'łyżeczka', 'szklanka', 'ząbki', 'pęczek', 'garść', 'szczypta', 'do smaku']
+const JEDNOSTKI = ['g', 'kg', 'ml', 'l', 'szt.', 'opak.', 'łyżka', 'łyżki', 'łyżeczka', 'szklanka', 'ząbki', 'pęczek', 'garść', 'do smaku']
 const KATEGORIE = [
   '1_Warzywa i owoce', '2_Mięso i ryby', '3_Nabiał', '4_Pieczywo',
   '5_Produkty sypkie', '6_Konserwy i słoiki', '7_Przyprawy', '8_Inne',
@@ -143,8 +143,8 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
 
   async function pobierz() {
     setLoading(true)
-const { data } = await supabase.from('dania').select('*')
-  .eq('Danie', nazwaProp).order('Kategoria')
+    const { data } = await supabase.from('dania').select('*')
+      .eq('"Danie"', nazwaProp).order('"Kategoria"')
     if (data && data.length > 0) {
       setSkladniki(data)
       const przepisTekst = data.find(d => d['Przepis'])?.['Przepis'] || ''
@@ -162,12 +162,12 @@ const { data } = await supabase.from('dania').select('*')
       id: sk.id,
       Skladnik: sk['Składnik'] || '',
       Ilosc: sk['Ilość na 1 porcję'] || '',
-      Jednostka: sk['Jednostka'] || 'g',
+      Jednostka: sk['Jednostka'] || 'szt.',
       Kategoria: sk['Kategoria'] || '8_Inne',
       _nowy: false,
     })))
     setEdPrzepis([...przepis])
-    setEdZdjecie(skladniki.find(sk => sk.zdjecie)?.zdjecie || null)
+    setEdZdjecie(heroZdj || null)
     setEdZdjeciePlik(null)
     setEdZdjeciePreview(null)
     setEdycja(true)
@@ -176,7 +176,7 @@ const { data } = await supabase.from('dania').select('*')
   function dodajPustySkladnik() {
     setEdSkladniki(prev => [
       ...prev,
-      { id: null, Skladnik: '', Ilosc: '', Jednostka: 'g', Kategoria: '8_Inne', _nowy: true }
+      { id: null, Skladnik: '', Ilosc: '', Jednostka: 'szt.', Kategoria: '8_Inne', _nowy: true }
     ])
   }
 
@@ -186,7 +186,7 @@ const { data } = await supabase.from('dania').select('*')
 
     let aktualnaNazwa = nazwa
     if (edNazwa !== nazwa && edNazwa.trim()) {
-      await supabase.from('dania').update({ 'Danie': edNazwa.trim() }).eq('Danie', nazwa)
+      await supabase.from('dania').update({ 'Danie': edNazwa.trim() }).eq('"Danie"', nazwa)
       aktualnaNazwa = edNazwa.trim()
       setNazwa(aktualnaNazwa)
     }
@@ -204,7 +204,7 @@ const { data } = await supabase.from('dania').select('*')
 
     const operacje = []
     operacje.push(
-      supabase.from('dania').update({ 'Przepis': przepisTekst, 'zdjecie': noweZdjecieUrl }).eq('Danie', aktualnaNazwa)
+      supabase.from('dania').update({ 'Przepis': przepisTekst, 'zdjecie': noweZdjecieUrl }).eq('"Danie"', aktualnaNazwa)
     )
 
     edSkladniki.filter(sk => sk.id && !sk._nowy).forEach(sk => {
@@ -290,6 +290,8 @@ const { data } = await supabase.from('dania').select('*')
   if (loading) return <div style={s.loading}>Ładowanie…</div>
 
   const heroZdj = skladniki.find(sk => sk.zdjecie)?.zdjecie
+
+  const s = makeS()
 
   return (
     <div style={s.outer}>
@@ -546,7 +548,8 @@ const { data } = await supabase.from('dania').select('*')
   )
 }
 
-const s = {
+function makeS() {
+  return {
   outer: { background: t.bg, minHeight: '100vh', fontFamily: fonts.sans },
   container: {
     padding: '20px 20px 40px',
@@ -728,4 +731,5 @@ const s = {
     fontFamily: fonts.sans, fontSize: 15, color: t.mute,
     background: t.bg, minHeight: '100vh',
   },
+}
 }
