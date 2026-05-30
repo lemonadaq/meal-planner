@@ -28,6 +28,9 @@ const tLight = {
   accentDark:   '#A0401F',
   accentSoft:   '#F4D9CC',
 
+    warm: '#C04E2C',
+  warmSoft: '#F4D9CC',
+
   // secondary — zieleń szałwiowa ("zaplanowane")
   secondary:    '#4D7C4D',
   secondarySoft:'#DCE5D2',
@@ -53,6 +56,9 @@ const tDark = {
   accent:       '#D86A4C',
   accentDark:   '#BC543A',
   accentSoft:   '#352529',
+
+    warm: '#D86A4C',
+  warmSoft: '#352529',
 
   secondary:    '#7BA877',
   secondarySoft:'#26302A',
