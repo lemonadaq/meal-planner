@@ -3,6 +3,8 @@ import { supabase } from '../supabase'
 import { t, fonts, ui } from '../theme'
 import { formatDataLocal as formatData, isDzis } from '../dataHelpers'
 import { useSloty, slotyWDniu, kluczDnia, sanityzuj } from '../useSloty'
+import { useGenerator } from '../useGenerator'
+import GeneratorPlanu from '../components/GeneratorPlanu'
 
 const DNI_KROTKO = ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Nd']
 
@@ -126,6 +128,32 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
   const dni = useMemo(() => Array.from({ length: 7 }, (_, i) => {
     const d = new Date(poniedzialek); d.setDate(d.getDate() + i); return d
   }), [poniedzialek])
+
+  // ── Generator planu tygodnia ──
+  const { generuj: generujPlan } = useGenerator({ user, householdId, slotyConfig })
+
+  async function odpalGenerator(tryb) {
+    const wynik = await generujPlan({
+      dniTygodnia: dni,
+      istniejacyPlan: plan,
+      tryb,
+    })
+    if (wynik?.error) {
+      pokazToast('Nie udało się ułożyć planu')
+      return
+    }
+    if (wynik?.utworzone) {
+      setPlan(p => {
+        const n = { ...p }
+        wynik.utworzone.forEach(row => { n[`${row.data}_${row.posilek}`] = row })
+        return n
+      })
+      pokazToast(`Ułożono plan — ${wynik.ileDodano} posiłków`)
+      sledz?.('generuj_plan', { tryb, ile: wynik.ileDodano })
+    }
+  }
+
+  const maZaplanowane = Object.values(plan).some(w => w?.danie)
 
   function otworzDzien(di) {
     setSubTryb(null)
@@ -658,6 +686,16 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
               </button>
             )}
           </>
+        )}
+
+        {widok === 'tydzien' && !subTryb && (
+          <div style={{ margin: '4px 0 16px' }}>
+            <GeneratorPlanu
+              maZaplanowane={maZaplanowane}
+              onGeneruj={odpalGenerator}
+              wariant={maZaplanowane ? 'kompakt' : 'duzy'}
+            />
+          </div>
         )}
 
         {subTryb && (
