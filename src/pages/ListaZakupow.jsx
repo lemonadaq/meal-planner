@@ -254,6 +254,111 @@ function przeliczDoBazowej(ilosc, jednostkaZ, jednostkaDo) {
   return { ilosc: ilosc * mnoznik, jednostka: jednostkaDo }
 }
 
+// ── Uniwersalne przeliczniki (stałe, te same dla wszystkich; trzymane w kodzie) ──
+// Sprowadzamy każdą jednostkę do „rodziny": waga (g), objętość (ml), łyżki (ml),
+// sztuki (szt). Łyżka/łyżeczka/szczypta to przybliżenia — wystarczające dla zakupów.
+const LYZKI_ML = { lyzka: 15, lyzeczka: 5, szczypta: 0.5 }
+const WAGA_DO_G = { g: 1, kg: 1000, dag: 10 }
+const OBJ_DO_ML = { ml: 1, l: 1000 }
+const INNE_DO_G = { peczek: 30, garsc: 30 }
+
+// Kanoniczna postać jednostki do przeliczeń (ł→l, bez ogonków, bez końcowej kropki,
+// liczba pojedyncza/mnoga sprowadzona do jednego klucza).
+function kanonJednostka(raw = '') {
+  const x = raw.toString().toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[łl]/g, 'l')
+    .replace(/\.+$/, '').trim()
+  if (!x) return ''
+  if (['g', 'gram', 'gramy', 'gramow'].includes(x)) return 'g'
+  if (['kg', 'kilogram', 'kilogramy'].includes(x)) return 'kg'
+  if (['dag', 'dkg', 'dekagram', 'dekagramy'].includes(x)) return 'dag'
+  if (['ml', 'mililitr', 'mililitry'].includes(x)) return 'ml'
+  if (['l', 'litr', 'litry'].includes(x)) return 'l'
+  if (['lyzka', 'lyzki', 'lyzke', 'lyzek'].includes(x)) return 'lyzka'
+  if (['lyzeczka', 'lyzeczki', 'lyzeczke', 'lyzeczek'].includes(x)) return 'lyzeczka'
+  if (['szczypta', 'szczypty', 'szczypte', 'szczypt'].includes(x)) return 'szczypta'
+  if (['szt', 'sztuka', 'sztuki', 'sztuk'].includes(x)) return 'szt'
+  if (['peczek', 'peczki'].includes(x)) return 'peczek'
+  if (['garsc', 'garsci'].includes(x)) return 'garsc'
+  return x
+}
+
+// Ile gramów „waży" dana ilość w danej jednostce (gęstość ~1 dla płynów/łyżek).
+// szt liczymy tylko jeśli znamy wagę sztuki. Zwraca null gdy się nie da.
+function naGramy(ilosc, jKanon, wagaSztuki) {
+  if (jKanon in WAGA_DO_G) return ilosc * WAGA_DO_G[jKanon]
+  if (jKanon in OBJ_DO_ML) return ilosc * OBJ_DO_ML[jKanon]
+  if (jKanon in LYZKI_ML) return ilosc * LYZKI_ML[jKanon]
+  if (jKanon in INNE_DO_G) return ilosc * INNE_DO_G[jKanon]
+  if (jKanon === 'szt' && wagaSztuki) return ilosc * wagaSztuki
+  return null
+}
+
+// Przelicz dowolną ilość na jednostkę bazową składnika.
+// Zwraca { ilosc, jedn } w jednostce `bazowa`, albo null gdy konwersja niemożliwa
+// (np. „szt" bez znanej wagi sztuki).
+function naBazowa(ilosc, jednostka, bazowa, wagaSztuki) {
+  if (ilosc == null || !Number.isFinite(ilosc)) return null
+  const j = kanonJednostka(jednostka)
+  const b = kanonJednostka(bazowa)
+  if (j === b) return { ilosc, jedn: bazowa }
+
+  // Baza wagowa → policz gramy, potem przelicz na docelową (g/kg/dag)
+  if (b in WAGA_DO_G) {
+    const g = naGramy(ilosc, j, wagaSztuki)
+    return g == null ? null : { ilosc: g / WAGA_DO_G[b], jedn: bazowa }
+  }
+  // Baza objętościowa → wszystko jak ml (gęstość ~1), potem na ml/l
+  if (b in OBJ_DO_ML) {
+    const ml = naGramy(ilosc, j, wagaSztuki) // ten sam mnożnik, bo ~1 g/ml
+    return ml == null ? null : { ilosc: ml / OBJ_DO_ML[b], jedn: bazowa }
+  }
+  // Baza w sztukach → tylko jeśli znamy wagę sztuki (z gramów na sztuki)
+  if (b === 'szt') {
+    if (j === 'szt') return { ilosc, jedn: bazowa }
+    if (!wagaSztuki) return null
+    const g = naGramy(ilosc, j, null)
+    return g == null ? null : { ilosc: g / wagaSztuki, jedn: bazowa }
+  }
+  // Baza w łyżkach → przez ml
+  if (b in LYZKI_ML) {
+    const ml = naGramy(ilosc, j, wagaSztuki)
+    return ml == null ? null : { ilosc: ml / LYZKI_ML[b], jedn: bazowa }
+  }
+  return null
+}
+
+// Wybór jednostki bazowej dla składnika: najpierw z meta, w razie braku z rodziny jednostki.
+function ustalJednostkeBazowa(meta, jednostka) {
+  if (meta?.jednostka_bazowa) return meta.jednostka_bazowa
+  const j = kanonJednostka(jednostka)
+  if (j in WAGA_DO_G || j === 'peczek' || j === 'garsc') return 'g'
+  if (j in OBJ_DO_ML) return 'ml'
+  if (j in LYZKI_ML) return 'łyżka'
+  if (j === 'szt') return 'szt.'
+  return jednostka || ''
+}
+
+// Waga jednej sztuki (g/ml) — potrzebna do scalania „szt" z gramami.
+// Bierzemy z meta: gdy opakowanie liczone jest w sztukach, `rozmiar_opakowania`
+// jest właśnie wagą 1 szt (tak jak Cebula: 150 g / szt.). Wspieramy też ewentualną
+// jawną kolumnę `waga_sztuki_g`, gdyby kiedyś powstała.
+function wagaSztukiZMeta(meta) {
+  if (!meta) return null
+  if (meta.waga_sztuki_g) {
+    const w = parseFloat(meta.waga_sztuki_g)
+    if (Number.isFinite(w) && w > 0) return w
+  }
+  const opak = kanonJednostka(meta.jednostka_opakowania)
+  const baza = kanonJednostka(meta.jednostka_bazowa)
+  if (opak === 'szt' && (baza === 'g' || baza === 'ml')) {
+    const r = parseFloat(meta.rozmiar_opakowania)
+    if (Number.isFinite(r) && r > 0) return r
+  }
+  return null
+}
+
 // Znajdź wpis skladniki_meta dla danej nazwy składnika.
 // Strategia: normalizacja → exact match po nazwa_norm → match po aliasach.
 function dopasujMeta(nazwaSkladnika, wszystkieMeta) {
@@ -682,36 +787,51 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
       Object.entries(pod).forEach(([k, v]) => { if (v) globalnePodmiany[k] = v })
     })
 
+    // Klucz mapy = sama nazwa kanoniczna (po meta), żeby warianty tej samej rzeczy
+    // i różne jednostki trafiały do JEDNEJ pozycji. Jednostkę bazową ustalamy raz,
+    // przy pierwszym wystąpieniu, i do niej sprowadzamy resztę.
     const skladnikiMap = {}
     function dodaj(skladnik, ilosc, jednostka, kategoria, mnoznik) {
       if (!skladnik) return
       const finalny = globalnePodmiany[skladnik] || skladnik
-      const iloscNum = parseFloat(ilosc?.toString().replace(',', '.'))
-      const klucz = `${finalny}||${jednostka || ''}`
+      const meta = dopasujMeta(finalny, wszystkieMeta)
+      const kanon = meta?.nazwa || finalny
+      const mapaKlucz = normalizujNazweMeta(kanon)
+      if (!mapaKlucz) return
 
-      if (!iloscNum || isNaN(iloscNum)) {
-        if (!skladnikiMap[klucz]) {
-          skladnikiMap[klucz] = {
-            skladnik: finalny, ilosc: null,
-            iloscOryginalna: ilosc, jednostka,
-            kategoria: kategoria || '8_Inne', klucz,
-            podmieniono: !!globalnePodmiany[skladnik],
-            zrodlo: 'plan',
-          }
-        }
-        return
-      }
-      const realnaIlosc = iloscNum * (mnoznik || 1)
-      if (skladnikiMap[klucz]) {
-        if (skladnikiMap[klucz].ilosc != null) skladnikiMap[klucz].ilosc += realnaIlosc
-        else skladnikiMap[klucz].ilosc = realnaIlosc
-      } else {
-        skladnikiMap[klucz] = {
-          skladnik: finalny, ilosc: realnaIlosc, jednostka,
-          kategoria: kategoria || '8_Inne', klucz,
+      const iloscNum = parseFloat(ilosc?.toString().replace(',', '.'))
+      let wpis = skladnikiMap[mapaKlucz]
+
+      // Pierwsze wystąpienie tej nazwy — załóż pozycję
+      if (!wpis) {
+        wpis = skladnikiMap[mapaKlucz] = {
+          skladnik: kanon,
+          ilosc: null,
+          iloscOryginalna: !Number.isFinite(iloscNum) ? ilosc : null,
+          bazaJedn: ustalJednostkeBazowa(meta, jednostka),
+          jednostka: '',
+          wagaSztuki: wagaSztukiZMeta(meta),
+          kategoria: kategoria || '8_Inne',
           podmieniono: !!globalnePodmiany[skladnik],
           zrodlo: 'plan',
+          nieprzeliczone: [], // ilości, których nie dało się sprowadzić do bazy
         }
+      }
+
+      // Brak ilości („do smaku", „—") — nic do sumowania, pozycja już istnieje
+      if (!Number.isFinite(iloscNum) || iloscNum === 0) return
+
+      const realna = iloscNum * (mnoznik || 1)
+      const p = naBazowa(realna, jednostka, wpis.bazaJedn, wpis.wagaSztuki)
+      if (p) {
+        wpis.ilosc = (wpis.ilosc || 0) + p.ilosc
+        wpis.jednostka = wpis.bazaJedn
+      } else {
+        // Nie da się sprowadzić do bazy (np. szt bez znanej wagi) — trzymaj osobno
+        const jn = normalizujJednostke(jednostka || '')
+        const ex = wpis.nieprzeliczone.find(e => e.jedn === jn)
+        if (ex) ex.ilosc += realna
+        else wpis.nieprzeliczone.push({ ilosc: realna, jedn: jn })
       }
     }
 
@@ -726,11 +846,34 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
 
     Object.values(skladnikiMap).forEach(item => {
       if (item.ilosc != null) item.ilosc = Math.round(item.ilosc * 100) / 100
+
+      // Klucz widoku zostaje w starym formacie `nazwa||jednostka` — tak działa
+      // dopasowywanie do zakupy_historia i korekty_zakupow. Po scaleniu każda
+      // nazwa ma już jedną jednostkę, więc to jeden klucz na pozycję.
+      item.jednostka = item.ilosc != null ? item.bazaJedn : ''
+      item.klucz = `${item.skladnik}||${item.jednostka || ''}`
+
       // Dolicz info o opakowaniach na podstawie skladniki_meta
       const meta = dopasujMeta(item.skladnik, wszystkieMeta)
       if (meta) {
         item.opakowania = policzOpakowania(item, meta)
         item.metaJednostka = meta.jednostka_bazowa
+      }
+
+      // Zostały kawałki w nieprzeliczalnych jednostkach (np. „3 szt" bez wagi)
+      // — złóż czytelny tekst „X g + Y szt" i wyłącz pojedynczą liczbę/opakowania.
+      if (item.nieprzeliczone && item.nieprzeliczone.length) {
+        const fmt = n => Number.isInteger(n) ? String(n) : String(Math.round(n * 100) / 100).replace('.', ',')
+        const czesci = []
+        if (item.ilosc != null && item.ilosc > 0) czesci.push(`${fmt(item.ilosc)} ${item.bazaJedn}`.trim())
+        item.nieprzeliczone.forEach(e => czesci.push(`${fmt(e.ilosc)}${e.jedn ? ` ${e.jedn}` : ''}`.trim()))
+        if (czesci.length) {
+          item.iloscOryginalna = czesci.join(' + ')
+          item.ilosc = null
+          item.jednostka = ''
+          item.opakowania = null
+          item.klucz = `${item.skladnik}||`
+        }
       }
     })
 
