@@ -62,6 +62,7 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack }) 
   const [filtry, setFiltry] = useState(() => { try { return JSON.parse(sessionStorage.getItem('dania_filtry') || '[]') } catch { return [] } })
   const [ulubioneNaGorze, setUlubioneNaGorze] = useState(() => sessionStorage.getItem('dania_ulubione') !== 'false')
   const [widok, setWidok] = useState(() => sessionStorage.getItem('dania_widok') || 'siatka')
+  const scrollRestoredRef = useRef(false)
 
   // Menu kontekstowe (bottom sheet)
   const [menuDla, setMenuDla] = useState(null) // obiekt dania lub null
@@ -89,6 +90,15 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack }) 
   useEffect(() => { sessionStorage.setItem('dania_widok', widok) }, [widok])
   useEffect(() => { sessionStorage.setItem('dania_ulubione', String(ulubioneNaGorze)) }, [ulubioneNaGorze])
 
+  // Zapamiętuj pozycję scrolla
+  useEffect(() => {
+    function onScroll() {
+      sessionStorage.setItem('dania_scroll', String(window.scrollY))
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
   useEffect(() => {
     pobierzDane()
     return () => { if (toastTimer.current) clearTimeout(toastTimer.current) }
@@ -101,11 +111,22 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack }) 
       .from('dania')
       .select('"Danie", "TYP", rodzaj, czas_minuty, porcje_bazowe, ulubione, zdjecie')
       .order('"Danie"')
-    // Dedup po nazwie — jeden reprezentant per wpis
-    const unikalne = [...new Map((data || []).map(d => [d['Danie'], d])).values()]
-      .filter(d => d['Danie'])
+    // Dedup po nazwie — preferuj wiersz ze zdjęciem
+    const mapa = new Map()
+    for (const d of (data || [])) {
+      if (!d['Danie']) continue
+      const prev = mapa.get(d['Danie'])
+      if (!prev || (!prev.zdjecie && d.zdjecie)) mapa.set(d['Danie'], d)
+    }
+    const unikalne = [...mapa.values()]
     setWszystkie(unikalne)
     setLoading(false)
+    // Przywróć pozycję scrolla (tylko raz przy pierwszym ładowaniu)
+    if (!scrollRestoredRef.current) {
+      scrollRestoredRef.current = true
+      const saved = parseInt(sessionStorage.getItem('dania_scroll') || '0', 10)
+      if (saved > 0) requestAnimationFrame(() => window.scrollTo({ top: saved, behavior: 'instant' }))
+    }
   }
 
   function toggleFiltr(id) {

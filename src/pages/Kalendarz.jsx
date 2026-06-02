@@ -3,8 +3,6 @@ import { supabase } from '../supabase'
 import { t, fonts, ui } from '../theme'
 import { formatDataLocal as formatData, isDzis } from '../dataHelpers'
 import { useSloty, slotyWDniu, kluczDnia, sanityzuj } from '../useSloty'
-import { useGenerator } from '../useGenerator'
-import GeneratorPlanu from '../components/GeneratorPlanu'
 
 const DNI_KROTKO = ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Nd']
 
@@ -69,6 +67,14 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
   // Synchronizuj tydzien z propem (gdy wraca z DanieDetail)
   useEffect(() => { _setTydzien(tydzienProp) }, [tydzienProp])
 
+  // Zapamiętuj pozycję scrolla
+  useEffect(() => {
+    function onScroll() { sessionStorage.setItem('planer_scroll', String(window.scrollY)) }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+
   function setTydzien(val) {
     const nowy = typeof val === 'function' ? val(tydzien) : val
     _setTydzien(nowy)
@@ -80,8 +86,8 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
   const [skladnikiDan, setSkladnikiDan] = useState({}) // { nazwaDania: Set('składnik1','składnik2') }
   const [plan, setPlan] = useState({})
   const [loading, setLoading] = useState(true)
-  const [widok, setWidok] = useState('tydzien')
-  const [aktywnyDzien, setAktywnyDzien] = useState(0)
+  const [widok, setWidok] = useState(() => sessionStorage.getItem('planer_widok') || 'tydzien')
+  const [aktywnyDzien, setAktywnyDzien] = useState(() => parseInt(sessionStorage.getItem('planer_aktywnyDzien') || '0', 10))
   const [subTryb, setSubTryb] = useState(null)
   const [podmianaModal, setPodmianaModal] = useState(null)
   const [kopiujModal, setKopiujModal] = useState(null) // { zDataStr } albo null
@@ -129,36 +135,12 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
     const d = new Date(poniedzialek); d.setDate(d.getDate() + i); return d
   }), [poniedzialek])
 
-  // ── Generator planu tygodnia ──
-  const { generuj: generujPlan } = useGenerator({ user, householdId, slotyConfig })
-
-  async function odpalGenerator(tryb) {
-    const wynik = await generujPlan({
-      dniTygodnia: dni,
-      istniejacyPlan: plan,
-      tryb,
-    })
-    if (wynik?.error) {
-      pokazToast('Nie udało się ułożyć planu')
-      return
-    }
-    if (wynik?.utworzone) {
-      setPlan(p => {
-        const n = { ...p }
-        wynik.utworzone.forEach(row => { n[`${row.data}_${row.posilek}`] = row })
-        return n
-      })
-      pokazToast(`Ułożono plan — ${wynik.ileDodano} posiłków`)
-      sledz?.('generuj_plan', { tryb, ile: wynik.ileDodano })
-    }
-  }
-
-  const maZaplanowane = Object.values(plan).some(w => w?.danie)
-
   function otworzDzien(di) {
     setSubTryb(null)
     setWidok('dzien')
+    sessionStorage.setItem('planer_widok', 'dzien')
     setAktywnyDzien(di)
+    sessionStorage.setItem('planer_aktywnyDzien', String(di))
   }
 
   function otworzWyborDaty() {
@@ -183,7 +165,9 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
     recznyWyborDniaRef.current = true
     setTydzien(tydzOffset)
     setAktywnyDzien(dzienIdx)
+    sessionStorage.setItem('planer_aktywnyDzien', String(dzienIdx))
     setWidok('dzien')
+    sessionStorage.setItem('planer_widok', 'dzien')
     setSubTryb(null)
     setWyborDatyOpen(false)
   }
@@ -218,10 +202,14 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
       ])
       if (anulowane) return
 
-      // Dedup po nazwie
-      const unikalneWszystko = [...new Map(
-        (wszystko || []).filter(x => x.Danie).map(x => [x.Danie, x])
-      ).values()]
+      // Dedup po nazwie — preferuj wiersz ze zdjęciem
+      const dedupMapa = new Map()
+      for (const x of (wszystko || [])) {
+        if (!x.Danie) continue
+        const prev = dedupMapa.get(x.Danie)
+        if (!prev || (!prev.zdjecie && x.zdjecie)) dedupMapa.set(x.Danie, x)
+      }
+      const unikalneWszystko = [...dedupMapa.values()]
 
       // Podział wg rodzaju:
       // - 'dodatek' / 'surowka' -> osobne listy do galerii w sub-trybie
@@ -251,6 +239,18 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
       ;(planRes.data || []).forEach(p => { nowyPlan[`${p.data}_${p.posilek}`] = p })
       setPlan(nowyPlan)
       setLoading(false)
+      // Przywróć pozycję scrolla po załadowaniu danych
+      const savedScroll = parseInt(sessionStorage.getItem('planer_scroll') || '0', 10)
+      if (savedScroll > 0) {
+        // Kilka prób — czekamy aż strona osiągnie wystarczającą wysokość
+        const tryScroll = (attemptsLeft) => {
+          window.scrollTo({ top: savedScroll, behavior: 'instant' })
+          if (attemptsLeft > 0 && window.scrollY < savedScroll - 10) {
+            setTimeout(() => tryScroll(attemptsLeft - 1), 100)
+          }
+        }
+        setTimeout(() => tryScroll(5), 50)
+      }
     }
     pobierz()
     return () => { anulowane = true }
@@ -681,21 +681,20 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
             </div>
 
             {widok === 'dzien' && (
-              <button style={s.wrocTydzienBtn} onClick={() => setWidok('tydzien')}>
-                ← Pokaż cały tydzień
-              </button>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: 4 }}>
+                <button style={{ ...s.wrocTydzienBtn, paddingBottom: 0 }} onClick={() => { setWidok('tydzien'); sessionStorage.setItem('planer_widok', 'tydzien') }}>
+                  ← Pokaż cały tydzień
+                </button>
+                <button
+                  style={s.dzienAkcjaBtn}
+                  onClick={() => setKopiujModal({ zDataStr: formatData(dni[aktywnyDzien]) })}
+                  title="Kopiuj ten dzień do innego"
+                >
+                  ⎘ Kopiuj dzień
+                </button>
+              </div>
             )}
           </>
-        )}
-
-        {widok === 'tydzien' && !subTryb && (
-          <div style={{ margin: '4px 0 16px' }}>
-            <GeneratorPlanu
-              maZaplanowane={maZaplanowane}
-              onGeneruj={odpalGenerator}
-              wariant={maZaplanowane ? 'kompakt' : 'duzy'}
-            />
-          </div>
         )}
 
         {subTryb && (
@@ -1591,13 +1590,14 @@ function WidokDnia({
   // ── Filtrowanie galerii ──
   // Główny tryb galerii jest niezależny od kliknięcia mini-slotu:
   // można wybrać Dania / Dodatki / Surówki na górze i przeciągać od razu.
-  const [filtrRodzaj, setFiltrRodzaj] = useState('wszystko')
-  const [galeriaTryb, setGaleriaTryb] = useState('danie')
+  const [filtrRodzaj, setFiltrRodzaj] = useState(() => sessionStorage.getItem('planer_filtrRodzaj') || 'wszystko')
+  const [galeriaTryb, setGaleriaTryb] = useState(() => sessionStorage.getItem('planer_galeriaTryb') || 'danie')
 
   const typGalerii = subTryb?.typ || galeriaTryb
 
   function zmienTrybGalerii(id) {
     setGaleriaTryb(id)
+    sessionStorage.setItem('planer_galeriaTryb', id)
     setFiltr('')
 
     if (subTryb) {
@@ -1676,6 +1676,13 @@ function WidokDnia({
         opacity: subTryb ? 0.55 : 1,
         transition: 'opacity .2s',
       }}>
+        {subTryb && (
+          <div style={s.dzienAkcje}>
+            <button style={s.dzienAkcjaBtnText} onClick={() => onSetSubTryb(null)}>
+              Anuluj wybór
+            </button>
+          </div>
+        )}
         <div style={s.slotyDuze}>
           {slotyTegoDnia.map(posilek => {
             const wpis = plan[`${dataStr}_${posilek}`]
@@ -1712,22 +1719,6 @@ function WidokDnia({
           })}
         </div>
 
-        {/* Pasek akcji dla dnia (kopiuj, podpowiedź) — w sticky żeby zawsze widoczne */}
-        <div style={s.dzienAkcje}>
-          <button
-            style={s.dzienAkcjaBtn}
-            onClick={() => onKopiujDzien(dataStr)}
-            disabled={!dzienMaZawartosc}
-            title={dzienMaZawartosc ? 'Kopiuj ten dzień do innego' : 'Pusty dzień — nie ma czego kopiować'}
-          >
-            ⎘ Kopiuj dzień
-          </button>
-          {subTryb && (
-            <button style={s.dzienAkcjaBtnText} onClick={() => onSetSubTryb(null)}>
-              Anuluj wybór
-            </button>
-          )}
-        </div>
       </div>
 
       <section style={s.galeria}>
@@ -1742,41 +1733,55 @@ function WidokDnia({
           />
         </div>
 
-        <div style={s.trybGaleriiRow}>
-          {[
-            { id: 'danie', label: 'Dania' },
-            { id: 'dodatek', label: 'Dodatki' },
-            { id: 'surowka', label: 'Surówki' },
-          ].map(c => (
-            <button
-              key={c.id}
-              style={{ ...s.trybGaleriiBtn, ...(typGalerii === c.id ? s.trybGaleriiBtnOn : {}) }}
-              onClick={() => zmienTrybGalerii(c.id)}
-            >
-              {c.label}
-            </button>
-          ))}
+        {/* Jeden dynamiczny pasek filtrów */}
+        <div style={s.chipsRow}>
+          <button
+            style={{ ...s.chip, ...(typGalerii === 'danie' && filtrRodzaj === 'wszystko' ? s.chipOn : {}) }}
+            onClick={() => { zmienTrybGalerii('danie'); setFiltrRodzaj('wszystko'); sessionStorage.setItem('planer_filtrRodzaj', 'wszystko') }}
+          >
+            Wszystko
+          </button>
+          {/* Dynamiczne kategorie z bazy (tylko te które istnieją w daniach) */}
+          {[...new Set(dania.map(d => d.rodzaj).filter(Boolean))]
+            .filter(r => r !== 'przekaska')
+            .sort((a, b) => {
+              const order = ['sniadanie', 'obiad', 'kolacja', 'zupa', 'deser']
+              const ia = order.indexOf(a), ib = order.indexOf(b)
+              if (ia === -1 && ib === -1) return a.localeCompare(b)
+              if (ia === -1) return 1
+              if (ib === -1) return -1
+              return ia - ib
+            })
+            .map(rodzaj => {
+              const labelMap = {
+                sniadanie: 'Śniadania', obiad: 'Obiady', kolacja: 'Kolacje',
+                zupa: 'Zupy', deser: 'Desery', przekaska: 'Przekąski', dodatek: 'Dodatki', surowka: 'Surówki',
+              }
+              return (
+                <button
+                  key={rodzaj}
+                  style={{ ...s.chip, ...(typGalerii === 'danie' && filtrRodzaj === rodzaj ? s.chipOn : {}) }}
+                  onClick={() => { zmienTrybGalerii('danie'); setFiltrRodzaj(rodzaj); sessionStorage.setItem('planer_filtrRodzaj', rodzaj) }}
+                >
+                  {labelMap[rodzaj] || rodzaj}
+                </button>
+              )
+            })
+          }
+          {/* Dodatki i Surówki na końcu */}
+          <button
+            style={{ ...s.chip, ...(typGalerii === 'dodatek' ? s.chipOn : {}) }}
+            onClick={() => zmienTrybGalerii('dodatek')}
+          >
+            Dodatki
+          </button>
+          <button
+            style={{ ...s.chip, ...(typGalerii === 'surowka' ? s.chipOn : {}) }}
+            onClick={() => zmienTrybGalerii('surowka')}
+          >
+            Surówki
+          </button>
         </div>
-
-        {/* Filtr-chipy po rodzaju — tylko dla galerii dań */}
-        {typGalerii === 'danie' && (
-          <div style={s.chipsRow}>
-            {[
-              { id: 'wszystko',  label: 'Wszystko' },
-              { id: 'sniadanie', label: 'Śniadania' },
-              { id: 'obiad',     label: 'Obiady' },
-              { id: 'kolacja',   label: 'Kolacje' },
-            ].map(c => (
-              <button
-                key={c.id}
-                style={{ ...s.chip, ...(filtrRodzaj === c.id ? s.chipOn : {}) }}
-                onClick={() => setFiltrRodzaj(c.id)}
-              >
-                {c.label}
-              </button>
-            ))}
-          </div>
-        )}
 
         <div style={s.galeriaGrid}>
           {galeriaItems.map(item => (
@@ -1788,8 +1793,8 @@ function WidokDnia({
               onTouchStart={(e) => onTouchStartItem(e, item.nazwa, typGalerii, item)}
               onTap={() => {
                 if (typGalerii === 'danie') {
-                  // Tap = planuj (z wyborem dni), długie przytrzymanie = podgląd przepisu
-                  setWieloDniModal({ danie: item.nazwa, posilek: subTryb?.posilek || slotyTegoDnia[0], dataStr })
+                  // Tap = szczegóły przepisu
+                  onSelectDanie?.(item.nazwa)
                 } else if (subTryb) {
                   // Tap = wybór szybki, omijamy drag
                   const slotIdx = subTryb.slotIdx ?? 0
