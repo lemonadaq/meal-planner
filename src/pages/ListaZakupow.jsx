@@ -330,20 +330,21 @@ function naBazowa(ilosc, jednostka, bazowa, wagaSztuki) {
 }
 
 // Wybór jednostki bazowej dla składnika: najpierw z meta, w razie braku z rodziny jednostki.
+// Łyżki/łyżeczki/szczypty NIE są jednostką wyświetlaną — sprowadzamy je do gramów.
 function ustalJednostkeBazowa(meta, jednostka) {
   if (meta?.jednostka_bazowa) return meta.jednostka_bazowa
   const j = kanonJednostka(jednostka)
-  if (j in WAGA_DO_G || j === 'peczek' || j === 'garsc') return 'g'
+  if (j in WAGA_DO_G || j === 'peczek' || j === 'garsc' || j in LYZKI_ML) return 'g'
   if (j in OBJ_DO_ML) return 'ml'
-  if (j in LYZKI_ML) return 'łyżka'
   if (j === 'szt') return 'szt.'
   return jednostka || ''
 }
 
-// Waga jednej sztuki (g/ml) — potrzebna do scalania „szt" z gramami.
-// Bierzemy z meta: gdy opakowanie liczone jest w sztukach, `rozmiar_opakowania`
-// jest właśnie wagą 1 szt (tak jak Cebula: 150 g / szt.). Wspieramy też ewentualną
-// jawną kolumnę `waga_sztuki_g`, gdyby kiedyś powstała.
+// Waga jednej „sztuki" (g/ml). Dla produktu z bazą g/ml „1 szt" w przepisie =
+// jedno opakowanie/sztuka = `rozmiar_opakowania` (cebula 150 g, puszka 400 g,
+// karton 1000 ml…). Wyjątek: produkty sprzedawane na kg (opak.='kg'), gdzie
+// rozmiar to wielkość paczki, a nie waga sztuki — wtedy bierzemy jawną
+// `waga_sztuki_g` (np. pierś z kurczaka), inaczej nie zgadujemy.
 function wagaSztukiZMeta(meta) {
   if (!meta) return null
   if (meta.waga_sztuki_g) {
@@ -352,11 +353,57 @@ function wagaSztukiZMeta(meta) {
   }
   const opak = kanonJednostka(meta.jednostka_opakowania)
   const baza = kanonJednostka(meta.jednostka_bazowa)
-  if (opak === 'szt' && (baza === 'g' || baza === 'ml')) {
+  if (opak !== 'kg' && (baza === 'g' || baza === 'ml')) {
     const r = parseFloat(meta.rozmiar_opakowania)
     if (Number.isFinite(r) && r > 0) return r
   }
   return null
+}
+
+// Składniki kupowane na WAGĘ (choć pojedyncze sztuki dałoby się policzyć) —
+// pokazujemy w g/kg, nie w sztukach. Reszta warzyw/owoców idzie w szt.
+const SKLADNIKI_WAGOWE = new Set([
+  'ziemniaki', 'pieczarki', 'fasolka szparagowa', 'fasolka', 'bob',
+  'groszek cukrowy', 'groszek zielony', 'szpinak', 'rukola',
+])
+
+// Czy pokazać ilość wagowo (g/kg) zamiast w sztukach/opakowaniach?
+// Tak gdy: brak meta, wyłączone zaokrąglanie, produkt sprzedawany na kg,
+// albo nazwa jest na liście „kupowane na wagę".
+function pokazWage(item, meta) {
+  if (!meta) return true
+  if (!meta.zaokraglaj) return true
+  if (kanonJednostka(meta.jednostka_opakowania) === 'kg') return true
+  if (SKLADNIKI_WAGOWE.has(normalizujNazweMeta(item.skladnik || ''))) return true
+  return false
+}
+
+// Sformatuj ilość wagowo/objętościowo: g→kg, ml→l, bez łyżek.
+function formatujWage(ilosc, jednostka) {
+  if (ilosc == null || !Number.isFinite(ilosc)) return ''
+  const fmt = n => {
+    const r = Math.round(n * 100) / 100
+    return (Number.isInteger(r) ? String(r) : String(r).replace('.', ','))
+  }
+  const j = kanonJednostka(jednostka)
+  if (j === 'g') return ilosc >= 1000 ? `${fmt(ilosc / 1000)} kg` : `${fmt(ilosc)} g`
+  if (j === 'kg') return `${fmt(ilosc)} kg`
+  if (j === 'ml') return ilosc >= 1000 ? `${fmt(ilosc / 1000)} l` : `${fmt(ilosc)} ml`
+  if (j === 'l') return `${fmt(ilosc)} l`
+  return `${fmt(ilosc)}${jednostka ? ` ${jednostka}` : ''}`.trim()
+}
+
+// Produkty zakładane domyślnie „w domu" (nie trafiają na listę):
+//  - wszystkie przyprawy (kategoria 7_Przyprawy) — oprócz wina, które się dokupuje,
+//  - stałe spiżarni: olej, oliwa, ocet, cukier, woda (niezależnie od kategorii).
+// W przyszłości „półka/spiżarnia" pozwoli to odznaczać z poziomu apki.
+const ZAWSZE_W_DOMU = ['olej', 'oliwa', 'ocet', 'cukier', 'woda']
+function domyslnieWDomu(item) {
+  if (!item) return false
+  const n = normalizujNazweMeta(item.skladnik || '')
+  if (ZAWSZE_W_DOMU.some(p => n === p || n.startsWith(p + ' '))) return true
+  if (item.kategoria === '7_Przyprawy') return !n.startsWith('wino')
+  return false
 }
 
 // Znajdź wpis skladniki_meta dla danej nazwy składnika.
@@ -827,11 +874,14 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
         wpis.ilosc = (wpis.ilosc || 0) + p.ilosc
         wpis.jednostka = wpis.bazaJedn
       } else {
-        // Nie da się sprowadzić do bazy (np. szt bez znanej wagi) — trzymaj osobno
-        const jn = normalizujJednostke(jednostka || '')
+        // Nie da się sprowadzić do bazy (np. szt bez znanej wagi) — trzymaj osobno.
+        // Łyżki zamieniamy na gramy, żeby na liście nigdy nie było „łyżek".
+        const jk = kanonJednostka(jednostka)
+        let il = realna, jn = normalizujJednostke(jednostka || '')
+        if (jk in LYZKI_ML) { il = realna * LYZKI_ML[jk]; jn = 'g' }
         const ex = wpis.nieprzeliczone.find(e => e.jedn === jn)
-        if (ex) ex.ilosc += realna
-        else wpis.nieprzeliczone.push({ ilosc: realna, jedn: jn })
+        if (ex) ex.ilosc += il
+        else wpis.nieprzeliczone.push({ ilosc: il, jedn: jn })
       }
     }
 
@@ -853,22 +903,28 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
       item.jednostka = item.ilosc != null ? item.bazaJedn : ''
       item.klucz = `${item.skladnik}||${item.jednostka || ''}`
 
-      // Dolicz info o opakowaniach na podstawie skladniki_meta
+      // Opakowania/sztuki liczymy dla produktów policzalnych (szt., puszka,
+      // karton, opak. …). Wagowe (mięso na kg, ziemniaki, pieczarki, brak meta)
+      // pokazujemy w g/kg.
       const meta = dopasujMeta(item.skladnik, wszystkieMeta)
       if (meta) {
-        item.opakowania = policzOpakowania(item, meta)
         item.metaJednostka = meta.jednostka_bazowa
+        if (!pokazWage(item, meta)) item.opakowania = policzOpakowania(item, meta)
       }
 
       // Zostały kawałki w nieprzeliczalnych jednostkach (np. „3 szt" bez wagi)
-      // — złóż czytelny tekst „X g + Y szt" i wyłącz pojedynczą liczbę/opakowania.
+      // — złóż czytelny tekst i wyłącz pojedynczą liczbę/opakowania.
       if (item.nieprzeliczone && item.nieprzeliczone.length) {
         const fmt = n => Number.isInteger(n) ? String(n) : String(Math.round(n * 100) / 100).replace('.', ',')
         const czesci = []
-        if (item.ilosc != null && item.ilosc > 0) czesci.push(`${fmt(item.ilosc)} ${item.bazaJedn}`.trim())
-        item.nieprzeliczone.forEach(e => czesci.push(`${fmt(e.ilosc)}${e.jedn ? ` ${e.jedn}` : ''}`.trim()))
+        if (item.ilosc != null && item.ilosc > 0) czesci.push(formatujWage(item.ilosc, item.bazaJedn))
+        item.nieprzeliczone.forEach(e => czesci.push(
+          ['g', 'kg', 'ml', 'l'].includes(kanonJednostka(e.jedn))
+            ? formatujWage(e.ilosc, e.jedn)
+            : `${fmt(e.ilosc)}${e.jedn ? ` ${e.jedn}` : ''}`.trim()
+        ))
         if (czesci.length) {
-          item.iloscOryginalna = czesci.join(' + ')
+          item.iloscOryginalna = czesci.filter(Boolean).join(' + ')
           item.ilosc = null
           item.jednostka = ''
           item.opakowania = null
@@ -1486,7 +1542,9 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
   )
 
   const listaPoProduktachDomowych = useMemo(
-    () => listaPoKorektach.filter(item => !produktPasujeDoDomu(item.skladnik, produktyWDomuSet)),
+    () => listaPoKorektach.filter(item =>
+      !produktPasujeDoDomu(item.skladnik, produktyWDomuSet) &&
+      !domyslnieWDomu(item)),
     [listaPoKorektach, produktyWDomuSet]
   )
 
@@ -2030,9 +2088,11 @@ function ItemRow({ item, kupione, onTap, onLongPress, onEdit, onHome }) {
           </>
         ) : (
           <div style={{ ...s.itemIlosc, ...(kupione ? { color: t.muteLight } : {}) }}>
-            {item.ilosc != null
-              ? `${item.ilosc} ${item.jednostka || ''}`
-              : (item.iloscOryginalna || item.jednostka || '—')}
+            <strong style={{ color: kupione ? t.muteLight : t.text, fontWeight: 600 }}>
+              {item.ilosc != null
+                ? formatujWage(item.ilosc, item.jednostka)
+                : (item.iloscOryginalna || '—')}
+            </strong>
           </div>
         )}
       </div>
@@ -2413,9 +2473,11 @@ function SwipeItem({ item, kupione, onSwipeRight }) {
           </div>
         ) : (
           <div style={sklep.itemIlosc}>
-            {item.ilosc != null
-              ? `${item.ilosc} ${item.jednostka || ''}`
-              : (item.iloscOryginalna || item.jednostka || '')}
+            <strong style={{ color: '#fff', fontWeight: 600 }}>
+              {item.ilosc != null
+                ? formatujWage(item.ilosc, item.jednostka)
+                : (item.iloscOryginalna || '')}
+            </strong>
           </div>
         )}
       </div>
