@@ -552,7 +552,7 @@ function makeS() {
   return {
   outer: { background: t.bg, minHeight: '100vh', fontFamily: fonts.sans },
   container: {
-    padding: '20px 20px 40px',
+    padding: '20px 20px 100px',
     maxWidth: 760, margin: '0 auto', boxSizing: 'border-box',
   },
   topBar: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 },

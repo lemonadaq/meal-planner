@@ -278,6 +278,11 @@ function kanonJednostka(raw = '') {
   if (['lyzka', 'lyzki', 'lyzke', 'lyzek'].includes(x)) return 'lyzka'
   if (['lyzeczka', 'lyzeczki', 'lyzeczke', 'lyzeczek'].includes(x)) return 'lyzeczka'
   if (['szczypta', 'szczypty', 'szczypte', 'szczypt'].includes(x)) return 'szczypta'
+  // Ząbek (czosnku) i kromka (chleba) traktujemy jak sztukę — waga „sztuki" dla
+  // tych produktów to ząbek/kromka (ustawiane w skladniki_meta.waga_sztuki_g),
+  // więc „4 szt czosnku" = 4 ząbki, „2 szt chleba" = 2 kromki.
+  if (['zabek', 'zabki', 'zabka', 'zabkow', 'zabkach', 'zabkami', 'zabeczek'].includes(x)) return 'szt'
+  if (['kromka', 'kromki', 'kromke', 'kromek'].includes(x)) return 'szt'
   if (['szt', 'sztuka', 'sztuki', 'sztuk'].includes(x)) return 'szt'
   if (['peczek', 'peczki'].includes(x)) return 'peczek'
   if (['garsc', 'garsci'].includes(x)) return 'garsc'

@@ -30,6 +30,9 @@ export function useUstawienia(user) {
 
   // Zastosuj motyw przy każdej zmianie ustawień
   useEffect(() => {
+    // zapamiętaj wybór, żeby przy następnym starcie ustawić motyw synchronicznie
+    // (theme.js czyta to przy imporcie → brak migotania)
+    try { localStorage.setItem('motyw', ustawienia.motyw || 'system') } catch (e) { /* noop */ }
     applyTheme(resolveMotyw(ustawienia.motyw))
   }, [ustawienia.motyw])
 

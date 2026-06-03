@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from './supabase'
 import Login from './pages/Login'
+import ImieGate from './pages/ImieGate'
+import NoweHaslo from './pages/NoweHaslo'
 import Dania from './pages/Dania'
 import DanieDetail from './pages/DanieDetail'
 import Kalendarz from './pages/Kalendarz'
@@ -80,6 +82,7 @@ function IOSInstallBaner() {
 function App() {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [resetHasla, setResetHasla] = useState(false)
   const [tab, setTab] = useState('home')
   const [wybraneD, setWybraneD] = useState(null)
   const [dodajDanie, setDodajDanie] = useState(false)
@@ -136,7 +139,10 @@ function App() {
       setLoading(false)
     })
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => setUser(session?.user ?? null)
+      (event, session) => {
+        setUser(session?.user ?? null)
+        if (event === 'PASSWORD_RECOVERY') setResetHasla(true)
+      }
     )
     return () => subscription.unsubscribe()
   }, [])
@@ -186,7 +192,14 @@ function App() {
     </div>
   )
 
+  // Tryb odzyskiwania hasła (po kliknięciu w link z maila) — ma priorytet
+  if (resetHasla) return <NoweHaslo onGotowe={() => setResetHasla(false)} />
+
   if (!user) return <Login />
+
+  // Pierwsze logowanie bez imienia → poproś o nie (zapis w user_metadata.full_name)
+  const imieUsera = (user.user_metadata?.full_name || '').trim()
+  if (!imieUsera) return <ImieGate user={user} onZapisano={(u) => setUser(u)} />
 
   const jestAdmin = ADMIN_EMAILE.includes(user.email)
   const sledzAkcje = (wartosc, szczegoly) => sledz(user, 'akcja', wartosc, szczegoly)
@@ -242,6 +255,14 @@ function App() {
         user={user}
         householdId={householdId}
         sledz={sledzAkcje}
+      />
+      <NavBar
+        aktywny={tab}
+        onChange={(nowyTab) => {
+          setWybraneD(null)
+          setHomeRefresh(k => k + 1)
+          setTab(nowyTab)
+        }}
       />
       <ZaproszenieModal user={user} onZaakceptowano={poZaakceptowaniu} />
     </>

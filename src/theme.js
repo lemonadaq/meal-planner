@@ -161,6 +161,11 @@ export function applyTheme(mode) {
   const src = mode === 'dark' ? tDark : tLight
   Object.assign(t, src)
   Object.assign(ui, makeUi(mode === 'dark'))
+  // pasek statusu / overscroll zgodny z motywem
+  try {
+    const meta = document.querySelector('meta[name="theme-color"]')
+    if (meta) meta.setAttribute('content', t.bg)
+  } catch (e) { /* SSR / brak DOM */ }
   listeners.forEach(fn => fn(mode))
 }
 
@@ -185,3 +190,17 @@ export function avatarBg(seed = '') {
   for (let i = 0; i < seed.length; i++) h = seed.charCodeAt(i) + ((h << 5) - h)
   return palette[Math.abs(h) % palette.length]
 }
+
+// ─── synchroniczna inicjalizacja motywu ─────────────────────────────────────
+// Uruchamia się przy imporcie modułu, ZANIM React wyrenderuje cokolwiek.
+// Czyta zapisany wybór z localStorage (ustawiany w useUstawienia) i rozwiązuje
+// 'system' przez matchMedia — dzięki temu pierwszy render jest już w dobrym
+// motywie i nie ma migotania jasny→ciemny.
+try {
+  const zapisany = localStorage.getItem('motyw') || 'system'
+  const ciemny =
+    zapisany === 'dark' ||
+    (zapisany !== 'light' &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches)
+  if (ciemny) applyTheme('dark')
+} catch (e) { /* brak localStorage / SSR — zostaje light */ }

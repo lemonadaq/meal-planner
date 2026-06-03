@@ -3,14 +3,31 @@ import { supabase } from '../supabase'
 import { t, fonts, ui, avatarBg } from '../theme'
 
 export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin, onRodzina, onSloty, jestAdmin }) {
-  const imie = user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || ''
+  const pelneImie = user?.user_metadata?.full_name || ''
+  const imie = pelneImie.split(' ')[0] || user?.email?.split('@')[0] || ''
   const [porcje, setPorcje] = useState(ustawienia?.domyslne_porcje ?? 1)
   const [zapisano, setZapisano] = useState(false)
+  const [imieEdyt, setImieEdyt] = useState(pelneImie)
+  const [imieStan, setImieStan] = useState('idle') // 'idle' | 'saving' | 'done'
   const motyw = ustawienia?.motyw ?? 'system'
 
   useEffect(() => {
     setPorcje(ustawienia?.domyslne_porcje ?? 1)
   }, [ustawienia?.domyslne_porcje])
+
+  useEffect(() => {
+    setImieEdyt(pelneImie)
+  }, [pelneImie])
+
+  async function zapiszImie() {
+    const nowe = imieEdyt.trim()
+    if (!nowe || nowe === pelneImie) return
+    setImieStan('saving')
+    const { error } = await supabase.auth.updateUser({ data: { full_name: nowe } })
+    setImieStan('done')
+    setTimeout(() => setImieStan('idle'), 1400)
+    if (error) setImieStan('idle')
+  }
 
   function zmienPorcje(delta) {
     const nowe = Math.max(0.5, Math.min(20, +(porcje + delta).toFixed(1)))
@@ -50,6 +67,35 @@ export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin
             <div style={s.email}>{user?.email}</div>
           </div>
         </header>
+
+        {/* Imię */}
+        <section style={s.section}>
+          <div style={s.sectionHeader}>
+            <h2 style={s.sectionTitle}>Imię</h2>
+            {imieStan === 'done' && <span style={s.zapisanoChip}>Zapisano</span>}
+          </div>
+          <p style={s.sectionSub}>Tak nazywamy Cię w aplikacji i przy planowaniu z rodziną.</p>
+          <div style={s.imieRow}>
+            <input
+              style={s.imieInput}
+              type="text"
+              value={imieEdyt}
+              onChange={e => setImieEdyt(e.target.value)}
+              placeholder="Twoje imię"
+              autoComplete="given-name"
+            />
+            <button
+              style={{
+                ...s.imieBtn,
+                ...((!imieEdyt.trim() || imieEdyt.trim() === pelneImie || imieStan === 'saving') ? s.imieBtnOff : {}),
+              }}
+              onClick={zapiszImie}
+              disabled={!imieEdyt.trim() || imieEdyt.trim() === pelneImie || imieStan === 'saving'}
+            >
+              {imieStan === 'saving' ? '...' : 'Zapisz'}
+            </button>
+          </div>
+        </section>
 
         {/* Motyw */}
         <section style={s.section}>
@@ -169,6 +215,14 @@ function makeS() {
       letterSpacing: 1, textTransform: 'uppercase', color: t.accent,
       background: t.accentSoft, padding: '3px 8px', borderRadius: 999,
     },
+
+    imieRow: { display: 'flex', gap: 8, alignItems: 'center' },
+    imieInput: { ...ui.input, flex: 1 },
+    imieBtn: {
+      ...ui.btnPrimary, padding: '12px 18px', fontSize: 14,
+      flexShrink: 0, whiteSpace: 'nowrap',
+    },
+    imieBtnOff: { opacity: 0.45, cursor: 'default' },
 
     // Segmentowany przełącznik motywu
     segRow: {
