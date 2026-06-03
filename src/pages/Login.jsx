@@ -128,9 +128,9 @@ export default function Login() {
   return (
     <div style={s.container}>
       <div style={s.card}>
-        <div style={s.eyebrow}>SMAKUJE · BETA</div>
+        <div style={s.eyebrow}>MENU PLANER · BETA</div>
         <h1 style={s.title}>
-          Jak <em style={s.italic}>smakuje</em> Twój tydzień?
+          Co dziś na <em style={s.italic}>obiad?</em>
         </h1>
         <p style={s.sub}>
           Planuj posiłki, zapisuj przepisy i rób zakupy razem z bliskimi.

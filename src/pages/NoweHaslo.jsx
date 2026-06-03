@@ -42,7 +42,7 @@ export default function NoweHaslo({ onGotowe }) {
   return (
     <div style={s.container}>
       <div style={s.card}>
-        <div style={s.eyebrow}>SMAKUJE</div>
+        <div style={s.eyebrow}>MENU PLANER</div>
         <h1 style={s.title}>Ustaw <em style={s.italic}>nowe hasło</em></h1>
         <p style={s.sub}>Wpisz nowe hasło — od razu zalogujemy Cię do aplikacji.</p>
 

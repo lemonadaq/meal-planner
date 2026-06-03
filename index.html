@@ -1,16 +1,31 @@
 <!doctype html>
-<html lang="en">
+<html lang="pl">
   <head>
     <meta charset="UTF-8" />
-<link rel="icon" type="image/png" href="/icon-192.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="/icon-192.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <title>meal-planner</title>
+    <title>Menu Planer</title>
     <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#4a86e8">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Meal Planner">
+    <!-- Zgodny z t.bg w theme.js — pasek statusu i overscroll wpisane w motyw -->
+    <meta name="theme-color" content="#FAF6F0">
+    <!-- Ustawia tło wg zapisanego motywu ZANIM załaduje się bundle — kasuje flash jasny→ciemny -->
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem('motyw') || 'system';
+          var dark = m === 'dark' ||
+            (m !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          var bg = dark ? '#221D21' : '#FAF6F0';
+          document.documentElement.style.background = bg;
+          var meta = document.querySelector('meta[name="theme-color"]');
+          if (meta) meta.setAttribute('content', bg);
+        } catch (e) {}
+      })();
+    </script>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Menu Planer">
   </head>
   <body>
     <div id="root"></div>

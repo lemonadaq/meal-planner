@@ -44,7 +44,7 @@ export default function ImieGate({ user, onZapisano }) {
   return (
     <div style={s.container}>
       <div style={s.card}>
-        <div style={s.eyebrow}>WITAJ W SMAKUJE</div>
+        <div style={s.eyebrow}>WITAJ W MENU PLANER</div>
         <h1 style={s.title}>
           Jak masz <em style={s.italic}>na imię?</em>
         </h1>

@@ -1,6 +1,6 @@
 {
-  "name": "Meal Planner",
-  "short_name": "Meal Planner",
+"name": "Menu Planer",
+"short_name": "Menu Planer",
   "description": "Planuj posiłki i zakupy z rodziną",
   "start_url": "/",
   "display": "standalone",
