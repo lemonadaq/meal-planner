@@ -3,6 +3,9 @@ import { supabase } from '../supabase'
 import { t, fonts, ui } from '../theme'
 import { formatDataLocal as formatData, isDzis } from '../dataHelpers'
 import { useSloty, slotyWDniu, kluczDnia, sanityzuj } from '../useSloty'
+import GeneratorPlanu from '../components/GeneratorPlanu'
+import { useGenerator } from '../useGenerator'
+import { logujSygnal } from '../logujSygnaly'
 
 const DNI_KROTKO = ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Nd']
 
@@ -99,6 +102,8 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
 
   // Konfiguracja slotów (per household) — dynamiczna lista posiłków per dzień tygodnia
   const { config: slotyConfig } = useSloty(householdId)
+
+  const { generuj } = useGenerator({ user, householdId, slotyConfig })
 
   // Helper: lista ID slotów dla podanego dnia (string YYYY-MM-DD lub obiekt Date)
   const slotyDlaDnia = useCallback((dataLubStr) => {
@@ -287,6 +292,28 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
   const dodatkiMap = useMemo(() => { const m = {}; dodatki.forEach(d => { m[d.Dodatek] = d }); return m }, [dodatki])
   const surowkiMap = useMemo(() => { const m = {}; surowki.forEach(d => { m[d['Surówka']] = d }); return m }, [surowki])
 
+  async function generujPlan(tryb) {
+    const wynik = await generuj({ dniTygodnia: dni, istniejacyPlan: plan, tryb })
+    if (wynik.error) {
+      pokazToast('Nie udało się ułożyć planu')
+      return
+    }
+    const dataStrs = new Set(dni.map(d => formatData(d)))
+    setPlan(prev => {
+      const n = tryb === 'wszystko'
+        ? Object.fromEntries(Object.entries(prev).filter(([, v]) => !dataStrs.has(v.data)))
+        : { ...prev }
+      for (const wpis of (wynik.utworzone || [])) {
+        n[`${wpis.data}_${wpis.posilek}`] = wpis
+      }
+      return n
+    })
+    const ile = wynik.ileDodano || 0
+    const form = ile === 1 ? 'posiłek' : ile < 5 ? 'posiłki' : 'posiłków'
+    pokazToast(`Ułożono ${ile} ${form}`)
+    sledz?.('generuj_plan', { tryb, ile })
+  }
+
   async function ustawDanie(dataStr, posilek, nazwa) {
     const klucz = `${dataStr}_${posilek}`
     const istniejacy = plan[klucz]
@@ -320,6 +347,7 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
         .select().single()
       if (data) setPlan(p => ({ ...p, [klucz]: data }))
       sledz?.('zaplanuj_posilek', { dzien: dataStr, posilek, danie: nazwa })
+      logujSygnal({ userId: user.id, householdId, danie: nazwa, akcja: 'zaplanuj', kontekstSlot: posilek, kontekstData: dataStr })
       pokazToast(`Zaplanowano: ${nazwa}`)
     }
   }
@@ -401,6 +429,7 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
     const kopia = { ...istniejacy }
     await supabase.from('kalendarz').delete().eq('id', istniejacy.id)
     setPlan(p => { const n = { ...p }; delete n[klucz]; return n })
+    logujSygnal({ userId: user.id, householdId, danie: kopia.danie, akcja: 'usun', kontekstSlot: posilek, kontekstData: kopia.data })
 
     pokazToast(`${nazwaSlotu(posilek)} usunięty`, async () => {
       // Insert spowrotem (zachowując wszystkie pola)
@@ -712,6 +741,7 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
             onUsunPosilek={usunPosilek}
             onPrzeniesPosilek={przeniesPosilek}
             onKopiujTydzien={kopiujTydzien}
+            onGeneruj={generujPlan}
             slotyDlaDnia={slotyDlaDnia}
             nazwaSlotu={nazwaSlotu}
             kolorSlotu={kolorSlotu}
@@ -819,7 +849,7 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
 // ════════════════════════════════════════════════════════════
 function WidokTygodnia({
   dni, plan, daniaMap, onSelectDanie, onClickPusty, onClickDzien,
-  onUsunPosilek, onPrzeniesPosilek, onKopiujTydzien,
+  onUsunPosilek, onPrzeniesPosilek, onKopiujTydzien, onGeneruj,
   slotyDlaDnia, nazwaSlotu, kolorSlotu,
 }) {
   const s = makeS()
@@ -1045,10 +1075,20 @@ function WidokTygodnia({
 
   return (
     <div style={s.tydzienList}>
-      {!maZawartosc && (
-        <button style={s.kopiujTydzienBtn} onClick={onKopiujTydzien}>
-          ⎘ Skopiuj plan z poprzedniego tygodnia
-        </button>
+      {maZawartosc ? (
+        <div style={s.generatorRow}>
+          <GeneratorPlanu maZaplanowane={true} onGeneruj={onGeneruj} wariant="kompakt" />
+          <button style={s.kopiujTydzienBtn} onClick={onKopiujTydzien}>
+            ⎘ Kopiuj z ub. tygodnia
+          </button>
+        </div>
+      ) : (
+        <>
+          <GeneratorPlanu maZaplanowane={false} onGeneruj={onGeneruj} wariant="duzy" />
+          <button style={{ ...s.kopiujTydzienBtn, marginTop: 10 }} onClick={onKopiujTydzien}>
+            ⎘ Skopiuj plan z poprzedniego tygodnia
+          </button>
+        </>
       )}
       {dni.map((dzien, di) => {
         const dataStr = formatData(dzien)
@@ -2386,6 +2426,7 @@ function makeS() {
   },
 
   tydzienList: { display: 'flex', flexDirection: 'column', gap: 16 },
+  generatorRow: { display: 'flex', gap: 8, alignItems: 'center', marginBottom: 4 },
   dzienBlok: {},
   dzienHeader: { display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 8, padding: '0 2px' },
   dzienHeaderBtn: {

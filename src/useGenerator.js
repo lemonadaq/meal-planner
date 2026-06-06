@@ -70,7 +70,9 @@ export function useGenerator({ user, householdId, slotyConfig }) {
     const doUsuniecia = []
 
     for (const [klucz, nazwaDania] of Object.entries(planSurowy)) {
-      const [dataStr, slotId] = klucz.split('_')
+      const sep = klucz.indexOf('_')
+      const dataStr = klucz.slice(0, sep)
+      const slotId = klucz.slice(sep + 1)
       const istnieje = istniejacyPlan[klucz]
 
       if (tryb === 'puste' && istnieje?.danie) {

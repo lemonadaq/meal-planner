@@ -144,7 +144,7 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
   async function pobierz() {
     setLoading(true)
     const { data } = await supabase.from('dania').select('*')
-      .eq('"Danie"', nazwaProp).order('"Kategoria"')
+      .eq('Danie', nazwaProp).order('Kategoria')
     if (data && data.length > 0) {
       setSkladniki(data)
       const przepisTekst = data.find(d => d['Przepis'])?.['Przepis'] || ''
@@ -186,7 +186,7 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
 
     let aktualnaNazwa = nazwa
     if (edNazwa !== nazwa && edNazwa.trim()) {
-      await supabase.from('dania').update({ 'Danie': edNazwa.trim() }).eq('"Danie"', nazwa)
+      await supabase.from('dania').update({ 'Danie': edNazwa.trim() }).eq('Danie', nazwa)
       aktualnaNazwa = edNazwa.trim()
       setNazwa(aktualnaNazwa)
     }
@@ -204,7 +204,7 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
 
     const operacje = []
     operacje.push(
-      supabase.from('dania').update({ 'Przepis': przepisTekst, 'zdjecie': noweZdjecieUrl }).eq('"Danie"', aktualnaNazwa)
+      supabase.from('dania').update({ 'Przepis': przepisTekst, 'zdjecie': noweZdjecieUrl }).eq('Danie', aktualnaNazwa)
     )
 
     edSkladniki.filter(sk => sk.id && !sk._nowy).forEach(sk => {

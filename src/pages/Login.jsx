@@ -1,9 +1,13 @@
 import { useState } from 'react'
 import { supabase } from '../supabase'
 import { t, fonts, ui } from '../theme'
+import Regulamin from './Regulamin'
+import PolitykaPrywatnosci from './PolitykaPrywatnosci'
 
 export default function Login() {
   const [tryb, setTryb] = useState('login') // 'login' | 'rejestracja' | 'reset'
+  const [pokazRegulamin, setPokazRegulamin] = useState(false)
+  const [pokazPolityke, setPokazPolityke] = useState(false)
   const [imie, setImie] = useState('')
   const [email, setEmail] = useState('')
   const [haslo, setHaslo] = useState('')
@@ -248,9 +252,14 @@ export default function Login() {
         </div>
 
         <p style={s.terms}>
-          Logując się akceptujesz <span style={s.link}>regulamin</span> i <span style={s.link}>politykę prywatności</span>.
+          Logując się akceptujesz{' '}
+          <button style={s.linkBtn} onClick={() => setPokazRegulamin(true)}>regulamin</button>
+          {' '}i{' '}
+          <button style={s.linkBtn} onClick={() => setPokazPolityke(true)}>politykę prywatności</button>.
         </p>
       </div>
+      {pokazRegulamin && <Regulamin onClose={() => setPokazRegulamin(false)} />}
+      {pokazPolityke && <PolitykaPrywatnosci onClose={() => setPokazPolityke(false)} />}
     </div>
   )
 }
@@ -335,5 +344,10 @@ function makeS() {
       color: t.muteLight, margin: '20px 0 0', lineHeight: 1.5,
     },
     link: { color: t.text, textDecoration: 'underline' },
+    linkBtn: {
+      background: 'none', border: 'none', padding: 0, margin: 0,
+      fontFamily: 'inherit', fontSize: 'inherit', color: t.text,
+      textDecoration: 'underline', cursor: 'pointer',
+    },
   }
 }
