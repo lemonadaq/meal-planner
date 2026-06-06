@@ -393,6 +393,7 @@ function formatujWage(ilosc, jednostka) {
   if (j === 'kg') return `${fmt(ilosc)} kg`
   if (j === 'ml') return ilosc >= 1000 ? `${fmt(ilosc / 1000)} l` : `${fmt(ilosc)} ml`
   if (j === 'l') return `${fmt(ilosc)} l`
+  if (j === 'szt') return `${Math.ceil(ilosc)} szt.`
   return `${fmt(ilosc)}${jednostka ? ` ${jednostka}` : ''}`.trim()
 }
 
@@ -885,7 +886,14 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     const wszystkieNazwy = Object.keys(porcjeWszystkich)
     if (wszystkieNazwy.length > 0) {
       const { data: daniaData } = await supabase.from('dania').select('*').in('"Danie"', wszystkieNazwy)
+      // Dedup: ta sama nazwa dania może być w tabeli wiele razy (różni użytkownicy).
+      // Bierzemy pierwszy wiersz dla każdej pary (danie, składnik).
+      const daniaDedup = new Map()
       ;(daniaData || []).forEach(r => {
+        const k = `${r['Danie']}||${r['Składnik']}`
+        if (!daniaDedup.has(k)) daniaDedup.set(k, r)
+      })
+      daniaDedup.forEach(r => {
         const mnoznik = porcjeWszystkich[r['Danie']] || 1
         dodaj(r['Składnik'], r['Ilość na 1 porcję'], r['Jednostka'], r['Kategoria'], mnoznik)
       })
