@@ -167,10 +167,12 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack }) 
 
   async function toggleUlubione(danie) {
     const obecne = wszystkie.find(d => d['Danie'] === danie)
-    const nowa = !obecne?.ulubione
+    const stara = obecne?.ulubione ?? false
+    const nowa = !stara
+    setWszystkie(prev => prev.map(d => d['Danie'] === danie ? { ...d, ulubione: nowa } : d))
     const { error } = await supabase.from('dania').update({ ulubione: nowa }).eq('"Danie"', danie)
-    if (!error) {
-      setWszystkie(prev => prev.map(d => d['Danie'] === danie ? { ...d, ulubione: nowa } : d))
+    if (error) {
+      setWszystkie(prev => prev.map(d => d['Danie'] === danie ? { ...d, ulubione: stara } : d))
     }
   }
 
