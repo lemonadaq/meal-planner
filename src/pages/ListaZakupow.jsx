@@ -402,6 +402,17 @@ function formatujWage(ilosc, jednostka) {
 //  - stałe spiżarni: olej, oliwa, ocet, cukier, woda (niezależnie od kategorii).
 // W przyszłości „półka/spiżarnia" pozwoli to odznaczać z poziomu apki.
 const ZAWSZE_W_DOMU = ['olej', 'oliwa', 'ocet', 'cukier', 'woda']
+
+// Scalenia składników: klucz = normalizujNazweMeta(oryginalna nazwa) → wartość = nazwa kanoniczna.
+// Pozwala łączyć warianty tej samej rzeczy bez zmian w bazie składniki_meta.
+const SCAL_NAZWY = {
+  'ser twarog':          'Twaróg',
+  'twarog poltlusty':    'Twaróg',
+  'twarog':              'Twaróg',
+  'chleb pszenny':       'Chleb',
+  'chleb pszenny kromki':'Chleb',
+  'pieczywo do podania': 'Chleb',
+}
 function domyslnieWDomu(item) {
   if (!item) return false
   const n = normalizujNazweMeta(item.skladnik || '')
@@ -525,6 +536,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
   const [toast, setToast] = useState(null)
   const toastTimer = useRef(null)
   const blokujDodawanieDo = useRef(0)
+  const generujRef = useRef(null)
   // Stan odznaczonych jest teraz w bazie (zakupy_historia, wspólne dla rodziny),
   // a nie w localStorage — funkcja zostaje jako no-op, żeby nie zmieniać call-site'ów.
   const storageKey = `lista_zakupow_${user.id}` // legacy, niezużywane
@@ -838,7 +850,8 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     const skladnikiMap = {}
     function dodaj(skladnik, ilosc, jednostka, kategoria, mnoznik) {
       if (!skladnik) return
-      const finalny = globalnePodmiany[skladnik] || skladnik
+      const podmieniony = globalnePodmiany[skladnik] || skladnik
+      const finalny = SCAL_NAZWY[normalizujNazweMeta(podmieniony)] || podmieniony
       const meta = dopasujMeta(finalny, wszystkieMeta)
       const kanon = meta?.nazwa || finalny
       const mapaKlucz = normalizujNazweMeta(kanon)
@@ -973,7 +986,9 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
   useEffect(() => { generuj() }, [generuj])
 
   // Realtime: gdy partner odhaczy/doda coś, aktualizuj lokalnie bez pełnego reloadu.
-  // Cztery kanały: zakupy_historia, zakupy_wlasne, zakupy_cykliczne, produkty_w_domu, korekty_zakupow.
+  useEffect(() => { generujRef.current = generuj }, [generuj])
+
+  // Pięć kanałów: zakupy_historia, zakupy_wlasne, zakupy_cykliczne, produkty_w_domu, korekty_zakupow, kalendarz.
   useEffect(() => {
     if (!householdId) return
 
@@ -1068,6 +1083,11 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
             }))
           }
         }
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'kalendarz', filter: `household_id=eq.${householdId}` },
+        () => { generujRef.current?.() }
       )
       .subscribe()
 
