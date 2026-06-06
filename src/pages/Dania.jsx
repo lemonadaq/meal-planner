@@ -124,12 +124,18 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack }) 
       .from('dania')
       .select('"Danie", "TYP", rodzaj, czas_minuty, porcje_bazowe, ulubione, zdjecie')
       .order('"Danie"')
-    // Dedup po nazwie — preferuj wiersz ze zdjęciem
+    // Dedup po nazwie — preferuj wiersz ze zdjęciem; ulubione = OR (true wygrywa)
     const mapa = new Map()
     for (const d of (data || [])) {
       if (!d['Danie']) continue
       const prev = mapa.get(d['Danie'])
-      if (!prev || (!prev.zdjecie && d.zdjecie)) mapa.set(d['Danie'], d)
+      if (!prev) {
+        mapa.set(d['Danie'], d)
+      } else {
+        const bazowy = (!prev.zdjecie && d.zdjecie) ? { ...d } : { ...prev }
+        bazowy.ulubione = !!(prev.ulubione || d.ulubione)
+        mapa.set(d['Danie'], bazowy)
+      }
     }
     const unikalne = [...mapa.values()]
     setWszystkie(unikalne)
@@ -170,7 +176,7 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack }) 
     const stara = obecne?.ulubione ?? false
     const nowa = !stara
     setWszystkie(prev => prev.map(d => d['Danie'] === danie ? { ...d, ulubione: nowa } : d))
-    const { error } = await supabase.from('dania').update({ ulubione: nowa }).eq('"Danie"', danie)
+    const { error } = await supabase.from('dania').update({ ulubione: nowa }).eq('Danie', danie)
     if (error) {
       setWszystkie(prev => prev.map(d => d['Danie'] === danie ? { ...d, ulubione: stara } : d))
     }
