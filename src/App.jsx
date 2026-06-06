@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
+import { App as CapApp } from '@capacitor/app'
+import { Browser } from '@capacitor/browser'
 import { supabase } from './supabase'
 import Login from './pages/Login'
 import ImieGate from './pages/ImieGate'
@@ -34,7 +36,8 @@ function IOSInstallBaner() {
     const chrome = /crios/.test(ua)
     const juzZainstalowana = window.navigator.standalone === true
     const ukryte = localStorage.getItem('banerUkryty')
-    if (iosUrzadzenie && !juzZainstalowana && !ukryte) {
+    const jestNatywna = window.Capacitor?.isNativePlatform?.() === true
+    if (iosUrzadzenie && !juzZainstalowana && !ukryte && !jestNatywna) {
       setJestChrome(chrome)
       setPokaz(true)
     }
@@ -151,28 +154,30 @@ function App() {
   const { householdId, household, refresh: refreshHousehold } = useHousehold(user)
   useTabAnalytics(user, user ? tab : null)
 
-  function dodajBlokadeBackButton() {
-    if (typeof window === 'undefined') return
-    if (window.history.state?.smakujeBackGuard) return
-    window.history.pushState({ smakujeBackGuard: true }, '')
-  }
+  useEffect(() => {
+    let listener
+    CapApp.addListener('backButton', () => {
+      cofnijWApceRef.current?.()
+    }).then(l => { listener = l })
+    return () => listener?.remove()
+  }, [])
 
   useEffect(() => {
-    if (!user) return
-    dodajBlokadeBackButton()
-  }, [user, tab, ekran, wybraneD, dodajDanie])
-
-  useEffect(() => {
-    if (!user) return
-
-    function handlePopState() {
-      const cofnietoWApce = cofnijWApceRef.current?.()
-      if (cofnietoWApce) dodajBlokadeBackButton()
-    }
-
-    window.addEventListener('popstate', handlePopState)
-    return () => window.removeEventListener('popstate', handlePopState)
-  }, [user])
+    let listener
+    CapApp.addListener('appUrlOpen', async ({ url }) => {
+      if (!url?.startsWith('com.menuplaner.app://')) return
+      try { await Browser.close() } catch {}
+      const hash = url.split('#')[1] || ''
+      const params = new URLSearchParams(hash)
+      const access_token = params.get('access_token')
+      const refresh_token = params.get('refresh_token')
+      if (access_token && refresh_token) {
+        const { data } = await supabase.auth.setSession({ access_token, refresh_token })
+        if (data?.session) setUser(data.session.user)
+      }
+    }).then(l => { listener = l })
+    return () => listener?.remove()
+  }, [])
 
   function poZaakceptowaniu() {
     refreshHousehold()

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Browser } from '@capacitor/browser'
 import { supabase } from '../supabase'
 import { t, fonts, ui } from '../theme'
 import Regulamin from './Regulamin'
@@ -19,10 +20,17 @@ export default function Login() {
   const s = makeS()
 
   async function loginGoogle() {
-    await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: { redirectTo: window.location.origin },
-    })
+    const isNative = window.Capacitor?.isNativePlatform?.() === true
+    const redirectTo = isNative ? 'com.menuplaner.app://login-callback' : window.location.origin
+    if (isNative) {
+      const { data } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo, skipBrowserRedirect: true },
+      })
+      if (data?.url) await Browser.open({ url: data.url })
+    } else {
+      await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo } })
+    }
   }
 
   function tlumaczBlad(msg = '') {

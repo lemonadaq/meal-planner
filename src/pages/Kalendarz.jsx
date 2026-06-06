@@ -609,6 +609,32 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
     sledz?.('kopiuj_dzien', { z: zDataStr, na: naDataStr, ile: zrodlowe.length })
   }
 
+  async function kopiujSlot(zDataStr, slotId, naDataStrArray) {
+    const zrodlowy = plan[`${zDataStr}_${slotId}`]
+    if (!zrodlowy?.danie) { pokazToast('Slot źródłowy jest pusty'); return }
+    const rezultaty = []
+    for (const naDataStr of naDataStrArray) {
+      const istniejacy = plan[`${naDataStr}_${slotId}`]
+      if (istniejacy?.id) {
+        const { data } = await supabase.from('kalendarz')
+          .update({ danie: zrodlowy.danie, podmiany: {} }).eq('id', istniejacy.id).select().single()
+        if (data) rezultaty.push(data)
+      } else {
+        const { id, created_at, ...rest } = zrodlowy
+        const { data } = await supabase.from('kalendarz')
+          .insert({ ...rest, data: naDataStr }).select().single()
+        if (data) rezultaty.push(data)
+      }
+    }
+    setPlan(prev => {
+      const n = { ...prev }
+      rezultaty.forEach(p => { n[`${p.data}_${p.posilek}`] = p })
+      return n
+    })
+    pokazToast(`Skopiowano do ${naDataStrArray.length} ${naDataStrArray.length === 1 ? 'dnia' : 'dni'}`)
+    sledz?.('kopiuj_slot', { slot: slotId, ile: naDataStrArray.length })
+  }
+
   // Kopiuje cały tydzień z poprzedniego (offset -1) do bieżącego.
   async function kopiujTydzien() {
     // Pobierz tydzień poprzedni
@@ -658,7 +684,7 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
       <div style={s.container}>
         {!subTryb && (
           <>
-            <button style={s.back} onClick={onBack}>← Wróć</button>
+            <button style={s.back} onClick={widok === 'dzien' ? () => { setWidok('tydzien'); sessionStorage.setItem('planer_widok', 'tydzien') } : onBack}>← Wróć</button>
 
             <header style={s.header}>
               <div>
@@ -835,9 +861,14 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
           zDataStr={kopiujModal.zDataStr}
           dni={dni}
           plan={plan}
+          slotyDlaDnia={slotyDlaDnia}
           onClose={() => setKopiujModal(null)}
-          onWybierz={(naDataStr) => {
-            kopiujDzien(kopiujModal.zDataStr, naDataStr)
+          onKopiuj={async (slotId, targetDni) => {
+            if (slotId === null) {
+              for (const d of targetDni) await kopiujDzien(kopiujModal.zDataStr, d)
+            } else {
+              await kopiujSlot(kopiujModal.zDataStr, slotId, targetDni)
+            }
             setKopiujModal(null)
           }}
         />
@@ -2254,50 +2285,92 @@ function WieloDniModal({ danie, posilek, domyslnaData, dni, plan, nazwaSlotu, on
   )
 }
 
-function KopiujModal({ zDataStr, dni, plan, onClose, onWybierz }) {
-  const ileWZrodlowym = Object.values(plan).filter(p => p.data === zDataStr && p.danie).length
+function KopiujModal({ zDataStr, dni, plan, slotyDlaDnia, onClose, onKopiuj }) {
+  const slotyZrodla = slotyDlaDnia ? slotyDlaDnia(new Date(zDataStr + 'T12:00:00')) : []
+  const [wybranySlot, setWybranySlot] = useState(null) // null = cały dzień
+  const [wybraneTargety, setWybraneTargety] = useState(new Set())
+
+  function toggleTarget(dStr) {
+    setWybraneTargety(prev => {
+      const n = new Set(prev)
+      n.has(dStr) ? n.delete(dStr) : n.add(dStr)
+      return n
+    })
+  }
+
+  const moznaKopiowac = wybraneTargety.size > 0 && (
+    wybranySlot === null
+      ? Object.values(plan).some(p => p.data === zDataStr && p.danie)
+      : !!plan[`${zDataStr}_${wybranySlot}`]?.danie
+  )
 
   return (
     <div style={modS.overlay} onClick={onClose}>
       <div style={modS.modal} onClick={e => e.stopPropagation()}>
         <div style={modS.header}>
           <div>
-            <div style={modS.eyebrow}>KOPIUJ DZIEŃ</div>
-            <div style={modS.title}>Wybierz dzień docelowy</div>
-            <div style={modS.sub}>
-              Kopiowane: {ileWZrodlowym} {ileWZrodlowym === 1 ? 'posiłek' : 'posiłki'}.
-              Plan w dniu docelowym zostanie zastąpiony.
-            </div>
+            <div style={modS.eyebrow}>KOPIUJ</div>
+            <div style={modS.title}>Co skopiować?</div>
           </div>
           <button style={modS.close} onClick={onClose}>✕</button>
         </div>
-        <div style={modS.lista}>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 16 }}>
+          <button
+            style={{ ...modS.dzienRow, background: wybranySlot === null ? modS.dzienRowOn.background : 'transparent', fontWeight: wybranySlot === null ? 700 : 400 }}
+            onClick={() => setWybranySlot(null)}
+          >
+            <span style={modS.dzienRowName}>⎘ Cały dzień</span>
+            <span style={modS.dzienRowMeta}>{Object.values(plan).filter(p => p.data === zDataStr && p.danie).length} posiłki</span>
+          </button>
+          {slotyZrodla.map(slotId => {
+            const wpis = plan[`${zDataStr}_${slotId}`]
+            const aktywny = wybranySlot === slotId
+            return (
+              <button
+                key={slotId}
+                style={{ ...modS.dzienRow, background: aktywny ? modS.dzienRowOn.background : 'transparent', fontWeight: aktywny ? 700 : 400, opacity: wpis?.danie ? 1 : 0.45 }}
+                onClick={() => setWybranySlot(slotId)}
+              >
+                <span style={modS.dzienRowName}>{slotId}</span>
+                <span style={modS.dzienRowMeta}>{wpis?.danie || 'pusty'}</span>
+              </button>
+            )
+          })}
+        </div>
+
+        <div style={modS.eyebrow}>NA KTÓRE DNI?</div>
+        <div style={{ ...modS.lista, marginTop: 6 }}>
           {dni.map((dzien, i) => {
             const dStr = formatData(dzien)
             const isSelf = dStr === zDataStr
-            const ileTam = Object.values(plan).filter(p => p.data === dStr && p.danie).length
+            const zaznaczony = wybraneTargety.has(dStr)
             return (
               <button
                 key={dStr}
-                style={{
-                  ...modS.dzienRow,
-                  opacity: isSelf ? 0.4 : 1,
-                  cursor: isSelf ? 'not-allowed' : 'pointer',
-                }}
+                style={{ ...modS.dzienRow, opacity: isSelf ? 0.35 : 1, cursor: isSelf ? 'default' : 'pointer', background: zaznaczony ? modS.dzienRowOn.background : 'transparent' }}
                 disabled={isSelf}
-                onClick={() => !isSelf && onWybierz(dStr)}
+                onClick={() => !isSelf && toggleTarget(dStr)}
               >
                 <span style={modS.dzienRowName}>
-                  {DNI_KROTKO[i]} {dzien.getDate()}
+                  {zaznaczony ? '✓ ' : ''}{DNI_KROTKO[i]} {dzien.getDate()}
                   {isSelf && <span style={modS.dzienRowSelf}> (źródło)</span>}
                 </span>
                 <span style={modS.dzienRowMeta}>
-                  {ileTam > 0 ? `${ileTam} posiłków — zostanie nadpisany` : 'pusty'}
+                  {Object.values(plan).filter(p => p.data === dStr && p.danie).length > 0 ? 'zostanie nadpisany' : 'pusty'}
                 </span>
               </button>
             )
           })}
         </div>
+
+        <button
+          style={{ ...modS.btnKopiuj, opacity: moznaKopiowac ? 1 : 0.4 }}
+          disabled={!moznaKopiowac}
+          onClick={() => onKopiuj(wybranySlot, [...wybraneTargety])}
+        >
+          Kopiuj do {wybraneTargety.size > 0 ? `${wybraneTargety.size} ${wybraneTargety.size === 1 ? 'dnia' : 'dni'}` : '…'}
+        </button>
       </div>
     </div>
   )
@@ -2415,7 +2488,7 @@ function makeS() {
   dayPillDate: { fontFamily: fonts.serif, fontSize: 20, lineHeight: 1, letterSpacing: -0.3 },
   dayPillDots: { display: 'flex', gap: 2.5, marginTop: 3 },
   dot: { width: 4, height: 4, borderRadius: 999 },
-  wrocTydzienBtn: { ...ui.btnText, padding: '0 0 12px', display: 'inline-block', color: t.mute, fontSize: 12 },
+  wrocTydzienBtn: { ...ui.btnText, padding: '0 0 12px', display: 'inline-block', color: t.accent, fontSize: 13, fontWeight: 600 },
   dateInput: {
     ...ui.input,
     width: '100%',
@@ -2817,4 +2890,6 @@ const modS = {
   dzienRowName: { fontFamily: fonts.serif, fontSize: 16, color: t.text },
   dzienRowSelf: { fontFamily: fonts.sans, fontSize: 11, color: t.mute, fontStyle: 'italic' },
   dzienRowMeta: { fontFamily: fonts.sans, fontSize: 12, color: t.mute },
+  dzienRowOn: { background: t.warmSoft },
+  btnKopiuj: { ...ui.btnPrimary, width: '100%', padding: '14px', fontSize: 15, marginTop: 8, flexShrink: 0 },
 }

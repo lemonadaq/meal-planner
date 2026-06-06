@@ -89,7 +89,7 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
 
   const [pokazKalendarz, setPokazKalendarz] = useState(false)
   const [tydzien, setTydzien] = useState(0)
-  const [wybranyDzien, setWybranyDzien] = useState(null)
+  const [wybranyDni, setWybranyDni] = useState(new Set())
   // wybranyPosilek = ID slotu (np. 'sn'), nie nazwa. null póki user nie wybierze dnia.
   const [wybranyPosilek, setWybranyPosilek] = useState(null)
   const [dodawanie, setDodawanie] = useState(false)
@@ -99,16 +99,17 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
   // Konfiguracja slotów (per household)
   const { config: slotyConfig } = useSloty(householdId)
 
-  // Sloty dostępne dla wybranego dnia
-  const slotyWybranegoDnia = useMemo(() => {
-    if (!wybranyDzien) return []
-    return slotyWDniu(slotyConfig, kluczDnia(wybranyDzien))
-  }, [slotyConfig, wybranyDzien])
+  const pierwszyWybranyDzien = wybranyDni.size > 0 ? [...wybranyDni].sort()[0] : null
 
-  // Gdy user zmienia dzień, a aktualnie wybrany slot nie istnieje w tym dniu —
-  // wybierz pierwszy dostępny slot.
+  // Sloty dostępne dla pierwszego wybranego dnia (slot stosuje się do wszystkich)
+  const slotyWybranegoDnia = useMemo(() => {
+    if (!pierwszyWybranyDzien) return []
+    return slotyWDniu(slotyConfig, kluczDnia(pierwszyWybranyDzien))
+  }, [slotyConfig, pierwszyWybranyDzien])
+
+  // Gdy zestaw dni się zmienia, a aktualnie wybrany slot nie istnieje — wybierz pierwszy.
   useEffect(() => {
-    if (!wybranyDzien) return
+    if (!pierwszyWybranyDzien) return
     if (slotyWybranegoDnia.length === 0) {
       setWybranyPosilek(null)
       return
@@ -116,7 +117,7 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
     if (!wybranyPosilek || !slotyWybranegoDnia.some(s => s.id === wybranyPosilek)) {
       setWybranyPosilek(slotyWybranegoDnia[0].id)
     }
-  }, [wybranyDzien, slotyWybranegoDnia, wybranyPosilek])
+  }, [pierwszyWybranyDzien, slotyWybranegoDnia, wybranyPosilek])
 
   const poniedzialek = getPoniedzialek(tydzien)
   const dni = Array.from({ length: 7 }, (_, i) => {
@@ -265,20 +266,22 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
   }
 
   async function dodajDoKalendarza() {
-    if (!wybranyDzien || !user) return
+    if (wybranyDni.size === 0 || !wybranyPosilek || !user) return
     setDodawanie(true)
-    const { data: istniejacy } = await supabase
-      .from('kalendarz').select('id')
-      .eq('household_id', householdId).eq('data', wybranyDzien).eq('posilek', wybranyPosilek)
-      .maybeSingle()
-    if (istniejacy) {
-      await supabase.from('kalendarz').update({ danie: nazwa, podmiany: {} }).eq('id', istniejacy.id)
-    } else {
-      await supabase.from('kalendarz').insert({ household_id: householdId, user_id: user.id, data: wybranyDzien, posilek: wybranyPosilek, danie: nazwa })
+    for (const dataStr of wybranyDni) {
+      const { data: istniejacy } = await supabase
+        .from('kalendarz').select('id')
+        .eq('household_id', householdId).eq('data', dataStr).eq('posilek', wybranyPosilek)
+        .maybeSingle()
+      if (istniejacy) {
+        await supabase.from('kalendarz').update({ danie: nazwa, podmiany: {} }).eq('id', istniejacy.id)
+      } else {
+        await supabase.from('kalendarz').insert({ household_id: householdId, user_id: user.id, data: dataStr, posilek: wybranyPosilek, danie: nazwa })
+      }
     }
-    sledz?.('dodaj_do_kalendarza', { danie: nazwa, dzien: wybranyDzien, posilek: wybranyPosilek })
+    sledz?.('dodaj_do_kalendarza', { danie: nazwa, ile_dni: wybranyDni.size, posilek: wybranyPosilek })
     setDodawanie(false); setSukces(true)
-    setTimeout(() => { setSukces(false); setPokazKalendarz(false) }, 1500)
+    setTimeout(() => { setSukces(false); setPokazKalendarz(false); setWybranyDni(new Set()) }, 1500)
   }
 
   const pogrupowane = skladniki.reduce((acc, sk) => {
@@ -326,12 +329,16 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
                 <div style={s.dniGrid}>
                   {dni.map((dzien, i) => {
                     const dataStr = formatData(dzien)
-                    const aktywny = wybranyDzien === dataStr
+                    const aktywny = wybranyDni.has(dataStr)
                     const zaplanowane = wybranyPosilek ? planTygodnia[`${dataStr}_${wybranyPosilek}`] : null
                     return (
                       <button key={dataStr}
                         style={{ ...s.dzienBtn, ...(aktywny ? s.dzienBtnOn : {}) }}
-                        onClick={() => setWybranyDzien(dataStr)}>
+                        onClick={() => setWybranyDni(prev => {
+                          const next = new Set(prev)
+                          next.has(dataStr) ? next.delete(dataStr) : next.add(dataStr)
+                          return next
+                        })}>
                         <span style={{ ...s.dzienBtnDow, color: aktywny ? '#fff' : t.mute }}>
                           {DNI_KROTKO[i]}
                         </span>
@@ -363,10 +370,10 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
                   ))}
                 </div>
 
-                <button style={{ ...s.btnDodajKal, opacity: (wybranyDzien && wybranyPosilek) ? 1 : 0.5 }}
+                <button style={{ ...s.btnDodajKal, opacity: (wybranyDni.size > 0 && wybranyPosilek) ? 1 : 0.5 }}
                   onClick={dodajDoKalendarza}
-                  disabled={!wybranyDzien || !wybranyPosilek || dodawanie}>
-                  {dodawanie ? 'Dodaję…' : 'Dodaj do kalendarza'}
+                  disabled={wybranyDni.size === 0 || !wybranyPosilek || dodawanie}>
+                  {dodawanie ? 'Dodaję…' : wybranyDni.size > 1 ? `Dodaj do ${wybranyDni.size} dni` : 'Dodaj do kalendarza'}
                 </button>
               </>
             )}

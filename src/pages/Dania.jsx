@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useLayoutEffect, useState, useRef } from 'react'
 import { supabase } from '../supabase'
 import { t, fonts, ui } from '../theme'
 
@@ -62,7 +62,7 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack }) 
   const [filtry, setFiltry] = useState(() => { try { return JSON.parse(sessionStorage.getItem('dania_filtry') || '[]') } catch { return [] } })
   const [ulubioneNaGorze, setUlubioneNaGorze] = useState(() => sessionStorage.getItem('dania_ulubione') !== 'false')
   const [widok, setWidok] = useState(() => sessionStorage.getItem('dania_widok') || 'siatka')
-  const scrollRestoredRef = useRef(false)
+  const pendingScrollRef = useRef(0)
 
   // Menu kontekstowe (bottom sheet)
   const [menuDla, setMenuDla] = useState(null) // obiekt dania lub null
@@ -99,6 +99,19 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack }) 
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  // Pobierz zapisaną pozycję scrolla przy montowaniu
+  useEffect(() => {
+    pendingScrollRef.current = parseInt(sessionStorage.getItem('dania_scroll') || '0', 10)
+  }, [])
+
+  // Po załadowaniu danych przywróć scroll — useLayoutEffect gwarantuje że DOM jest już gotowy
+  useLayoutEffect(() => {
+    if (!loading && pendingScrollRef.current > 0) {
+      window.scrollTo({ top: pendingScrollRef.current, behavior: 'instant' })
+      pendingScrollRef.current = 0
+    }
+  }, [loading])
+
   useEffect(() => {
     pobierzDane()
     return () => { if (toastTimer.current) clearTimeout(toastTimer.current) }
@@ -121,12 +134,6 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack }) 
     const unikalne = [...mapa.values()]
     setWszystkie(unikalne)
     setLoading(false)
-    // Przywróć pozycję scrolla (tylko raz przy pierwszym ładowaniu)
-    if (!scrollRestoredRef.current) {
-      scrollRestoredRef.current = true
-      const saved = parseInt(sessionStorage.getItem('dania_scroll') || '0', 10)
-      if (saved > 0) requestAnimationFrame(() => window.scrollTo({ top: saved, behavior: 'instant' }))
-    }
   }
 
   function toggleFiltr(id) {
@@ -161,9 +168,10 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack }) 
   async function toggleUlubione(danie) {
     const obecne = wszystkie.find(d => d['Danie'] === danie)
     const nowa = !obecne?.ulubione
-    // Aktualizuje wszystkie wiersze tego dania
-    await supabase.from('dania').update({ ulubione: nowa }).eq('"Danie"', danie)
-    setWszystkie(prev => prev.map(d => d['Danie'] === danie ? { ...d, ulubione: nowa } : d))
+    const { error } = await supabase.from('dania').update({ ulubione: nowa }).eq('"Danie"', danie)
+    if (!error) {
+      setWszystkie(prev => prev.map(d => d['Danie'] === danie ? { ...d, ulubione: nowa } : d))
+    }
   }
 
   async function rozpocznijUsuwanie(danie, rodzaj) {

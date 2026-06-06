@@ -179,9 +179,7 @@ function aktualnyTydzienZakupow() {
 }
 
 function czyZakupyNaNastepnyTydzien(tydzienKalendarza = 0) {
-  if (tydzienKalendarza !== 0) return tydzienKalendarza > 0
-  const day = new Date().getDay()
-  return day === 0 || day === 6
+  return tydzienKalendarza > 0
 }
 
 function tekstIlosciSzybkiej(dane) {
@@ -787,18 +785,12 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
   const generuj = useCallback(async () => {
     setLoading(true)
 
-    // Wyznacz tydzień: jeśli kalendarz jest na konkretnym offsetcie — użyj go.
-    // Jeśli offset=0 ale jest weekend — automatycznie pokaż następny tydzień.
-    const day = new Date().getDay()
-    const czyWeekendBezOffsetem = tydzienKalendarza === 0 && (day === 0 || day === 6)
-    const efektywnyOffset = czyWeekendBezOffsetem ? 1 : tydzienKalendarza
-
-    const poniedzialek = tydzienZakupowZOffsetem(efektywnyOffset)
+    // Tydzień zawsze z planera — bez automatycznego przeskoku na weekend
+    const poniedzialek = tydzienZakupowZOffsetem(tydzienKalendarza)
     const niedziela = new Date(poniedzialek + 'T12:00:00')
     niedziela.setDate(niedziela.getDate() + 6)
     const niedzielaStr = formatDataLocal(niedziela)
-    // Od poniedziałku gdy patrzymy w przyszłość, od dziś gdy bieżący tydzień
-    const dataOd = efektywnyOffset > 0 ? poniedzialek : dzisLocal()
+    const dataOd = poniedzialek
 
     const [{ data: planData }, { data: wlasneData }, { data: historiaData }, { data: cykliczneData }, { data: metaData }] = await Promise.all([
       supabase.from('kalendarz').select('*')
