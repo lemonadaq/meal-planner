@@ -176,8 +176,8 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack }) 
     const stara = obecne?.ulubione ?? false
     const nowa = !stara
     setWszystkie(prev => prev.map(d => d['Danie'] === danie ? { ...d, ulubione: nowa } : d))
-    const { error } = await supabase.from('dania').update({ ulubione: nowa }).eq('Danie', danie)
-    if (error) {
+    const { data, error } = await supabase.from('dania').update({ ulubione: nowa }).eq('"Danie"', danie).select('"Danie"')
+    if (error || !data?.length) {
       setWszystkie(prev => prev.map(d => d['Danie'] === danie ? { ...d, ulubione: stara } : d))
     }
   }
