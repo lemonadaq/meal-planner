@@ -85,8 +85,9 @@ export function generujPlanTygodnia({ dni, dniSlotyMap, dania, opcje = {} }) {
     const sloty = dniSlotyMap[dzien.klucz] || []
 
     for (const slot of sloty) {
-      const rodzaj = slot.rodzajDopasowany // 'sniadanie' | 'obiad' | 'kolacja'
-      let pula = wgRodzaju[rodzaj] || []
+      const rodzaj = slot.rodzajDopasowany
+      let pula = rodzaj ? (wgRodzaju[rodzaj] || []) : []
+      if (pula.length === 0) pula = dania // fallback: losuj z wszystkich dań
       if (pula.length === 0) continue
 
       // Zbuduj kandydatów z wagami

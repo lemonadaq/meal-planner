@@ -13,6 +13,8 @@ const RODZAJ_KEYWORDS = {
   sniadanie: ['śniadanie', 'sniadanie', 'breakfast', 'brunch'],
   obiad:     ['obiad', 'lunch'],
   kolacja:   ['kolacja', 'dinner', 'kolacj'],
+  zupa:      ['zupa', 'soup'],
+  deser:     ['deser', 'dessert'],
 }
 
 // Dla danego slotu (po nazwie) zgadnij jaki rodzaj dania pasuje
@@ -21,7 +23,7 @@ function rodzajDlaSlotu(nazwaSlotu) {
   for (const [rodzaj, keywords] of Object.entries(RODZAJ_KEYWORDS)) {
     if (keywords.some(k => n.includes(k))) return rodzaj
   }
-  return 'obiad' // domyślnie traktuj jako obiad (najszersza pula)
+  return null // brak dopasowania → generator użyje całej puli
 }
 
 export function useGenerator({ user, householdId, slotyConfig }) {
