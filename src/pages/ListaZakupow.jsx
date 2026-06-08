@@ -2539,10 +2539,7 @@ function makeS() {
   },
 
   btnSklep: {
-    width: '100%', padding: '14px 16px', marginBottom: 20,
-    background: t.text, color: '#fff', border: 'none', borderRadius: 14,
-    fontFamily: fonts.sans, fontSize: 15, fontWeight: 600, cursor: 'pointer',
-    boxShadow: '0 4px 16px rgba(74,55,40,.18)',
+    ...ui.btnPrimary, width: '100%', marginBottom: 20,
   },
 
   quickAddCard: {

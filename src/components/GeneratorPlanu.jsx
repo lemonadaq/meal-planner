@@ -35,13 +35,13 @@ export default function GeneratorPlanu({ maZaplanowane, onGeneruj, wariant = 'du
         <button style={s.btnDuzy} onClick={klik} disabled={ladowanie}>
           <span style={s.btnDuzyIkona}>✨</span>
           <span>
-            <span style={s.btnDuzyTytul}>{ladowanie ? 'Układam plan…' : 'Ułóż mi plan na tydzień'}</span>
+            <span style={s.btnDuzyTytul}>{ladowanie ? 'Układam plan…' : 'Ułóż plan na tydzień'}</span>
             <span style={s.btnDuzySub}>Gotowe propozycje — wymienisz co chcesz</span>
           </span>
         </button>
       ) : (
         <button style={s.btnKompakt} onClick={klik} disabled={ladowanie}>
-          ✨ {ladowanie ? 'Układam…' : 'Ułóż plan'}
+          ✨ {ladowanie ? 'Układam…' : 'Ułóż plan na tydzień'}
         </button>
       )}
 
@@ -83,7 +83,7 @@ function makeS() {
     btnDuzySub: { display: 'block', fontFamily: fonts.sans, fontSize: 12.5, opacity: 0.9 },
 
     btnKompakt: {
-      ...ui.btnPrimary, fontSize: 14, padding: '10px 16px',
+      ...ui.btnPrimary, flex: 1, fontSize: 14, padding: '10px 16px',
     },
 
     overlay: {
