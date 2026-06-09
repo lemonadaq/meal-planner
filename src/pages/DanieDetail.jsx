@@ -356,7 +356,7 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
                 </div>
 
                 <div style={s.posilkiRow}>
-                  {slotyWybranegoDnia.length === 0 && wybranyDzien && (
+                  {slotyWybranegoDnia.length === 0 && pierwszyWybranyDzien && (
                     <div style={s.brakSlotow}>
                       Brak skonfigurowanych posiłków w wybrany dzień
                     </div>
