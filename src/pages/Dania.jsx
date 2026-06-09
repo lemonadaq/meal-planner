@@ -153,6 +153,9 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack }) 
   const aktywneRodzaje = filtry.filter(f => f !== 'ulubione')
   const tylkoUlubione = filtry.includes('ulubione')
 
+  // Czy filtr zawiera WYŁĄCZNIE typy boczne (dodatek/surowka) — wtedy nie przepychamy ich na koniec
+  const tylkoSide = aktywneRodzaje.length > 0 && aktywneRodzaje.every(r => r === 'dodatek' || r === 'surowka')
+
   const filtrowane = wszystkie
     .filter(d => {
       if (tylkoUlubione && !d.ulubione) return false
@@ -161,6 +164,9 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack }) 
       return true
     })
     .sort((a, b) => {
+      const aSide = a.rodzaj === 'dodatek' || a.rodzaj === 'surowka'
+      const bSide = b.rodzaj === 'dodatek' || b.rodzaj === 'surowka'
+      if (!tylkoSide && aSide !== bSide) return aSide ? 1 : -1
       if (ulubioneNaGorze && !!b.ulubione !== !!a.ulubione) return Number(!!b.ulubione) - Number(!!a.ulubione)
       return (a['Danie'] || '').localeCompare(b['Danie'] || '', 'pl', { sensitivity: 'base' })
     })
