@@ -44,11 +44,11 @@ export default function NavBar({ aktywny, onChange }) {
 
 function makeS() {
   return {
-    spacer: { height: 84 },
+    spacer: { height: 84, background: t.bg },
 
     navWrap: {
       position: 'fixed', bottom: 0, left: 0, right: 0,
-      background: t.surface,
+      background: t.bg,
       borderTop: `0.5px solid ${t.border}`,
       boxShadow: '0 -2px 14px rgba(0,0,0,0.35)',
       padding: '8px 0 calc(20px + env(safe-area-inset-bottom, 0px))',
