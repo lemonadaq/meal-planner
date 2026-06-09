@@ -57,6 +57,21 @@ const KATEGORIE = [
   '1_Warzywa i owoce', '2_Mięso i ryby', '3_Nabiał', '4_Pieczywo',
   '5_Produkty sypkie', '6_Konserwy i słoiki', '7_Przyprawy', '8_Inne',
 ]
+const RODZAJE = [
+  { id: 'sniadanie', label: 'Śniadanie' },
+  { id: 'obiad', label: 'Obiad' },
+  { id: 'zupa', label: 'Zupa' },
+  { id: 'kolacja', label: 'Kolacja' },
+  { id: 'przekaska', label: 'Przekąska' },
+  { id: 'deser', label: 'Deser' },
+  { id: 'dodatek', label: 'Dodatek' },
+  { id: 'surowka', label: 'Surówka' },
+]
+const TYPY = [
+  { id: '', label: '— brak —' },
+  { id: 'samodzielne', label: 'Samodzielne' },
+  { id: 'z dodatkiem', label: 'Z dodatkiem' },
+]
 const DNI = ['Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota', 'Niedziela']
 const DNI_KROTKO = ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Nd']
 
@@ -86,6 +101,9 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
   const [edZdjecie, setEdZdjecie] = useState(null)
   const [edZdjeciePlik, setEdZdjeciePlik] = useState(null)
   const [edZdjeciePreview, setEdZdjeciePreview] = useState(null)
+  const [edRodzaj, setEdRodzaj] = useState('')
+  const [edCzas, setEdCzas] = useState('')
+  const [edTyp, setEdTyp] = useState('')
 
   const [pokazKalendarz, setPokazKalendarz] = useState(false)
   const [tydzien, setTydzien] = useState(0)
@@ -171,6 +189,9 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
     setEdZdjecie(heroZdj || null)
     setEdZdjeciePlik(null)
     setEdZdjeciePreview(null)
+    setEdRodzaj(skladniki[0]?.rodzaj || '')
+    setEdCzas(skladniki[0]?.czas_minuty != null ? String(skladniki[0].czas_minuty) : '')
+    setEdTyp(skladniki[0]?.TYP || '')
     setEdycja(true)
   }
 
@@ -205,7 +226,13 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
 
     const operacje = []
     operacje.push(
-      supabase.from('dania').update({ 'Przepis': przepisTekst, 'zdjecie': noweZdjecieUrl }).eq('Danie', aktualnaNazwa)
+      supabase.from('dania').update({
+        'Przepis': przepisTekst,
+        'zdjecie': noweZdjecieUrl,
+        'rodzaj': edRodzaj || null,
+        'czas_minuty': edCzas !== '' ? Number(edCzas) : null,
+        'TYP': edTyp || null,
+      }).eq('Danie', aktualnaNazwa)
     )
 
     edSkladniki.filter(sk => sk.id && !sk._nowy).forEach(sk => {
@@ -420,6 +447,17 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
             {edycja ? (
               <>
                 <input style={s.inputNazwa} value={edNazwa} onChange={e => setEdNazwa(e.target.value)} />
+                <div style={s.metaEdRow}>
+                  <select style={s.edInputMeta} value={edRodzaj} onChange={e => setEdRodzaj(e.target.value)}>
+                    <option value="">— rodzaj —</option>
+                    {RODZAJE.map(r => <option key={r.id} value={r.id}>{r.label}</option>)}
+                  </select>
+                  <input style={s.edInputMeta} type="number" min="1" max="480" placeholder="czas (min)"
+                    value={edCzas} onChange={e => setEdCzas(e.target.value)} />
+                  <select style={s.edInputMeta} value={edTyp} onChange={e => setEdTyp(e.target.value)}>
+                    {TYPY.map(x => <option key={x.id} value={x.id}>{x.label}</option>)}
+                  </select>
+                </div>
                 {(edZdjecie || edZdjeciePreview) && (
                   <button style={s.btnUsunZdj} onClick={() => { setEdZdjecie(null); setEdZdjeciePlik(null); setEdZdjeciePreview(null) }}>
                     Usuń zdjęcie
@@ -427,7 +465,23 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
                 )}
               </>
             ) : (
-              <h1 style={s.heroTytul}>{nazwa}</h1>
+              <>
+                <h1 style={s.heroTytul}>{nazwa}</h1>
+                {(() => {
+                  const r = skladniki[0]
+                  const rodzajLabel = RODZAJE.find(x => x.id === r?.rodzaj)?.label
+                  const czas = r?.czas_minuty
+                  const typ = r?.TYP
+                  if (!rodzajLabel && !czas && !typ) return null
+                  return (
+                    <div style={s.metaRow}>
+                      {rodzajLabel && <span style={s.metaChip}>{rodzajLabel}</span>}
+                      {czas && <span style={s.metaChip}>{czas} min</span>}
+                      {typ && <span style={s.metaChip}>{typ}</span>}
+                    </div>
+                  )
+                })()}
+              </>
             )}
             {!edycja && (
               <div style={s.heroActions}>
@@ -600,6 +654,15 @@ function makeS() {
     outline: 'none', letterSpacing: -0.4,
   },
   heroActions: { display: 'flex', gap: 8, marginTop: 14 },
+  metaRow: { display: 'flex', gap: 6, marginTop: 10, flexWrap: 'wrap' },
+  metaChip: {
+    fontFamily: fonts.sans, fontSize: 11, fontWeight: 600,
+    letterSpacing: 0.5, textTransform: 'uppercase',
+    background: t.accentSoft, color: t.accentDark,
+    padding: '3px 10px', borderRadius: 999,
+  },
+  metaEdRow: { display: 'flex', gap: 6, marginTop: 10, flexWrap: 'wrap' },
+  edInputMeta: { ...ui.input, padding: '8px 10px', fontSize: 12, flex: '1 1 auto', minWidth: 100, marginBottom: 0 },
   btnKalendarz: {
     ...ui.btnPrimary, display: 'inline-flex', alignItems: 'center',
     padding: '11px 16px', fontSize: 14,
