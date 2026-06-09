@@ -1,6 +1,7 @@
 import { useState, useMemo, useRef } from 'react'
 import { supabase } from '../supabase'
 import { t, fonts, ui } from '../theme'
+import Toast from '../components/Toast'
 import {
   useSloty, sanityzuj, nowySlotId, nastepnyKolor,
   DNI_KLUCZE, DNI_LABELS, slotyWDniu,
@@ -36,8 +37,7 @@ export default function KonfiguracjaSlotow({ householdId, onBack }) {
   const [toast, setToast] = useState(null)
 
   function pokazToast(msg, onUndo = null, ms = 5000) {
-    setToast({ msg, onUndo })
-    setTimeout(() => setToast(null), ms)
+    setToast({ id: Date.now(), msg, onUndo, ms })
   }
 
   // ── Akcje na konfiguracji ───────────────────────────────
@@ -377,14 +377,12 @@ export default function KonfiguracjaSlotow({ householdId, onBack }) {
         </div>
       )}
 
-      {toast && (
-        <div style={s.toast}>
-          <span style={s.toastMsg}>{toast.msg}</span>
-          {toast.onUndo && (
-            <button style={s.toastBtn} onClick={toast.onUndo}>Cofnij</button>
-          )}
-        </div>
-      )}
+      <Toast
+        toast={toast ? { id: toast.id, label: toast.msg } : null}
+        duration={toast?.ms ?? 5000}
+        onUndo={toast?.onUndo}
+        onDismiss={() => setToast(null)}
+      />
     </div>
   )
 }
@@ -653,22 +651,6 @@ const s = {
     background: t.bg, minHeight: '100vh',
   },
 
-  toast: {
-    position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)',
-    background: t.text, color: '#fff', borderRadius: 12, padding: '10px 14px',
-    fontFamily: fonts.sans, fontSize: 13, fontWeight: 500,
-    boxShadow: '0 8px 24px rgba(0,0,0,.2)', zIndex: 200,
-    maxWidth: 'calc(100vw - 32px)',
-    display: 'flex', alignItems: 'center', gap: 14,
-  },
-  toastMsg: { color: '#fff', flex: 1 },
-  toastBtn: {
-    background: 'none', border: 'none',
-    color: '#FBD3C2',
-    fontFamily: fonts.sans, fontSize: 13, fontWeight: 700,
-    cursor: 'pointer', padding: '4px 6px',
-    textTransform: 'uppercase', letterSpacing: 0.8,
-  },
 }
 
 const modS = {

@@ -2,11 +2,11 @@ import { useState } from 'react'
 import { t, fonts, ui } from '../theme'
 
 // Przycisk + modal generowania planu tygodnia.
+// Jeden, identyczny przycisk niezależnie od tego czy tydzień jest pusty czy nie.
 // Props:
-//   maZaplanowane: bool — czy w tym tygodniu coś już jest (decyduje czy pytać)
+//   maZaplanowane: bool — czy w tym tygodniu coś już jest (decyduje czy pytać o tryb)
 //   onGeneruj: (tryb) => Promise  — tryb: 'puste' | 'wszystko'
-//   wariant: 'duzy' | 'kompakt'  — duży na pusty kalendarz, kompakt jako akcja
-export default function GeneratorPlanu({ maZaplanowane, onGeneruj, wariant = 'duzy' }) {
+export default function GeneratorPlanu({ maZaplanowane, onGeneruj }) {
   const [modal, setModal] = useState(false)
   const [ladowanie, setLadowanie] = useState(false)
   const s = makeS()
@@ -31,19 +31,9 @@ export default function GeneratorPlanu({ maZaplanowane, onGeneruj, wariant = 'du
 
   return (
     <>
-      {wariant === 'duzy' ? (
-        <button style={s.btnDuzy} onClick={klik} disabled={ladowanie}>
-          <span style={s.btnDuzyIkona}>✨</span>
-          <span>
-            <span style={s.btnDuzyTytul}>{ladowanie ? 'Układam plan…' : 'Ułóż plan na tydzień'}</span>
-            <span style={s.btnDuzySub}>Gotowe propozycje — wymienisz co chcesz</span>
-          </span>
-        </button>
-      ) : (
-        <button style={s.btnKompakt} onClick={klik} disabled={ladowanie}>
-          ✨ {ladowanie ? 'Układam…' : 'Ułóż plan na tydzień'}
-        </button>
-      )}
+      <button style={s.btn} onClick={klik} disabled={ladowanie}>
+        ✨ {ladowanie ? 'Układam plan…' : 'Ułóż plan na tydzień'}
+      </button>
 
       {modal && (
         <div style={s.overlay} onClick={() => setModal(false)}>
@@ -71,19 +61,8 @@ export default function GeneratorPlanu({ maZaplanowane, onGeneruj, wariant = 'du
 
 function makeS() {
   return {
-    btnDuzy: {
-      display: 'flex', alignItems: 'center', gap: 14, width: '100%',
-      background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentDark} 100%)`,
-      color: '#fff', border: 'none', borderRadius: 18,
-      padding: '18px 20px', cursor: 'pointer', textAlign: 'left',
-      boxShadow: '0 8px 24px rgba(192,78,44,.25)',
-    },
-    btnDuzyIkona: { fontSize: 26, flexShrink: 0 },
-    btnDuzyTytul: { display: 'block', fontFamily: fonts.serif, fontSize: 19, fontWeight: 500, marginBottom: 2 },
-    btnDuzySub: { display: 'block', fontFamily: fonts.sans, fontSize: 12.5, opacity: 0.9 },
-
-    btnKompakt: {
-      ...ui.btnPrimary, flex: 1, fontSize: 14, padding: '10px 16px',
+    btn: {
+      ...ui.btnPrimary, width: '100%',
     },
 
     overlay: {

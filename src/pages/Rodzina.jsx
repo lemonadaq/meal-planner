@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '../supabase'
 import { t, fonts, ui, avatarBg } from '../theme'
+import Toast from '../components/Toast'
 
 const LIMIT_OSOB = 5
 
@@ -25,8 +26,7 @@ export default function Rodzina({ user, householdId, onBack, onZmianaHousehold }
   const [toast, setToast] = useState(null)
 
   function pokazToast(msg) {
-    setToast(msg)
-    setTimeout(() => setToast(null), 2500)
+    setToast({ id: Date.now(), msg })
   }
 
   const pobierz = useCallback(async () => {
@@ -318,7 +318,11 @@ export default function Rodzina({ user, householdId, onBack, onZmianaHousehold }
         </div>
       )}
 
-      {toast && <div style={s.toast}>{toast}</div>}
+      <Toast
+        toast={toast ? { id: toast.id, label: toast.msg } : null}
+        duration={2500}
+        onDismiss={() => setToast(null)}
+      />
     </div>
   )
 }
@@ -387,12 +391,6 @@ const s = {
   },
 
   loading: { textAlign: 'center', padding: 80, color: t.mute, fontSize: 14 },
-  toast: {
-    position: 'fixed', bottom: 40, left: '50%', transform: 'translateX(-50%)',
-    background: t.text, color: '#fff', borderRadius: 12, padding: '10px 16px',
-    fontFamily: fonts.sans, fontSize: 13, fontWeight: 500,
-    boxShadow: '0 8px 24px rgba(0,0,0,.2)', zIndex: 200,
-  },
 }
 
 const modS = {

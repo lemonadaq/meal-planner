@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { supabase } from '../supabase'
 import { t, fonts, ui, avatarBg } from '../theme'
+import Toast from '../components/Toast'
 import { formatDataLocal as formatData } from '../dataHelpers'
 import { useSloty, slotyWDniu, kluczDnia, sanityzuj } from '../useSloty'
 
@@ -104,6 +105,9 @@ export default function Home({ user, householdId, onTabChange, onUstawienia, onS
   const [loading, setLoading] = useState(true)
   const [planowanie, setPlanowanie] = useState(null)
   const [toast, setToast] = useState(null)
+  function pokazToast(msg) {
+    setToast({ id: Date.now(), msg })
+  }
 
   // Konfiguracja slotów posiłków — dynamiczna lista per dzień tygodnia
   const { config: slotyConfig } = useSloty(householdId)
@@ -254,8 +258,7 @@ export default function Home({ user, householdId, onTabChange, onUstawienia, onS
     // Wybierz docelowy slot w zależności od dnia (dzisiaj/jutro mogą mieć różne sloty)
     const posilek = dataStr === dzisStr ? slotDocelowyDzis : slotDocelowyJutro
     if (!posilek) {
-      setToast('Brak skonfigurowanych posiłków na ten dzień')
-      setTimeout(() => setToast(null), 2400)
+      pokazToast('Brak skonfigurowanych posiłków na ten dzień')
       return
     }
     const bucket = dataStr === dzisStr ? 'dzis' : 'jutro'
@@ -305,12 +308,10 @@ export default function Home({ user, householdId, onTabChange, onUstawienia, onS
         }
       })
 
-      setToast(`Zaplanowano na ${kiedyLabel}: ${sugestia.Danie}`)
-      setTimeout(() => setToast(null), 2400)
+      pokazToast(`Zaplanowano na ${kiedyLabel}: ${sugestia.Danie}`)
     } catch (error) {
       console.error('Błąd planowania sugestii z Home:', error)
-      setToast('Nie udało się zaplanować')
-      setTimeout(() => setToast(null), 2400)
+      pokazToast('Nie udało się zaplanować')
     } finally {
       setPlanowanie(null)
     }
@@ -439,11 +440,11 @@ export default function Home({ user, householdId, onTabChange, onUstawienia, onS
         </div>
       )}
 
-      {toast && (
-        <div style={s.toast}>
-          {toast}
-        </div>
-      )}
+      <Toast
+        toast={toast ? { id: toast.id, label: toast.msg } : null}
+        duration={2400}
+        onDismiss={() => setToast(null)}
+      />
     </div>
   )
 }
@@ -673,13 +674,6 @@ function makeS() {
     background: t.surface, color: t.accent, border: `1px solid ${t.border}`, borderRadius: 13,
     padding: '11px 10px', fontFamily: fonts.sans, fontSize: 13, fontWeight: 700,
     cursor: 'pointer',
-  },
-
-  toast: {
-    position: 'fixed', bottom: 92, left: '50%', transform: 'translateX(-50%)',
-    background: t.text, color: '#fff', borderRadius: 12, padding: '10px 14px',
-    boxShadow: '0 8px 24px rgba(0,0,0,.2)', zIndex: 200,
-    fontFamily: fonts.sans, fontSize: 13, maxWidth: 'calc(100vw - 32px)',
   },
 
   sugestiaSkeleton: {

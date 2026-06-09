@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useState, useRef } from 'react'
 import { supabase } from '../supabase'
 import { t, fonts, ui } from '../theme'
+import Toast from '../components/Toast'
 
 // Filtry-chipy: 'wszystko' i 'ulubione' to specjalne, reszta to wartości pola `rodzaj`
 const FILTRY = [
@@ -73,15 +74,11 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack }) 
 
   // Toast z undo
   const [toast, setToast] = useState(null)
-  const toastTimer = useRef(null)
 
   function pokazToast(msg, onUndo) {
-    if (toastTimer.current) clearTimeout(toastTimer.current)
-    setToast({ msg, onUndo })
-    toastTimer.current = setTimeout(() => setToast(null), 5500)
+    setToast({ id: Date.now(), msg, onUndo })
   }
   function zamknijToast() {
-    if (toastTimer.current) clearTimeout(toastTimer.current)
     setToast(null)
   }
 
@@ -114,7 +111,6 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack }) 
 
   useEffect(() => {
     pobierzDane()
-    return () => { if (toastTimer.current) clearTimeout(toastTimer.current) }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -520,16 +516,12 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack }) 
       )}
 
       {/* Toast z undo */}
-      {toast && (
-        <div style={s.toast}>
-          <span style={s.toastMsg}>{toast.msg}</span>
-          {toast.onUndo && (
-            <button style={s.toastUndo} onClick={() => toast.onUndo()}>
-              Cofnij
-            </button>
-          )}
-        </div>
-      )}
+      <Toast
+        toast={toast ? { id: toast.id, label: toast.msg } : null}
+        duration={5500}
+        onUndo={toast?.onUndo}
+        onDismiss={zamknijToast}
+      />
     </div>
   )
 }
@@ -833,22 +825,5 @@ function makeS() {
     cursor: 'pointer',
   },
 
-  // Toast
-  toast: {
-    position: 'fixed', bottom: 100, left: '50%', transform: 'translateX(-50%)',
-    background: t.text, color: '#fff',
-    padding: '12px 16px', borderRadius: 14,
-    boxShadow: '0 12px 32px rgba(20,15,10,.25)',
-    fontFamily: fonts.sans, fontSize: 14, fontWeight: 500,
-    display: 'flex', alignItems: 'center', gap: 14,
-    zIndex: 2000, maxWidth: 'calc(100vw - 40px)',
-  },
-  toastMsg: { whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
-  toastUndo: {
-    background: 'none', border: 'none', color: '#FAD8B5',
-    fontWeight: 700, fontSize: 13, letterSpacing: 0.5,
-    textTransform: 'uppercase', cursor: 'pointer',
-    flexShrink: 0,
-  },
 }
 }

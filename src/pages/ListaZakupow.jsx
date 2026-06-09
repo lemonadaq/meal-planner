@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { supabase } from '../supabase'
 import { t, fonts, ui } from '../theme'
+import Toast from '../components/Toast'
 import { formatDataLocal, dzisLocal } from '../dataHelpers'
 
 const KATEGORIE = [
@@ -534,7 +535,6 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
   const [korektyZakupow, setKorektyZakupow] = useState({})
 
   const [toast, setToast] = useState(null)
-  const toastTimer = useRef(null)
   const blokujDodawanieDo = useRef(0)
   const generujRef = useRef(null)
   // Stan odznaczonych jest teraz w bazie (zakupy_historia, wspólne dla rodziny),
@@ -542,9 +542,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
   const storageKey = `lista_zakupow_${user.id}` // legacy, niezużywane
 
   function pokazToast(msg, onUndo) {
-    if (toastTimer.current) clearTimeout(toastTimer.current)
-    setToast({ msg, onUndo })
-    toastTimer.current = setTimeout(() => setToast(null), 3500)
+    setToast({ id: Date.now(), msg, onUndo })
   }
 
   // ── Produkty „mam w domu” — ładowanie z bazy ──
@@ -1789,14 +1787,12 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
         />
       )}
 
-      {toast && (
-        <div style={s.toast}>
-          <span style={s.toastMsg}>{toast.msg}</span>
-          {toast.onUndo && (
-            <button style={s.toastBtn} onClick={toast.onUndo}>Cofnij</button>
-          )}
-        </div>
-      )}
+      <Toast
+        toast={toast ? { id: toast.id, label: toast.msg } : null}
+        duration={3500}
+        onUndo={toast?.onUndo}
+        onDismiss={() => setToast(null)}
+      />
     </div>
   )
 }
@@ -2724,21 +2720,6 @@ function makeS() {
 
   btnRow: { display: 'flex', gap: 8, marginTop: 18 },
   btnGhost: { ...ui.btnGhost, flex: 1, padding: '12px 14px' },
-
-  toast: {
-    position: 'fixed', bottom: 96, left: '50%', transform: 'translateX(-50%)',
-    background: t.text, color: '#fff', borderRadius: 12, padding: '10px 14px',
-    display: 'flex', alignItems: 'center', gap: 14,
-    boxShadow: '0 8px 24px rgba(0,0,0,.2)', zIndex: 200,
-    fontFamily: fonts.sans, fontSize: 13, maxWidth: 'calc(100vw - 32px)',
-  },
-  toastMsg: { color: '#fff', flex: 1 },
-  toastBtn: {
-    background: 'none', border: 'none', color: t.accentSoft || '#FBD3C2',
-    fontFamily: fonts.sans, fontSize: 13, fontWeight: 700,
-    cursor: 'pointer', padding: '4px 6px',
-    textTransform: 'uppercase', letterSpacing: 0.8,
-  },
 
   loading: {
     textAlign: 'center', padding: 80,

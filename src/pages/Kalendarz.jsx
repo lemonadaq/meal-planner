@@ -4,6 +4,7 @@ import { t, fonts, ui } from '../theme'
 import { formatDataLocal as formatData, isDzis } from '../dataHelpers'
 import { useSloty, slotyWDniu, kluczDnia, sanityzuj } from '../useSloty'
 import GeneratorPlanu from '../components/GeneratorPlanu'
+import Toast from '../components/Toast'
 import { useGenerator } from '../useGenerator'
 import { logujSygnal } from '../logujSygnaly'
 
@@ -128,11 +129,8 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
   }, [znajdzSlot])
 
   const [toast, setToast] = useState(null)
-  const toastTimer = useRef(null)
   function pokazToast(msg, onUndo) {
-    if (toastTimer.current) clearTimeout(toastTimer.current)
-    setToast({ msg, onUndo })
-    toastTimer.current = setTimeout(() => setToast(null), onUndo ? 4000 : 2200)
+    setToast({ id: Date.now(), msg, onUndo })
   }
 
   const poniedzialek = getPoniedzialek(tydzien)
@@ -431,7 +429,7 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
     setPlan(p => { const n = { ...p }; delete n[klucz]; return n })
     logujSygnal({ userId: user.id, householdId, danie: kopia.danie, akcja: 'usun', kontekstSlot: posilek, kontekstData: kopia.data })
 
-    pokazToast(`${nazwaSlotu(posilek)} usunięty`, async () => {
+    pokazToast(`Usunięto ${nazwaSlotu(posilek).toLowerCase()}`, async () => {
       // Insert spowrotem (zachowując wszystkie pola)
       const { id, created_at, ...doInsert } = kopia
       const { data } = await supabase.from('kalendarz').insert(doInsert).select().single()
@@ -807,16 +805,12 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
         )}
       </div>
 
-      {toast && (
-        <div style={s.toast}>
-          <span style={s.toastMsg}>{toast.msg}</span>
-          {toast.onUndo && (
-            <button style={s.toastBtn} onClick={toast.onUndo}>
-              Cofnij
-            </button>
-          )}
-        </div>
-      )}
+      <Toast
+        toast={toast ? { id: toast.id, label: toast.msg } : null}
+        duration={toast?.onUndo ? 4500 : 2200}
+        onUndo={toast?.onUndo}
+        onDismiss={() => setToast(null)}
+      />
 
       {podmianaModal?.danie && (
         <PodmianaModal
@@ -1107,15 +1101,15 @@ function WidokTygodnia({
   return (
     <div style={s.tydzienList}>
       {maZawartosc ? (
-        <div style={s.generatorRow}>
-          <GeneratorPlanu maZaplanowane={true} onGeneruj={onGeneruj} wariant="kompakt" />
-          <button style={s.kopiujTydzienBtn} onClick={onKopiujTydzien}>
+        <>
+          <GeneratorPlanu maZaplanowane={true} onGeneruj={onGeneruj} />
+          <button style={{ ...s.kopiujTydzienBtn, marginTop: 10 }} onClick={onKopiujTydzien}>
             ⎘ Kopiuj z ub. tygodnia
           </button>
-        </div>
+        </>
       ) : (
         <>
-          <GeneratorPlanu maZaplanowane={false} onGeneruj={onGeneruj} wariant="duzy" />
+          <GeneratorPlanu maZaplanowane={false} onGeneruj={onGeneruj} />
           <button style={{ ...s.kopiujTydzienBtn, marginTop: 10 }} onClick={onKopiujTydzien}>
             ⎘ Skopiuj plan z poprzedniego tygodnia
           </button>
@@ -2751,23 +2745,6 @@ function makeS() {
   dragGhostSub: {
     fontFamily: fonts.sans, fontSize: 9, color: t.mute,
     fontWeight: 700, letterSpacing: 0.8, textTransform: 'uppercase',
-  },
-
-  toast: {
-    position: 'fixed', bottom: 96, left: '50%', transform: 'translateX(-50%)',
-    background: t.text, color: '#fff', borderRadius: 12, padding: '10px 14px',
-    fontFamily: fonts.sans, fontSize: 13, fontWeight: 500,
-    boxShadow: '0 8px 24px rgba(0,0,0,.2)', zIndex: 200,
-    maxWidth: 'calc(100vw - 32px)',
-    display: 'flex', alignItems: 'center', gap: 14,
-  },
-  toastMsg: { color: '#fff', flex: 1 },
-  toastBtn: {
-    background: 'none', border: 'none',
-    color: t.warmSoft || '#FBD3C2',
-    fontFamily: fonts.sans, fontSize: 13, fontWeight: 700,
-    cursor: 'pointer', padding: '4px 6px',
-    textTransform: 'uppercase', letterSpacing: 0.8,
   },
 
   loading: {
