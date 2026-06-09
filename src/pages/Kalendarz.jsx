@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
+import { useState, useEffect, useLayoutEffect, useMemo, useRef, useCallback } from 'react'
 import { supabase } from '../supabase'
 import { t, fonts, ui } from '../theme'
 import { formatDataLocal as formatData, isDzis } from '../dataHelpers'
@@ -1344,7 +1344,7 @@ function WidokDnia({
   // NIE będzie się scrollować podczas dragu, niezależnie od tego co robi
   // przeglądarka z eventami pointer. Działa też jako dodatkowa warstwa
   // dla pointer capture (3 niezależne warstwy obrony).
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!dragState?.podniesiony) return
 
     const html = document.documentElement

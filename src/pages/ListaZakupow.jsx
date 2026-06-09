@@ -413,6 +413,15 @@ const SCAL_NAZWY = {
   'chleb pszenny':       'Chleb',
   'chleb pszenny kromki':'Chleb',
   'pieczywo do podania': 'Chleb',
+  'marchewka':           'Marchew',
+  'jogurt naturalny':    'Jogurt naturalny',
+}
+
+// Sufiksy, które nie rozróżniają produktu na liście zakupów.
+// "Ogórek" i "Ogórek świeży" trafiają do tej samej pozycji.
+const SUFIKS_RGX = /\s+(swiezy|swieza|swieze|surowy|surowa|surowe|mrozony|mrozona|mrozone)$/
+function normalizujDlaScalania(normNazwa) {
+  return normNazwa.replace(SUFIKS_RGX, '').trim()
 }
 function domyslnieWDomu(item) {
   if (!item) return false
@@ -852,7 +861,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
       const finalny = SCAL_NAZWY[normalizujNazweMeta(podmieniony)] || podmieniony
       const meta = dopasujMeta(finalny, wszystkieMeta)
       const kanon = meta?.nazwa || finalny
-      const mapaKlucz = normalizujNazweMeta(kanon)
+      const mapaKlucz = normalizujDlaScalania(normalizujNazweMeta(kanon))
       if (!mapaKlucz) return
 
       const iloscNum = parseFloat(ilosc?.toString().replace(',', '.'))
@@ -872,6 +881,9 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
           zrodlo: 'plan',
           nieprzeliczone: [], // ilości, których nie dało się sprowadzić do bazy
         }
+      } else if (kanon.length < wpis.skladnik.length) {
+        // Prefer shorter/cleaner name when merging variants (e.g. "Ogórek" over "Ogórek świeży")
+        wpis.skladnik = kanon
       }
 
       // Brak ilości („do smaku", „—") — nic do sumowania, pozycja już istnieje

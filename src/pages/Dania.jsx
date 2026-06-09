@@ -302,11 +302,16 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack }) 
         <div style={s.searchWrap}>
           <svg style={s.searchIcon} width="17" height="17" viewBox="0 0 24 24" fill="none" stroke={t.mute} strokeWidth="1.8" strokeLinecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
           <input
-            style={s.search}
+            style={{ ...s.search, paddingRight: szukaj ? 40 : 14 }}
             placeholder="Szukaj po nazwie…"
             value={szukaj}
             onChange={e => setSzukaj(e.target.value)}
           />
+          {szukaj && (
+            <button style={s.searchClear} onClick={() => setSzukaj('')} aria-label="Wyczyść">
+              ✕
+            </button>
+          )}
         </div>
 
         {/* Chipy filtrów — horizontal scroll */}
@@ -577,8 +582,14 @@ function makeS() {
   },
 
   searchWrap: { position: 'relative', marginBottom: 12 },
-  searchIcon: { position: 'absolute', top: '50%', left: 14, transform: 'translateY(-50%)' },
+  searchIcon: { position: 'absolute', top: '50%', left: 14, transform: 'translateY(-50%)', pointerEvents: 'none' },
   search: { ...ui.input, paddingLeft: 40, height: 44 },
+  searchClear: {
+    position: 'absolute', top: '50%', right: 12, transform: 'translateY(-50%)',
+    background: t.surfaceAlt, border: 'none', borderRadius: 999,
+    width: 22, height: 22, fontSize: 11, color: t.mute, cursor: 'pointer',
+    display: 'grid', placeItems: 'center', lineHeight: 1,
+  },
 
   // Chipy filtrów — horizontal scroll
   chipsRow: { marginBottom: 12, marginLeft: -20, marginRight: -20 },
@@ -678,19 +689,21 @@ function makeS() {
   cardImgWrap: { position: 'relative', cursor: 'pointer' },
   cardStar: {
     position: 'absolute', top: 8, left: 8,
-    background: 'rgba(255,255,255,.85)', backdropFilter: 'blur(4px)',
+    background: t.surface, backdropFilter: 'blur(6px)',
+    border: `0.5px solid ${t.border}`,
     borderRadius: 999, padding: 4,
-    boxShadow: '0 1px 3px rgba(0,0,0,.1)',
-    border: 'none', cursor: 'pointer',
+    boxShadow: '0 1px 4px rgba(0,0,0,.15)',
+    cursor: 'pointer',
     display: 'grid', placeItems: 'center',
   },
   cardMenu: {
     position: 'absolute', top: 8, right: 8,
-    background: 'rgba(255,255,255,.85)', backdropFilter: 'blur(4px)',
-    border: 'none', borderRadius: 999, width: 28, height: 28,
+    background: t.surface, backdropFilter: 'blur(6px)',
+    border: `0.5px solid ${t.border}`,
+    borderRadius: 999, width: 28, height: 28,
     color: t.text, cursor: 'pointer',
     display: 'grid', placeItems: 'center',
-    boxShadow: '0 1px 3px rgba(0,0,0,.1)',
+    boxShadow: '0 1px 4px rgba(0,0,0,.15)',
   },
   cardBody: { padding: '10px 12px 12px', cursor: 'pointer' },
   cardTitle: {
@@ -734,8 +747,10 @@ function makeS() {
   },
   listStar: {
     position: 'absolute', top: 4, left: 4,
-    background: 'rgba(255,255,255,.85)', borderRadius: 999, padding: 2,
-    border: 'none', cursor: 'pointer',
+    background: t.surface, backdropFilter: 'blur(6px)',
+    border: `0.5px solid ${t.border}`,
+    borderRadius: 999, padding: 2,
+    cursor: 'pointer',
     display: 'grid', placeItems: 'center',
   },
   listInfo: { flex: 1, minWidth: 0 },

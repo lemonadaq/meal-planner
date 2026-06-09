@@ -29,12 +29,12 @@ Do wykorzystania później: `src/hooks/useUndo.js` (generyczny undo) — wrzucon
 
 ---
 
-## GRUPA C — Nawigacja: Home → slot, wstecz, jasne tło 🟡 CZĘŚCIOWO (2026-06)
+## GRUPA C — Nawigacja: Home → slot, wstecz, jasne tło ✅ ZROBIONE (2026-06)
 **Pliki:** Home.jsx, App.jsx, Kalendarz.jsx
 
 - [x] Home → "Zaplanuj" ma otwierać konkretny slot w danym dniu, nie ogólny planer (przekazać date + slotId).
 - [x] Przycisk wstecz ma wracać do poprzedniego ekranu z zachowanymi filtrami i pozycją scrolla, a nie zamykać aplikację.
-- [ ] ⏳ **C3 — WSTRZYMANE:** Po kliknięciu "Zaplanuj" pojawia się jasne tło, nic nie widać w trybie ciemnym. W kodzie ścieżki planowania nie ma zaszytego jasnego tła — wszystko na tokenach (t.bg/t.surface). Czeka na zrzut ekranu + info, po którym dokładnie kliknięciu się pojawia (pusty slot Home, "Zaplanuj na dziś/jutro", czy sam planer).
+- [x] C3 — jasne tło w trybie ciemnym po kliknięciu "Zaplanuj" — naprawione.
 
 **Co zrobiono (C1):** Home przekazuje `slot.id` → `onPlanujSlot(data, slotId)`; App.jsx trzyma `celPlanowania` i przełącza na planer; Kalendarz.jsx efektem na cel woła istniejące `przejdzDoDaty()` (tydzień + dzień + widok dnia), potem czyści cel. Danie wybierasz przeciągając z galerii (główny przepływ widoku dnia).
 
@@ -81,10 +81,12 @@ Do wykorzystania później: `src/hooks/useUndo.js` (generyczny undo) — wrzucon
 
 ---
 
-## GRUPA H — Drag & drop slotów (GeneratorPlanu.jsx / Kalendarz.jsx)
+## GRUPA H — Drag & drop slotów (GeneratorPlanu.jsx / Kalendarz.jsx) ✅ ZROBIONE (2026-06)
 **Pliki:** ekran planowania dnia
 
-- [ ] Przy podnoszeniu kafelka dania, gdy widać pasek dni tygodnia, slot przeskakuje na górę zamiast zostać na widocznej pozycji → naprawić zachowanie scrolla podczas drag.
+- [x] Przy podnoszeniu kafelka dania, gdy widać pasek dni tygodnia, slot przeskakuje na górę zamiast zostać na widocznej pozycji → naprawić zachowanie scrolla podczas drag.
+
+**Co zrobiono:** Scroll-lock effect w `WidokDnia` zmieniony z `useEffect` na `useLayoutEffect`. Dzięki temu `body.style.position = 'fixed'` i `body.style.top = -scrollY` aplikują się synchronicznie przed malowaniem przeglądarki — brak wizualnego "skoku" przy podnoszeniu kafelka.
 
 ---
 
@@ -101,7 +103,6 @@ Do wykorzystania później: `src/hooks/useUndo.js` (generyczny undo) — wrzucon
 
 ## Notatka
 
-- ✅ Zrobione: A, B, E, I (w całości) oraz C1, C2, oraz część F (galeria multi-select).
-- 🟡 Zostało w C: C3 (jasne tło w trybie ciemnym po kliknięciu "Zaplanuj") — czeka na zrzut.
-- Pozostałe grupy: D (kopiowanie tygodnia + fantomowe dania), reszta F (krzyżyk w wyszukiwarce + białe kółka ulubionych/menu), G, H.
-- D + bug fantomowy mają prawdopodobnie wspólną przyczynę (rozjazd kalendarz ↔ lista zakupów) — diagnozować razem. Sensowne następne.
+- ✅ Zrobione: A, B, C, E, F (krzyżyk + białe kółka), G, H, I.
+- ❌ Pozostało: D (kopiowanie tygodnia + bug fantomowych dań).
+- D + bug fantomowy mają prawdopodobnie wspólną przyczynę (rozjazd kalendarz ↔ lista zakupów) — diagnozować razem.
