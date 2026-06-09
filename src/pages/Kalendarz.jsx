@@ -1661,62 +1661,88 @@ function WidokDnia({
     }
   }, [dataStr, subTryb, onUstawDanie, onUstawSide, onSetSubTryb, wyczyscGesture, znajdzPierwszyPustySideSlot])
 
-  // ── Filtrowanie galerii ──
-  // Główny tryb galerii jest niezależny od kliknięcia mini-slotu:
-  // można wybrać Dania / Dodatki / Surówki na górze i przeciągać od razu.
-  const [filtrRodzaj, setFiltrRodzaj] = useState(() => sessionStorage.getItem('planer_filtrRodzaj') || 'wszystko')
-  const [galeriaTryb, setGaleriaTryb] = useState(() => sessionStorage.getItem('planer_galeriaTryb') || 'danie')
+  // ── Filtrowanie galerii (multi-select) ──
+  // Chipsy działają jak tagi: można zaznaczyć dowolnie wiele naraz.
+  // Reguły wyświetlania:
+  //  - same dodatki / same surówki / oba → wszystko alfabetycznie w jednej siatce
+  //  - tylko główne (śniadanie/obiad/kolacja/zupa/deser/przekąska) → alfabetycznie
+  //  - główne + strony (dodatki/surówki) → główne na górze, strony w sekcji niżej
+  const TYPY_STRONY = ['dodatek', 'surowka']
+  const TYPY_GLOWNE = ['sniadanie', 'obiad', 'kolacja', 'zupa', 'deser', 'przekaska']
 
-  const typGalerii = subTryb?.typ || galeriaTryb
+  const [wybraneTypy, setWybraneTypy] = useState(() => {
+    try {
+      const saved = JSON.parse(sessionStorage.getItem('planer_wybraneTypy'))
+      if (Array.isArray(saved) && saved.length) return new Set(saved)
+    } catch { /* pusty fallback */ }
+    return new Set(TYPY_GLOWNE) // domyślnie wszystkie główne, bez stron
+  })
 
-  function zmienTrybGalerii(id) {
-    setGaleriaTryb(id)
-    sessionStorage.setItem('planer_galeriaTryb', id)
+  useEffect(() => {
+    sessionStorage.setItem('planer_wybraneTypy', JSON.stringify([...wybraneTypy]))
+  }, [wybraneTypy])
+
+  // W subTrybie galeria filtruje na typ slotu (dodatek/surówka), ale to nie
+  // zmienia zapisanej selekcji chipsów — to widok pochodny.
+  const efektywneTypy = (subTryb?.typ === 'dodatek' || subTryb?.typ === 'surowka')
+    ? new Set([subTryb.typ])
+    : wybraneTypy
+
+  function toggleTyp(id) {
+    setWybraneTypy(prev => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
     setFiltr('')
-
-    if (subTryb) {
-      if (id === 'danie') onSetSubTryb(null)
-      else onSetSubTryb({ ...subTryb, typ: id })
-    }
+    // klik na chip główny w subTrybie → wyjdź z subTrybu
+    if (subTryb && TYPY_GLOWNE.includes(id)) onSetSubTryb(null)
   }
 
-  const galeriaItems = useMemo(() => {
-    let lista
+  // Dwie listy: główne i strony. Każda alfabetyczna. Render decyduje czy
+  // pokazać je razem (jeden grid) czy w dwóch sekcjach.
+  const { itemyGlowne, itemyStrony } = useMemo(() => {
+    const efGlowne = TYPY_GLOWNE.filter(t => efektywneTypy.has(t))
+    const efStrony = TYPY_STRONY.filter(t => efektywneTypy.has(t))
 
-    if (typGalerii === 'dodatek') {
-      lista = dodatki.map(d => ({ nazwa: d.Dodatek, zdjecie: d.zdjecie }))
-    } else if (typGalerii === 'surowka') {
-      lista = surowki.map(d => ({ nazwa: d['Surówka'], zdjecie: d.zdjecie }))
-    } else {
-      lista = dania
-        .filter(d => {
-          if (filtrRodzaj === 'wszystko') return true
-          // 'przekaska' pasuje do wszystkich slotów — pokazuje się zawsze
-          if (d.rodzaj === 'przekaska') return true
-          return d.rodzaj === filtrRodzaj
-        })
-        .map(d => ({ nazwa: d.Danie, zdjecie: d.zdjecie, rodzaj: d.rodzaj }))
+    const glowne = efGlowne.length
+      ? dania
+          .filter(d => efGlowne.includes(d.rodzaj))
+          .map(d => ({ nazwa: d.Danie, zdjecie: d.zdjecie, rodzaj: d.rodzaj, tag: 'danie' }))
+      : []
+
+    let strony = []
+    if (efStrony.includes('dodatek')) {
+      strony = strony.concat(dodatki.map(d => ({ nazwa: d.Dodatek, zdjecie: d.zdjecie, tag: 'dodatek' })))
+    }
+    if (efStrony.includes('surowka')) {
+      strony = strony.concat(surowki.map(d => ({ nazwa: d['Surówka'], zdjecie: d.zdjecie, tag: 'surowka' })))
     }
 
+    // Filtr tekstowy (szukanie po nazwie, dla dań też po składnikach)
     const q = filtr.trim().toLowerCase()
-    if (!q) return lista
-
-    return lista.filter(x => {
-      if (x.nazwa?.toLowerCase().includes(q)) return true
-
-      // Search po składnikach — tylko dla dań
-      if (typGalerii === 'danie' && skladnikiDan?.[x.nazwa]) {
-        for (const sk of skladnikiDan[x.nazwa]) {
-          if (sk.includes(q)) return true
+    const dopasuj = (lista) => {
+      if (!q) return lista
+      return lista.filter(x => {
+        if (x.nazwa?.toLowerCase().includes(q)) return true
+        if (x.tag === 'danie' && skladnikiDan?.[x.nazwa]) {
+          for (const sk of skladnikiDan[x.nazwa]) if (sk.includes(q)) return true
         }
-      }
+        return false
+      })
+    }
 
-      return false
-    })
-  }, [typGalerii, dania, dodatki, surowki, filtr, filtrRodzaj, skladnikiDan])
+    const cmp = (a, b) => (a.nazwa || '').localeCompare(b.nazwa || '', 'pl')
+    return {
+      itemyGlowne: dopasuj(glowne).sort(cmp),
+      itemyStrony: dopasuj(strony).sort(cmp),
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [efektywneTypy, dania, dodatki, surowki, filtr, skladnikiDan])
 
   const tytulGalerii = subTryb
-    ? `${typGalerii === 'surowka' ? 'Surówka' : 'Dodatek'} do: ${subTryb.posilek}`
+    ? `${subTryb.typ === 'surowka' ? 'Surówka' : 'Dodatek'} do: ${subTryb.posilek}`
     : 'Galeria'
 
   const planStickyStyle = dragState?.podniesiony
@@ -1778,14 +1804,13 @@ function WidokDnia({
                 surowkiMap={surowkiMap}
                 domyslnePorcje={domyslnePorcje}
                 podswietlony={podswietl}
-                podswietlSide={dragTyp === 'dodatek' || dragTyp === 'surowka' || (!dragTyp && (typGalerii === 'dodatek' || typGalerii === 'surowka'))}
+                podswietlSide={dragTyp === 'dodatek' || dragTyp === 'surowka'}
                 onClick={() => wpis?.danie && onSelectDanie?.(wpis.danie)}
                 onUsun={() => onUsunPosilek(dataStr, posilek)}
                 onUsunSide={(slotIdx) => onUsunSide(dataStr, posilek, slotIdx)}
                 onZmienPorcje={(p) => onZmienPorcje(dataStr, posilek, p)}
                 onPodmien={() => onPodmien(wpis)}
                 onWybierzSide={(slotIdx) => {
-                  setGaleriaTryb('dodatek')
                   onSetSubTryb({ dataStr, posilek, typ: 'dodatek', slotIdx })
                 }}
               />
@@ -1800,89 +1825,91 @@ function WidokDnia({
           <h2 style={s.galeriaTytul}>{tytulGalerii}</h2>
           <input
             type="text"
-            placeholder={typGalerii === 'danie' ? 'Szukaj po nazwie lub składniku…' : 'Szukaj…'}
+            placeholder="Szukaj po nazwie lub składniku…"
             value={filtr}
             onChange={e => setFiltr(e.target.value)}
             style={s.szukaj}
           />
         </div>
 
-        {/* Jeden dynamiczny pasek filtrów */}
+        {/* Pasek filtrów (multi-select) — chipsy działają jak tagi */}
         <div style={s.chipsRow}>
-          <button
-            style={{ ...s.chip, ...(typGalerii === 'danie' && filtrRodzaj === 'wszystko' ? s.chipOn : {}) }}
-            onClick={() => { zmienTrybGalerii('danie'); setFiltrRodzaj('wszystko'); sessionStorage.setItem('planer_filtrRodzaj', 'wszystko') }}
-          >
-            Wszystko
-          </button>
-          {/* Dynamiczne kategorie z bazy (tylko te które istnieją w daniach) */}
-          {[...new Set(dania.map(d => d.rodzaj).filter(Boolean))]
-            .filter(r => r !== 'przekaska')
-            .sort((a, b) => {
-              const order = ['sniadanie', 'obiad', 'kolacja', 'zupa', 'deser']
-              const ia = order.indexOf(a), ib = order.indexOf(b)
+          {/* Dynamiczne kategorie z bazy + Dodatki/Surówki na końcu */}
+          {(() => {
+            const dostepneGlowne = [...new Set(dania.map(d => d.rodzaj).filter(Boolean))]
+            // posortuj wg kanonicznej kolejności
+            const kolejnoscG = ['sniadanie', 'obiad', 'kolacja', 'zupa', 'deser', 'przekaska']
+            dostepneGlowne.sort((a, b) => {
+              const ia = kolejnoscG.indexOf(a), ib = kolejnoscG.indexOf(b)
               if (ia === -1 && ib === -1) return a.localeCompare(b)
               if (ia === -1) return 1
               if (ib === -1) return -1
               return ia - ib
             })
-            .map(rodzaj => {
-              const labelMap = {
-                sniadanie: 'Śniadania', obiad: 'Obiady', kolacja: 'Kolacje',
-                zupa: 'Zupy', deser: 'Desery', przekaska: 'Przekąski', dodatek: 'Dodatki', surowka: 'Surówki',
-              }
-              return (
-                <button
-                  key={rodzaj}
-                  style={{ ...s.chip, ...(typGalerii === 'danie' && filtrRodzaj === rodzaj ? s.chipOn : {}) }}
-                  onClick={() => { zmienTrybGalerii('danie'); setFiltrRodzaj(rodzaj); sessionStorage.setItem('planer_filtrRodzaj', rodzaj) }}
-                >
-                  {labelMap[rodzaj] || rodzaj}
-                </button>
-              )
-            })
-          }
-          {/* Dodatki i Surówki na końcu */}
-          <button
-            style={{ ...s.chip, ...(typGalerii === 'dodatek' ? s.chipOn : {}) }}
-            onClick={() => zmienTrybGalerii('dodatek')}
-          >
-            Dodatki
-          </button>
-          <button
-            style={{ ...s.chip, ...(typGalerii === 'surowka' ? s.chipOn : {}) }}
-            onClick={() => zmienTrybGalerii('surowka')}
-          >
-            Surówki
-          </button>
+            // dorzucamy strony na końcu, ale tylko jeśli są dane
+            const wszystkie = [...dostepneGlowne]
+            if (dodatki.length) wszystkie.push('dodatek')
+            if (surowki.length) wszystkie.push('surowka')
+            const labelMap = {
+              sniadanie: 'Śniadania', obiad: 'Obiady', kolacja: 'Kolacje',
+              zupa: 'Zupy', deser: 'Desery', przekaska: 'Przekąski',
+              dodatek: 'Dodatki', surowka: 'Surówki',
+            }
+            return wszystkie.map(rodzaj => (
+              <button
+                key={rodzaj}
+                style={{ ...s.chip, ...(efektywneTypy.has(rodzaj) ? s.chipOn : {}) }}
+                onClick={() => toggleTyp(rodzaj)}
+              >
+                {labelMap[rodzaj] || rodzaj}
+              </button>
+            ))
+          })()}
         </div>
 
-        <div style={s.galeriaGrid}>
-          {galeriaItems.map(item => (
+        {(() => {
+          const renderItem = (item) => (
             <GaleriaItem
-              key={item.nazwa}
+              key={`${item.tag}_${item.nazwa}`}
               item={item}
-              typ={typGalerii}
-              onPointerDown={(e) => onPointerDownItem(e, item.nazwa, typGalerii, item)}
-              onTouchStart={(e) => onTouchStartItem(e, item.nazwa, typGalerii, item)}
+              typ={item.tag}
+              onPointerDown={(e) => onPointerDownItem(e, item.nazwa, item.tag, item)}
+              onTouchStart={(e) => onTouchStartItem(e, item.nazwa, item.tag, item)}
               onTap={() => {
-                if (typGalerii === 'danie') {
+                if (item.tag === 'danie') {
                   // Tap = szczegóły przepisu
                   onSelectDanie?.(item.nazwa)
                 } else if (subTryb) {
-                  // Tap = wybór szybki, omijamy drag
+                  // Tap = wybór szybki dodatku/surówki do slotu, omijamy drag
                   const slotIdx = subTryb.slotIdx ?? 0
-                  onUstawSide(subTryb.dataStr, subTryb.posilek, slotIdx, item.nazwa, typGalerii)
+                  onUstawSide(subTryb.dataStr, subTryb.posilek, slotIdx, item.nazwa, item.tag)
                   onSetSubTryb(null)
                 }
               }}
               aktywnyDrag={dragState?.podniesiony && dragState.nazwa === item.nazwa}
             />
-          ))}
-        </div>
-        {galeriaItems.length === 0 && (
-          <div style={s.brakDan}>Brak pasujących pozycji.</div>
-        )}
+          )
+
+          const maGlowne = itemyGlowne.length > 0
+          const maStrony = itemyStrony.length > 0
+          const stackowane = maGlowne && maStrony
+
+          if (!maGlowne && !maStrony) {
+            return <div style={s.brakDan}>Brak pasujących pozycji.</div>
+          }
+          if (stackowane) {
+            return (
+              <>
+                <div style={s.galeriaGrid}>{itemyGlowne.map(renderItem)}</div>
+                <div style={s.sekcjaSeparator}>Dodatki i surówki</div>
+                <div style={s.galeriaGrid}>{itemyStrony.map(renderItem)}</div>
+              </>
+            )
+          }
+          // tylko jedna z grup — wszystko w jednym gridzie alfabetycznie
+          const all = maGlowne ? itemyGlowne : itemyStrony
+          return <div style={s.galeriaGrid}>{all.map(renderItem)}</div>
+        })()}
 
       </section>
 
@@ -2714,6 +2741,12 @@ function makeS() {
   galeriaTytul: { ...ui.h2, fontSize: 18, flex: 1 },
   szukaj: { ...ui.input, padding: '8px 12px', fontSize: 13, maxWidth: 140 },
   galeriaGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 },
+  sekcjaSeparator: {
+    marginTop: 18, marginBottom: 10,
+    fontFamily: fonts.sans, fontSize: 12, fontWeight: 600,
+    color: t.mute, textTransform: 'uppercase', letterSpacing: 0.6,
+    borderTop: `1px solid ${t.border}`, paddingTop: 14,
+  },
   galeriaItem: {
     display: 'flex', flexDirection: 'column', gap: 6,
     background: 'transparent', border: 'none', padding: 0,
