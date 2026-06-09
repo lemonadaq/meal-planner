@@ -66,8 +66,7 @@ export default function DodajDanie({ onBack, onZapisano }) {
   const [nowyS, setNowyS] = useState({ nazwa: '', ilosc: '', jednostka: 'g', kategoria: '1_Warzywa i owoce' })
   const [podpowiedzi, setPodpowiedzi] = useState([])
 
-  const [kroki, setKroki] = useState([])
-  const [nowyKrok, setNowyKrok] = useState('')
+  const [przepisRaw, setPrzepisRaw] = useState('')
 
   const [zdjeciePlik, setZdjeciePlik] = useState(null)
   const [zdjeciePreview, setZdjeciePreview] = useState(null)
@@ -129,24 +128,6 @@ export default function DodajDanie({ onBack, onZapisano }) {
   }
   function usunSkladnik(i) { setSkladniki(prev => prev.filter((_, idx) => idx !== i)) }
 
-  function dodajKrok() {
-    if (!nowyKrok.trim()) return
-    setKroki(prev => [...prev, nowyKrok.trim()])
-    setNowyKrok('')
-  }
-  function usunKrok(i) { setKroki(prev => prev.filter((_, idx) => idx !== i)) }
-  function przesunKrok(i, kierunek) {
-    const j = i + kierunek
-    if (j < 0 || j >= kroki.length) return
-    const nowe = [...kroki]
-    ;[nowe[i], nowe[j]] = [nowe[j], nowe[i]]
-    setKroki(nowe)
-  }
-  function edytujKrok(i, wartosc) {
-    const nowe = [...kroki]
-    nowe[i] = wartosc
-    setKroki(nowe)
-  }
 
   async function zapiszDanie() {
     if (!nazwa.trim()) { setBlad('Wpisz nazwę'); return }
@@ -164,8 +145,10 @@ export default function DodajDanie({ onBack, onZapisano }) {
       setSaving(false); return
     }
 
-    const przepisTekst = kroki.length > 0
-      ? kroki.map((k, i) => `${i + 1}. ${k}`).join('\n')
+    const krokiParsed = przepisRaw
+      .split('\n').map(k => k.replace(/^\d+[\.\)]\s*/, '').trim()).filter(Boolean)
+    const przepisTekst = krokiParsed.length > 0
+      ? krokiParsed.map((k, i) => `${i + 1}. ${k}`).join('\n')
       : null
 
     let zdjecieUrl = null
@@ -379,52 +362,15 @@ export default function DodajDanie({ onBack, onZapisano }) {
           </section>
         )}
 
-        {/* Kroki przepisu — NOWE */}
+        {/* Kroki przepisu */}
         <section style={s.section}>
-          <div style={s.skladnikiHeader}>
-            <label style={s.label}>Kroki przepisu</label>
-            {kroki.length > 0 && <span style={s.badge}>{kroki.length}</span>}
-          </div>
-
-          {kroki.length > 0 && (
-            <div style={{ ...s.skladnikiLista, marginBottom: 10 }}>
-              {kroki.map((krok, i) => (
-                <div key={i} style={s.krokItem}>
-                  <span style={s.krokNr}>{String(i + 1).padStart(2, '0')}</span>
-                  <textarea
-                    style={s.krokTextarea}
-                    value={krok}
-                    rows={2}
-                    onChange={e => edytujKrok(i, e.target.value)}
-                  />
-                  <div style={s.krokAkcje}>
-                    <button style={s.btnMini} onClick={() => przesunKrok(i, -1)} aria-label="W górę">↑</button>
-                    <button style={s.btnMini} onClick={() => przesunKrok(i, 1)} aria-label="W dół">↓</button>
-                    <button style={s.btnUsun} onClick={() => usunKrok(i)} aria-label="Usuń">✕</button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
+          <label style={s.label}>Kroki przepisu</label>
           <textarea
-            style={{ ...s.input, minHeight: 60, resize: 'vertical', fontFamily: fonts.sans }}
-            placeholder={'Opisz kolejny krok, np. „Smaż na średnim ogniu 4 minuty…"'}
-            value={nowyKrok}
-            onChange={e => setNowyKrok(e.target.value)}
-            onKeyDown={e => {
-              if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-                e.preventDefault()
-                dodajKrok()
-              }
-            }}
+            style={{ ...s.input, minHeight: 140, resize: 'vertical', fontFamily: fonts.sans, lineHeight: 1.7 }}
+            placeholder={'Każda linia = osobny krok:\nObtocz filet w jajku, potem w bułce tartej\nSmaż na rozgrzanym oleju 3 min z każdej strony\nOdłóż na ręcznik papierowy\n\nMożesz też numerować (1. 2. 3.) — numery znikną automatycznie.'}
+            value={przepisRaw}
+            onChange={e => setPrzepisRaw(e.target.value)}
           />
-          <button style={s.btnDodajSkl} onClick={dodajKrok}>
-            + Dodaj krok
-          </button>
-          <div style={s.hint}>
-            Wpisz czas w kroku („smaż 4 minuty", „piecz 30 minut") — w trybie gotowania pojawi się przy nim stoper.
-          </div>
         </section>
 
         {/* Notatki — NOWE */}
@@ -582,26 +528,6 @@ function makeS() {
     color: t.muteLight, fontSize: 14, cursor: 'pointer', padding: '4px 8px',
   },
 
-  // Kroki przepisu
-  krokItem: {
-    display: 'flex', alignItems: 'flex-start', gap: 10,
-    padding: '10px 12px', borderBottom: `0.5px solid ${t.border}`,
-  },
-  krokNr: {
-    fontFamily: fonts.serif, fontSize: 18, color: t.accent,
-    fontStyle: 'italic', fontVariantNumeric: 'tabular-nums', minWidth: 26,
-    paddingTop: 6, lineHeight: 1,
-  },
-  krokTextarea: {
-    flex: 1, padding: '8px 10px',
-    fontFamily: fonts.sans, fontSize: 13.5, color: t.text, lineHeight: 1.5,
-    background: t.surfaceWash, border: `0.5px solid ${t.border}`,
-    borderRadius: 8, outline: 'none', boxSizing: 'border-box',
-    resize: 'vertical', minHeight: 36,
-  },
-  krokAkcje: {
-    display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'center',
-  },
   btnMini: {
     background: t.surfaceAlt, border: 'none', borderRadius: 6,
     padding: '3px 7px', fontSize: 11, cursor: 'pointer',

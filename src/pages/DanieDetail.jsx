@@ -95,8 +95,7 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
 
   const [edNazwa, setEdNazwa] = useState('')
   const [edSkladniki, setEdSkladniki] = useState([])
-  const [edPrzepis, setEdPrzepis] = useState([])
-  const [nowyKrok, setNowyKrok] = useState('')
+  const [edPrzepisRaw, setEdPrzepisRaw] = useState('')
 
   const [edZdjecie, setEdZdjecie] = useState(null)
   const [edZdjeciePlik, setEdZdjeciePlik] = useState(null)
@@ -189,6 +188,7 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
     setEdZdjecie(heroZdj || null)
     setEdZdjeciePlik(null)
     setEdZdjeciePreview(null)
+    setEdPrzepisRaw(przepis.join('\n'))
     setEdRodzaj(skladniki[0]?.rodzaj || '')
     setEdCzas(skladniki[0]?.czas_minuty != null ? String(skladniki[0].czas_minuty) : '')
     setEdTyp(skladniki[0]?.TYP || '')
@@ -204,7 +204,9 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
 
   async function zapiszZmiany() {
     setSaving(true)
-    const przepisTekst = edPrzepis.map((k, i) => `${i + 1}. ${k}`).join('\n')
+    const przepisTekst = edPrzepisRaw
+      .split('\n').map(k => k.replace(/^\d+[\.\)]\s*/, '').trim()).filter(Boolean)
+      .map((k, i) => `${i + 1}. ${k}`).join('\n')
 
     let aktualnaNazwa = nazwa
     if (edNazwa !== nazwa && edNazwa.trim()) {
@@ -279,18 +281,6 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
     setEdSkladniki(prev => prev.filter((_, idx) => idx !== i))
   }
 
-  function dodajKrok() {
-    if (!nowyKrok.trim()) return
-    setEdPrzepis(prev => [...prev, nowyKrok.trim()]); setNowyKrok('')
-  }
-  function usunKrok(i) { setEdPrzepis(prev => prev.filter((_, idx) => idx !== i)) }
-  function przesunKrok(i, kierunek) {
-    const nowe = [...edPrzepis]
-    const j = i + kierunek
-    if (j < 0 || j >= nowe.length) return
-    ;[nowe[i], nowe[j]] = [nowe[j], nowe[i]]
-    setEdPrzepis(nowe)
-  }
 
   async function dodajDoKalendarza() {
     if (wybranyDni.size === 0 || !wybranyPosilek || !user) return
@@ -552,33 +542,12 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
           <h2 style={s.sectionTitle}>Przepis</h2>
           {edycja ? (
             <div style={s.edList}>
-              {edPrzepis.map((krok, i) => (
-                <div key={i} style={s.edKrokRow}>
-                  <span style={s.edKrokNr}>{String(i + 1).padStart(2, '0')}</span>
-                  <textarea
-                    style={{ ...s.edInput, flex: 1, minHeight: 48, resize: 'vertical', lineHeight: 1.5 }}
-                    rows={2}
-                    value={krok}
-                    onChange={e => { const n = [...edPrzepis]; n[i] = e.target.value; setEdPrzepis(n) }}
-                  />
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    <button style={s.btnMini} onClick={() => przesunKrok(i, -1)}>↑</button>
-                    <button style={s.btnMini} onClick={() => przesunKrok(i, 1)}>↓</button>
-                    <button style={s.btnUsun} onClick={() => usunKrok(i)}>✕</button>
-                  </div>
-                </div>
-              ))}
-              <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
-                <textarea
-                  style={{ ...s.edInput, flex: 1, minHeight: 48, resize: 'vertical' }}
-                  rows={2}
-                  placeholder="Nowy krok…"
-                  value={nowyKrok}
-                  onChange={e => setNowyKrok(e.target.value)}
-                  onKeyDown={e => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); dodajKrok() } }}
-                />
-                <button style={s.btnDodajKrok} onClick={dodajKrok}>+ Dodaj</button>
-              </div>
+              <textarea
+                style={{ ...s.edInput, minHeight: 140, resize: 'vertical', lineHeight: 1.7, width: '100%', boxSizing: 'border-box' }}
+                placeholder={'Każda linia = osobny krok:\nObtocz filet w jajku, potem w bułce tartej\nSmaż na rozgrzanym oleju 3 min z każdej strony\nOdłóż na ręcznik papierowy\n\nMożesz też numerować (1. 2. 3.) — numery znikną automatycznie.'}
+                value={edPrzepisRaw}
+                onChange={e => setEdPrzepisRaw(e.target.value)}
+              />
             </div>
           ) : przepis.length > 0 ? (
             <ol style={s.kroki}>
@@ -706,11 +675,6 @@ function makeS() {
   },
   edSkladnikRow: { display: 'flex', gap: 6, alignItems: 'center' },
   kategoriaSelect: { padding: '6px 10px', fontSize: 11, color: t.mute, marginTop: 2 },
-  edKrokRow: { display: 'flex', gap: 6, alignItems: 'center' },
-  edKrokNr: {
-    minWidth: 28, fontFamily: fonts.serif, fontSize: 18, color: t.accent,
-    fontStyle: 'italic', fontVariantNumeric: 'tabular-nums',
-  },
   edInput: { ...ui.input, padding: '9px 11px', fontSize: 13, marginBottom: 0 },
   btnUsun: {
     background: 'none', border: 'none', color: t.muteLight,
@@ -727,7 +691,6 @@ function makeS() {
     fontSize: 13, fontWeight: 600, fontFamily: fonts.sans,
     cursor: 'pointer', marginTop: 6,
   },
-  btnDodajKrok: { ...ui.btnPrimary, padding: '10px 14px', fontSize: 13 },
   saveRow: { display: 'flex', gap: 8, marginTop: 14 },
   modalOverlay: {
     position: 'fixed', inset: 0, zIndex: 1000,
