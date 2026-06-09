@@ -88,9 +88,20 @@ Do wykorzystania później: `src/hooks/useUndo.js` (generyczny undo) — wrzucon
 
 ---
 
+## GRUPA I — Brakujące pola edycji dania (DanieDetail.jsx)
+**Pliki:** DanieDetail.jsx
+
+- [ ] Brak możliwości edycji **rodzaju dania** (śniadanie/obiad/kolacja/zupa itd.) — pole `rodzaj` w tabeli `dania`.
+- [ ] Brak możliwości edycji **czasu przygotowania** — pole `czas_minuty`.
+- [ ] Brak możliwości edycji **trybu podania** (samodzielne / z dodatkiem) — pole `TYP`.
+
+W widoku normalnym te pola też nie są w ogóle wyświetlane — dodać chipki pod tytułem dania.
+
+---
+
 ## Notatka
 
 - ✅ Zrobione: A, B, E (w całości) oraz C1, C2, oraz część F (galeria multi-select).
 - 🟡 Zostało w C: C3 (jasne tło w trybie ciemnym po kliknięciu "Zaplanuj") — czeka na zrzut.
-- Pozostałe grupy: D (kopiowanie tygodnia + fantomowe dania), reszta F (krzyżyk w wyszukiwarce + białe kółka ulubionych/menu), G, H.
+- Pozostałe grupy: D (kopiowanie tygodnia + fantomowe dania), reszta F (krzyżyk w wyszukiwarce + białe kółka ulubionych/menu), G, H, I.
 - D + bug fantomowy mają prawdopodobnie wspólną przyczynę (rozjazd kalendarz ↔ lista zakupów) — diagnozować razem. Sensowne następne.
