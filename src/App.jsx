@@ -92,6 +92,7 @@ function App() {
   const [ekran, setEkran] = useState(null) // 'ustawienia' | 'admin' | 'rodzina' | 'sloty' | null
   const [homeRefresh, setHomeRefresh] = useState(0)
   const [tydzienKalendarza, setTydzienKalendarza] = useState(0)
+  const [celPlanowania, setCelPlanowania] = useState(null) // { dataStr, slotId } z Home
 
   // Subskrypcja zmian motywu — wymusza re-render całego drzewa
   useThemeVersion()
@@ -160,6 +161,26 @@ function App() {
       cofnijWApceRef.current?.()
     }).then(l => { listener = l })
     return () => listener?.remove()
+  }, [])
+
+  // Web/PWA: gest/przycisk "wstecz" ma nawigować w aplikacji, a nie ją zamykać.
+  // (Na natywnym tym zajmuje się listener 'backButton' powyżej.)
+  useEffect(() => {
+    const jestNatywny = !!(window.Capacitor?.isNativePlatform?.())
+    if (jestNatywny) return
+
+    // Pułapka historii: trzymamy w stosie jednego "wartownika", który łapie back.
+    window.history.pushState({ menuplanerNav: true }, '')
+    function onPop() {
+      const obsluzone = cofnijWApceRef.current?.()
+      if (obsluzone) {
+        // Wepchnij wartownika z powrotem, żeby kolejny back też złapać.
+        window.history.pushState({ menuplanerNav: true }, '')
+      }
+      // jeśli nieobsłużone (jesteśmy w Home) — kolejny back wychodzi z apki
+    }
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
   }, [])
 
   useEffect(() => {
@@ -292,6 +313,10 @@ function App() {
           user={user}
           householdId={householdId}
           onTabChange={zmienTab}
+          onPlanujSlot={(dataStr, slotId) => {
+            setCelPlanowania({ dataStr, slotId })
+            zmienTab('planer')
+          }}
           onUstawienia={() => setEkran('ustawienia')}
           onSelectDanie={setWybraneD}
           refreshKey={homeRefresh}
@@ -307,6 +332,8 @@ function App() {
           onSelectDanie={setWybraneD}
           tydzien={tydzienKalendarza}
           onTydzienChange={setTydzienKalendarza}
+          cel={celPlanowania}
+          onCelObsluzony={() => setCelPlanowania(null)}
         />
       )}
       {tab === 'przepisy' && (

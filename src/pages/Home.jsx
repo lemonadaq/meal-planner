@@ -94,7 +94,7 @@ function getEmoji(nazwa) {
   return '🍽️'
 }
 
-export default function Home({ user, householdId, onTabChange, onUstawienia, onSelectDanie, refreshKey }) {
+export default function Home({ user, householdId, onTabChange, onPlanujSlot, onUstawienia, onSelectDanie, refreshKey }) {
   const imie = user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'Cześć'
   const [powitanie] = useState(getPowitanie)
 
@@ -352,7 +352,7 @@ export default function Home({ user, householdId, onTabChange, onUstawienia, onS
         tytul="Dzisiaj"
         plan={planDni.dzis}
         sloty={slotyDzis}
-        onSlotClick={() => onTabChange('planer')}
+        onSlotClick={(slotId) => onPlanujSlot(dzisStr, slotId)}
         onDanieClick={onSelectDanie}
       />
 
@@ -360,7 +360,7 @@ export default function Home({ user, householdId, onTabChange, onUstawienia, onS
         tytul="Jutro"
         plan={planDni.jutro}
         sloty={slotyJutro}
-        onSlotClick={() => onTabChange('planer')}
+        onSlotClick={(slotId) => onPlanujSlot(jutroStr, slotId)}
         onDanieClick={onSelectDanie}
         wyrozniony={false}
       />
@@ -471,7 +471,7 @@ function DzienSekcja({ tytul, plan, sloty, onSlotClick, onDanieClick, wyrozniony
               <button
                 key={slot.id}
                 style={s.posilekPusty}
-                onClick={onSlotClick}
+                onClick={() => onSlotClick(slot.id)}
               >
                 <div style={s.posilekPustyLabel}>{slot.nazwa}</div>
                 <div style={s.posilekPustyPlus}>

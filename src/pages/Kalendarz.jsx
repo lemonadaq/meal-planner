@@ -65,7 +65,7 @@ function emojiDania(n) {
 // ════════════════════════════════════════════════════════════
 //   GŁÓWNY KOMPONENT
 // ════════════════════════════════════════════════════════════
-export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 1, sledz, onSelectDanie, tydzien: tydzienProp = 0, onTydzienChange }) {
+export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 1, sledz, onSelectDanie, tydzien: tydzienProp = 0, onTydzienChange, cel = null, onCelObsluzony }) {
   const [tydzien, _setTydzien] = useState(tydzienProp)
 
   // Synchronizuj tydzien z propem (gdy wraca z DanieDetail)
@@ -174,6 +174,15 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
     setSubTryb(null)
     setWyborDatyOpen(false)
   }
+
+  // Cel z Home ("Zaplanuj" na konkretnym slocie) → otwórz planer na tym dniu.
+  useEffect(() => {
+    if (cel?.dataStr) {
+      przejdzDoDaty(cel.dataStr)
+      onCelObsluzony?.()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cel])
 
   useEffect(() => {
     if (recznyWyborDniaRef.current) {
