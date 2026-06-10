@@ -56,7 +56,7 @@ function getEmoji(nazwa) {
   return '🍽️'
 }
 
-export default function Dania({ onSelect, user, householdId, onDodaj, onBack }) {
+export default function Dania({ onSelect, user, householdId, onDodaj, onBack, refreshKey }) {
   const [wszystkie, setWszystkie] = useState([])
   const [loading, setLoading] = useState(true)
   const [szukaj, setSzukaj] = useState(() => sessionStorage.getItem('dania_szukaj') || '')
@@ -112,7 +112,7 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack }) 
   useEffect(() => {
     pobierzDane()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [refreshKey])
 
   async function pobierzDane() {
     setLoading(true)

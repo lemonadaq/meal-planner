@@ -91,6 +91,7 @@ function App() {
   const [dodajDanie, setDodajDanie] = useState(false)
   const [ekran, setEkran] = useState(null) // 'ustawienia' | 'admin' | 'rodzina' | 'sloty' | null
   const [homeRefresh, setHomeRefresh] = useState(0)
+  const [daniasRefresh, setDaniasRefresh] = useState(0)
   const [tydzienKalendarza, setTydzienKalendarza] = useState(0)
   const [celPlanowania, setCelPlanowania] = useState(null) // { dataStr, slotId } z Home
 
@@ -300,6 +301,7 @@ function App() {
         onZapisano={(nazwa) => {
           sledzAkcje('dodaj_danie', { danie: nazwa })
           setDodajDanie(false)
+          setDaniasRefresh(r => r + 1)
         }}
       />
       <ZaproszenieModal user={user} onZaakceptowano={poZaakceptowaniu} />
@@ -343,6 +345,7 @@ function App() {
           householdId={householdId}
           onDodaj={() => setDodajDanie(true)}
           onBack={() => zmienTab('home')}
+          refreshKey={daniasRefresh}
         />
       )}
       {tab === 'zakupy' && (
