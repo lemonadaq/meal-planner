@@ -116,17 +116,11 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
 
   async function pobierzDane() {
     setLoading(true)
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('dania')
       .select('"Danie", "TYP", rodzaj, czas_minuty, porcje_bazowe, ulubione, zdjecie')
       .order('"Danie"')
-    console.log('[Dania] pobierzDane: error=', error, 'rows=', data?.length, 'próbka=', data?.slice(0, 3))
-    if (data) {
-      const brakNazwy = data.filter(d => !d['Danie'])
-      if (brakNazwy.length) console.warn('[Dania] wiersze bez nazwy:', brakNazwy.length, brakNazwy)
-      const risotto = data.filter(d => d['Danie']?.toLowerCase().includes('risotto'))
-      console.log('[Dania] risotto w danych:', risotto)
-    }
+      .limit(5000)
     // Dedup po nazwie — preferuj wiersz ze zdjęciem; ulubione = OR (true wygrywa)
     const mapa = new Map()
     for (const d of (data || [])) {

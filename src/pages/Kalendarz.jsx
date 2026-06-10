@@ -204,9 +204,9 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
       setLoading(true)
       const [{ data: wszystko }, { data: skl }, planRes] = await Promise.all([
         // Wszystkie pozycje (dania, dodatki, surówki, przekąski) — jedna tabela
-        supabase.from('dania').select('"Danie", "TYP", rodzaj, zdjecie').order('"Danie"'),
+        supabase.from('dania').select('"Danie", "TYP", rodzaj, zdjecie').order('"Danie"').limit(5000),
         // Wszystkie składniki — do search po składnikach
-        supabase.from('dania').select('"Danie", "Składnik"'),
+        supabase.from('dania').select('"Danie", "Składnik"').limit(10000),
         supabase.from('kalendarz').select('*')
           .eq('household_id', householdId)
           .gte('data', formatData(dni[0]))

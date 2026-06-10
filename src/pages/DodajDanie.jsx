@@ -79,7 +79,7 @@ export default function DodajDanie({ onBack, onZapisano }) {
 
   useEffect(() => {
     async function pobierzSkladniki() {
-      const { data } = await supabase.from('dania').select('"Składnik", "Jednostka", "Kategoria"')
+      const { data } = await supabase.from('dania').select('"Składnik", "Jednostka", "Kategoria"').limit(10000)
       if (data) {
         const unikalne = [...new Map(data.map(x => [x['Składnik'], x])).values()]
           .filter(x => x['Składnik'])
