@@ -81,8 +81,17 @@ export default function DodajDanie({ onBack, onZapisano }) {
     async function pobierzSkladniki() {
       const { data } = await supabase.from('dania').select('"Składnik", "Jednostka", "Kategoria"').limit(10000)
       if (data) {
-        const unikalne = [...new Map(data.map(x => [x['Składnik'], x])).values()]
-          .filter(x => x['Składnik'])
+        // Zmiana 1: dedup przez znormalizowany klucz (trim+lowercase), wyświetlamy z wielką literą
+        const unikalne = [...new Map(
+          data
+            .filter(x => x['Składnik'])
+            .map(x => {
+              const trimmed = x['Składnik'].trim()
+              const key = trimmed.toLowerCase()
+              const display = trimmed.charAt(0).toUpperCase() + trimmed.slice(1)
+              return [key, { ...x, 'Składnik': display }]
+            })
+        ).values()]
         setIstniejaceSkladniki(unikalne)
       }
     }
@@ -91,10 +100,10 @@ export default function DodajDanie({ onBack, onZapisano }) {
 
   function szukajPodpowiedzi(val) {
     setNowyS(prev => ({ ...prev, nazwa: val }))
-    if (val.length < 2) { setPodpowiedzi([]); return }
+    if (val.trim().length < 2) { setPodpowiedzi([]); return }
     const filtered = istniejaceSkladniki
-      .filter(sk => sk['Składnik']?.toLowerCase().includes(val.toLowerCase()))
-      .slice(0, 6)
+      .filter(sk => sk['Składnik']?.toLowerCase().includes(val.trim().toLowerCase()))
+      .slice(0, 4)
     setPodpowiedzi(filtered)
   }
   function wybierzPodpowiedz(sk) {
@@ -290,15 +299,28 @@ export default function DodajDanie({ onBack, onZapisano }) {
         <section style={s.section}>
           <label style={s.label}>Dodaj składnik</label>
 
-          <div style={{ position: 'relative' }}>
+          <div>
             <input
               style={s.input}
               placeholder="Składnik…"
               value={nowyS.nazwa}
               onChange={e => szukajPodpowiedzi(e.target.value)}
             />
-            {podpowiedzi.length > 0 && (
+            {(podpowiedzi.length > 0 || nowyS.nazwa.trim().length >= 2) && (
               <div style={s.podpowiedzi}>
+                {/* Zmiana 3: wiersz "➕ Użyj: «wpisane»" gdy brak dokładnego dopasowania */}
+                {nowyS.nazwa.trim().length >= 2 &&
+                  !podpowiedzi.some(p => p['Składnik'].toLowerCase() === nowyS.nazwa.trim().toLowerCase()) && (
+                  <div style={{ ...s.podpowiedzItem, ...s.podpowiedzUzyj }}
+                    onClick={() => {
+                      const n = nowyS.nazwa.trim()
+                      const display = n.charAt(0).toUpperCase() + n.slice(1)
+                      setNowyS(prev => ({ ...prev, nazwa: display }))
+                      setPodpowiedzi([])
+                    }}>
+                    <span>➕ Użyj: „{nowyS.nazwa.trim()}"</span>
+                  </div>
+                )}
                 {podpowiedzi.map((p, i) => (
                   <div key={i} style={s.podpowiedzItem} onClick={() => wybierzPodpowiedz(p)}>
                     <span style={s.podpowiedzNazwa}>{p['Składnik']}</span>
@@ -483,11 +505,12 @@ function makeS() {
 
   // Suggestions
   podpowiedzi: {
-    position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 50,
     background: t.surface, border: `0.5px solid ${t.border}`, borderRadius: 12,
-    boxShadow: '0 12px 32px rgba(74,55,40,.12)',
-    overflow: 'hidden', maxHeight: 240, overflowY: 'auto',
-    marginTop: -4,
+    overflow: 'hidden', maxHeight: 200, overflowY: 'auto',
+    marginTop: 4, marginBottom: 8,
+  },
+  podpowiedzUzyj: {
+    color: t.accent, fontWeight: 600,
   },
   podpowiedzItem: {
     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
