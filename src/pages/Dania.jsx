@@ -116,14 +116,25 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
 
   async function pobierzDane() {
     setLoading(true)
-    const { data } = await supabase
-      .from('dania')
-      .select('"Danie", "TYP", rodzaj, czas_minuty, porcje_bazowe, ulubione, zdjecie')
-      .order('"Danie"')
-      .limit(5000)
+    // Paginacja — Supabase capuje odpowiedź na 1000 wierszy per request.
+    // Tabela `dania` to wiersz/składnik, więc 233 dań × ~7 skł > 1000.
+    const STRONA = 1000
+    let od = 0
+    let wszystkieWiersze = []
+    while (true) {
+      const { data, error } = await supabase
+        .from('dania')
+        .select('"Danie", "TYP", rodzaj, czas_minuty, porcje_bazowe, ulubione, zdjecie')
+        .order('"Danie"')
+        .range(od, od + STRONA - 1)
+      if (error || !data?.length) break
+      wszystkieWiersze = wszystkieWiersze.concat(data)
+      if (data.length < STRONA) break
+      od += STRONA
+    }
     // Dedup po nazwie — preferuj wiersz ze zdjęciem; ulubione = OR (true wygrywa)
     const mapa = new Map()
-    for (const d of (data || [])) {
+    for (const d of wszystkieWiersze) {
       if (!d['Danie']) continue
       const prev = mapa.get(d['Danie'])
       if (!prev) {

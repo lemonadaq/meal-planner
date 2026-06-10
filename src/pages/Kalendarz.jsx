@@ -202,11 +202,24 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
     let anulowane = false
     async function pobierz() {
       setLoading(true)
-      const [{ data: wszystko }, { data: skl }, planRes] = await Promise.all([
-        // Wszystkie pozycje (dania, dodatki, surówki, przekąski) — jedna tabela
-        supabase.from('dania').select('"Danie", "TYP", rodzaj, zdjecie').order('"Danie"').limit(5000),
-        // Wszystkie składniki — do search po składnikach
-        supabase.from('dania').select('"Danie", "Składnik"').limit(10000),
+      // Paginacja przez .range() — Supabase capuje na 1000 wierszy per request
+      async function pobierzWszystko(kolumny) {
+        const STRONA = 1000
+        let od = 0, all = []
+        while (true) {
+          const { data, error } = await supabase
+            .from('dania').select(kolumny).order('"Danie"')
+            .range(od, od + STRONA - 1)
+          if (error || !data?.length) break
+          all = all.concat(data)
+          if (data.length < STRONA) break
+          od += STRONA
+        }
+        return all
+      }
+      const [wszystko, skl, planRes] = await Promise.all([
+        pobierzWszystko('"Danie", "TYP", rodzaj, zdjecie'),
+        pobierzWszystko('"Danie", "Składnik"'),
         supabase.from('kalendarz').select('*')
           .eq('household_id', householdId)
           .gte('data', formatData(dni[0]))
