@@ -82,18 +82,25 @@ export default function DodajDanie({ onBack, onZapisano }) {
     async function pobierzSkladniki() {
       const { data } = await supabase.from('dania').select('"Składnik", "Jednostka", "Kategoria"').limit(10000)
       if (data) {
-        // Zmiana 1: dedup przez znormalizowany klucz (trim+lowercase), wyświetlamy z wielką literą
-        const unikalne = [...new Map(
-          data
-            .filter(x => x['Składnik'])
-            .map(x => {
-              const trimmed = x['Składnik'].trim()
-              const key = trimmed.toLowerCase()
-              const display = trimmed.charAt(0).toUpperCase() + trimmed.slice(1)
-              return [key, { ...x, 'Składnik': display }]
-            })
-        ).values()]
-        setIstniejaceSkladniki(unikalne)
+        // Dedup: klucz ignoruje "świeży/świeże/świeża" i jest niezależny od kolejności słów
+        // → "świeży koperek" = "koperek świeży" = "koperek"
+        const IGNORUJ = new Set(['świeży', 'świeże', 'świeża', 'świeżą', 'świeżego', 'świeżej'])
+        const kluczDedup = (nazwa) =>
+          nazwa.trim().toLowerCase().split(/\s+/)
+            .filter(w => !IGNORUJ.has(w)).sort().join(' ').trim() || nazwa.trim().toLowerCase()
+        const mapa = new Map()
+        for (const x of data) {
+          if (!x['Składnik']) continue
+          const trimmed = x['Składnik'].trim()
+          const key = kluczDedup(trimmed)
+          const prev = mapa.get(key)
+          // Wygrywa krótszy zapis (Ogórek bije Ogórek świeży); remis → alfabetycznie pierwszy
+          if (!prev || trimmed.length < prev['Składnik'].length) {
+            const display = trimmed.charAt(0).toUpperCase() + trimmed.slice(1)
+            mapa.set(key, { ...x, 'Składnik': display })
+          }
+        }
+        setIstniejaceSkladniki([...mapa.values()])
       }
     }
     pobierzSkladniki()
