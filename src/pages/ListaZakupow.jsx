@@ -183,6 +183,14 @@ function czyZakupyNaNastepnyTydzien(tydzienKalendarza = 0) {
   return tydzienKalendarza > 0
 }
 
+function etykietaTygodnia(offset) {
+  if (offset === 0) return 'TEN TYDZIEŃ'
+  if (offset === 1) return 'NASTĘPNY TYDZIEŃ'
+  if (offset === -1) return 'POPRZEDNI TYDZIEŃ'
+  if (offset > 1) return `ZA ${offset} TYGODNI`
+  return `${Math.abs(offset)} TYG. TEMU`
+}
+
 function tekstIlosciSzybkiej(dane) {
   if (!dane || dane.ilosc == null || !Number.isFinite(dane.ilosc)) return null
   const liczba = Number.isInteger(dane.ilosc) ? String(dane.ilosc) : String(dane.ilosc).replace('.', ',')
@@ -531,6 +539,9 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
   const [loading, setLoading] = useState(true)
   const [historiaIds, setHistoriaIds] = useState({})
 
+  // Lokalny offset tygodnia (przyciski "‹ ›" w nagłówku) sumuje się z tydzienKalendarza
+  const [offsetLokalny, setOffsetLokalny] = useState(0)
+
   const [pokazDodaj, setPokazDodaj] = useState(false)
   const [edycjaWlasnego, setEdycjaWlasnego] = useState(null)
   const [trybSklepu, setTrybSklepu] = useState(false)
@@ -805,12 +816,16 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
   const generuj = useCallback(async () => {
     setLoading(true)
 
-    // Tydzień zawsze z planera — bez automatycznego przeskoku na weekend
-    const poniedzialek = tydzienZakupowZOffsetem(tydzienKalendarza)
+    // Tydzień z planera lub lokalny offset (z przycisków w nagłówku listy).
+    const efektywnyOffset = tydzienKalendarza + offsetLokalny
+    const poniedzialek = tydzienZakupowZOffsetem(efektywnyOffset)
     const niedziela = new Date(poniedzialek + 'T12:00:00')
     niedziela.setDate(niedziela.getDate() + 6)
     const niedzielaStr = formatDataLocal(niedziela)
-    const dataOd = poniedzialek
+    // W bieżącym tygodniu pomijamy dni które już minęły — nie ma sensu
+    // kupować na poniedziałek w środę. Dla przyszłych/poprzednich tygodni — pełen zakres.
+    const dzis = dzisLocal()
+    const dataOd = efektywnyOffset === 0 && dzis > poniedzialek ? dzis : poniedzialek
 
     const [{ data: planData }, { data: wlasneData }, { data: historiaData }, { data: cykliczneData }, { data: metaData }] = await Promise.all([
       supabase.from('kalendarz').select('*')
@@ -991,7 +1006,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     setOdznaczone(odtworzone)
     setHistoriaIds(mapaHistoriaId)
     setLoading(false)
-  }, [householdId, domyslnePorcje, korektyZakupow, tydzienKalendarza])
+  }, [householdId, domyslnePorcje, korektyZakupow, tydzienKalendarza, offsetLokalny])
 
   useEffect(() => { generuj() }, [generuj])
 
@@ -1667,7 +1682,11 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
         <header style={s.headerCard}>
           <div style={s.headerTop}>
             <div>
-              <div style={s.headerEyebrow}>{czyZakupyNaNastepnyTydzien(tydzienKalendarza) ? 'LISTA NA NASTĘPNY TYDZIEŃ' : 'LISTA NA TEN TYDZIEŃ'}</div>
+              <div style={s.tydzienNav}>
+                <button style={s.tydzienBtn} onClick={() => setOffsetLokalny(o => o - 1)} aria-label="Poprzedni tydzień">‹</button>
+                <span style={s.headerEyebrow}>{etykietaTygodnia(tydzienKalendarza + offsetLokalny)}</span>
+                <button style={s.tydzienBtn} onClick={() => setOffsetLokalny(o => o + 1)} aria-label="Następny tydzień">›</button>
+              </div>
               <h1 style={s.title}>Zakupy</h1>
             </div>
             <div style={s.progressRing}>
@@ -2533,7 +2552,16 @@ function makeS() {
   headerTop: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' },
   headerEyebrow: {
     fontFamily: fonts.sans, fontSize: 10.5, fontWeight: 600,
-    letterSpacing: 1.6, textTransform: 'uppercase', opacity: 0.75, marginBottom: 6,
+    letterSpacing: 1.6, textTransform: 'uppercase', opacity: 0.75,
+  },
+  tydzienNav: {
+    display: 'flex', alignItems: 'center', gap: 4, marginBottom: 6,
+    marginLeft: -8,
+  },
+  tydzienBtn: {
+    background: 'transparent', border: 'none', color: '#fff',
+    fontSize: 20, lineHeight: 1, padding: '2px 8px', cursor: 'pointer',
+    opacity: 0.8,
   },
   title: {
     fontFamily: fonts.serif, fontSize: 32, lineHeight: 1, color: '#fff',
