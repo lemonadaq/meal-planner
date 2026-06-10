@@ -25,7 +25,7 @@ async function uploadujZdjecie(plik, slug) {
   return supabase.storage.from('dania-zdjecia').getPublicUrl(sciezka).data.publicUrl
 }
 
-const JEDNOSTKI = ['g', 'kg', 'ml', 'l', 'szt.', 'opak.', 'łyżka', 'łyżki', 'łyżeczka', 'szklanka', 'ząbki', 'pęczek', 'garść', 'do smaku']
+const JEDNOSTKI = ['g', 'kg', 'ml', 'l', 'szt.', 'opak.', 'puszka', 'słoik', 'kostka', 'łyżka', 'łyżki', 'łyżeczka', 'łyżeczki', 'szklanka', 'szklanki', 'ząbki', 'pęczek', 'garść', 'do smaku']
 
 const KATEGORIE = {
   'Warzywa i owoce':    '1_Warzywa i owoce',
@@ -65,6 +65,7 @@ export default function DodajDanie({ onBack, onZapisano }) {
   const [istniejaceSkladniki, setIstniejaceSkladniki] = useState([])
   const [nowyS, setNowyS] = useState({ nazwa: '', ilosc: '', jednostka: 'g', kategoria: '1_Warzywa i owoce' })
   const [podpowiedzi, setPodpowiedzi] = useState([])
+  const [wybrano, setWybrano] = useState(false)
 
   const [przepisRaw, setPrzepisRaw] = useState('')
 
@@ -99,6 +100,7 @@ export default function DodajDanie({ onBack, onZapisano }) {
   }, [])
 
   function szukajPodpowiedzi(val) {
+    setWybrano(false)
     setNowyS(prev => ({ ...prev, nazwa: val }))
     if (val.trim().length < 2) { setPodpowiedzi([]); return }
     const filtered = istniejaceSkladniki
@@ -107,6 +109,7 @@ export default function DodajDanie({ onBack, onZapisano }) {
     setPodpowiedzi(filtered)
   }
   function wybierzPodpowiedz(sk) {
+    setWybrano(true)
     setNowyS({
       nazwa: sk['Składnik'],
       ilosc: '',
@@ -133,7 +136,7 @@ export default function DodajDanie({ onBack, onZapisano }) {
     }
     setSkladniki(prev => [...prev, { ...nowyS, nazwa: nowyS.nazwa.trim() }])
     setNowyS({ nazwa: '', ilosc: '', jednostka: 'g', kategoria: '1_Warzywa i owoce' })
-    setPodpowiedzi([]); setBlad('')
+    setPodpowiedzi([]); setWybrano(false); setBlad('')
   }
   function usunSkladnik(i) { setSkladniki(prev => prev.filter((_, idx) => idx !== i)) }
 
@@ -306,15 +309,15 @@ export default function DodajDanie({ onBack, onZapisano }) {
               value={nowyS.nazwa}
               onChange={e => szukajPodpowiedzi(e.target.value)}
             />
-            {(podpowiedzi.length > 0 || nowyS.nazwa.trim().length >= 2) && (
+            {!wybrano && (podpowiedzi.length > 0 || nowyS.nazwa.trim().length >= 2) && (
               <div style={s.podpowiedzi}>
-                {/* Zmiana 3: wiersz "➕ Użyj: «wpisane»" gdy brak dokładnego dopasowania */}
                 {nowyS.nazwa.trim().length >= 2 &&
                   !podpowiedzi.some(p => p['Składnik'].toLowerCase() === nowyS.nazwa.trim().toLowerCase()) && (
                   <div style={{ ...s.podpowiedzItem, ...s.podpowiedzUzyj }}
                     onClick={() => {
                       const n = nowyS.nazwa.trim()
                       const display = n.charAt(0).toUpperCase() + n.slice(1)
+                      setWybrano(true)
                       setNowyS(prev => ({ ...prev, nazwa: display }))
                       setPodpowiedzi([])
                     }}>
@@ -340,12 +343,16 @@ export default function DodajDanie({ onBack, onZapisano }) {
               value={nowyS.ilosc}
               onChange={e => setNowyS(prev => ({ ...prev, ilosc: e.target.value }))}
             />
-            <select
+            <input
               style={{ ...s.input, flex: 1 }}
+              list="jednostki-lista"
+              placeholder="jednostka"
               value={nowyS.jednostka}
-              onChange={e => setNowyS(prev => ({ ...prev, jednostka: e.target.value }))}>
-              {JEDNOSTKI.map(j => <option key={j} value={j}>{j}</option>)}
-            </select>
+              onChange={e => setNowyS(prev => ({ ...prev, jednostka: e.target.value }))}
+            />
+            <datalist id="jednostki-lista">
+              {JEDNOSTKI.map(j => <option key={j} value={j} />)}
+            </datalist>
           </div>
 
           <select
