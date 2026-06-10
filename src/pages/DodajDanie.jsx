@@ -327,7 +327,6 @@ export default function DodajDanie({ onBack, onZapisano }) {
                 {podpowiedzi.map((p, i) => (
                   <div key={i} style={s.podpowiedzItem} onClick={() => wybierzPodpowiedz(p)}>
                     <span style={s.podpowiedzNazwa}>{p['Składnik']}</span>
-                    <span style={s.podpowiedzJedn}>{p['Jednostka']}</span>
                   </div>
                 ))}
               </div>
