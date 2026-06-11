@@ -1682,11 +1682,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
         <header style={s.headerCard}>
           <div style={s.headerTop}>
             <div>
-              <div style={s.tydzienNav}>
-                <button style={s.tydzienBtn} onClick={() => setOffsetLokalny(o => o - 1)} aria-label="Poprzedni tydzień">‹</button>
-                <span style={s.headerEyebrow}>{etykietaTygodnia(tydzienKalendarza + offsetLokalny)}</span>
-                <button style={s.tydzienBtn} onClick={() => setOffsetLokalny(o => o + 1)} aria-label="Następny tydzień">›</button>
-              </div>
+              <div style={s.headerEyebrow}>{etykietaTygodnia(tydzienKalendarza + offsetLokalny)}</div>
               <h1 style={s.title}>Zakupy</h1>
             </div>
             <div style={s.progressRing}>
@@ -1703,6 +1699,26 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
             {kupione.length} z {wszystkieItemy.length} produktów w koszyku
           </div>
         </header>
+
+        {/* Nawigacja tygodni — wyraźny pasek pod nagłówkiem */}
+        <div style={s.tydzienPasek}>
+          <button style={s.tydzienPasekBtn} onClick={() => setOffsetLokalny(o => o - 1)}>
+            ← Poprzedni
+          </button>
+          <span style={s.tydzienPasekLabel}>
+            {(() => {
+              const pon = tydzienZakupowZOffsetem(tydzienKalendarza + offsetLokalny)
+              const nd = new Date(pon + 'T12:00:00')
+              nd.setDate(nd.getDate() + 6)
+              const fmt = (dateStr) => new Date(dateStr + 'T12:00:00')
+                .toLocaleDateString('pl', { day: 'numeric', month: 'short' })
+              return `${fmt(pon)} – ${fmt(formatDataLocal(nd))}`
+            })()}
+          </span>
+          <button style={s.tydzienPasekBtn} onClick={() => setOffsetLokalny(o => o + 1)}>
+            Następny →
+          </button>
+        </div>
 
         <SzybkieDodawanie
           value={szybkiTekst}
@@ -2554,14 +2570,20 @@ function makeS() {
     fontFamily: fonts.sans, fontSize: 10.5, fontWeight: 600,
     letterSpacing: 1.6, textTransform: 'uppercase', opacity: 0.75,
   },
-  tydzienNav: {
-    display: 'flex', alignItems: 'center', gap: 4, marginBottom: 6,
-    marginLeft: -8,
+  tydzienPasek: {
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+    background: t.surface, border: `0.5px solid ${t.border}`, borderRadius: 14,
+    padding: '4px 4px', marginBottom: 16,
   },
-  tydzienBtn: {
-    background: 'transparent', border: 'none', color: '#fff',
-    fontSize: 20, lineHeight: 1, padding: '2px 8px', cursor: 'pointer',
-    opacity: 0.8,
+  tydzienPasekBtn: {
+    background: t.surfaceAlt, border: `0.5px solid ${t.border}`,
+    borderRadius: 10, padding: '8px 14px',
+    fontFamily: fonts.sans, fontSize: 13, fontWeight: 600,
+    color: t.accent, cursor: 'pointer', whiteSpace: 'nowrap',
+  },
+  tydzienPasekLabel: {
+    fontFamily: fonts.sans, fontSize: 13, fontWeight: 600,
+    color: t.text, textAlign: 'center', flex: 1,
   },
   title: {
     fontFamily: fonts.serif, fontSize: 32, lineHeight: 1, color: '#fff',
