@@ -103,7 +103,7 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
 
   // Po załadowaniu danych przywróć scroll — useLayoutEffect gwarantuje że DOM jest już gotowy
   useLayoutEffect(() => {
-    if (!loading && pendingScrollRef.current > 0) {
+    if (!loading) {
       window.scrollTo({ top: pendingScrollRef.current, behavior: 'instant' })
       pendingScrollRef.current = 0
     }

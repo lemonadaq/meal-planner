@@ -210,6 +210,9 @@ function App() {
     if (nowyTab === 'home' && tab !== 'home') {
       setHomeRefresh(k => k + 1)
     }
+    if (nowyTab !== tab) {
+      window.scrollTo({ top: 0, behavior: 'instant' })
+    }
     setTab(nowyTab)
   }
 
