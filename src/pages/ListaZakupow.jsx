@@ -187,8 +187,12 @@ function etykietaTygodnia(offset) {
   if (offset === 0) return 'TEN TYDZIEŃ'
   if (offset === 1) return 'NASTĘPNY TYDZIEŃ'
   if (offset === -1) return 'POPRZEDNI TYDZIEŃ'
-  if (offset > 1) return `ZA ${offset} TYGODNI`
-  return `${Math.abs(offset)} TYG. TEMU`
+  const n = Math.abs(offset)
+  const forma = (n % 100 >= 12 && n % 100 <= 14) ? 'TYGODNI'
+    : (n % 10 >= 2 && n % 10 <= 4) ? 'TYGODNIE'
+    : 'TYGODNI'
+  if (offset > 1) return `ZA ${n} ${forma}`
+  return `${n} ${forma} TEMU`
 }
 
 function tekstIlosciSzybkiej(dane) {
