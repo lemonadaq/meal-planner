@@ -544,6 +544,13 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
   // Lokalny offset tygodnia (przyciski "‹ ›" w nagłówku) sumuje się z tydzienKalendarza
   const [offsetLokalny, setOffsetLokalny] = useState(0)
 
+  const aktualnyPoniedzialek = useMemo(
+    () => tydzienZakupowZOffsetem(tydzienKalendarza + offsetLokalny),
+    [tydzienKalendarza, offsetLokalny]
+  )
+  const aktualnyPoniedzialekRef = useRef(aktualnyPoniedzialek)
+  useEffect(() => { aktualnyPoniedzialekRef.current = aktualnyPoniedzialek }, [aktualnyPoniedzialek])
+
   const [pokazDodaj, setPokazDodaj] = useState(false)
   const [edycjaWlasnego, setEdycjaWlasnego] = useState(null)
   const [trybSklepu, setTrybSklepu] = useState(false)
@@ -575,12 +582,13 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
       const { data } = await supabase.from('produkty_w_domu')
         .select('*')
         .eq('household_id', householdId)
+        .eq('tydzien', aktualnyPoniedzialek)
         .order('nazwa')
       if (!anulowane) setProduktyWDomuRows(data || [])
     }
     pobierz()
     return () => { anulowane = true }
-  }, [householdId])
+  }, [householdId, aktualnyPoniedzialek])
 
   // ── Korekty zakupów — ładowanie z bazy (filtrowane do bieżącego tygodnia) ──
   useEffect(() => {
@@ -641,6 +649,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
       nazwa: ladna,
       nazwa_norm: norm,
       created_by: user.id,
+      tydzien: aktualnyPoniedzialek,
     }
 
     const { data, error } = await supabase.from('produkty_w_domu')
@@ -683,6 +692,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
         nazwa,
         nazwa_norm: normalizujProduktDomowy(nazwa),
         created_by: user.id,
+        tydzien: aktualnyPoniedzialek,
       }))
 
     const doUsuniecia = produktyWDomuRows
@@ -1076,6 +1086,8 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
         'postgres_changes',
         { event: '*', schema: 'public', table: 'produkty_w_domu', filter: `household_id=eq.${householdId}` },
         (payload) => {
+          const row = payload.new || payload.old
+          if (row?.tydzien && row.tydzien !== aktualnyPoniedzialekRef.current) return
           if (payload.eventType === 'DELETE') {
             setProduktyWDomuRows(prev => prev.filter(r => r.id !== payload.old?.id))
           } else if (payload.eventType === 'INSERT') {

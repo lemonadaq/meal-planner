@@ -184,7 +184,6 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
       Kategoria: sk['Kategoria'] || '8_Inne',
       _nowy: false,
     })))
-    setEdPrzepis([...przepis])
     setEdZdjecie(heroZdj || null)
     setEdZdjeciePlik(null)
     setEdZdjeciePreview(null)
