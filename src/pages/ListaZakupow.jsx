@@ -486,13 +486,11 @@ function policzOpakowania(item, meta) {
   }
 }
 
-// Sformatuj „1 karton 1l" albo „2 puszki 400g".
-// Liczba mnoga w polskim jest niewdzięczna, więc używamy „× N" dla > 1.
+// Sformatuj „1 szt." albo „2 puszki 400g".
 function formatujOpakowania(opak) {
   if (!opak) return ''
   const { liczbaOpakowan, opisOpakowania } = opak
-  if (liczbaOpakowan === 1) return opisOpakowania || '1 szt.'
-  return `${liczbaOpakowan} × ${opisOpakowania || 'szt.'}`
+  return `${liczbaOpakowan} ${opisOpakowania || 'szt.'}`
 }
 
 // Sformatuj „potrzeba 750 ml" — oryginalna ilość z przepisu jako podpowiedź.
