@@ -11,6 +11,63 @@ function getArg(name, fallback = null) {
   if (index === -1) return fallback;
   return process.argv[index + 1] ?? fallback;
 }
+function parseBlixDate(value) {
+  if (!value) return null;
+
+  if (typeof value === "object" && value.date) {
+    return parseBlixDate(value.date);
+  }
+
+  const text = String(value).trim();
+
+  const match = text.match(
+    /^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2}):(\d{2})/
+  );
+
+  if (!match) return null;
+
+  const [, year, month, day, hour, minute, second] = match;
+
+  // Blix podaje Europe/Warsaw, ale do porównania wystarczy lokalny Date.
+  return new Date(
+    Number(year),
+    Number(month) - 1,
+    Number(day),
+    Number(hour),
+    Number(minute),
+    Number(second)
+  );
+}
+
+function toIsoOrNull(date) {
+  if (!date || Number.isNaN(date.getTime())) return null;
+  return date.toISOString();
+}
+
+function getViewerInfo(parsed) {
+  const viewer = parsed?.viewer ?? {};
+
+  const startDate = parseBlixDate(viewer.date_start);
+  const endDate = parseBlixDate(viewer.date_end);
+
+  return {
+    leaflet_name: viewer.leaflet_name ?? "",
+    leaflet_url: viewer.leaflet_url ?? "",
+    offer_start_at: toIsoOrNull(startDate),
+    offer_end_at: toIsoOrNull(endDate),
+    startDate,
+    endDate
+  };
+}
+
+function isLeafletActive(viewerInfo, now = new Date()) {
+  if (!viewerInfo.startDate || !viewerInfo.endDate) {
+    // Jeśli nie ma dat, nie wywalamy — niech scraper spróbuje.
+    return true;
+  }
+
+  return viewerInfo.startDate <= now && viewerInfo.endDate >= now;
+}
 
 function hasFlag(name) {
   return process.argv.includes(`--${name}`);
@@ -354,6 +411,7 @@ function makeOffer({
   store_slug,
   store_name,
   leaflet_id,
+  leaflet_name = "",
   leaflet_url,
   endpoint_url,
   product_name,
@@ -361,12 +419,15 @@ function makeOffer({
   old_price = null,
   page_number = "",
   source,
-  raw_match = ""
+  raw_match = "",
+  offer_start_at = null,
+  offer_end_at = null
 }) {
   return {
     store_slug,
     store_name,
     leaflet_id,
+    leaflet_name,
     leaflet_url,
     endpoint_url,
     product_name,
@@ -376,7 +437,9 @@ function makeOffer({
     old_price_text: old_price ? priceText(old_price) : "",
     page_number,
     source,
-    raw_match
+    raw_match,
+    offer_start_at,
+    offer_end_at
   };
 }
 
@@ -490,6 +553,7 @@ async function main() {
   const limit = Number(getArg("limit", "0"));
   const storeFilter = getArg("store", null);
   const saveRaw = hasFlag("save-raw");
+  const includeExpired = hasFlag("include-expired");
 
   await fs.mkdir(outDir, { recursive: true });
 
@@ -524,18 +588,54 @@ async function main() {
 
     try {
       const result = await fetchEndpoint(context.endpoint_url);
-      const parsed = tryJsonParse(result.raw);
+const parsed = tryJsonParse(result.raw);
+const viewerInfo = parsed ? getViewerInfo(parsed) : {};
 
-      if (saveRaw) {
-        await saveRawIfNeeded({
-          rawDir: path.join(outDir, "raw"),
-          context,
-          raw: result.raw,
-          parsed
-        });
-      }
+if (saveRaw) {
+  await saveRawIfNeeded({
+    rawDir: path.join(outDir, "raw"),
+    context,
+    raw: result.raw,
+    parsed
+  });
+}
 
-      const offers = extractOffersFromEndpoint(result.raw, parsed, context);
+if (!includeExpired && parsed && !isLeafletActive(viewerInfo)) {
+  console.log(
+    `Pomijam starą gazetkę: ${context.store_name} / ${context.leaflet_id} / ${viewerInfo.leaflet_name} / ${viewerInfo.offer_start_at} - ${viewerInfo.offer_end_at}`
+  );
+
+  summary.push({
+    store_slug: context.store_slug,
+    store_name: context.store_name,
+    leaflet_id: context.leaflet_id,
+    leaflet_name: viewerInfo.leaflet_name,
+    leaflet_url: viewerInfo.leaflet_url || context.leaflet_url,
+    endpoint_url: context.endpoint_url,
+    offer_start_at: viewerInfo.offer_start_at,
+    offer_end_at: viewerInfo.offer_end_at,
+    http_ok: result.ok,
+    http_status: result.status,
+    content_type: result.contentType,
+    raw_size: result.raw.length,
+    parsed_as_json: Boolean(parsed),
+    skipped_reason: "expired_leaflet",
+    offers_found: 0
+  });
+
+  await sleep(delayMs);
+  continue;
+}
+
+const contextWithDates = {
+  ...context,
+  leaflet_name: viewerInfo.leaflet_name,
+  leaflet_url: viewerInfo.leaflet_url || context.leaflet_url,
+  offer_start_at: viewerInfo.offer_start_at,
+  offer_end_at: viewerInfo.offer_end_at
+};
+
+const offers = extractOffersFromEndpoint(result.raw, parsed, contextWithDates);
 
       allOffers.push(...offers);
 

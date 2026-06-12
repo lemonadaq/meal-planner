@@ -111,33 +111,37 @@ async function main() {
   try {
     const scrapedAt = new Date().toISOString();
 
-    const rows = offers
-      .filter(offer => offer.product_name)
-      .filter(offer => offer.price !== null && offer.price !== undefined)
-      .map(offer => ({
-        store_slug: offer.store_slug,
-        store_name: offer.store_name,
+const rows = offers
+  .filter(offer => offer.product_name)
+  .filter(offer => offer.price !== null && offer.price !== undefined)
+  .map(offer => ({
+    store_slug: offer.store_slug,
+    store_name: offer.store_name,
 
-        leaflet_id: String(offer.leaflet_id ?? ""),
-        leaflet_url: offer.leaflet_url ?? null,
-        endpoint_url: offer.endpoint_url ?? null,
+    leaflet_id: String(offer.leaflet_id ?? ""),
+    leaflet_name: offer.leaflet_name ?? null,
+    leaflet_url: offer.leaflet_url ?? null,
+    endpoint_url: offer.endpoint_url ?? null,
 
-        product_name: offer.product_name,
-        price: toNumberOrNull(offer.price),
-        price_text: offer.price_text ?? null,
+    product_name: offer.product_name,
+    price: toNumberOrNull(offer.price),
+    price_text: offer.price_text ?? null,
 
-        old_price: toNumberOrNull(offer.old_price),
-        old_price_text: offer.old_price_text ?? null,
+    old_price: toNumberOrNull(offer.old_price),
+    old_price_text: offer.old_price_text ?? null,
 
-        page_number: toIntOrNull(offer.page_number),
-        source: offer.source ?? "blix",
-        raw_match: offer.raw_match ?? null,
+    page_number: toIntOrNull(offer.page_number),
+    source: offer.source ?? "blix",
+    raw_match: offer.raw_match ?? null,
 
-        source_hash: hashOffer(offer),
+    offer_start_at: offer.offer_start_at ?? null,
+    offer_end_at: offer.offer_end_at ?? null,
 
-        scraped_at: scrapedAt,
-        updated_at: scrapedAt
-      }));
+    source_hash: hashOffer(offer),
+
+    scraped_at: scrapedAt,
+    updated_at: scrapedAt
+  }));
 
     const batches = chunkArray(rows, 500);
 

@@ -1,0 +1,11 @@
+﻿store_slug;store_name;leaflet_id;leaflet_url;endpoint_url;http_ok;http_status;content_type;raw_size;parsed_as_json;offers_found
+auchan;Auchan;501438;https://blix.pl/sklep/auchan/gazetka/501438/;https://blix.pl/getleaflet/auchan/501438/;true;200;application/json;7191;true;0
+auchan;Auchan;501435;https://blix.pl/sklep/auchan/gazetka/501435/;https://blix.pl/getleaflet/auchan/501435/;true;200;application/json;662019;true;747
+auchan;Auchan;501426;https://blix.pl/sklep/auchan/gazetka/501426/;https://blix.pl/getleaflet/auchan/501426/;true;200;application/json;428917;true;386
+auchan;Auchan;501423;https://blix.pl/sklep/auchan/gazetka/501423/;https://blix.pl/getleaflet/auchan/501423/;true;200;application/json;80400;true;65
+auchan;Auchan;501129;https://blix.pl/sklep/auchan/gazetka/501129/;https://blix.pl/getleaflet/auchan/501129/;true;200;application/json;5347;true;0
+auchan;Auchan;500334;https://blix.pl/sklep/auchan/gazetka/500334/;https://blix.pl/getleaflet/auchan/500334/;true;200;application/json;15142;true;0
+auchan;Auchan;500331;https://blix.pl/sklep/auchan/gazetka/500331/;https://blix.pl/getleaflet/auchan/500331/;true;200;application/json;15275;true;0
+auchan;Auchan;500277;https://blix.pl/sklep/auchan/gazetka/500277/;https://blix.pl/getleaflet/auchan/500277/;true;200;application/json;19561;true;0
+auchan;Auchan;500271;https://blix.pl/sklep/auchan/gazetka/500271/;https://blix.pl/getleaflet/auchan/500271/;true;200;application/json;24492;true;26
+auchan;Auchan;499776;https://blix.pl/sklep/auchan/gazetka/499776/;https://blix.pl/getleaflet/auchan/499776/;true;200;application/json;3157;true;0
