@@ -1,0 +1,120 @@
+{
+  "viewer": {
+    "leaflet_url": "https://blix.pl/sklep/auchan/gazetka/499776/",
+    "leaflet_name": "Oferta 3-dniowa",
+    "date_start": {
+      "date": "2026-06-01 00:00:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "date_end": {
+      "date": "2026-06-03 23:59:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "date_publish": {
+      "date": "2026-05-31 00:00:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "date_publish_end": {
+      "date": "2026-06-03 23:59:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "img_url": "https://gazetki.blix.pl/api/",
+    "has_alcohol": false,
+    "pages": [
+      {
+        "page": 0,
+        "width": 1080,
+        "height": 1550,
+        "page_uri": "https://blix.pl/sklep/auchan/gazetka/499776/?pageNumber=1",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/499776/ec813d28-9a4f-46e9-88a5-05042c145d2a.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 499776
+      },
+      {
+        "page": 1,
+        "width": 1080,
+        "height": 1700,
+        "page_uri": "https://blix.pl/sklep/auchan/gazetka/499776/?pageNumber=2",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/499776/d4f07e9316aa9f307bb06c2866762abc.jpeg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 499776
+      }
+    ]
+  },
+  "brand": {
+    "id": 47,
+    "thumbnail": "https://imgproxy.blix.pl/image/brand/f1497864fd7e717193074b0c710960f0.jpg",
+    "name": "Auchan",
+    "slug": "auchan",
+    "logo_uri": "https://imgproxy.blix.pl/image/brand/f1497864fd7e717193074b0c710960f0.jpg"
+  },
+  "brandUrl": "https://blix.pl/sklep/auchan/",
+  "inserts": [],
+  "keywords": [],
+  "description": "<p>Obejrzyj najnowszą gazetkę sieci <strong>Auchan, Oferta 3-dniowa</strong>, obowiązującą od 1 czerwca do 3 czerwca. Ta aktualna gazetka <strong>Auchan</strong> zawiera wiele wspaniałych promocji na różnego rodzaju produkty.</p><p>Nie czekaj! Sprawdź, co jeszcze ma do zaoferowania <strong>Auchan</strong> w miesiącu czerwiec!</p>",
+  "lastPageData": [
+    {
+      "leaflet": {
+        "id": 500550,
+        "brandId": 58,
+        "name": "KATALOG LODOWY",
+        "datePublish": {
+          "date": "2026-06-03 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "datePublishEnd": {
+          "date": "2026-06-03 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateStart": {
+          "date": "2026-06-03 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateEnd": {
+          "date": "2026-06-03 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "coverImpressionPixels": [],
+        "priority": false,
+        "hasAlcohol": false,
+        "isHidden": false
+      },
+      "page": {
+        "page": 0,
+        "imageUrl": "https://imgproxy.blix.pl/image/leaflet/500550/3822417d-71fa-4381-8245-24426607f719.jpg?ext=jpg",
+        "leafletId": 500550,
+        "type": 0
+      },
+      "brand": {
+        "id": 58,
+        "thumbnail": "https://imgproxy.blix.pl/image/brand/6926b4a99041e18b7d7c990efa756993.jpeg",
+        "name": "Żabka",
+        "slug": "zabka",
+        "logo_uri": "https://imgproxy.blix.pl/image/brand/6926b4a99041e18b7d7c990efa756993.jpeg"
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    }
+  ],
+  "productOffers": [],
+  "id": 499776,
+  "badge": {
+    "message": "archiwalna",
+    "class": "lav-archive"
+  },
+  "nextLeafletData": {
+    "id": 501417,
+    "brandId": 51,
+    "brandSlug": "netto"
+  }
+}

@@ -1,0 +1,240 @@
+{
+  "viewer": {
+    "leaflet_url": "https://blix.pl/sklep/biedronka/gazetka/501300/",
+    "leaflet_name": "Biedronkowe oszczędności",
+    "date_start": {
+      "date": "2026-06-08 00:00:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "date_end": {
+      "date": "2026-06-10 23:59:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "date_publish": {
+      "date": "2026-06-08 11:44:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "date_publish_end": {
+      "date": "2026-06-10 23:59:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "img_url": "https://gazetki.blix.pl/api/",
+    "has_alcohol": false,
+    "pages": [
+      {
+        "page": 0,
+        "width": 1080,
+        "height": 1584,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501300/?pageNumber=1",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501300/1ed0b6be-a053-464b-8dd8-f451f81639c0.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501300
+      },
+      {
+        "page": 1,
+        "width": 1080,
+        "height": 1584,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501300/?pageNumber=2",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501300/d080cad4-7ef6-47f6-9590-61b370d9863a.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501300
+      },
+      {
+        "page": 2,
+        "width": 1080,
+        "height": 1584,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501300/?pageNumber=3",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501300/66f1e4ec-1904-4130-bb85-30908509a113.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501300
+      },
+      {
+        "page": 3,
+        "width": 1080,
+        "height": 1584,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501300/?pageNumber=4",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501300/0c73d11e-699d-48bd-9503-3951ee016f98.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501300
+      },
+      {
+        "page": 4,
+        "width": 1080,
+        "height": 1584,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501300/?pageNumber=5",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501300/2c3fed73-9ad6-4a73-b86b-e27bf9f5d9f2.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501300
+      },
+      {
+        "page": 5,
+        "width": 1080,
+        "height": 1584,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501300/?pageNumber=6",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501300/a5477ec7-fa4b-4a14-abf9-7872f081666b.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501300
+      },
+      {
+        "page": 6,
+        "width": 1080,
+        "height": 1584,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501300/?pageNumber=7",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501300/15472843-596a-4020-a95b-3d217ab1e595.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501300
+      },
+      {
+        "page": 7,
+        "width": 1080,
+        "height": 1584,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501300/?pageNumber=8",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501300/190e39af-0663-4d49-8fb9-36081182ed06.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501300
+      },
+      {
+        "page": 8,
+        "width": 1080,
+        "height": 1584,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501300/?pageNumber=9",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501300/93f0b194-f7af-46fa-9e73-fd28aec8bd71.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501300
+      },
+      {
+        "page": 9,
+        "width": 1080,
+        "height": 1700,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501300/?pageNumber=10",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501300/7a7eeb34e94991315c0497aa986c1404.jpeg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501300
+      }
+    ]
+  },
+  "brand": {
+    "id": 23,
+    "thumbnail": "https://imgproxy.blix.pl/image/brand/thumbnail_23.jpg",
+    "name": "Biedronka",
+    "slug": "biedronka",
+    "logo_uri": "https://imgproxy.blix.pl/image/brand/thumbnail_23.jpg"
+  },
+  "brandUrl": "https://blix.pl/sklep/biedronka/",
+  "inserts": [],
+  "keywords": [],
+  "description": "<p>Obejrzyj najnowszą gazetkę sieci <strong>Biedronka, Biedronkowe oszczędności</strong>, obowiązującą od 8 czerwca do 10 czerwca. Ta aktualna gazetka <strong>Biedronka</strong> zawiera wiele wspaniałych promocji na różnego rodzaju produkty.</p><p>Nie czekaj! Sprawdź, co jeszcze ma do zaoferowania <strong>Biedronka</strong> w miesiącu czerwiec!</p>",
+  "lastPageData": [
+    {
+      "leaflet": {
+        "id": 500874,
+        "brandId": 112,
+        "name": "Katalog alkoholi",
+        "datePublish": {
+          "date": "2026-06-02 15:15:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "datePublishEnd": {
+          "date": "2026-06-02 15:15:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateStart": {
+          "date": "2026-06-02 15:15:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateEnd": {
+          "date": "2026-06-02 15:15:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "coverImpressionPixels": [],
+        "priority": false,
+        "hasAlcohol": true,
+        "isHidden": false
+      },
+      "page": {
+        "page": 0,
+        "imageUrl": "https://imgproxy.blix.pl/image/leaflet/500874/9efdbfc1-054c-47c6-8453-e70050db490d.jpg?ext=jpg",
+        "leafletId": 500874,
+        "type": 0
+      },
+      "brand": {
+        "id": 112,
+        "thumbnail": "https://imgproxy.blix.pl/image/brand/7b07a75229f0e153750647108b4fe65d.png",
+        "name": "POLOmarket",
+        "slug": "polomarket",
+        "logo_uri": "https://imgproxy.blix.pl/image/brand/7b07a75229f0e153750647108b4fe65d.png"
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "leaflet": {
+        "id": 501330,
+        "brandId": 112,
+        "name": "Gazetka",
+        "datePublish": {
+          "date": "2026-06-08 13:24:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "datePublishEnd": {
+          "date": "2026-06-08 13:24:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateStart": {
+          "date": "2026-06-08 13:24:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateEnd": {
+          "date": "2026-06-08 13:24:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "coverImpressionPixels": [],
+        "priority": true,
+        "hasAlcohol": false,
+        "isHidden": false
+      },
+      "page": {
+        "page": 0,
+        "imageUrl": "https://imgproxy.blix.pl/image/leaflet/501330/b58c574c-edcd-43b5-b6a1-07b0fb373217.jpg?ext=jpg",
+        "leafletId": 501330,
+        "type": 0
+      },
+      "brand": {
+        "id": 112,
+        "thumbnail": "https://imgproxy.blix.pl/image/brand/7b07a75229f0e153750647108b4fe65d.png",
+        "name": "POLOmarket",
+        "slug": "polomarket",
+        "logo_uri": "https://imgproxy.blix.pl/image/brand/7b07a75229f0e153750647108b4fe65d.png"
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    }
+  ],
+  "productOffers": [],
+  "id": 501300,
+  "badge": {
+    "message": "archiwalna",
+    "class": "lav-archive"
+  },
+  "nextLeafletData": {
+    "id": 501207,
+    "brandId": 31,
+    "brandSlug": "carrefour"
+  }
+}

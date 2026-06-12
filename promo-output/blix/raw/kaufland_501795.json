@@ -1,0 +1,1031 @@
+{
+  "viewer": {
+    "leaflet_url": "https://blix.pl/sklep/kaufland/gazetka/501795/",
+    "leaflet_name": "Najlepsze promocje!",
+    "date_start": {
+      "date": "2026-06-11 00:00:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "date_end": null,
+    "date_publish": {
+      "date": "2026-06-11 07:00:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "date_publish_end": {
+      "date": "2026-06-17 23:59:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "img_url": "https://gazetki.blix.pl/api/",
+    "has_alcohol": false,
+    "pages": [
+      {
+        "page": 0,
+        "width": 1310,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/501795/?pageNumber=1",
+        "click_url": "https://blix.pl/leaflet/501648/page/42",
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501795/7591e220-15b2-46c8-8465-b4f1a1d7d2e6.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501795
+      },
+      {
+        "page": 1,
+        "width": 1310,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/501795/?pageNumber=2",
+        "click_url": "https://blix.pl/leaflet/501648/page/1",
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501795/f272b842-7339-4c5d-a894-69a1b9012732.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501795
+      },
+      {
+        "page": 2,
+        "width": 1310,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/501795/?pageNumber=3",
+        "click_url": "https://blix.pl/leaflet/501648/page/9",
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501795/e8f01b64-2f3c-4b93-b755-e970a27d4268.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501795
+      },
+      {
+        "page": 3,
+        "width": 1310,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/501795/?pageNumber=4",
+        "click_url": "https://blix.pl/leaflet/501648/page/4",
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501795/4085d060-4df7-4b00-b93c-0b1201dd8161.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501795
+      },
+      {
+        "page": 4,
+        "width": 1310,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/501795/?pageNumber=5",
+        "click_url": "https://blix.pl/leaflet/501648/page/43",
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501795/011a5bd9-9542-45d3-bf0d-1ef2bfb2ed23.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501795
+      },
+      {
+        "page": 5,
+        "width": 1310,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/501795/?pageNumber=6",
+        "click_url": "https://blix.pl/leaflet/501648/page/8",
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501795/09f9c9f2-324a-4738-bd97-d211c03c4610.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501795
+      },
+      {
+        "page": 6,
+        "width": 1310,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/501795/?pageNumber=7",
+        "click_url": "https://blix.pl/leaflet/501648/page/48",
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501795/fa3d2265-3556-47b0-a91e-c7bce9ac1635.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501795
+      },
+      {
+        "page": 7,
+        "width": 1310,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/501795/?pageNumber=8",
+        "click_url": "https://blix.pl/leaflet/501648/page/11",
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501795/88d83d37-5429-4da3-8800-64ac2671614b.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501795
+      },
+      {
+        "page": 8,
+        "width": 1310,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/501795/?pageNumber=9",
+        "click_url": "https://blix.pl/leaflet/501648/page/34",
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501795/d67ab0db-529d-4594-9dc0-8c21df96ec98.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501795
+      },
+      {
+        "page": 9,
+        "width": 1310,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/501795/?pageNumber=10",
+        "click_url": "https://blix.pl/leaflet/501648/page/1",
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501795/93c9a3c3-8afd-4de1-8172-a0ccfb9cdcbf.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501795
+      },
+      {
+        "page": 10,
+        "width": 1080,
+        "height": 1700,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/501795/?pageNumber=11",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501795/a59d6e7b75f89cb8bc33e5f149a1030a.jpeg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501795
+      }
+    ]
+  },
+  "brand": {
+    "id": 46,
+    "thumbnail": "https://imgproxy.blix.pl/image/brand/9b5e19eb2c9ea489e10171d4a49509f3.jpeg",
+    "name": "Kaufland",
+    "slug": "kaufland",
+    "logo_uri": "https://imgproxy.blix.pl/image/brand/9b5e19eb2c9ea489e10171d4a49509f3.jpeg"
+  },
+  "brandUrl": "https://blix.pl/sklep/kaufland/",
+  "inserts": [],
+  "keywords": {
+    "mleko": "/produkty/artykuly-spozywcze/nabial/mleko",
+    "milka": "/produkty/artykuly-spozywcze/slodycze-i-wyroby-cukiernicze/milka",
+    "arbuz": "/produkty/artykuly-spozywcze/owoce/arbuz",
+    "camembert": "/produkty/artykuly-spozywcze/nabial/camembert",
+    "róże": "/produkty/dom-i-ogrod/ogrod/roze",
+    "pomidory": "/produkty/artykuly-spozywcze/warzywa/pomidory",
+    "masło": "/produkty/artykuly-spozywcze/nabial/maslo",
+    "kiełbasa": "/produkty/artykuly-spozywcze/wedliny/kielbasa",
+    "wafelki": "/produkty/artykuly-spozywcze/slodycze-i-wyroby-cukiernicze/wafelki",
+    "kawa mielona": "/produkty/artykuly-spozywcze/kawa-i-kakao/kawa-mielona",
+    "skrzydełka": "/produkty/artykuly-spozywcze/dania-gotowe/skrzydelka",
+    "tiramisu": "/produkty/artykuly-spozywcze/slodycze-i-wyroby-cukiernicze/tiramisu"
+  },
+  "description": "<p>Obejrzyj najnowszą gazetkę sieci <strong>Kaufland, Najlepsze promocje!</strong>, obowiązującą od 11 czerwca . Ta aktualna gazetka <strong>Kaufland</strong> zawiera wiele wspaniałych promocji na różnego rodzaju produkty.</p><p>Znajdziesz w niej m.in. oferty na: <strong>Mleko UHT Łaciate 2% tł.</strong> za <strong>2,86zł</strong>, <strong>Ser Camembert Turek Naturalny</strong> za <strong>4,99zł</strong>, <strong>Ser Camembert Turek z ziołami</strong> za <strong>4,99zł</strong>, <strong>Masło Polskie ekstra Mlekovita</strong>, <strong>Kiełbasa Śląska Extra Morliny</strong>, <strong>Kiełbasa Śląska Extra XXL Morliny</strong>, <strong>Kiełbasa Śląska z szynki Sokołów</strong>, <strong>Kiełbasa Śląska Dolina Dobra</strong>.</p><p>To nie jedyne promocje, jakie możesz znaleźć w gazetce <strong>Kaufland, Najlepsze promocje!</strong> od 11 czerwca. Nie czekaj! Sprawdź, co jeszcze ma do zaoferowania <strong>Kaufland</strong> w miesiącu czerwiec!</p>",
+  "lastPageData": [
+    {
+      "leaflet": {
+        "id": 500961,
+        "brandId": 66,
+        "name": "Weekend super cen w Aldi!",
+        "datePublish": {
+          "date": "2026-06-10 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "datePublishEnd": {
+          "date": "2026-06-10 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateStart": {
+          "date": "2026-06-10 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateEnd": {
+          "date": "2026-06-10 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "coverImpressionPixels": [],
+        "priority": false,
+        "hasAlcohol": false,
+        "isHidden": false
+      },
+      "page": {
+        "page": 0,
+        "imageUrl": "https://imgproxy.blix.pl/image/leaflet/500961/561c695a-182b-440b-9c16-1f784a4d8c90.jpg?ext=jpg",
+        "leafletId": 500961,
+        "type": 0
+      },
+      "brand": {
+        "id": 66,
+        "thumbnail": "https://imgproxy.blix.pl/image/brand/thumbnail_66.jpg",
+        "name": "Aldi",
+        "slug": "aldi",
+        "logo_uri": "https://imgproxy.blix.pl/image/brand/thumbnail_66.jpg"
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "leaflet": {
+        "id": 501417,
+        "brandId": 51,
+        "name": "Gazetka Spożywcza",
+        "datePublish": {
+          "date": "2026-06-10 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "datePublishEnd": {
+          "date": "2026-06-10 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateStart": {
+          "date": "2026-06-10 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateEnd": {
+          "date": "2026-06-10 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "coverImpressionPixels": [
+          "https://acdc.api.dmp.nsaudience.pl/frontend/api/matchMainScript.jpg?sourceId=ac&acdc=Wydawca_13_06&ad_event_type=impression"
+        ],
+        "priority": false,
+        "hasAlcohol": false,
+        "isHidden": false
+      },
+      "page": {
+        "page": 0,
+        "imageUrl": "https://imgproxy.blix.pl/image/leaflet/501417/2c6a6e17-eefa-42f1-a6e4-22e2fe942b73.jpg?ext=jpg",
+        "leafletId": 501417,
+        "type": 0
+      },
+      "brand": {
+        "id": 51,
+        "thumbnail": "https://imgproxy.blix.pl/image/brand/009a4e69e0832285e5f754b1c2890f1e.jpeg",
+        "name": "Netto",
+        "slug": "netto",
+        "logo_uri": "https://imgproxy.blix.pl/image/brand/009a4e69e0832285e5f754b1c2890f1e.jpeg"
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "leaflet": {
+        "id": 501420,
+        "brandId": 51,
+        "name": "Inspiracje tygodnia Czas nad wodą",
+        "datePublish": {
+          "date": "2026-06-10 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "datePublishEnd": {
+          "date": "2026-06-10 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateStart": {
+          "date": "2026-06-10 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateEnd": {
+          "date": "2026-06-10 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "coverImpressionPixels": [
+          "https://acdc.api.dmp.nsaudience.pl/frontend/api/matchMainScript.jpg?sourceId=ac&acdc=Wydawca_13_06&ad_event_type=impression"
+        ],
+        "priority": false,
+        "hasAlcohol": false,
+        "isHidden": false
+      },
+      "page": {
+        "page": 0,
+        "imageUrl": "https://imgproxy.blix.pl/image/leaflet/501420/818f9c92-c7f1-47ff-a2bb-97442a7271ff.jpg?ext=jpg",
+        "leafletId": 501420,
+        "type": 0
+      },
+      "brand": {
+        "id": 51,
+        "thumbnail": "https://imgproxy.blix.pl/image/brand/009a4e69e0832285e5f754b1c2890f1e.jpeg",
+        "name": "Netto",
+        "slug": "netto",
+        "logo_uri": "https://imgproxy.blix.pl/image/brand/009a4e69e0832285e5f754b1c2890f1e.jpeg"
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "leaflet": {
+        "id": 501498,
+        "brandId": 58,
+        "name": "Katalog win",
+        "datePublish": {
+          "date": "2026-06-10 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "datePublishEnd": {
+          "date": "2026-06-10 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateStart": {
+          "date": "2026-06-10 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateEnd": {
+          "date": "2026-06-10 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "coverImpressionPixels": [],
+        "priority": false,
+        "hasAlcohol": true,
+        "isHidden": false
+      },
+      "page": {
+        "page": 0,
+        "imageUrl": "https://imgproxy.blix.pl/image/leaflet/501498/4bad0c0b-5828-4091-86c4-0fa4e07a02bb.jpg?ext=jpg",
+        "leafletId": 501498,
+        "type": 0
+      },
+      "brand": {
+        "id": 58,
+        "thumbnail": "https://imgproxy.blix.pl/image/brand/6926b4a99041e18b7d7c990efa756993.jpeg",
+        "name": "Żabka",
+        "slug": "zabka",
+        "logo_uri": "https://imgproxy.blix.pl/image/brand/6926b4a99041e18b7d7c990efa756993.jpeg"
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    }
+  ],
+  "productOffers": [
+    {
+      "hash": null,
+      "name": "Mleko UHT Łaciate 2% tł.",
+      "image": "https://imgproxy.blix.pl/product_occurrence//a6d33c3c-eb1d-40fd-89a4-5715c8baaf11.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Łaciate",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eb0a5-23a1-7509-96f7-d7dbde5a1e3c",
+      "price": 286,
+      "percentDiscount": 0,
+      "leafletId": 501795,
+      "pageNumber": 0,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-17 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.08,
+          "y": 0.37
+        },
+        "bottomRightCorner": {
+          "x": 0.94,
+          "y": 0.95
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": "de3be17cf",
+      "name": "Ser Camembert Turek Naturalny",
+      "image": "https://imgproxy.blix.pl/product_occurrence//cca3cd23-508e-4abe-866a-c7dcd806cc71.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Turek",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eb0a5-7e8d-76d0-b49b-4f7eba98d93d",
+      "price": 499,
+      "percentDiscount": 0,
+      "leafletId": 501795,
+      "pageNumber": 2,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-17 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.06,
+          "y": 0.1
+        },
+        "bottomRightCorner": {
+          "x": 0.91,
+          "y": 0.91
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Ser Camembert Turek z ziołami",
+      "image": "https://imgproxy.blix.pl/product_occurrence//90a39796-938a-4381-8fa2-d9fcdba86ce8.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Turek",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eb0a5-7e8e-7a4c-ab0d-a2dd10c4d279",
+      "price": 499,
+      "percentDiscount": 0,
+      "leafletId": 501795,
+      "pageNumber": 2,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-17 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.06,
+          "y": 0.1
+        },
+        "bottomRightCorner": {
+          "x": 0.91,
+          "y": 0.91
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Masło Polskie ekstra Mlekovita",
+      "image": "https://imgproxy.blix.pl/product_occurrence//26b99915-eb14-40b9-9d6d-8e92e964d240.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Mlekovita",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eb0a5-7ec8-700f-8f27-71a6ad1c4eed",
+      "price": null,
+      "percentDiscount": 0,
+      "leafletId": 501795,
+      "pageNumber": 4,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-17 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.02,
+          "y": 0.02
+        },
+        "bottomRightCorner": {
+          "x": 0.96,
+          "y": 0.96
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": "ad2c31330",
+      "name": "Kiełbasa Śląska Extra Morliny",
+      "image": "https://imgproxy.blix.pl/product_occurrence//22471146-2dc1-4381-b22a-970c599d2930.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Morliny",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eb0a5-7ee2-7d45-8026-4dde963becda",
+      "price": null,
+      "percentDiscount": 0,
+      "leafletId": 501795,
+      "pageNumber": 5,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-17 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.04,
+          "y": 0.11
+        },
+        "bottomRightCorner": {
+          "x": 0.96,
+          "y": 0.93
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": "a88351aa2",
+      "name": "Kiełbasa Śląska Extra XXL Morliny",
+      "image": "https://imgproxy.blix.pl/product_occurrence//eb87c784-c1e5-4aa6-945e-ee456e3be2d7.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Morliny",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eb0a5-7ee4-72d5-a0d2-17b7eadebcac",
+      "price": null,
+      "percentDiscount": 0,
+      "leafletId": 501795,
+      "pageNumber": 5,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-17 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.04,
+          "y": 0.42
+        },
+        "bottomRightCorner": {
+          "x": 0.6,
+          "y": 0.62
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": "a36bd91fd",
+      "name": "Kiełbasa Śląska z szynki Sokołów",
+      "image": "https://imgproxy.blix.pl/product_occurrence//672f2761-6600-4083-927d-11c2eee9a783.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Sokołów",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eb0a5-7ee4-7389-a0d2-17b7ebcdbf6c",
+      "price": null,
+      "percentDiscount": 0,
+      "leafletId": 501795,
+      "pageNumber": 5,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-17 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.04,
+          "y": 0.61
+        },
+        "bottomRightCorner": {
+          "x": 0.5,
+          "y": 0.93
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": "737968d6e",
+      "name": "Kiełbasa Śląska Dolina Dobra",
+      "image": "https://imgproxy.blix.pl/product_occurrence//23c0b269-cf34-4196-b3db-36f73ee7a263.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Dolina Dobra",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eb0a5-7ee4-7405-a0d2-17b7ecb12d0f",
+      "price": null,
+      "percentDiscount": 0,
+      "leafletId": 501795,
+      "pageNumber": 5,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-17 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.53,
+          "y": 0.5
+        },
+        "bottomRightCorner": {
+          "x": 0.96,
+          "y": 0.93
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": "12ad6116e",
+      "name": "Wafelki Knoppers",
+      "image": "https://imgproxy.blix.pl/product_occurrence//82216f3e-f41a-4b41-8a3c-05f8a576da3d.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Knoppers",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eb0a5-c585-73d7-80b6-6732dc480d91",
+      "price": 799,
+      "percentDiscount": 0,
+      "leafletId": 501795,
+      "pageNumber": 6,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-17 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.04,
+          "y": 0.12
+        },
+        "bottomRightCorner": {
+          "x": 0.96,
+          "y": 0.92
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Kawa mielona MK Café Premium",
+      "image": "https://imgproxy.blix.pl/product_occurrence//d213a05f-01c6-4517-9124-bb94870bb949.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Mk Café",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eb0a5-c595-7d81-aa82-d7fb112515f6",
+      "price": 2799,
+      "percentDiscount": 0,
+      "leafletId": 501795,
+      "pageNumber": 7,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-17 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.08,
+          "y": 0.13
+        },
+        "bottomRightCorner": {
+          "x": 0.9,
+          "y": 0.9
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Mięso drobiowe Drobimex Party Mix Grillowy kubełek pyszności uda podudzia skrzydła",
+      "image": "https://imgproxy.blix.pl/product_occurrence//181116f2-aa4c-4b70-bd5d-846fb5ba435b.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Drobimex",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eb0a5-c5a6-7b4e-9bd2-27e174ca9ec8",
+      "price": 999,
+      "percentDiscount": 0,
+      "leafletId": 501795,
+      "pageNumber": 8,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-17 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.06,
+          "y": 0.25
+        },
+        "bottomRightCorner": {
+          "x": 0.93,
+          "y": 0.86
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": "39a5b1ee4",
+      "name": "Lody Salted Caramel Carte D'Or",
+      "image": "https://imgproxy.blix.pl/product_occurrence//06f2d295-60d2-45a0-ac0b-8495c1cec05b.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Carte D'or",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eb0a5-c5b7-7d57-9614-a33208b1bc6b",
+      "price": 1299,
+      "percentDiscount": 0,
+      "leafletId": 501795,
+      "pageNumber": 9,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-17 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.04,
+          "y": 0.19
+        },
+        "bottomRightCorner": {
+          "x": 0.96,
+          "y": 0.89
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": "e6ea9b8f3",
+      "name": "Lody Tiramisu Carte D'Or",
+      "image": "https://imgproxy.blix.pl/product_occurrence//af143b6f-8084-4383-ac5b-d35a90c5d8b3.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Carte D'or",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eb0a5-c5b8-7c17-bd93-c15502ab12bb",
+      "price": 1299,
+      "percentDiscount": 0,
+      "leafletId": 501795,
+      "pageNumber": 9,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-17 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.04,
+          "y": 0.19
+        },
+        "bottomRightCorner": {
+          "x": 0.96,
+          "y": 0.89
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": "de3be17cf",
+      "name": "Ser Camembert Turek Naturalny",
+      "image": "https://imgproxy.blix.pl/product_occurrence//ffa0df78-2092-4ce1-b232-e612fb61124a.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Turek",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019ebadf-a16f-75bd-b30e-307b9f2194c5",
+      "price": 499,
+      "percentDiscount": 0,
+      "leafletId": 501795,
+      "pageNumber": 2,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-17 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.05,
+          "y": 0.07
+        },
+        "bottomRightCorner": {
+          "x": 0.91,
+          "y": 0.91
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": "ad2c31330",
+      "name": "Kiełbasa śląska Extra Morliny XXL",
+      "image": "https://imgproxy.blix.pl/product_occurrence//93153f26-30fd-4cda-989d-848fa5b7cb8d.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Morliny",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019ebae1-3aa7-752e-ba04-38f6bb24f5bd",
+      "price": null,
+      "percentDiscount": 0,
+      "leafletId": 501795,
+      "pageNumber": 5,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-17 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0,
+          "y": 0.03
+        },
+        "bottomRightCorner": {
+          "x": 0.97,
+          "y": 0.96
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Lody Algida Carte D'Or Les Desserts Salted Caramel",
+      "image": "https://imgproxy.blix.pl/product_occurrence//b3dfed57-944d-48a3-bc98-fa9b91728bbc.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Carte D'or",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019ebae1-bff8-757d-92d0-5da563ae09de",
+      "price": 1299,
+      "percentDiscount": 0,
+      "leafletId": 501795,
+      "pageNumber": 9,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-17 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.06,
+          "y": 0.07
+        },
+        "bottomRightCorner": {
+          "x": 0.96,
+          "y": 0.89
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    }
+  ],
+  "id": 501795,
+  "badge": {
+    "message": "aktualna",
+    "class": "lav-available"
+  },
+  "nextLeafletData": {
+    "id": 501780,
+    "brandId": 46,
+    "brandSlug": "kaufland"
+  }
+}

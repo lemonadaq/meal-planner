@@ -1,0 +1,218 @@
+{
+  "viewer": {
+    "leaflet_url": "https://blix.pl/sklep/auchan/gazetka/501129/",
+    "leaflet_name": "Oferta 3-dniowa",
+    "date_start": {
+      "date": "2026-06-08 00:00:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "date_end": {
+      "date": "2026-06-10 23:59:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "date_publish": {
+      "date": "2026-06-07 00:00:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "date_publish_end": {
+      "date": "2026-06-10 23:59:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "img_url": "https://gazetki.blix.pl/api/",
+    "has_alcohol": false,
+    "pages": [
+      {
+        "page": 0,
+        "width": 1080,
+        "height": 1350,
+        "page_uri": "https://blix.pl/sklep/auchan/gazetka/501129/?pageNumber=1",
+        "click_url": "https://blix.pl/leaflet/500277/page/3",
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501129/164d2514-d2cc-44f7-b06d-98f549ddd3db.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501129
+      },
+      {
+        "page": 1,
+        "width": 1080,
+        "height": 1700,
+        "page_uri": "https://blix.pl/sklep/auchan/gazetka/501129/?pageNumber=2",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501129/f6ec5874c2f5eadd541d51681382812a.jpeg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501129
+      }
+    ]
+  },
+  "brand": {
+    "id": 47,
+    "thumbnail": "https://imgproxy.blix.pl/image/brand/f1497864fd7e717193074b0c710960f0.jpg",
+    "name": "Auchan",
+    "slug": "auchan",
+    "logo_uri": "https://imgproxy.blix.pl/image/brand/f1497864fd7e717193074b0c710960f0.jpg"
+  },
+  "brandUrl": "https://blix.pl/sklep/auchan/",
+  "inserts": [],
+  "keywords": [],
+  "description": "<p>Obejrzyj najnowszą gazetkę sieci <strong>Auchan, Oferta 3-dniowa</strong>, obowiązującą od 8 czerwca do 10 czerwca. Ta aktualna gazetka <strong>Auchan</strong> zawiera wiele wspaniałych promocji na różnego rodzaju produkty.</p><p>Nie czekaj! Sprawdź, co jeszcze ma do zaoferowania <strong>Auchan</strong> w miesiącu czerwiec!</p>",
+  "lastPageData": [
+    {
+      "leaflet": {
+        "id": 500916,
+        "brandId": 51,
+        "name": "Mocna Kolekcja - Alkohole Mocne",
+        "datePublish": {
+          "date": "2026-06-08 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "datePublishEnd": {
+          "date": "2026-06-08 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateStart": {
+          "date": "2026-06-08 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateEnd": {
+          "date": "2026-06-08 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "coverImpressionPixels": [],
+        "priority": false,
+        "hasAlcohol": true,
+        "isHidden": false
+      },
+      "page": {
+        "page": 0,
+        "imageUrl": "https://imgproxy.blix.pl/image/leaflet/500916/48eb38a9-242f-4403-a78a-8f33077ff29e.jpg?ext=jpg",
+        "leafletId": 500916,
+        "type": 0
+      },
+      "brand": {
+        "id": 51,
+        "thumbnail": "https://imgproxy.blix.pl/image/brand/009a4e69e0832285e5f754b1c2890f1e.jpeg",
+        "name": "Netto",
+        "slug": "netto",
+        "logo_uri": "https://imgproxy.blix.pl/image/brand/009a4e69e0832285e5f754b1c2890f1e.jpeg"
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "leaflet": {
+        "id": 501417,
+        "brandId": 51,
+        "name": "Gazetka Spożywcza",
+        "datePublish": {
+          "date": "2026-06-10 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "datePublishEnd": {
+          "date": "2026-06-10 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateStart": {
+          "date": "2026-06-10 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateEnd": {
+          "date": "2026-06-10 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "coverImpressionPixels": [
+          "https://acdc.api.dmp.nsaudience.pl/frontend/api/matchMainScript.jpg?sourceId=ac&acdc=Wydawca_13_06&ad_event_type=impression"
+        ],
+        "priority": false,
+        "hasAlcohol": false,
+        "isHidden": false
+      },
+      "page": {
+        "page": 0,
+        "imageUrl": "https://imgproxy.blix.pl/image/leaflet/501417/2c6a6e17-eefa-42f1-a6e4-22e2fe942b73.jpg?ext=jpg",
+        "leafletId": 501417,
+        "type": 0
+      },
+      "brand": {
+        "id": 51,
+        "thumbnail": "https://imgproxy.blix.pl/image/brand/009a4e69e0832285e5f754b1c2890f1e.jpeg",
+        "name": "Netto",
+        "slug": "netto",
+        "logo_uri": "https://imgproxy.blix.pl/image/brand/009a4e69e0832285e5f754b1c2890f1e.jpeg"
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "leaflet": {
+        "id": 501498,
+        "brandId": 58,
+        "name": "Katalog win",
+        "datePublish": {
+          "date": "2026-06-10 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "datePublishEnd": {
+          "date": "2026-06-10 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateStart": {
+          "date": "2026-06-10 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateEnd": {
+          "date": "2026-06-10 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "coverImpressionPixels": [],
+        "priority": false,
+        "hasAlcohol": true,
+        "isHidden": false
+      },
+      "page": {
+        "page": 0,
+        "imageUrl": "https://imgproxy.blix.pl/image/leaflet/501498/4bad0c0b-5828-4091-86c4-0fa4e07a02bb.jpg?ext=jpg",
+        "leafletId": 501498,
+        "type": 0
+      },
+      "brand": {
+        "id": 58,
+        "thumbnail": "https://imgproxy.blix.pl/image/brand/6926b4a99041e18b7d7c990efa756993.jpeg",
+        "name": "Żabka",
+        "slug": "zabka",
+        "logo_uri": "https://imgproxy.blix.pl/image/brand/6926b4a99041e18b7d7c990efa756993.jpeg"
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    }
+  ],
+  "productOffers": [],
+  "id": 501129,
+  "badge": {
+    "message": "archiwalna",
+    "class": "lav-archive"
+  },
+  "nextLeafletData": {
+    "id": 501417,
+    "brandId": 51,
+    "brandSlug": "netto"
+  }
+}

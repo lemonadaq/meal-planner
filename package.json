@@ -7,7 +7,11 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "promo:discover": "node blix-multi-discover.mjs --stores biedronka,lidl,kaufland,auchan",
+    "promo:scrape": "node blix-scraper.mjs --save-raw --delay 5000",
+    "promo:import": "node blix-import-supabase.mjs",
+    "promo:daily": "node promo-daily.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.4.0",
@@ -19,7 +23,9 @@
     "@supabase/supabase-js": "^2.105.4",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
-    "react-router-dom": "^7.15.0"
+    "react-router-dom": "^7.15.0",
+    "sharp": "^0.35.1",
+    "tesseract.js": "^7.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

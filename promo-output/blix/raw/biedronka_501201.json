@@ -1,0 +1,156 @@
+{
+  "viewer": {
+    "leaflet_url": "https://blix.pl/sklep/biedronka/gazetka/501201/",
+    "leaflet_name": "Tani Weekend",
+    "date_start": {
+      "date": "2026-06-05 00:00:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "date_end": {
+      "date": "2026-06-06 23:59:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "date_publish": {
+      "date": "2026-06-04 00:00:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "date_publish_end": {
+      "date": "2026-06-06 23:59:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "img_url": "https://gazetki.blix.pl/api/",
+    "has_alcohol": false,
+    "pages": [
+      {
+        "page": 0,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501201/?pageNumber=1",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501201/49e636b5-b910-4093-ad62-7afe84d7e1f1.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501201
+      },
+      {
+        "page": 1,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501201/?pageNumber=2",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501201/6c528336-5b80-4d49-bb68-6a14025ade43.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501201
+      },
+      {
+        "page": 2,
+        "width": 998,
+        "height": 1624,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501201/?pageNumber=3",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501201/c471f3af-ae3b-4f4f-b9a9-eb8ac1fc7056.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501201
+      },
+      {
+        "page": 3,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501201/?pageNumber=4",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501201/9ff6f73a-3819-4778-ba4a-eccc97c0a299.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501201
+      },
+      {
+        "page": 4,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501201/?pageNumber=5",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501201/3962be49-0fd5-459e-89a5-b9bf68eb34c7.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501201
+      },
+      {
+        "page": 5,
+        "width": 1080,
+        "height": 1700,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501201/?pageNumber=6",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501201/4494bdb3d6e181c92d7a45353a0fc506.jpeg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501201
+      }
+    ]
+  },
+  "brand": {
+    "id": 23,
+    "thumbnail": "https://imgproxy.blix.pl/image/brand/thumbnail_23.jpg",
+    "name": "Biedronka",
+    "slug": "biedronka",
+    "logo_uri": "https://imgproxy.blix.pl/image/brand/thumbnail_23.jpg"
+  },
+  "brandUrl": "https://blix.pl/sklep/biedronka/",
+  "inserts": [],
+  "keywords": [],
+  "description": "<p>Obejrzyj najnowszą gazetkę sieci <strong>Biedronka, Tani Weekend</strong>, obowiązującą od 5 czerwca do 6 czerwca. Ta aktualna gazetka <strong>Biedronka</strong> zawiera wiele wspaniałych promocji na różnego rodzaju produkty.</p><p>Nie czekaj! Sprawdź, co jeszcze ma do zaoferowania <strong>Biedronka</strong> w miesiącu czerwiec!</p>",
+  "lastPageData": [
+    {
+      "leaflet": {
+        "id": 500874,
+        "brandId": 112,
+        "name": "Katalog alkoholi",
+        "datePublish": {
+          "date": "2026-06-02 15:15:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "datePublishEnd": {
+          "date": "2026-06-02 15:15:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateStart": {
+          "date": "2026-06-02 15:15:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateEnd": {
+          "date": "2026-06-02 15:15:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "coverImpressionPixels": [],
+        "priority": false,
+        "hasAlcohol": true,
+        "isHidden": false
+      },
+      "page": {
+        "page": 0,
+        "imageUrl": "https://imgproxy.blix.pl/image/leaflet/500874/9efdbfc1-054c-47c6-8453-e70050db490d.jpg?ext=jpg",
+        "leafletId": 500874,
+        "type": 0
+      },
+      "brand": {
+        "id": 112,
+        "thumbnail": "https://imgproxy.blix.pl/image/brand/7b07a75229f0e153750647108b4fe65d.png",
+        "name": "POLOmarket",
+        "slug": "polomarket",
+        "logo_uri": "https://imgproxy.blix.pl/image/brand/7b07a75229f0e153750647108b4fe65d.png"
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    }
+  ],
+  "productOffers": [],
+  "id": 501201,
+  "badge": {
+    "message": "archiwalna",
+    "class": "lav-archive"
+  },
+  "nextLeafletData": {
+    "id": 501207,
+    "brandId": 31,
+    "brandSlug": "carrefour"
+  }
+}

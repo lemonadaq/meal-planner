@@ -1,0 +1,1886 @@
+{
+  "viewer": {
+    "leaflet_url": "https://blix.pl/sklep/biedronka/gazetka/501681/",
+    "leaflet_name": "Strefa Dziecka - przegląd cen",
+    "date_start": {
+      "date": "2026-06-11 00:00:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "date_end": {
+      "date": "2026-06-13 23:59:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "date_publish": {
+      "date": "2026-06-10 00:00:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "date_publish_end": {
+      "date": "2026-06-13 23:59:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "img_url": "https://gazetki.blix.pl/api/",
+    "has_alcohol": false,
+    "pages": [
+      {
+        "page": 0,
+        "width": 1310,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501681/?pageNumber=1",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501681/400847c4-aee2-49dc-af07-3711733a0cf2.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501681
+      },
+      {
+        "page": 1,
+        "width": 1310,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501681/?pageNumber=2",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501681/68ef44fd-733d-488c-8b06-0a550bed7d7e.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501681
+      },
+      {
+        "page": 2,
+        "width": 1310,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501681/?pageNumber=3",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501681/efdbc98e-2957-4d9a-a29e-1e1e7cb1403d.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501681
+      },
+      {
+        "page": 3,
+        "width": 1310,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501681/?pageNumber=4",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501681/0ad4cf7b-0ffb-46a9-a97e-0ae143cbeda2.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501681
+      },
+      {
+        "page": 4,
+        "width": 1310,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501681/?pageNumber=5",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501681/e7549aa4-cf32-47c1-b7b0-7e475e290f90.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501681
+      },
+      {
+        "page": 5,
+        "width": 1310,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501681/?pageNumber=6",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501681/40e82b98-9eeb-4eca-979e-e7f15fab7155.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501681
+      },
+      {
+        "page": 6,
+        "width": 1310,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501681/?pageNumber=7",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501681/4dc934c5-86db-4b47-b2fb-fe53d94fd000.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501681
+      },
+      {
+        "page": 7,
+        "width": 1310,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501681/?pageNumber=8",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501681/126a6281-1b03-4cf5-960c-8fff7266dcde.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501681
+      },
+      {
+        "page": 8,
+        "width": 1310,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501681/?pageNumber=9",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501681/fb81e3c0-4178-4e6c-a560-b390278ca93f.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501681
+      },
+      {
+        "page": 9,
+        "width": 1310,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501681/?pageNumber=10",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501681/e7f67591-c35c-4965-9b65-9b0adb17ab3a.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501681
+      },
+      {
+        "page": 10,
+        "width": 1310,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501681/?pageNumber=11",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501681/9eb0b038-4691-4914-bd47-1d52a6f4fc01.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501681
+      },
+      {
+        "page": 11,
+        "width": 1310,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501681/?pageNumber=12",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501681/5058db4f-f666-4444-a4c1-684209984705.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501681
+      },
+      {
+        "page": 12,
+        "width": 1310,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501681/?pageNumber=13",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501681/32cdfa63-469f-4553-ae6d-4d071d0c5b14.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501681
+      },
+      {
+        "page": 13,
+        "width": 1310,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501681/?pageNumber=14",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501681/d6ad7d97-4288-4b57-8f1f-d1e61647cfcc.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501681
+      },
+      {
+        "page": 14,
+        "width": 1310,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501681/?pageNumber=15",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501681/98da854f-ff11-4435-86fc-4f933933cce9.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501681
+      },
+      {
+        "page": 15,
+        "width": 1310,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501681/?pageNumber=16",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501681/f1ae57c2-4d4d-449a-bdaf-d29781cd3fdd.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501681
+      },
+      {
+        "page": 16,
+        "width": 1080,
+        "height": 1700,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501681/?pageNumber=17",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501681/bd142c27aebe6cd7232c094f5c3d778f.jpeg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501681
+      }
+    ]
+  },
+  "brand": {
+    "id": 23,
+    "thumbnail": "https://imgproxy.blix.pl/image/brand/thumbnail_23.jpg",
+    "name": "Biedronka",
+    "slug": "biedronka",
+    "logo_uri": "https://imgproxy.blix.pl/image/brand/thumbnail_23.jpg"
+  },
+  "brandUrl": "https://blix.pl/sklep/biedronka/",
+  "inserts": [],
+  "keywords": {
+    "maliny": "/produkty/artykuly-spozywcze/owoce/maliny",
+    "jogurt": "/produkty/artykuly-spozywcze/nabial/jogurt",
+    "bobo frut": "/produkty/artykuly-spozywcze/artykuly-spozywcze-dla-niemowlat/bobo-frut",
+    "mango": "/produkty/artykuly-spozywcze/owoce/mango",
+    "brzoskwinie": "/produkty/artykuly-spozywcze/owoce/brzoskwinie",
+    "truskawki": "/produkty/artykuly-spozywcze/owoce/truskawki",
+    "bobovita": "/produkty/artykuly-spozywcze/artykuly-spozywcze-dla-niemowlat/bobovita",
+    "marchew": "/produkty/artykuly-spozywcze/warzywa/marchew",
+    "cebula": "/produkty/artykuly-spozywcze/warzywa/cebula",
+    "pomidory": "/produkty/artykuly-spozywcze/warzywa/pomidory",
+    "puree": "/produkty/artykuly-spozywcze/dania-gotowe/puree",
+    "seler": "/produkty/artykuly-spozywcze/warzywa/seler",
+    "pieczarki": "/produkty/artykuly-spozywcze/warzywa/pieczarki",
+    "pietruszka": "/produkty/artykuly-spozywcze/warzywa/pietruszka",
+    "czosnek": "/produkty/artykuly-spozywcze/warzywa/czosnek"
+  },
+  "description": "<p>Obejrzyj najnowszą gazetkę sieci <strong>Biedronka, Strefa Dziecka - przegląd cen</strong>, obowiązującą od 11 czerwca do 13 czerwca. Ta aktualna gazetka <strong>Biedronka</strong> zawiera wiele wspaniałych promocji na różnego rodzaju produkty.</p><p>Znajdziesz w niej m.in. oferty na: <strong>Deserek Gerber jabłuszka z truskawkami i jagodami po 8 mies.</strong> za <strong>5,79zł</strong>, <strong>Emulsja do opalania dla dzieci SPF 50 Kolastyna</strong> za <strong>34,99zł</strong>, <strong>Mleko początkowe HiPP 1 BIO COMBIOTIK</strong> za <strong>38,99zł</strong>, <strong>Mleko następne HiPP 2 BIO COMBIOTIK</strong> za <strong>38,99zł</strong>, <strong>Produkt na bazie mleka dla małych dzieci Nestlé NAN OPTIpro Plus 5</strong> za <strong>59,99zł</strong>, <strong>Mleko następne dla niemowląt Nestlé NAN OPTIPRO Plus 2</strong> za <strong>59,99zł</strong>, <strong>Mleko modyfikowane Bebiko Junior 4R NUTRIflor Expert z kleikiem ryżowym</strong> za <strong>41,99zł</strong>, <strong>Deserek owocowy Gerber krem z jogurtem po 6 mies.</strong> za <strong>5,79zł</strong>.</p><p>To nie jedyne promocje, jakie możesz znaleźć w gazetce <strong>Biedronka, Strefa Dziecka - przegląd cen</strong> od 11 czerwca. Nie czekaj! Sprawdź, co jeszcze ma do zaoferowania <strong>Biedronka</strong> w miesiącu czerwiec!</p>",
+  "lastPageData": [
+    {
+      "leaflet": {
+        "id": 500874,
+        "brandId": 112,
+        "name": "Katalog alkoholi",
+        "datePublish": {
+          "date": "2026-06-02 15:15:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "datePublishEnd": {
+          "date": "2026-06-02 15:15:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateStart": {
+          "date": "2026-06-02 15:15:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateEnd": {
+          "date": "2026-06-02 15:15:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "coverImpressionPixels": [],
+        "priority": false,
+        "hasAlcohol": true,
+        "isHidden": false
+      },
+      "page": {
+        "page": 0,
+        "imageUrl": "https://imgproxy.blix.pl/image/leaflet/500874/9efdbfc1-054c-47c6-8453-e70050db490d.jpg?ext=jpg",
+        "leafletId": 500874,
+        "type": 0
+      },
+      "brand": {
+        "id": 112,
+        "thumbnail": "https://imgproxy.blix.pl/image/brand/7b07a75229f0e153750647108b4fe65d.png",
+        "name": "POLOmarket",
+        "slug": "polomarket",
+        "logo_uri": "https://imgproxy.blix.pl/image/brand/7b07a75229f0e153750647108b4fe65d.png"
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "leaflet": {
+        "id": 501753,
+        "brandId": 112,
+        "name": "Frikasowy Katalog",
+        "datePublish": {
+          "date": "2026-06-08 14:54:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "datePublishEnd": {
+          "date": "2026-06-08 14:54:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateStart": {
+          "date": "2026-06-08 14:54:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateEnd": {
+          "date": "2026-06-08 14:54:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "coverImpressionPixels": [],
+        "priority": false,
+        "hasAlcohol": false,
+        "isHidden": false
+      },
+      "page": {
+        "page": 0,
+        "imageUrl": "https://imgproxy.blix.pl/image/leaflet/501753/cf75ca5a-e185-4c4e-9de3-680ccccad701.jpg?ext=jpg",
+        "leafletId": 501753,
+        "type": 0
+      },
+      "brand": {
+        "id": 112,
+        "thumbnail": "https://imgproxy.blix.pl/image/brand/7b07a75229f0e153750647108b4fe65d.png",
+        "name": "POLOmarket",
+        "slug": "polomarket",
+        "logo_uri": "https://imgproxy.blix.pl/image/brand/7b07a75229f0e153750647108b4fe65d.png"
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "leaflet": {
+        "id": 501492,
+        "brandId": 58,
+        "name": "Katalog alkoholi",
+        "datePublish": {
+          "date": "2026-06-10 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "datePublishEnd": {
+          "date": "2026-06-10 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateStart": {
+          "date": "2026-06-10 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateEnd": {
+          "date": "2026-06-10 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "coverImpressionPixels": [],
+        "priority": false,
+        "hasAlcohol": true,
+        "isHidden": false
+      },
+      "page": {
+        "page": 0,
+        "imageUrl": "https://imgproxy.blix.pl/image/leaflet/501492/25ae9b43-ee3e-4a31-add5-622840fad464.jpg?ext=jpg",
+        "leafletId": 501492,
+        "type": 0
+      },
+      "brand": {
+        "id": 58,
+        "thumbnail": "https://imgproxy.blix.pl/image/brand/6926b4a99041e18b7d7c990efa756993.jpeg",
+        "name": "Żabka",
+        "slug": "zabka",
+        "logo_uri": "https://imgproxy.blix.pl/image/brand/6926b4a99041e18b7d7c990efa756993.jpeg"
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "leaflet": {
+        "id": 501828,
+        "brandId": 112,
+        "name": "Kupuj taniej z POLOappką",
+        "datePublish": {
+          "date": "2026-06-10 10:50:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "datePublishEnd": {
+          "date": "2026-06-10 10:50:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateStart": {
+          "date": "2026-06-10 10:50:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateEnd": {
+          "date": "2026-06-10 10:50:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "coverImpressionPixels": [],
+        "priority": false,
+        "hasAlcohol": false,
+        "isHidden": false
+      },
+      "page": {
+        "page": 0,
+        "imageUrl": "https://imgproxy.blix.pl/image/leaflet/501828/1e06fd6c-be6d-48f8-a645-f4cff6803957.jpg?ext=jpg",
+        "leafletId": 501828,
+        "type": 0
+      },
+      "brand": {
+        "id": 112,
+        "thumbnail": "https://imgproxy.blix.pl/image/brand/7b07a75229f0e153750647108b4fe65d.png",
+        "name": "POLOmarket",
+        "slug": "polomarket",
+        "logo_uri": "https://imgproxy.blix.pl/image/brand/7b07a75229f0e153750647108b4fe65d.png"
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    }
+  ],
+  "productOffers": [
+    {
+      "hash": "d6b69ccdb",
+      "name": "Deserek Gerber jabłuszka z truskawkami i jagodami po 8 mies.",
+      "image": "https://imgproxy.blix.pl/product_occurrence//c415323d-17ca-4d30-bda5-ce108b2c214b.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Gerber",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eac9d-f469-78de-92c4-20de6a1baff6",
+      "price": 579,
+      "percentDiscount": 0,
+      "leafletId": 501681,
+      "pageNumber": 12,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-13 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.02,
+          "y": 0
+        },
+        "bottomRightCorner": {
+          "x": 0.49,
+          "y": 0.42
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Emulsja do opalania dla dzieci SPF 50 Kolastyna",
+      "image": "https://imgproxy.blix.pl/product_occurrence//b32bea62-da16-4db1-8cbb-c87192520de6.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Kolastyna",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eac9d-8e97-7938-af3c-6460db3440b8",
+      "price": 3499,
+      "percentDiscount": 0,
+      "leafletId": 501681,
+      "pageNumber": 9,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-13 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.02,
+          "y": 0.51
+        },
+        "bottomRightCorner": {
+          "x": 0.98,
+          "y": 0.92
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Mleko początkowe HiPP 1 BIO COMBIOTIK",
+      "image": "https://imgproxy.blix.pl/product_occurrence//4fa37853-ae4e-4939-99c1-7466ea3e8ac6.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Hipp",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eac9d-8eaf-706a-ba49-43de02ba018e",
+      "price": 3899,
+      "percentDiscount": 0,
+      "leafletId": 501681,
+      "pageNumber": 10,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-13 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.02,
+          "y": 0
+        },
+        "bottomRightCorner": {
+          "x": 0.49,
+          "y": 0.41
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": "23a1ff7f3",
+      "name": "Mleko następne HiPP 2 BIO COMBIOTIK",
+      "image": "https://imgproxy.blix.pl/product_occurrence//2e8b2b9c-7e87-4827-95aa-38fa0696fb51.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Hipp",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eac9d-8eaf-7c9a-ba49-43de0386a58c",
+      "price": 3899,
+      "percentDiscount": 0,
+      "leafletId": 501681,
+      "pageNumber": 10,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-13 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.5,
+          "y": 0.05
+        },
+        "bottomRightCorner": {
+          "x": 0.98,
+          "y": 0.56
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Produkt na bazie mleka dla małych dzieci Nestlé NAN OPTIpro Plus 5",
+      "image": "https://imgproxy.blix.pl/product_occurrence//2260bf69-7fef-46f0-b354-48076beef0ce.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Nan",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eac9d-8eaf-7d42-ba49-43de04788030",
+      "price": 5999,
+      "percentDiscount": 0,
+      "leafletId": 501681,
+      "pageNumber": 10,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-13 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.02,
+          "y": 0.41
+        },
+        "bottomRightCorner": {
+          "x": 0.49,
+          "y": 0.88
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Mleko następne dla niemowląt Nestlé NAN OPTIPRO Plus 2",
+      "image": "https://imgproxy.blix.pl/product_occurrence//11fc0161-e40f-4e5d-8ba3-59408b91702c.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Nan",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eac9d-8eaf-7d86-ba49-43de0531ebfb",
+      "price": 5999,
+      "percentDiscount": 0,
+      "leafletId": 501681,
+      "pageNumber": 10,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-13 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.5,
+          "y": 0.55
+        },
+        "bottomRightCorner": {
+          "x": 0.98,
+          "y": 0.99
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Mleko modyfikowane Bebiko Junior 4R NUTRIflor Expert z kleikiem ryżowym",
+      "image": "https://imgproxy.blix.pl/product_occurrence//ff2cb1b8-dd75-4db7-8e84-afb8347e9ccd.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Bebiko",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eac9d-f455-7e93-839b-cb3d02aff772",
+      "price": 4199,
+      "percentDiscount": 0,
+      "leafletId": 501681,
+      "pageNumber": 11,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-13 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.05,
+          "y": 0.03
+        },
+        "bottomRightCorner": {
+          "x": 0.95,
+          "y": 0.9
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Deserek owocowy Gerber krem z jogurtem po 6 mies.",
+      "image": "https://imgproxy.blix.pl/product_occurrence//c626965e-9d4d-48a5-bc7b-f33b55e567c0.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Gerber",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eac9d-f46a-7dc8-a94f-4ac000b8d4e5",
+      "price": 579,
+      "percentDiscount": 0,
+      "leafletId": 501681,
+      "pageNumber": 12,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-13 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.51,
+          "y": 0.03
+        },
+        "bottomRightCorner": {
+          "x": 0.98,
+          "y": 0.55
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Deserek Gerber Szarlotka jabłka z biszkoptem i nutką waniliową po 8 mies.",
+      "image": "https://imgproxy.blix.pl/product_occurrence//efb5bfee-be04-4033-9b01-c74ec4d5cb5d.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Gerber",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eac9d-f46a-7e34-a94f-4ac000cd1e76",
+      "price": 579,
+      "percentDiscount": 0,
+      "leafletId": 501681,
+      "pageNumber": 12,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-13 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.02,
+          "y": 0.42
+        },
+        "bottomRightCorner": {
+          "x": 0.49,
+          "y": 0.88
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Szampon hipoalergiczny Bambino",
+      "image": "https://imgproxy.blix.pl/product_occurrence//111d4c19-81e9-4e7c-a0c2-975d23c8d2a9.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Bambino",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eac9d-8e96-7b53-b05a-2061b2010055",
+      "price": 1349,
+      "percentDiscount": 0,
+      "leafletId": 501681,
+      "pageNumber": 9,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-13 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.02,
+          "y": 0.02
+        },
+        "bottomRightCorner": {
+          "x": 0.98,
+          "y": 0.5
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Deserek Gerber jabłka, banany z kremowym twarożkiem po 6 mies.",
+      "image": "https://imgproxy.blix.pl/product_occurrence//6ed86e49-ec71-42a6-8a5c-8c181d886a39.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Gerber",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eac9d-f46a-7e78-a94f-4ac000cf2350",
+      "price": 579,
+      "percentDiscount": 0,
+      "leafletId": 501681,
+      "pageNumber": 12,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-13 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.51,
+          "y": 0.56
+        },
+        "bottomRightCorner": {
+          "x": 0.98,
+          "y": 0.98
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": "62a061437",
+      "name": "Obiadek Gerber Bukiet jarzyn z cielęciną i kluseczkami po 8 mies.",
+      "image": "https://imgproxy.blix.pl/product_occurrence//62b2b8ee-2c8d-4a0f-bfd8-d289accc1632.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Gerber",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eac9d-f497-70a4-8920-0356be675a46",
+      "price": 569,
+      "percentDiscount": 0,
+      "leafletId": 501681,
+      "pageNumber": 13,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-13 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.02,
+          "y": 0.41
+        },
+        "bottomRightCorner": {
+          "x": 0.49,
+          "y": 0.88
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Zupka Gerber Krupniczek drobiowy z warzywami po 9 mies.",
+      "image": "https://imgproxy.blix.pl/product_occurrence//fe41d864-a8ca-456b-897c-284f7deb6caf.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Gerber",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eac9d-f497-702c-8920-0356be113eb3",
+      "price": 569,
+      "percentDiscount": 0,
+      "leafletId": 501681,
+      "pageNumber": 13,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-13 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.5,
+          "y": 0.07
+        },
+        "bottomRightCorner": {
+          "x": 0.98,
+          "y": 0.55
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Obiadek Gerber Schabik ze śliwką w warzywach po 6 mies.",
+      "image": "https://imgproxy.blix.pl/product_occurrence//e72594c2-00b7-4162-93f5-87870a5f6a10.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Gerber",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eac9d-f497-70f4-8920-0356be8595ef",
+      "price": 569,
+      "percentDiscount": 0,
+      "leafletId": 501681,
+      "pageNumber": 13,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-13 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.5,
+          "y": 0.55
+        },
+        "bottomRightCorner": {
+          "x": 0.98,
+          "y": 0.98
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Zupka Gerber Wiosenna zupka z indykiem i koperkiem po 6 mies.",
+      "image": "https://imgproxy.blix.pl/product_occurrence//f2188962-e40a-4ef8-88c6-8050960ed933.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Gerber",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eac9d-f496-715e-9f0f-3cc851ff1191",
+      "price": 569,
+      "percentDiscount": 0,
+      "leafletId": 501681,
+      "pageNumber": 13,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-13 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.02,
+          "y": 0
+        },
+        "bottomRightCorner": {
+          "x": 0.49,
+          "y": 0.42
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Kaszka mleczna BoboVita Porcja zbóż 7 zbóż zbożowo-owsiana truskawka-banan po 8 miesiącu",
+      "image": "https://imgproxy.blix.pl/product_occurrence//043dbe28-a09f-4880-820d-815ccdbd4622.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Bobovita",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eac9d-f4bf-752d-9090-ebe7f9f47f42",
+      "price": 999,
+      "percentDiscount": 0,
+      "leafletId": 501681,
+      "pageNumber": 14,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-13 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.05,
+          "y": 0.03
+        },
+        "bottomRightCorner": {
+          "x": 0.97,
+          "y": 0.89
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Mus brzoskwinia jabłko Kubuś",
+      "image": "https://imgproxy.blix.pl/product_occurrence//ba4196f0-0429-4139-8623-6207918f58eb.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Kubuś",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eac9d-f4d2-7dab-8cb7-0764c877ea1d",
+      "price": 349,
+      "percentDiscount": 0,
+      "leafletId": 501681,
+      "pageNumber": 15,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-13 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.02,
+          "y": 0.02
+        },
+        "bottomRightCorner": {
+          "x": 0.98,
+          "y": 0.55
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Jogurt probiotyczny Actimel Kids Truskawka-Banan 6-pak 100 g",
+      "image": "https://imgproxy.blix.pl/product_occurrence//ae07f266-d19e-474f-8b29-0874cfca3f18.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Actimel",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eac9d-f4d3-7f0b-9ec4-2931193d0699",
+      "price": 1349,
+      "percentDiscount": 0,
+      "leafletId": 501681,
+      "pageNumber": 15,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-13 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.02,
+          "y": 0.54
+        },
+        "bottomRightCorner": {
+          "x": 0.98,
+          "y": 0.92
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Pieluchy Dada Extra Care rozmiar 1",
+      "image": "https://imgproxy.blix.pl/product_occurrence//1c704142-de11-46ad-902f-1729106fa239.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Dada",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eac9d-347a-7894-8e15-206463e008f9",
+      "price": 1399,
+      "percentDiscount": 0,
+      "leafletId": 501681,
+      "pageNumber": 5,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-13 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.02,
+          "y": 0.01
+        },
+        "bottomRightCorner": {
+          "x": 0.98,
+          "y": 0.56
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Batonik owocowy HiPP BIO Owocowy Przyjaciel Jabłka-Banany-Maliny",
+      "image": "https://imgproxy.blix.pl/product_occurrence//5d4c2e82-02a3-450d-aa0f-d577005acffe.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Hipp",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eac9d-3404-7bdc-b6c8-77015cfa9138",
+      "price": 339,
+      "percentDiscount": 0,
+      "leafletId": 501681,
+      "pageNumber": 1,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-13 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.02,
+          "y": 0.02
+        },
+        "bottomRightCorner": {
+          "x": 0.98,
+          "y": 0.91
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Batonik owocowy HiPP BIO Owocowy Przyjaciel Banany-Jabłka",
+      "image": "https://imgproxy.blix.pl/product_occurrence//37c95b85-344e-4456-b61e-9e068c0e7389.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Hipp",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eac9d-3406-793b-8cd7-942846aa7d17",
+      "price": 339,
+      "percentDiscount": 0,
+      "leafletId": 501681,
+      "pageNumber": 1,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-13 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.02,
+          "y": 0.02
+        },
+        "bottomRightCorner": {
+          "x": 0.98,
+          "y": 0.91
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Nektar jabłko truskawka po 12 miesiącu Bobo Frut",
+      "image": "https://imgproxy.blix.pl/product_occurrence//c24939e7-e83f-46e7-bbd0-967e8ed56228.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Bobo Frut",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eac9d-3427-7ecd-90e6-e92fa342469d",
+      "price": 499,
+      "percentDiscount": 0,
+      "leafletId": 501681,
+      "pageNumber": 2,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-13 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.02,
+          "y": 0.49
+        },
+        "bottomRightCorner": {
+          "x": 0.98,
+          "y": 0.92
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Nektar jabłko mango brzoskwinia po 12 miesiącu Bobo Frut",
+      "image": "https://imgproxy.blix.pl/product_occurrence//de9ba4df-de33-4f54-9ee0-f560bacd6664.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Bobo Frut",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eac9d-3426-7a4a-b0a4-c77cfe968973",
+      "price": 499,
+      "percentDiscount": 0,
+      "leafletId": 501681,
+      "pageNumber": 2,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-13 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.02,
+          "y": 0.02
+        },
+        "bottomRightCorner": {
+          "x": 0.98,
+          "y": 0.51
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Danie dla niemowląt BoboVita kluseczki z wołowiną po burgundzku i marchewką po 15 miesiącu",
+      "image": "https://imgproxy.blix.pl/product_occurrence//21b95cd3-9046-4a8c-9c56-132c3e2a0733.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Bobovita",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eac9d-3445-7396-983f-f7d18cc6fcd7",
+      "price": 1099,
+      "percentDiscount": 0,
+      "leafletId": 501681,
+      "pageNumber": 3,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-13 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.02,
+          "y": 0.01
+        },
+        "bottomRightCorner": {
+          "x": 0.98,
+          "y": 0.92
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Danie dla niemowląt kluseczki kładzione z gulaszem z delikatnej wołowiny HiPP BIO Junior po 1 roku",
+      "image": "https://imgproxy.blix.pl/product_occurrence//8d61744c-be52-4f3c-8c3a-aa872b18099b.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Hipp",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eac9d-3459-7345-871e-8b38b1265664",
+      "price": 699,
+      "percentDiscount": 0,
+      "leafletId": 501681,
+      "pageNumber": 4,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-13 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.02,
+          "y": 0.01
+        },
+        "bottomRightCorner": {
+          "x": 0.98,
+          "y": 0.56
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Danie dla niemowląt pierwsza dynia HiPP BIO po 4 miesiącu",
+      "image": "https://imgproxy.blix.pl/product_occurrence//6241025a-4d62-4d8d-b94a-c4cad6593e3e.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Hipp",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eac9d-345a-7373-8341-6e2bffcc6ff9",
+      "price": 366,
+      "percentDiscount": 0,
+      "leafletId": 501681,
+      "pageNumber": 4,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-13 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.02,
+          "y": 0.56
+        },
+        "bottomRightCorner": {
+          "x": 0.98,
+          "y": 0.92
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Pieluchy Dada Extra Care rozmiar 2",
+      "image": "https://imgproxy.blix.pl/product_occurrence//b563a9ce-3ac4-4851-994f-3bfd98b99aa0.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Dada",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eac9d-347b-7ba0-9356-953bbb20eee0",
+      "price": 2149,
+      "percentDiscount": 0,
+      "leafletId": 501681,
+      "pageNumber": 5,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-13 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.02,
+          "y": 0.56
+        },
+        "bottomRightCorner": {
+          "x": 0.98,
+          "y": 0.92
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Batonik owocowy HiPP BIO Owocowy Przyjaciel Banany-Wiśnie-Jogurt",
+      "image": "https://imgproxy.blix.pl/product_occurrence//062c7b8c-9924-4594-aa1d-55cbe2b2b00f.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Hipp",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eac9d-3406-78cb-8cd7-942845ab78bd",
+      "price": 339,
+      "percentDiscount": 0,
+      "leafletId": 501681,
+      "pageNumber": 1,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-13 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.02,
+          "y": 0.02
+        },
+        "bottomRightCorner": {
+          "x": 0.98,
+          "y": 0.91
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Pieluchy Pampers Active Baby 5 38-pak",
+      "image": "https://imgproxy.blix.pl/product_occurrence//6e600f48-15f4-40f9-81d0-e3b5b2c8e914.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Pampers",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eac9d-8e38-75ed-8304-4116d2942849",
+      "price": 4989,
+      "percentDiscount": 0,
+      "leafletId": 501681,
+      "pageNumber": 6,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-13 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.02,
+          "y": 0.02
+        },
+        "bottomRightCorner": {
+          "x": 0.98,
+          "y": 0.52
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Pieluchy Pampers Premium Care S2 46-pak",
+      "image": "https://imgproxy.blix.pl/product_occurrence//d5fdf7bd-80fd-4b1e-8b20-ae90c06d17e0.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Pampers",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eac9d-8e39-7d43-96e6-a81b4f2f686a",
+      "price": 4499,
+      "percentDiscount": 0,
+      "leafletId": 501681,
+      "pageNumber": 6,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-13 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.02,
+          "y": 0.51
+        },
+        "bottomRightCorner": {
+          "x": 0.98,
+          "y": 0.92
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Pieluchomajtki Pampers Pants rozmiar 4 9-15 kg",
+      "image": "https://imgproxy.blix.pl/product_occurrence//b5ff69b2-bf15-47cc-907b-039f65eef4a9.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Pampers",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eac9d-8e5d-78aa-9699-f81a68f4b962",
+      "price": 4889,
+      "percentDiscount": 0,
+      "leafletId": 501681,
+      "pageNumber": 7,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-13 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.1,
+          "y": 0.1
+        },
+        "bottomRightCorner": {
+          "x": 0.92,
+          "y": 0.48
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Pieluchomajtki Pampers Pants rozmiar 6 14-19 kg",
+      "image": "https://imgproxy.blix.pl/product_occurrence//cf2deb36-5b71-4b06-89c0-7724982b530e.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Pampers",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eac9d-8e5e-7764-8d50-c08ee73c4e6a",
+      "price": 4879,
+      "percentDiscount": 0,
+      "leafletId": 501681,
+      "pageNumber": 7,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-13 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.08,
+          "y": 0.5
+        },
+        "bottomRightCorner": {
+          "x": 0.92,
+          "y": 0.89
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Mydło dla niemowląt i dzieci Bambino",
+      "image": "https://imgproxy.blix.pl/product_occurrence//c7ee6fab-fa22-4a46-adf1-7215299d1763.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Bambino",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eac9d-8e76-76a5-bf5a-a6d72c5a0eec",
+      "price": 489,
+      "percentDiscount": 0,
+      "leafletId": 501681,
+      "pageNumber": 8,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-13 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.02,
+          "y": 0.02
+        },
+        "bottomRightCorner": {
+          "x": 0.49,
+          "y": 0.55
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": "9680019d6",
+      "name": "Chusteczki nawilżane dla dzieci i niemowląt Dada Everyday 3-pak",
+      "image": "https://imgproxy.blix.pl/product_occurrence//374ebaf7-1779-4097-8637-6cc4aa3b0536.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Dada",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eac9d-8e77-7378-98f6-b4c32a3d0013",
+      "price": 999,
+      "percentDiscount": 0,
+      "leafletId": 501681,
+      "pageNumber": 8,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-13 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.51,
+          "y": 0.11
+        },
+        "bottomRightCorner": {
+          "x": 0.98,
+          "y": 0.55
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": "e362d974c",
+      "name": "Chusteczki nawilżane dla dzieci i niemowląt Dada Extra Care Aloe Care",
+      "image": "https://imgproxy.blix.pl/product_occurrence//41373866-7fd2-4c93-a26e-92d22cb91762.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Dada",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eac9d-8e77-73dc-98f6-b4c32ae192e4",
+      "price": 699,
+      "percentDiscount": 0,
+      "leafletId": 501681,
+      "pageNumber": 8,
+      "dateStart": {
+        "date": "2026-06-11 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-13 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.02,
+          "y": 0.56
+        },
+        "bottomRightCorner": {
+          "x": 0.98,
+          "y": 0.92
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    }
+  ],
+  "id": 501681,
+  "badge": {
+    "message": "aktualna",
+    "class": "lav-available"
+  },
+  "nextLeafletData": {
+    "id": 502062,
+    "brandId": 23,
+    "brandSlug": "biedronka"
+  }
+}

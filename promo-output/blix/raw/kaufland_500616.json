@@ -1,0 +1,3010 @@
+{
+  "viewer": {
+    "leaflet_url": "https://blix.pl/sklep/kaufland/gazetka/500616/",
+    "leaflet_name": "Jeszcze taniej do końca czerwca!",
+    "date_start": {
+      "date": "2026-05-22 00:00:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "date_end": {
+      "date": "2026-07-01 23:59:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "date_publish": {
+      "date": "2026-06-03 07:44:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "date_publish_end": {
+      "date": "2026-07-01 23:59:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "img_url": "https://gazetki.blix.pl/api/",
+    "has_alcohol": false,
+    "pages": [
+      {
+        "page": 0,
+        "width": 1655,
+        "height": 2338,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/500616/?pageNumber=1",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500616/5c36a07a-64fd-4700-af78-020fcc15a820.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500616
+      },
+      {
+        "page": 1,
+        "width": 1655,
+        "height": 2338,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/500616/?pageNumber=2",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500616/4e48f4a2-8383-484e-84a7-e74af2b46d1c.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500616
+      },
+      {
+        "page": 2,
+        "width": 1655,
+        "height": 2338,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/500616/?pageNumber=3",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500616/a49f955b-197c-407c-a5cc-61f3e840095d.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500616
+      },
+      {
+        "page": 3,
+        "width": 1655,
+        "height": 2338,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/500616/?pageNumber=4",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500616/cbbcc866-85b8-4e7d-ba43-c33e57ea8c1b.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500616
+      },
+      {
+        "page": 4,
+        "width": 1655,
+        "height": 2338,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/500616/?pageNumber=5",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500616/c30f5d83-2f45-439f-a01d-f5d0d38992a4.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500616
+      },
+      {
+        "page": 5,
+        "width": 1655,
+        "height": 2338,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/500616/?pageNumber=6",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500616/fa70c7f8-ee3d-4c63-9ad5-baf901778661.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500616
+      },
+      {
+        "page": 6,
+        "width": 1655,
+        "height": 2338,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/500616/?pageNumber=7",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500616/3e504b91-92ce-4bf2-a124-9741c96222a4.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500616
+      },
+      {
+        "page": 7,
+        "width": 1655,
+        "height": 2338,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/500616/?pageNumber=8",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500616/214f5ba9-3ced-4915-a41a-68d652e8ed4b.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500616
+      },
+      {
+        "page": 8,
+        "width": 1655,
+        "height": 2338,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/500616/?pageNumber=9",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500616/f13d2eba-0625-47f8-962b-582cead57d30.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500616
+      },
+      {
+        "page": 9,
+        "width": 1655,
+        "height": 2338,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/500616/?pageNumber=10",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500616/97774e52-0675-4336-bae5-2383acc49c34.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500616
+      },
+      {
+        "page": 10,
+        "width": 1080,
+        "height": 1700,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/500616/?pageNumber=11",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500616/ec09fb197e3f5e7d4fc786a7ef2a7b4c.jpeg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500616
+      }
+    ]
+  },
+  "brand": {
+    "id": 46,
+    "thumbnail": "https://imgproxy.blix.pl/image/brand/9b5e19eb2c9ea489e10171d4a49509f3.jpeg",
+    "name": "Kaufland",
+    "slug": "kaufland",
+    "logo_uri": "https://imgproxy.blix.pl/image/brand/9b5e19eb2c9ea489e10171d4a49509f3.jpeg"
+  },
+  "brandUrl": "https://blix.pl/sklep/kaufland/",
+  "inserts": [],
+  "keywords": {
+    "bebiko": "/produkty/dziecko/akcesoria-dla-niemowlat/bebiko",
+    "lasagne": "/produkty/artykuly-spozywcze/dania-gotowe/lasagne",
+    "mleko": "/produkty/artykuly-spozywcze/nabial/mleko",
+    "kabanosy": "/produkty/artykuly-spozywcze/wedliny/kabanosy",
+    "róże": "/produkty/dom-i-ogrod/ogrod/roze",
+    "szynka": "/produkty/artykuly-spozywcze/mieso/szynka",
+    "sałata": "/produkty/artykuly-spozywcze/warzywa/salata",
+    "skrzydełka": "/produkty/artykuly-spozywcze/dania-gotowe/skrzydelka",
+    "kurczak": "/produkty/artykuly-spozywcze/mieso/kurczak",
+    "flaki": "/produkty/artykuly-spozywcze/dania-gotowe/flaki",
+    "podpaski": "/produkty/kosmetyki-higiena-zdrowie/higiena-intymna/podpaski",
+    "salceson": "/produkty/artykuly-spozywcze/wedliny/salceson",
+    "schab": "/produkty/artykuly-spozywcze/mieso/schab",
+    "margaryna": "/produkty/artykuly-spozywcze/nabial/margaryna",
+    "kopytka": "/produkty/artykuly-spozywcze/dania-gotowe/kopytka"
+  },
+  "description": "<p>Obejrzyj najnowszą gazetkę sieci <strong>Kaufland, Jeszcze taniej do końca czerwca!</strong>, obowiązującą od 22 maja do 1 lipca. Ta aktualna gazetka <strong>Kaufland</strong> zawiera wiele wspaniałych promocji na różnego rodzaju produkty.</p><p>Znajdziesz w niej m.in. oferty na: <strong>Kasza gryczana prażona K-Stąd Takie Dobre</strong> za <strong>4,09zł</strong>, <strong>Mleko świeże 3,2% tł. K-Stąd Takie Dobre</strong> za <strong>2,79zł</strong>, <strong>Mleko UHT 0,5% tł. K-Stąd Takie Dobre</strong> za <strong>1,89zł</strong>, <strong>Kopytka K-Classic</strong> za <strong>4,89zł</strong>, <strong>Krewetki białe 31-40 Ocean</strong> za <strong>17,99zł</strong>, <strong>Oliwki zielone w marynacie czosnkowo-ziołowej Perla Pełna Dobra</strong> za <strong>4,89zł</strong>, <strong>Kluski lane K-Classic</strong> za <strong>4,89zł</strong>, <strong>Oliwki zielone w marynacie chili Perla Pełna Dobra</strong> za <strong>4,89zł</strong>.</p><p>To nie jedyne promocje, jakie możesz znaleźć w gazetce <strong>Kaufland, Jeszcze taniej do końca czerwca!</strong> od 22 maja. Nie czekaj! Sprawdź, co jeszcze ma do zaoferowania <strong>Kaufland</strong> w miesiącu czerwiec!</p>",
+  "lastPageData": [
+    {
+      "leaflet": {
+        "id": 501435,
+        "brandId": 47,
+        "name": "Gazetka Znane Marki Hipermarket Auchan",
+        "datePublish": {
+          "date": "2026-06-09 06:10:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "datePublishEnd": {
+          "date": "2026-06-09 06:10:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateStart": {
+          "date": "2026-06-09 06:10:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateEnd": {
+          "date": "2026-06-09 06:10:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "coverImpressionPixels": [],
+        "priority": false,
+        "hasAlcohol": false,
+        "isHidden": false
+      },
+      "page": {
+        "page": 0,
+        "imageUrl": "https://imgproxy.blix.pl/image/leaflet/501435/38d596ee-463c-4ed6-8cf6-85424d695ff3.jpg?ext=jpg",
+        "leafletId": 501435,
+        "type": 0
+      },
+      "brand": {
+        "id": 47,
+        "thumbnail": "https://imgproxy.blix.pl/image/brand/f1497864fd7e717193074b0c710960f0.jpg",
+        "name": "Auchan",
+        "slug": "auchan",
+        "logo_uri": "https://imgproxy.blix.pl/image/brand/f1497864fd7e717193074b0c710960f0.jpg"
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "leaflet": {
+        "id": 501420,
+        "brandId": 51,
+        "name": "Inspiracje tygodnia Czas nad wodą",
+        "datePublish": {
+          "date": "2026-06-10 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "datePublishEnd": {
+          "date": "2026-06-10 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateStart": {
+          "date": "2026-06-10 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateEnd": {
+          "date": "2026-06-10 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "coverImpressionPixels": [
+          "https://acdc.api.dmp.nsaudience.pl/frontend/api/matchMainScript.jpg?sourceId=ac&acdc=Wydawca_13_06&ad_event_type=impression"
+        ],
+        "priority": false,
+        "hasAlcohol": false,
+        "isHidden": false
+      },
+      "page": {
+        "page": 0,
+        "imageUrl": "https://imgproxy.blix.pl/image/leaflet/501420/818f9c92-c7f1-47ff-a2bb-97442a7271ff.jpg?ext=jpg",
+        "leafletId": 501420,
+        "type": 0
+      },
+      "brand": {
+        "id": 51,
+        "thumbnail": "https://imgproxy.blix.pl/image/brand/009a4e69e0832285e5f754b1c2890f1e.jpeg",
+        "name": "Netto",
+        "slug": "netto",
+        "logo_uri": "https://imgproxy.blix.pl/image/brand/009a4e69e0832285e5f754b1c2890f1e.jpeg"
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "leaflet": {
+        "id": 500916,
+        "brandId": 51,
+        "name": "Mocna Kolekcja - Alkohole Mocne",
+        "datePublish": {
+          "date": "2026-06-08 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "datePublishEnd": {
+          "date": "2026-06-08 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateStart": {
+          "date": "2026-06-08 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateEnd": {
+          "date": "2026-06-08 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "coverImpressionPixels": [],
+        "priority": false,
+        "hasAlcohol": true,
+        "isHidden": false
+      },
+      "page": {
+        "page": 0,
+        "imageUrl": "https://imgproxy.blix.pl/image/leaflet/500916/48eb38a9-242f-4403-a78a-8f33077ff29e.jpg?ext=jpg",
+        "leafletId": 500916,
+        "type": 0
+      },
+      "brand": {
+        "id": 51,
+        "thumbnail": "https://imgproxy.blix.pl/image/brand/009a4e69e0832285e5f754b1c2890f1e.jpeg",
+        "name": "Netto",
+        "slug": "netto",
+        "logo_uri": "https://imgproxy.blix.pl/image/brand/009a4e69e0832285e5f754b1c2890f1e.jpeg"
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "leaflet": {
+        "id": 501492,
+        "brandId": 58,
+        "name": "Katalog alkoholi",
+        "datePublish": {
+          "date": "2026-06-10 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "datePublishEnd": {
+          "date": "2026-06-10 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateStart": {
+          "date": "2026-06-10 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateEnd": {
+          "date": "2026-06-10 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "coverImpressionPixels": [],
+        "priority": false,
+        "hasAlcohol": true,
+        "isHidden": false
+      },
+      "page": {
+        "page": 0,
+        "imageUrl": "https://imgproxy.blix.pl/image/leaflet/501492/25ae9b43-ee3e-4a31-add5-622840fad464.jpg?ext=jpg",
+        "leafletId": 501492,
+        "type": 0
+      },
+      "brand": {
+        "id": 58,
+        "thumbnail": "https://imgproxy.blix.pl/image/brand/6926b4a99041e18b7d7c990efa756993.jpeg",
+        "name": "Żabka",
+        "slug": "zabka",
+        "logo_uri": "https://imgproxy.blix.pl/image/brand/6926b4a99041e18b7d7c990efa756993.jpeg"
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    }
+  ],
+  "productOffers": [
+    {
+      "hash": "1c96f5c34",
+      "name": "Kasza gryczana prażona K-Stąd Takie Dobre",
+      "image": "https://imgproxy.blix.pl/product_occurrence//10b75a17-da72-474f-ba73-28afdd4bd667.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "K-Stąd Takie Dobre",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-a4f6-7bcd-97b2-1e9166e02cf1",
+      "price": 409,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 6,
+      "dateStart": {
+        "date": "2026-06-03 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.01,
+          "y": 0.38
+        },
+        "bottomRightCorner": {
+          "x": 0.35,
+          "y": 0.67
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Mleko świeże 3,2% tł. K-Stąd Takie Dobre",
+      "image": "https://imgproxy.blix.pl/product_occurrence//29d759a3-b9db-44db-9732-36b496caa019.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "K-Stąd Takie Dobre",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-60bd-7d2e-9339-d51b2e601dc2",
+      "price": 279,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 3,
+      "dateStart": {
+        "date": "2026-05-22 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.67,
+          "y": 0.67
+        },
+        "bottomRightCorner": {
+          "x": 0.99,
+          "y": 0.96
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Mleko UHT 0,5% tł. K-Stąd Takie Dobre",
+      "image": "https://imgproxy.blix.pl/product_occurrence//d2e3f768-cb6c-4e78-857a-fd0a81d85349.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "K-Stąd Takie Dobre",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-60bd-7ce2-9339-d51b2d75d6ab",
+      "price": 189,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 3,
+      "dateStart": {
+        "date": "2026-05-22 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.34,
+          "y": 0.67
+        },
+        "bottomRightCorner": {
+          "x": 0.68,
+          "y": 0.96
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": "fb393689b",
+      "name": "Kopytka K-Classic",
+      "image": "https://imgproxy.blix.pl/product_occurrence//b3c7703d-a27d-421d-a99a-a769a4c87224.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "K-Classic",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-60ec-7901-8c91-3c1d679bf5f4",
+      "price": 489,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 4,
+      "dateStart": {
+        "date": "2026-06-03 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.02,
+          "y": 0.36
+        },
+        "bottomRightCorner": {
+          "x": 0.5,
+          "y": 0.65
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Krewetki białe 31-40 Ocean",
+      "image": "https://imgproxy.blix.pl/product_occurrence//235419b1-1b76-425d-b9f5-b24f69e3414f.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Ocean",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-60ed-7a82-b663-bb6145f5b452",
+      "price": 1799,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 4,
+      "dateStart": {
+        "date": "2026-06-03 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.5,
+          "y": 0.36
+        },
+        "bottomRightCorner": {
+          "x": 0.99,
+          "y": 0.65
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Oliwki zielone w marynacie czosnkowo-ziołowej Perla Pełna Dobra",
+      "image": "https://imgproxy.blix.pl/product_occurrence//5185903c-1d0e-43fa-8d18-3c9ab59b61d1.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Perla",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-60ed-7ad2-b663-bb6146787e93",
+      "price": 489,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 4,
+      "dateStart": {
+        "date": "2026-06-03 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.01,
+          "y": 0.64
+        },
+        "bottomRightCorner": {
+          "x": 0.5,
+          "y": 0.95
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": "5dd43639c",
+      "name": "Kluski lane K-Classic",
+      "image": "https://imgproxy.blix.pl/product_occurrence//bd54b6ab-45da-40e7-9ee8-2289316338f8.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "K-Classic",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-60ed-7a12-b663-bb6145cf2b78",
+      "price": 489,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 4,
+      "dateStart": {
+        "date": "2026-06-03 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.02,
+          "y": 0.36
+        },
+        "bottomRightCorner": {
+          "x": 0.5,
+          "y": 0.65
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Oliwki zielone w marynacie chili Perla Pełna Dobra",
+      "image": "https://imgproxy.blix.pl/product_occurrence//5bc26eb5-bdb2-490c-921a-f777268450a4.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Perla",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-60ed-7b16-b663-bb614711fcd7",
+      "price": 489,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 4,
+      "dateStart": {
+        "date": "2026-06-03 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.01,
+          "y": 0.64
+        },
+        "bottomRightCorner": {
+          "x": 0.5,
+          "y": 0.95
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Margaryna w kostce Kasia",
+      "image": "https://imgproxy.blix.pl/product_occurrence//5659a8e4-8813-447c-8d92-93cff8f5fff6.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Kasia",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-60ed-7b56-b663-bb6147f67bcb",
+      "price": 319,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 4,
+      "dateStart": {
+        "date": "2026-06-03 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.5,
+          "y": 0.64
+        },
+        "bottomRightCorner": {
+          "x": 0.99,
+          "y": 0.95
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": "2f655d6f3",
+      "name": "Makaron pełnoziarnisty K-Stąd Takie Dobre spaghetti",
+      "image": "https://imgproxy.blix.pl/product_occurrence//f28c9467-d0d9-4bc0-95e5-de717666ec86.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "K-Stąd Takie Dobre",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-6124-745b-a912-d5ac1a6a4999",
+      "price": 389,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 5,
+      "dateStart": {
+        "date": "2026-05-22 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.01,
+          "y": 0.37
+        },
+        "bottomRightCorner": {
+          "x": 0.34,
+          "y": 0.67
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": "a86c84f86",
+      "name": "Makaron pełnoziarnisty K-Stąd Takie Dobre świderki",
+      "image": "https://imgproxy.blix.pl/product_occurrence//85769c4d-a7c4-4899-8e70-9d845c512355.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "K-Stąd Takie Dobre",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-6125-74ad-94aa-e94e48254884",
+      "price": 389,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 5,
+      "dateStart": {
+        "date": "2026-05-22 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.01,
+          "y": 0.37
+        },
+        "bottomRightCorner": {
+          "x": 0.34,
+          "y": 0.67
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": "ed21a0d69",
+      "name": "Makaron K-Classic",
+      "image": "https://imgproxy.blix.pl/product_occurrence//2f043ff5-7fea-4883-9795-86ccb0e172d2.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "K-Classic",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-6125-7519-94aa-e94e48e95125",
+      "price": 179,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 5,
+      "dateStart": {
+        "date": "2026-05-22 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.33,
+          "y": 0.37
+        },
+        "bottomRightCorner": {
+          "x": 0.67,
+          "y": 0.67
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Makaron K-Stąd Takie Dobre świderki",
+      "image": "https://imgproxy.blix.pl/product_occurrence//56336fa4-c82c-4c12-9589-fa83b130c3b1.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "K-Stąd Takie Dobre",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-6125-7571-94aa-e94e49d45399",
+      "price": 359,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 5,
+      "dateStart": {
+        "date": "2026-05-22 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.66,
+          "y": 0.37
+        },
+        "bottomRightCorner": {
+          "x": 1,
+          "y": 0.67
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Makaron K-Stąd Takie Dobre gniazda-nitki",
+      "image": "https://imgproxy.blix.pl/product_occurrence//cd85e4cf-5113-4fd6-bcbe-f023b8e2294e.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "K-Stąd Takie Dobre",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-6125-75e1-94aa-e94e49fe2416",
+      "price": 279,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 5,
+      "dateStart": {
+        "date": "2026-05-22 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.01,
+          "y": 0.66
+        },
+        "bottomRightCorner": {
+          "x": 0.34,
+          "y": 0.96
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Makaron K-Classic Lasagne",
+      "image": "https://imgproxy.blix.pl/product_occurrence//73549404-e2b7-4ae1-860b-e87660a0a922.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "K-Classic",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-6125-7659-94aa-e94e4ab07554",
+      "price": 479,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 5,
+      "dateStart": {
+        "date": "2026-05-22 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.66,
+          "y": 0.66
+        },
+        "bottomRightCorner": {
+          "x": 1,
+          "y": 0.96
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Makaron jajeczny K-Stąd Takie Dobre krajanka",
+      "image": "https://imgproxy.blix.pl/product_occurrence//14cc7fd9-76d8-48d9-ab37-d12a8bd40bc2.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "K-Stąd Takie Dobre",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-6125-761d-94aa-e94e4a68d00e",
+      "price": 159,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 5,
+      "dateStart": {
+        "date": "2026-05-22 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.33,
+          "y": 0.66
+        },
+        "bottomRightCorner": {
+          "x": 0.67,
+          "y": 0.96
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Margaryna Słynne MR Roślinne",
+      "image": "https://imgproxy.blix.pl/product_occurrence//788d210f-d9ba-4986-8ebd-fc28eca821dc.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Słynne Mr",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-60bd-7c26-9339-d51b2cc67f04",
+      "price": 549,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 3,
+      "dateStart": {
+        "date": "2026-05-22 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.5,
+          "y": 0.37
+        },
+        "bottomRightCorner": {
+          "x": 0.99,
+          "y": 0.68
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": "887640716",
+      "name": "Kasza jęczmienna wiejska K-Stąd Takie Dobre",
+      "image": "https://imgproxy.blix.pl/product_occurrence//667451ab-a23d-4aa8-9d0e-d8701d64c84a.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "K-Stąd Takie Dobre",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-a4f8-70ff-9347-1bf960cacb33",
+      "price": 179,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 6,
+      "dateStart": {
+        "date": "2026-06-03 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.33,
+          "y": 0.38
+        },
+        "bottomRightCorner": {
+          "x": 0.67,
+          "y": 0.67
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": "512afdd5d",
+      "name": "Makaron orzo K-Classic",
+      "image": "https://imgproxy.blix.pl/product_occurrence//5e29fb17-1c87-498d-a9b0-3de10c90d0b4.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "K-Classic",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-a4f8-719f-9347-1bf962413905",
+      "price": 379,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 6,
+      "dateStart": {
+        "date": "2026-06-03 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.01,
+          "y": 0.65
+        },
+        "bottomRightCorner": {
+          "x": 0.35,
+          "y": 0.95
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Oliwki zielone K-Classic",
+      "image": "https://imgproxy.blix.pl/product_occurrence//7660597f-a975-48b0-985f-4f0d17f7355d.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "K-Classic",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-a4f8-7163-9347-1bf961a62bcd",
+      "price": 179,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 6,
+      "dateStart": {
+        "date": "2026-06-03 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.65,
+          "y": 0.38
+        },
+        "bottomRightCorner": {
+          "x": 0.99,
+          "y": 0.67
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": "4ed886952",
+      "name": "Ryż długoziarnisty K-Classic",
+      "image": "https://imgproxy.blix.pl/product_occurrence//228506c7-e6e5-4b3b-8c87-0f5c77f768c1.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "K-Classic",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-a4f8-71d3-9347-1bf963335efe",
+      "price": 279,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 6,
+      "dateStart": {
+        "date": "2026-06-03 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.33,
+          "y": 0.65
+        },
+        "bottomRightCorner": {
+          "x": 0.67,
+          "y": 0.95
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Makaron z pszenicy durum Pipe Rigate K-Classic",
+      "image": "https://imgproxy.blix.pl/product_occurrence//1df8c597-023d-41d8-b90c-e78880dcc65f.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "K-Classic",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-a4f8-7227-9347-1bf963ed45cf",
+      "price": 229,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 6,
+      "dateStart": {
+        "date": "2026-06-03 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.65,
+          "y": 0.65
+        },
+        "bottomRightCorner": {
+          "x": 0.99,
+          "y": 0.95
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Makaron z pszenicy durum Farfalle K-Classic",
+      "image": "https://imgproxy.blix.pl/product_occurrence//1d326d8c-807b-4560-8683-6dcc96e9bbf7.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "K-Classic",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-a4f8-7257-9347-1bf9649b4662",
+      "price": 229,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 6,
+      "dateStart": {
+        "date": "2026-06-03 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.65,
+          "y": 0.65
+        },
+        "bottomRightCorner": {
+          "x": 0.99,
+          "y": 0.95
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Pierś z gęsi Drosed Selection mrożona z kością ze skórą w różnej wadze",
+      "image": "https://imgproxy.blix.pl/product_occurrence//2b83b321-b7fc-44cc-9fe3-f0cffe19cf13.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Drosed",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-a533-7425-9658-6709ae888eb0",
+      "price": 5599,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 9,
+      "dateStart": {
+        "date": "2026-06-03 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.01,
+          "y": 0.37
+        },
+        "bottomRightCorner": {
+          "x": 0.34,
+          "y": 0.66
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": "f4b9d423d",
+      "name": "Olej rzepakowy K-Classic",
+      "image": "https://imgproxy.blix.pl/product_occurrence//b39b2ac3-5d7f-43ed-bdea-e85ba82d3868.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "K-Classic",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-a534-7423-8e40-0162cc42ce24",
+      "price": 459,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 9,
+      "dateStart": {
+        "date": "2026-06-03 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.67,
+          "y": 0.37
+        },
+        "bottomRightCorner": {
+          "x": 0.99,
+          "y": 0.66
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Serek typu włoskiego K-Stąd Takie Dobre",
+      "image": "https://imgproxy.blix.pl/product_occurrence//1f5341cd-85f0-4a25-bc40-6128210a9120.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "K-Stąd Takie Dobre",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-a534-746f-8e40-0162ccf135d4",
+      "price": 499,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 9,
+      "dateStart": {
+        "date": "2026-06-03 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.01,
+          "y": 0.65
+        },
+        "bottomRightCorner": {
+          "x": 0.34,
+          "y": 0.95
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": "4cb9c58dc",
+      "name": "Mleko ekologiczne 3,9% tł. Piątnica",
+      "image": "https://imgproxy.blix.pl/product_occurrence//cfb00c79-3346-4e45-92cf-e06dd3157d8e.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Piątnica",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-a534-74af-8e40-0162cdc133c0",
+      "price": 699,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 9,
+      "dateStart": {
+        "date": "2026-06-03 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.34,
+          "y": 0.65
+        },
+        "bottomRightCorner": {
+          "x": 0.67,
+          "y": 0.95
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Formuła na bazie mleka Bebiko 3",
+      "image": "https://imgproxy.blix.pl/product_occurrence//8ba93373-7fcc-420d-ac1a-66c3c14af9ad.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Bebiko",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-a534-7523-8e40-0162cf8da625",
+      "price": 3299,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 9,
+      "dateStart": {
+        "date": "2026-06-03 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.67,
+          "y": 0.65
+        },
+        "bottomRightCorner": {
+          "x": 0.99,
+          "y": 0.95
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Formuła na bazie mleka Bebiko 2",
+      "image": "https://imgproxy.blix.pl/product_occurrence//0d6ba5d5-397d-478a-804b-d2c2b85b5dc2.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Bebiko",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-a534-74eb-8e40-0162cea21bd6",
+      "price": 3299,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 9,
+      "dateStart": {
+        "date": "2026-06-03 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.67,
+          "y": 0.65
+        },
+        "bottomRightCorner": {
+          "x": 0.99,
+          "y": 0.95
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Formuła na bazie mleka Bebiko 4",
+      "image": "https://imgproxy.blix.pl/product_occurrence//62ae9e71-b50e-4fc2-8d08-ef4c2c4093d1.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Bebiko",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-a534-755f-8e40-0162d060ca57",
+      "price": 3299,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 9,
+      "dateStart": {
+        "date": "2026-06-03 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.67,
+          "y": 0.65
+        },
+        "bottomRightCorner": {
+          "x": 0.99,
+          "y": 0.95
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Formuła na bazie mleka Bebiko 5",
+      "image": "https://imgproxy.blix.pl/product_occurrence//643cb751-c3c1-4162-b537-0b9eb1d71dce.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Bebiko",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-a534-75cf-8e40-0162d0ebc72b",
+      "price": 3299,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 9,
+      "dateStart": {
+        "date": "2026-06-03 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.67,
+          "y": 0.65
+        },
+        "bottomRightCorner": {
+          "x": 0.99,
+          "y": 0.95
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": "0d98947b7",
+      "name": "Olej słonecznikowy K-Classic",
+      "image": "https://imgproxy.blix.pl/product_occurrence//6f306347-346a-443d-8530-7ca8c8afc409.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "K-Classic",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-a534-73b3-8e40-0162cc2b9988",
+      "price": 599,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 9,
+      "dateStart": {
+        "date": "2026-06-03 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.34,
+          "y": 0.37
+        },
+        "bottomRightCorner": {
+          "x": 0.67,
+          "y": 0.66
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Ryba w sosie greckim MORS",
+      "image": "https://imgproxy.blix.pl/product_occurrence//5f819b03-89a7-4090-97b1-4f441a902651.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Mors",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-6049-7f1a-87f5-36453702e12b",
+      "price": 231,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 1,
+      "dateStart": {
+        "date": "2026-05-22 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0,
+          "y": 0.38
+        },
+        "bottomRightCorner": {
+          "x": 0.34,
+          "y": 0.68
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Kubek szklany poj. 0,28l",
+      "image": "https://imgproxy.blix.pl/product_occurrence//4874911f-b87f-4db4-a8e8-ae649dc5c873.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Kaufland",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c3a-4cb0-7243-be47-4575e45f6026",
+      "price": 249,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 7,
+      "dateStart": {
+        "date": "2026-05-21 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-06 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0,
+          "y": 0.64
+        },
+        "bottomRightCorner": {
+          "x": 0.33,
+          "y": 0.94
+        }
+      },
+      "availabilityLabel": {
+        "message": "archiwalna",
+        "class": "lav-archive"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Podgrzewacze 3,5h",
+      "image": "https://imgproxy.blix.pl/product_occurrence//edad6d7d-096c-427f-83c9-4902bec96351.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Kaufland",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c3a-4cb0-721f-be47-4575e408c293",
+      "price": 1499,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 7,
+      "dateStart": {
+        "date": "2026-05-21 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-06 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.65,
+          "y": 0.34
+        },
+        "bottomRightCorner": {
+          "x": 1,
+          "y": 0.66
+        }
+      },
+      "availabilityLabel": {
+        "message": "archiwalna",
+        "class": "lav-archive"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Woda demineralizowana poj. 5l do akumulatorów i chłodnic, żelazek z nawilżaczem, farb wodorozcieńczalnych",
+      "image": "https://imgproxy.blix.pl/product_occurrence//63bd04d4-3d42-498d-a3eb-024f4f05f767.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Kaufland",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c3a-4cb0-7263-be47-4575e4ec8462",
+      "price": 599,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 7,
+      "dateStart": {
+        "date": "2026-05-21 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-06 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.32,
+          "y": 0.64
+        },
+        "bottomRightCorner": {
+          "x": 0.67,
+          "y": 0.96
+        }
+      },
+      "availabilityLabel": {
+        "message": "archiwalna",
+        "class": "lav-archive"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Wkład do mopa VILEDA Ultramax",
+      "image": "https://imgproxy.blix.pl/product_occurrence//1bc3d9da-1047-4b3f-9d59-d82536ddf533.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "VILEDA",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c3a-4cb0-7283-be47-4575e5df8f6b",
+      "price": 2499,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 7,
+      "dateStart": {
+        "date": "2026-05-21 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-06 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.65,
+          "y": 0.64
+        },
+        "bottomRightCorner": {
+          "x": 1,
+          "y": 0.95
+        }
+      },
+      "availabilityLabel": {
+        "message": "archiwalna",
+        "class": "lav-archive"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Garnek z pokrywką ze stali szlachetnej SPICE & SOUL śr. 16cm poj. 1,2l ze szklaną pokrywką z wylotem dla pary do wszystkich rodzajów kuchenek",
+      "image": "https://imgproxy.blix.pl/product_occurrence//65c0d273-6bae-4133-a371-59e580d51cfe.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "SPICE & SOUL",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c3a-4cb0-71e7-be47-4575e370663c",
+      "price": 1999,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 7,
+      "dateStart": {
+        "date": "2026-05-21 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-06 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.32,
+          "y": 0.34
+        },
+        "bottomRightCorner": {
+          "x": 0.67,
+          "y": 0.66
+        }
+      },
+      "availabilityLabel": {
+        "message": "archiwalna",
+        "class": "lav-archive"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Gaz bez cylindra QC K-CLASSIC",
+      "image": "https://imgproxy.blix.pl/product_occurrence//5d6fb2f5-ab71-4886-a7b7-1c9e4dd341c1.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "K-CLASSIC",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c3a-56d6-7b31-b885-7ed11ba7d391",
+      "price": 1499,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 8,
+      "dateStart": {
+        "date": "2026-05-21 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-06 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.35,
+          "y": 0.35
+        },
+        "bottomRightCorner": {
+          "x": 0.67,
+          "y": 0.66
+        }
+      },
+      "availabilityLabel": {
+        "message": "archiwalna",
+        "class": "lav-archive"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Cylinder CO2 K-CLASSIC do wszystkich popularnych systemów gazowania wody z wkręcanym cylindrem BIO-CO2 poj. 60l",
+      "image": "https://imgproxy.blix.pl/product_occurrence//305a7559-dbdd-454a-bc34-12b5572f5d22.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "K-CLASSIC",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c3a-51de-7c8c-8aac-5e59e3f7625d",
+      "price": 1499,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 8,
+      "dateStart": {
+        "date": "2026-05-21 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-06 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.03,
+          "y": 0.35
+        },
+        "bottomRightCorner": {
+          "x": 0.34,
+          "y": 0.66
+        }
+      },
+      "availabilityLabel": {
+        "message": "archiwalna",
+        "class": "lav-archive"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Gaśnica proszkowa samochodowa TYGP-1z ABC",
+      "image": "https://imgproxy.blix.pl/product_occurrence//5cae8a9a-9928-4f0b-b3d2-a398c6fcec81.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Kaufland",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c3a-65ad-78d0-bf72-d1cde5cdc250",
+      "price": 3999,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 8,
+      "dateStart": {
+        "date": "2026-05-21 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-06 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.66,
+          "y": 0.35
+        },
+        "bottomRightCorner": {
+          "x": 0.99,
+          "y": 0.95
+        }
+      },
+      "availabilityLabel": {
+        "message": "archiwalna",
+        "class": "lav-archive"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Wkład parafinowy ANGELA 72h 17,5x5,7cm",
+      "image": "https://imgproxy.blix.pl/product_occurrence//dc53aa8e-2feb-4a7d-af21-84874591c4a3.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "ANGELA",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c3a-5bf1-730a-a2aa-58e8f73c5aa6",
+      "price": 399,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 8,
+      "dateStart": {
+        "date": "2026-05-21 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-06 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.02,
+          "y": 0.65
+        },
+        "bottomRightCorner": {
+          "x": 0.34,
+          "y": 0.95
+        }
+      },
+      "availabilityLabel": {
+        "message": "archiwalna",
+        "class": "lav-archive"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Wkład olejowy ANGELA 100h 14,1x6,7cm",
+      "image": "https://imgproxy.blix.pl/product_occurrence//e57d8b32-b025-4c9d-be8e-2ba8f2ec1c36.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "ANGELA",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c3a-60d5-75f4-a831-864440e30306",
+      "price": 499,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 8,
+      "dateStart": {
+        "date": "2026-05-21 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-06 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.33,
+          "y": 0.65
+        },
+        "bottomRightCorner": {
+          "x": 0.67,
+          "y": 0.95
+        }
+      },
+      "availabilityLabel": {
+        "message": "archiwalna",
+        "class": "lav-archive"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Olej z pierwszego tłoczenia Kujawski",
+      "image": "https://imgproxy.blix.pl/product_occurrence//6da7b3cb-beab-4006-928a-3524a7dd59b5.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Kujawski",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4e-a19b-7f44-b3f1-73d74ef3da36",
+      "price": 675,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 0,
+      "dateStart": {
+        "date": "2026-06-03 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.02,
+          "y": 0.59
+        },
+        "bottomRightCorner": {
+          "x": 0.35,
+          "y": 0.96
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Kabanosy roślinne Tarczyński Piri-Piri",
+      "image": "https://imgproxy.blix.pl/product_occurrence//3fec697a-d8d6-4abc-b158-67b2fed39814.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Tarczyński",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4e-a19e-7b94-b852-087f8881898c",
+      "price": 599,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 0,
+      "dateStart": {
+        "date": "2026-06-03 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.33,
+          "y": 0.59
+        },
+        "bottomRightCorner": {
+          "x": 0.7,
+          "y": 0.96
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Kabanosy roślinne Tarczyński 3 ziarna",
+      "image": "https://imgproxy.blix.pl/product_occurrence//25ed246c-a680-403d-a28e-adcf2d2c3e84.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Tarczyński",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4e-a19e-7ad0-b852-087f88107fa2",
+      "price": 599,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 0,
+      "dateStart": {
+        "date": "2026-06-03 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.33,
+          "y": 0.59
+        },
+        "bottomRightCorner": {
+          "x": 0.7,
+          "y": 0.96
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Szynka Tatrzańska Olewnik",
+      "image": "https://imgproxy.blix.pl/product_occurrence//9c76e45c-431a-4f66-9399-85456fdff394.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Olewnik",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4e-a19e-7c38-b852-087f8885dca3",
+      "price": 287,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 0,
+      "dateStart": {
+        "date": "2026-06-03 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.69,
+          "y": 0.59
+        },
+        "bottomRightCorner": {
+          "x": 0.99,
+          "y": 0.96
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Kabanosy roślinne Tarczyński Oryginalne",
+      "image": "https://imgproxy.blix.pl/product_occurrence//bceac159-e269-476e-b24c-c4e5114beb6d.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Tarczyński",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4e-a19e-79b4-b852-087f880f494f",
+      "price": 599,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 0,
+      "dateStart": {
+        "date": "2026-06-03 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.33,
+          "y": 0.59
+        },
+        "bottomRightCorner": {
+          "x": 0.7,
+          "y": 0.96
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Patelnia aluminiowa SPICE & SOUL śr. 28cm do zdrowego beztłuszczowego smażenia trwała i odporna na zarysowania",
+      "image": "https://imgproxy.blix.pl/product_occurrence//f7c67bfc-0b3e-4757-9950-6e69b6e65e61.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "SPICE & SOUL",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c3a-4cb0-7177-be47-4575e3692a06",
+      "price": 3499,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 7,
+      "dateStart": {
+        "date": "2026-05-21 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-06 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0,
+          "y": 0.34
+        },
+        "bottomRightCorner": {
+          "x": 0.34,
+          "y": 0.66
+        }
+      },
+      "availabilityLabel": {
+        "message": "archiwalna",
+        "class": "lav-archive"
+      }
+    },
+    {
+      "hash": "1a407316f",
+      "name": "Sałatka warzywna ze szczypiorkiem DEGA",
+      "image": "https://imgproxy.blix.pl/product_occurrence//e5bebf23-1329-42b5-9183-343d4d1e1924.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Dega",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-604b-770b-a853-2f8876502838",
+      "price": 135,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 1,
+      "dateStart": {
+        "date": "2026-05-22 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.32,
+          "y": 0.38
+        },
+        "bottomRightCorner": {
+          "x": 0.67,
+          "y": 0.68
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Wątroba wieprzowa",
+      "image": "https://imgproxy.blix.pl/product_occurrence//12bc04ee-a46f-4198-834c-dcbfde217e1e.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Kaufland",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-604b-77cf-a853-2f88777b4b91",
+      "price": 499,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 1,
+      "dateStart": {
+        "date": "2026-05-22 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0,
+          "y": 0.66
+        },
+        "bottomRightCorner": {
+          "x": 0.34,
+          "y": 0.97
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": "b8ff2c9ff",
+      "name": "Sznycelki wieprzowo-drobiowe TAURUS",
+      "image": "https://imgproxy.blix.pl/product_occurrence//acb258f2-00d9-4f2e-8c18-958821b897c5.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Taurus",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-604b-777b-a853-2f887743480d",
+      "price": 295,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 1,
+      "dateStart": {
+        "date": "2026-05-22 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.65,
+          "y": 0.38
+        },
+        "bottomRightCorner": {
+          "x": 1,
+          "y": 0.68
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Porcja rosołowa z indyka część korpusu",
+      "image": "https://imgproxy.blix.pl/product_occurrence//4b2c583a-6531-4bd3-8c71-a7ff31bc5a33.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Kaufland",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-604b-784f-a853-2f88786b0d7d",
+      "price": 559,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 1,
+      "dateStart": {
+        "date": "2026-05-22 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.65,
+          "y": 0.66
+        },
+        "bottomRightCorner": {
+          "x": 1,
+          "y": 0.97
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Skrzydła z polskiego kurczaka",
+      "image": "https://imgproxy.blix.pl/product_occurrence//0464504a-3c27-4e58-9d54-0a8c8d1d973d.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Kaufland",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-604b-7813-a853-2f8877af1053",
+      "price": 799,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 1,
+      "dateStart": {
+        "date": "2026-05-22 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.32,
+          "y": 0.66
+        },
+        "bottomRightCorner": {
+          "x": 0.67,
+          "y": 0.97
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": "38a5d86fc",
+      "name": "Flaki wołowe gotowane",
+      "image": "https://imgproxy.blix.pl/product_occurrence//30a5197d-ebf2-462c-931f-22b65ab71d51.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Kaufland",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-6081-765d-9e8e-cc8b29adcf27",
+      "price": 1199,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 2,
+      "dateStart": {
+        "date": "2026-06-03 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.01,
+          "y": 0.39
+        },
+        "bottomRightCorner": {
+          "x": 0.34,
+          "y": 0.66
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": "a9e11d801",
+      "name": "Ser Podlaski MLEKPOL",
+      "image": "https://imgproxy.blix.pl/product_occurrence//8e96e48d-5dff-40c4-93cf-2eefb1319962.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Mlekpol",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-6082-7830-aa77-227489b44dbb",
+      "price": 239,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 2,
+      "dateStart": {
+        "date": "2026-06-03 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.67,
+          "y": 0.39
+        },
+        "bottomRightCorner": {
+          "x": 0.99,
+          "y": 0.66
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": "780a924fa",
+      "name": "Ser Bursztyn SKARBY SEROWARA",
+      "image": "https://imgproxy.blix.pl/product_occurrence//3d2c0de1-6f38-40cd-95fa-7b16daaa0133.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Skarby Serowara",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-6082-77c0-aa77-227489145eac",
+      "price": 499,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 2,
+      "dateStart": {
+        "date": "2026-06-03 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.33,
+          "y": 0.39
+        },
+        "bottomRightCorner": {
+          "x": 0.67,
+          "y": 0.66
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": "36f0a21bc",
+      "name": "Salceson jak ze wsi MASARNIA KRZYŚ",
+      "image": "https://imgproxy.blix.pl/product_occurrence//ddbedd2e-2436-4158-bacc-2a287369bb9d.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Masarnia Krzyś",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-6082-787c-aa77-227489f8ae85",
+      "price": 231,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 2,
+      "dateStart": {
+        "date": "2026-06-03 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.01,
+          "y": 0.65
+        },
+        "bottomRightCorner": {
+          "x": 0.34,
+          "y": 0.95
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Schab cygański KABANOS",
+      "image": "https://imgproxy.blix.pl/product_occurrence//e05d01bc-cc3b-4805-a7d4-aa44b1755e91.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Kabanos",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-6082-78bc-aa77-22748a35f4f7",
+      "price": 319,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 2,
+      "dateStart": {
+        "date": "2026-06-03 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.33,
+          "y": 0.65
+        },
+        "bottomRightCorner": {
+          "x": 0.67,
+          "y": 0.95
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": "fc3a643d7",
+      "name": "Kabanosy klasyczne wieprzowe TARCZYŃSKI",
+      "image": "https://imgproxy.blix.pl/product_occurrence//0ddbfb45-7342-4f2a-9c25-f25fdc5a99a6.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Tarczyński",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-6082-7920-aa77-22748aec78c6",
+      "price": 340,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 2,
+      "dateStart": {
+        "date": "2026-06-03 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.67,
+          "y": 0.65
+        },
+        "bottomRightCorner": {
+          "x": 0.99,
+          "y": 0.95
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Kabanosy klasyczne drobiowe TARCZYŃSKI",
+      "image": "https://imgproxy.blix.pl/product_occurrence//6bdd5e73-03e0-4a7a-87b1-e3f1e908996d.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Tarczyński",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-6082-7960-aa77-22748ba45b44",
+      "price": 340,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 2,
+      "dateStart": {
+        "date": "2026-06-03 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.67,
+          "y": 0.65
+        },
+        "bottomRightCorner": {
+          "x": 0.99,
+          "y": 0.95
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": "3e0df075f",
+      "name": "Tłuszcz roślinny 72% tł. Benita",
+      "image": "https://imgproxy.blix.pl/product_occurrence//305517a8-3a76-4cfb-b982-85f09c6a487e.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Benita",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-60bc-7d88-9366-bc4aae1e29b6",
+      "price": 189,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 3,
+      "dateStart": {
+        "date": "2026-05-22 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.02,
+          "y": 0.37
+        },
+        "bottomRightCorner": {
+          "x": 0.51,
+          "y": 0.68
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Napój owsiany Barista K-take it veggie",
+      "image": "https://imgproxy.blix.pl/product_occurrence//9525c282-7222-416d-9ca7-434f00cf9af6.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "K-Take It Veggie",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019e8c4f-60bd-7c8e-9339-d51b2d012da1",
+      "price": 589,
+      "percentDiscount": 0,
+      "leafletId": 500616,
+      "pageNumber": 3,
+      "dateStart": {
+        "date": "2026-05-22 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-07-01 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0.02,
+          "y": 0.67
+        },
+        "bottomRightCorner": {
+          "x": 0.35,
+          "y": 0.96
+        }
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    }
+  ],
+  "id": 500616,
+  "badge": {
+    "message": "aktualna",
+    "class": "lav-available"
+  },
+  "nextLeafletData": {
+    "id": 458402,
+    "brandId": 46,
+    "brandSlug": "kaufland"
+  }
+}

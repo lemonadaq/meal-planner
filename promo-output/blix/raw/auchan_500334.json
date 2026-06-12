@@ -1,0 +1,519 @@
+{
+  "viewer": {
+    "leaflet_url": "https://blix.pl/sklep/auchan/gazetka/500334/",
+    "leaflet_name": "Gazetka Zielona Góra | Kierunek wakacje",
+    "date_start": null,
+    "date_end": {
+      "date": "2026-06-16 23:59:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "date_publish": {
+      "date": "2026-06-02 09:22:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "date_publish_end": {
+      "date": "2026-06-16 23:59:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "img_url": "https://gazetki.blix.pl/api/",
+    "has_alcohol": false,
+    "pages": [
+      {
+        "page": 0,
+        "width": 1134,
+        "height": 1588,
+        "page_uri": "https://blix.pl/sklep/auchan/gazetka/500334/?pageNumber=1",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500334/ef0dfa0b-d1fd-4b3c-b1df-3d9f7a4424ff.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500334
+      },
+      {
+        "page": 1,
+        "width": 1134,
+        "height": 1588,
+        "page_uri": "https://blix.pl/sklep/auchan/gazetka/500334/?pageNumber=2",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500334/dd87fbe8-3158-453f-8c27-d4b187860519.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500334
+      },
+      {
+        "page": 2,
+        "width": 1134,
+        "height": 1588,
+        "page_uri": "https://blix.pl/sklep/auchan/gazetka/500334/?pageNumber=3",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500334/498e2dfc-7c49-4988-95fc-acf55286a7a7.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500334
+      },
+      {
+        "page": 3,
+        "width": 1134,
+        "height": 1588,
+        "page_uri": "https://blix.pl/sklep/auchan/gazetka/500334/?pageNumber=4",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500334/5f48643f-ace3-4a19-9ceb-2a39d3fa6808.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500334
+      },
+      {
+        "page": 4,
+        "width": 1134,
+        "height": 1588,
+        "page_uri": "https://blix.pl/sklep/auchan/gazetka/500334/?pageNumber=5",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500334/5d1ccd1c-c201-40ee-9c31-464e3c186526.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500334
+      },
+      {
+        "page": 5,
+        "width": 1134,
+        "height": 1588,
+        "page_uri": "https://blix.pl/sklep/auchan/gazetka/500334/?pageNumber=6",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500334/23ce7dc0-508a-47a6-8471-f5b1c4426a90.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500334
+      },
+      {
+        "page": 6,
+        "width": 1134,
+        "height": 1588,
+        "page_uri": "https://blix.pl/sklep/auchan/gazetka/500334/?pageNumber=7",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500334/ba4a1f37-1fb8-42b9-98c1-b87fa23031d4.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500334
+      },
+      {
+        "page": 7,
+        "width": 1134,
+        "height": 1588,
+        "page_uri": "https://blix.pl/sklep/auchan/gazetka/500334/?pageNumber=8",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500334/93d8fb37-c8c1-4cf4-a28d-e13c3bab7b9c.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500334
+      },
+      {
+        "page": 8,
+        "width": 1134,
+        "height": 1588,
+        "page_uri": "https://blix.pl/sklep/auchan/gazetka/500334/?pageNumber=9",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500334/4ee842d3-e92c-458b-856c-0ec52040f6e2.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500334
+      },
+      {
+        "page": 9,
+        "width": 1134,
+        "height": 1588,
+        "page_uri": "https://blix.pl/sklep/auchan/gazetka/500334/?pageNumber=10",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500334/40765918-b207-4844-a352-19dfc8e14fab.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500334
+      },
+      {
+        "page": 10,
+        "width": 1134,
+        "height": 1588,
+        "page_uri": "https://blix.pl/sklep/auchan/gazetka/500334/?pageNumber=11",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500334/91de94d4-225d-40bd-915a-1cac91e2e710.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500334
+      },
+      {
+        "page": 11,
+        "width": 1134,
+        "height": 1588,
+        "page_uri": "https://blix.pl/sklep/auchan/gazetka/500334/?pageNumber=12",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500334/d1a5641e-916c-4254-a9a6-d8205586a91a.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500334
+      },
+      {
+        "page": 12,
+        "width": 1134,
+        "height": 1588,
+        "page_uri": "https://blix.pl/sklep/auchan/gazetka/500334/?pageNumber=13",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500334/a2122d1c-9185-4769-bf8d-ecdaecd00641.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500334
+      },
+      {
+        "page": 13,
+        "width": 1134,
+        "height": 1588,
+        "page_uri": "https://blix.pl/sklep/auchan/gazetka/500334/?pageNumber=14",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500334/37d4b100-311e-4c34-b543-ba09f068b3f9.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500334
+      },
+      {
+        "page": 14,
+        "width": 1134,
+        "height": 1588,
+        "page_uri": "https://blix.pl/sklep/auchan/gazetka/500334/?pageNumber=15",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500334/2427fe62-5d5c-49ec-9b81-60fe814aa91b.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500334
+      },
+      {
+        "page": 15,
+        "width": 1134,
+        "height": 1588,
+        "page_uri": "https://blix.pl/sklep/auchan/gazetka/500334/?pageNumber=16",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500334/d0d5df5f-5d31-4c56-9e7a-66bfd34cc51a.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500334
+      },
+      {
+        "page": 16,
+        "width": 1134,
+        "height": 1588,
+        "page_uri": "https://blix.pl/sklep/auchan/gazetka/500334/?pageNumber=17",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500334/28e0322a-a54f-4855-8035-9fa352254d00.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500334
+      },
+      {
+        "page": 17,
+        "width": 1134,
+        "height": 1588,
+        "page_uri": "https://blix.pl/sklep/auchan/gazetka/500334/?pageNumber=18",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500334/d4ba618a-2da8-4394-b863-09bc998bffaa.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500334
+      },
+      {
+        "page": 18,
+        "width": 1134,
+        "height": 1588,
+        "page_uri": "https://blix.pl/sklep/auchan/gazetka/500334/?pageNumber=19",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500334/95adfa39-913e-4f73-8d53-c3f8bc16eeca.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500334
+      },
+      {
+        "page": 19,
+        "width": 1134,
+        "height": 1588,
+        "page_uri": "https://blix.pl/sklep/auchan/gazetka/500334/?pageNumber=20",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500334/d63848ec-c461-417c-afc3-57d3ef5eabec.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500334
+      },
+      {
+        "page": 20,
+        "width": 1134,
+        "height": 1588,
+        "page_uri": "https://blix.pl/sklep/auchan/gazetka/500334/?pageNumber=21",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500334/f9c4fe66-5d6c-4ab9-b18b-b657f65bbf65.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500334
+      },
+      {
+        "page": 21,
+        "width": 1134,
+        "height": 1588,
+        "page_uri": "https://blix.pl/sklep/auchan/gazetka/500334/?pageNumber=22",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500334/17a31a80-efb6-476d-85d6-381438ff864a.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500334
+      },
+      {
+        "page": 22,
+        "width": 1134,
+        "height": 1588,
+        "page_uri": "https://blix.pl/sklep/auchan/gazetka/500334/?pageNumber=23",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500334/cea61ce4-c23a-4124-b960-96f75487c5ac.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500334
+      },
+      {
+        "page": 23,
+        "width": 1134,
+        "height": 1588,
+        "page_uri": "https://blix.pl/sklep/auchan/gazetka/500334/?pageNumber=24",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500334/c9038eb8-2688-4d23-966e-c476c6a66121.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500334
+      },
+      {
+        "page": 24,
+        "width": 1134,
+        "height": 1588,
+        "page_uri": "https://blix.pl/sklep/auchan/gazetka/500334/?pageNumber=25",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500334/f2943a23-0359-4c1e-ac28-0aead1e885fb.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500334
+      },
+      {
+        "page": 25,
+        "width": 1134,
+        "height": 1588,
+        "page_uri": "https://blix.pl/sklep/auchan/gazetka/500334/?pageNumber=26",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500334/71a2e79a-bb54-4876-8426-439f2da197a5.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500334
+      },
+      {
+        "page": 26,
+        "width": 1134,
+        "height": 1588,
+        "page_uri": "https://blix.pl/sklep/auchan/gazetka/500334/?pageNumber=27",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500334/81dd0c0d-1a19-4a92-9383-d839e0c2d918.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500334
+      },
+      {
+        "page": 27,
+        "width": 1134,
+        "height": 1588,
+        "page_uri": "https://blix.pl/sklep/auchan/gazetka/500334/?pageNumber=28",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500334/650d461e-3b6d-419d-8750-00b97369d579.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500334
+      },
+      {
+        "page": 28,
+        "width": 1080,
+        "height": 1700,
+        "page_uri": "https://blix.pl/sklep/auchan/gazetka/500334/?pageNumber=29",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500334/d5c698bb14b563797f64c557132286c1.jpeg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500334
+      }
+    ]
+  },
+  "brand": {
+    "id": 47,
+    "thumbnail": "https://imgproxy.blix.pl/image/brand/f1497864fd7e717193074b0c710960f0.jpg",
+    "name": "Auchan",
+    "slug": "auchan",
+    "logo_uri": "https://imgproxy.blix.pl/image/brand/f1497864fd7e717193074b0c710960f0.jpg"
+  },
+  "brandUrl": "https://blix.pl/sklep/auchan/",
+  "inserts": [],
+  "keywords": {
+    "łopatka": "/produkty/artykuly-spozywcze/mieso/lopatka",
+    "mozzarella": "/produkty/artykuly-spozywcze/nabial/mozzarella",
+    "czajnik": "/produkty/agd-rtv/agd/czajnik",
+    "fasola": "/produkty/artykuly-spozywcze/warzywa/fasola",
+    "plecak": "/produkty/sport-rekreacja-i-podroze/walizki-torby-i-plecaki/plecak",
+    "biustonosz": "/produkty/moda/bielizna/biustonosz",
+    "materac": "/produkty/dom-i-ogrod/salon/materac",
+    "lodówka": "/produkty/agd-rtv/agd/lodowka",
+    "kompresor": "/produkty/dom-i-ogrod/majsterkowanie/kompresor",
+    "powerbank": "/produkty/agd-rtv/zasilanie/powerbank",
+    "radio": "/produkty/agd-rtv/audio/radio",
+    "bokserki": "/produkty/moda/bielizna/bokserki",
+    "słuchawki": "/produkty/agd-rtv/audio/sluchawki",
+    "klopsiki": "/produkty/artykuly-spozywcze/dania-gotowe/klopsiki",
+    "boczek": "/produkty/artykuly-spozywcze/mieso/boczek"
+  },
+  "description": "<p>Obejrzyj najnowszą gazetkę sieci <strong>Auchan, Gazetka Zielona Góra | Kierunek wakacje</strong>, obowiązującą  do 16 czerwca. Ta aktualna gazetka <strong>Auchan</strong> zawiera wiele wspaniałych promocji na różnego rodzaju produkty.</p><p>Nie czekaj! Sprawdź, co jeszcze ma do zaoferowania <strong>Auchan</strong> w miesiącu czerwiec!</p>",
+  "lastPageData": [
+    {
+      "leaflet": {
+        "id": 500550,
+        "brandId": 58,
+        "name": "KATALOG LODOWY",
+        "datePublish": {
+          "date": "2026-06-03 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "datePublishEnd": {
+          "date": "2026-06-03 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateStart": {
+          "date": "2026-06-03 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateEnd": {
+          "date": "2026-06-03 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "coverImpressionPixels": [],
+        "priority": false,
+        "hasAlcohol": false,
+        "isHidden": false
+      },
+      "page": {
+        "page": 0,
+        "imageUrl": "https://imgproxy.blix.pl/image/leaflet/500550/3822417d-71fa-4381-8245-24426607f719.jpg?ext=jpg",
+        "leafletId": 500550,
+        "type": 0
+      },
+      "brand": {
+        "id": 58,
+        "thumbnail": "https://imgproxy.blix.pl/image/brand/6926b4a99041e18b7d7c990efa756993.jpeg",
+        "name": "Żabka",
+        "slug": "zabka",
+        "logo_uri": "https://imgproxy.blix.pl/image/brand/6926b4a99041e18b7d7c990efa756993.jpeg"
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "leaflet": {
+        "id": 501648,
+        "brandId": 46,
+        "name": "Gazetka Tygodnia",
+        "datePublish": {
+          "date": "2026-06-09 08:46:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "datePublishEnd": {
+          "date": "2026-06-09 08:46:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateStart": {
+          "date": "2026-06-09 08:46:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateEnd": {
+          "date": "2026-06-09 08:46:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "coverImpressionPixels": [],
+        "priority": true,
+        "hasAlcohol": false,
+        "isHidden": false
+      },
+      "page": {
+        "page": 0,
+        "imageUrl": "https://imgproxy.blix.pl/image/leaflet/501648/f27806dc-a070-4e13-abb1-e43774b09736.jpg?ext=jpg",
+        "leafletId": 501648,
+        "type": 0
+      },
+      "brand": {
+        "id": 46,
+        "thumbnail": "https://imgproxy.blix.pl/image/brand/9b5e19eb2c9ea489e10171d4a49509f3.jpeg",
+        "name": "Kaufland",
+        "slug": "kaufland",
+        "logo_uri": "https://imgproxy.blix.pl/image/brand/9b5e19eb2c9ea489e10171d4a49509f3.jpeg"
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "leaflet": {
+        "id": 500616,
+        "brandId": 46,
+        "name": "Jeszcze taniej do końca czerwca!",
+        "datePublish": {
+          "date": "2026-06-03 07:44:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "datePublishEnd": {
+          "date": "2026-06-03 07:44:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateStart": {
+          "date": "2026-06-03 07:44:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateEnd": {
+          "date": "2026-06-03 07:44:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "coverImpressionPixels": [],
+        "priority": false,
+        "hasAlcohol": false,
+        "isHidden": false
+      },
+      "page": {
+        "page": 0,
+        "imageUrl": "https://imgproxy.blix.pl/image/leaflet/500616/5c36a07a-64fd-4700-af78-020fcc15a820.jpg?ext=jpg",
+        "leafletId": 500616,
+        "type": 0
+      },
+      "brand": {
+        "id": 46,
+        "thumbnail": "https://imgproxy.blix.pl/image/brand/9b5e19eb2c9ea489e10171d4a49509f3.jpeg",
+        "name": "Kaufland",
+        "slug": "kaufland",
+        "logo_uri": "https://imgproxy.blix.pl/image/brand/9b5e19eb2c9ea489e10171d4a49509f3.jpeg"
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "leaflet": {
+        "id": 500916,
+        "brandId": 51,
+        "name": "Mocna Kolekcja - Alkohole Mocne",
+        "datePublish": {
+          "date": "2026-06-08 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "datePublishEnd": {
+          "date": "2026-06-08 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateStart": {
+          "date": "2026-06-08 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateEnd": {
+          "date": "2026-06-08 00:00:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "coverImpressionPixels": [],
+        "priority": false,
+        "hasAlcohol": true,
+        "isHidden": false
+      },
+      "page": {
+        "page": 0,
+        "imageUrl": "https://imgproxy.blix.pl/image/leaflet/500916/48eb38a9-242f-4403-a78a-8f33077ff29e.jpg?ext=jpg",
+        "leafletId": 500916,
+        "type": 0
+      },
+      "brand": {
+        "id": 51,
+        "thumbnail": "https://imgproxy.blix.pl/image/brand/009a4e69e0832285e5f754b1c2890f1e.jpeg",
+        "name": "Netto",
+        "slug": "netto",
+        "logo_uri": "https://imgproxy.blix.pl/image/brand/009a4e69e0832285e5f754b1c2890f1e.jpeg"
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    }
+  ],
+  "productOffers": [],
+  "id": 500334,
+  "badge": {
+    "message": "aktualna",
+    "class": "lav-available"
+  },
+  "nextLeafletData": {
+    "id": 500331,
+    "brandId": 47,
+    "brandSlug": "auchan"
+  }
+}

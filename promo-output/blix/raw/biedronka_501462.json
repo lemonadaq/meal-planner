@@ -1,0 +1,1039 @@
+{
+  "viewer": {
+    "leaflet_url": "https://blix.pl/sklep/biedronka/gazetka/501462/",
+    "leaflet_name": "Zakupowe Inspiracje w Biedronce",
+    "date_start": {
+      "date": "2026-06-12 00:00:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "date_end": null,
+    "date_publish": {
+      "date": "2026-06-12 08:00:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "date_publish_end": {
+      "date": "2026-06-15 23:59:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "img_url": "https://gazetki.blix.pl/api/",
+    "has_alcohol": false,
+    "pages": [
+      {
+        "page": 0,
+        "width": 1200,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501462/?pageNumber=1",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501462/ac19f93d-68ff-4036-8ecc-ad2cc52fcf1b.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501462
+      },
+      {
+        "page": 1,
+        "width": 1200,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501462/?pageNumber=2",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501462/cbaa423e-0bf3-47a1-8967-85214bd8c025.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501462
+      },
+      {
+        "page": 2,
+        "width": 1200,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501462/?pageNumber=3",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501462/4b4d2899-2acf-4ae6-a962-9715040c8ffe.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501462
+      },
+      {
+        "page": 3,
+        "width": 1200,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501462/?pageNumber=4",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501462/51e05848-3d18-4039-9963-b82b649147fb.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501462
+      },
+      {
+        "page": 4,
+        "width": 1200,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501462/?pageNumber=5",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501462/34cb4860-f635-40c0-bca8-c8780b455006.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501462
+      },
+      {
+        "page": 5,
+        "width": 1200,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501462/?pageNumber=6",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501462/2195a860-f2f4-4908-8c5f-4ca40b0c1062.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501462
+      },
+      {
+        "page": 6,
+        "width": 1200,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501462/?pageNumber=7",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501462/faed179d-0813-4a94-9939-3b3cd4f47680.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501462
+      },
+      {
+        "page": 7,
+        "width": 1200,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501462/?pageNumber=8",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501462/5dbcae5f-0e3f-4d93-b8ac-85fbdae8c7c4.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501462
+      },
+      {
+        "page": 8,
+        "width": 1200,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501462/?pageNumber=9",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501462/828e13db-33f1-43b6-89b8-502bc7d1d89d.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501462
+      },
+      {
+        "page": 9,
+        "width": 1200,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501462/?pageNumber=10",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501462/9da45483-86e9-46de-a7e3-1c0cd75b3106.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501462
+      },
+      {
+        "page": 10,
+        "width": 1200,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501462/?pageNumber=11",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501462/ff1b83cb-3210-4ab3-8e59-4f846a29e93a.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501462
+      },
+      {
+        "page": 11,
+        "width": 1200,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501462/?pageNumber=12",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501462/9c267cc2-3d6c-421c-8771-94a8bac4844c.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501462
+      },
+      {
+        "page": 12,
+        "width": 1200,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501462/?pageNumber=13",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501462/88f44a8b-7254-457b-a059-d200da7e3be9.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501462
+      },
+      {
+        "page": 13,
+        "width": 1200,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501462/?pageNumber=14",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501462/26472b87-41f3-4867-8eee-ba619ed7054c.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501462
+      },
+      {
+        "page": 14,
+        "width": 1200,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501462/?pageNumber=15",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501462/8bc927a3-0b41-4b7d-9115-b21e93e27344.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501462
+      },
+      {
+        "page": 15,
+        "width": 1200,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501462/?pageNumber=16",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501462/bb31d698-6227-496a-9d4c-e3d43865b6af.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501462
+      },
+      {
+        "page": 16,
+        "width": 1200,
+        "height": 2000,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501462/?pageNumber=17",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501462/516ec557-c303-41d1-91c8-723f18393131.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501462
+      },
+      {
+        "page": 17,
+        "width": 1080,
+        "height": 1700,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/501462/?pageNumber=18",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/501462/935b0f384e36dc1eadef76711da853bb.jpeg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 501462
+      }
+    ]
+  },
+  "brand": {
+    "id": 23,
+    "thumbnail": "https://imgproxy.blix.pl/image/brand/thumbnail_23.jpg",
+    "name": "Biedronka",
+    "slug": "biedronka",
+    "logo_uri": "https://imgproxy.blix.pl/image/brand/thumbnail_23.jpg"
+  },
+  "brandUrl": "https://blix.pl/sklep/biedronka/",
+  "inserts": [],
+  "keywords": {
+    "łosoś": "/produkty/artykuly-spozywcze/ryby-i-owoce-morza/losos",
+    "sałata": "/produkty/artykuly-spozywcze/warzywa/salata",
+    "róże": "/produkty/dom-i-ogrod/ogrod/roze",
+    "matcha": "/produkty/artykuly-spozywcze/herbata/matcha",
+    "curry": "/produkty/artykuly-spozywcze/przyprawy-i-ziola/curry",
+    "chipsy": "/produkty/artykuly-spozywcze/przekaski-slone/chipsy",
+    "elektrolity": "/produkty/kosmetyki-higiena-zdrowie/suplementy-diety/elektrolity",
+    "puree": "/produkty/artykuly-spozywcze/dania-gotowe/puree",
+    "kwiaty": "/produkty/dom-i-ogrod/ogrod/kwiaty",
+    "pesto": "/produkty/artykuly-spozywcze/dania-gotowe/pesto",
+    "brzoskwinie": "/produkty/artykuly-spozywcze/owoce/brzoskwinie",
+    "mandarynki": "/produkty/artykuly-spozywcze/owoce/mandarynki",
+    "odkamieniacz": "/produkty/chemia-domowa-i-srodki-czystosci/do-czyszczenia/odkamieniacz",
+    "colgate": "/produkty/kosmetyki-higiena-zdrowie/jama-ustna/colgate",
+    "zmywarka": "/produkty/agd-rtv/agd/zmywarka"
+  },
+  "description": "<p>Obejrzyj najnowszą gazetkę sieci <strong>Biedronka, Zakupowe Inspiracje w Biedronce</strong>, obowiązującą od 12 czerwca . Ta aktualna gazetka <strong>Biedronka</strong> zawiera wiele wspaniałych promocji na różnego rodzaju produkty.</p><p>Znajdziesz w niej m.in. oferty na: <strong>Sos Develey Pesto Creme</strong> za <strong>12,99zł</strong>, <strong>Koncentrat napoju Tymbark jabłko-mięta</strong> za <strong>19,99zł</strong>, <strong>Ser w plastrach Ryki Rycki Maasdam</strong> za <strong>13,99zł</strong>, <strong>Kiełbaski szlachetne z szynką Krakus Selection</strong> za <strong>11,99zł</strong>, <strong>Sałatka chłopska Lisner z ziemniakami, kabanosem i papryką</strong> za <strong>9,99zł</strong>, <strong>Cukierki Zozole Minionki o smaku kokos-mango</strong> za <strong>3,89zł</strong>, <strong>Tabletki do zmywarki Frosch Classic Limone</strong> za <strong>49,99zł</strong>, <strong>Odkamieniacz w płynie Meglio</strong> za <strong>11,99zł</strong>.</p><p>To nie jedyne promocje, jakie możesz znaleźć w gazetce <strong>Biedronka, Zakupowe Inspiracje w Biedronce</strong> od 12 czerwca. Nie czekaj! Sprawdź, co jeszcze ma do zaoferowania <strong>Biedronka</strong> w miesiącu czerwiec!</p>",
+  "lastPageData": [
+    {
+      "leaflet": {
+        "id": 501330,
+        "brandId": 112,
+        "name": "Gazetka",
+        "datePublish": {
+          "date": "2026-06-08 13:24:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "datePublishEnd": {
+          "date": "2026-06-08 13:24:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateStart": {
+          "date": "2026-06-08 13:24:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateEnd": {
+          "date": "2026-06-08 13:24:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "coverImpressionPixels": [],
+        "priority": true,
+        "hasAlcohol": false,
+        "isHidden": false
+      },
+      "page": {
+        "page": 0,
+        "imageUrl": "https://imgproxy.blix.pl/image/leaflet/501330/b58c574c-edcd-43b5-b6a1-07b0fb373217.jpg?ext=jpg",
+        "leafletId": 501330,
+        "type": 0
+      },
+      "brand": {
+        "id": 112,
+        "thumbnail": "https://imgproxy.blix.pl/image/brand/7b07a75229f0e153750647108b4fe65d.png",
+        "name": "POLOmarket",
+        "slug": "polomarket",
+        "logo_uri": "https://imgproxy.blix.pl/image/brand/7b07a75229f0e153750647108b4fe65d.png"
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "leaflet": {
+        "id": 498021,
+        "brandId": 112,
+        "name": "Katalog Dom Przetwory",
+        "datePublish": {
+          "date": "2026-05-21 15:37:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "datePublishEnd": {
+          "date": "2026-05-21 15:37:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateStart": {
+          "date": "2026-05-21 15:37:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateEnd": {
+          "date": "2026-05-21 15:37:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "coverImpressionPixels": [],
+        "priority": false,
+        "hasAlcohol": false,
+        "isHidden": false
+      },
+      "page": {
+        "page": 0,
+        "imageUrl": "https://imgproxy.blix.pl/image/leaflet/498021/2bee9338-a128-4e3d-bb56-568fda2a657a.jpg?ext=jpg",
+        "leafletId": 498021,
+        "type": 0
+      },
+      "brand": {
+        "id": 112,
+        "thumbnail": "https://imgproxy.blix.pl/image/brand/7b07a75229f0e153750647108b4fe65d.png",
+        "name": "POLOmarket",
+        "slug": "polomarket",
+        "logo_uri": "https://imgproxy.blix.pl/image/brand/7b07a75229f0e153750647108b4fe65d.png"
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    }
+  ],
+  "productOffers": [
+    {
+      "hash": null,
+      "name": "Sos Develey Pesto Creme",
+      "image": "https://imgproxy.blix.pl/product_occurrence//15939d4d-78d6-4691-b9a3-13816af1e2fc.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Develey",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eab2a-16d6-766a-9d8a-615d8f4a0945",
+      "price": 1299,
+      "percentDiscount": 0,
+      "leafletId": 501462,
+      "pageNumber": 8,
+      "dateStart": {
+        "date": "2026-06-12 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-15 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0,
+          "y": 0
+        },
+        "bottomRightCorner": {
+          "x": 1,
+          "y": 1
+        }
+      },
+      "availabilityLabel": {
+        "message": "od dziś",
+        "class": "lav-new"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Koncentrat napoju Tymbark jabłko-mięta",
+      "image": "https://imgproxy.blix.pl/product_occurrence//6a3fc165-66a6-48f9-97ad-888920f48fe3.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Tymbark",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eab2a-16db-7a10-8505-745bd9aff885",
+      "price": 1999,
+      "percentDiscount": 0,
+      "leafletId": 501462,
+      "pageNumber": 16,
+      "dateStart": {
+        "date": "2026-06-12 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-15 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0,
+          "y": 0
+        },
+        "bottomRightCorner": {
+          "x": 1,
+          "y": 1
+        }
+      },
+      "availabilityLabel": {
+        "message": "od dziś",
+        "class": "lav-new"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Ser w plastrach Ryki Rycki Maasdam",
+      "image": "https://imgproxy.blix.pl/product_occurrence//fe04e77a-0fcf-4131-a9cb-99dc6b474ae5.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Ryki",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eab2a-16da-7ebc-9e07-7ba05b83b263",
+      "price": 1399,
+      "percentDiscount": 0,
+      "leafletId": 501462,
+      "pageNumber": 15,
+      "dateStart": {
+        "date": "2026-06-12 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-15 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0,
+          "y": 0
+        },
+        "bottomRightCorner": {
+          "x": 1,
+          "y": 1
+        }
+      },
+      "availabilityLabel": {
+        "message": "od dziś",
+        "class": "lav-new"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Kiełbaski szlachetne z szynką Krakus Selection",
+      "image": "https://imgproxy.blix.pl/product_occurrence//d5d7980f-5ff8-4e2e-8197-691020e086a3.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Krakus",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eab2a-16da-7500-9e07-7ba05ae5efed",
+      "price": 1199,
+      "percentDiscount": 0,
+      "leafletId": 501462,
+      "pageNumber": 14,
+      "dateStart": {
+        "date": "2026-06-12 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-15 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0,
+          "y": 0
+        },
+        "bottomRightCorner": {
+          "x": 1,
+          "y": 1
+        }
+      },
+      "availabilityLabel": {
+        "message": "od dziś",
+        "class": "lav-new"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Sałatka chłopska Lisner z ziemniakami, kabanosem i papryką",
+      "image": "https://imgproxy.blix.pl/product_occurrence//8788bcc9-2038-4f5c-8abb-725125ef2c09.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Lisner",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eab2a-16d9-79c6-ac36-925f37f7b0a1",
+      "price": 999,
+      "percentDiscount": 0,
+      "leafletId": 501462,
+      "pageNumber": 13,
+      "dateStart": {
+        "date": "2026-06-12 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-15 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0,
+          "y": 0
+        },
+        "bottomRightCorner": {
+          "x": 1,
+          "y": 1
+        }
+      },
+      "availabilityLabel": {
+        "message": "od dziś",
+        "class": "lav-new"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Cukierki Zozole Minionki o smaku kokos-mango",
+      "image": "https://imgproxy.blix.pl/product_occurrence//f5aba6d8-533d-403e-8634-4eab31528b2a.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Zozole",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eab2a-16d8-7c4d-9055-940f0a9775ab",
+      "price": 389,
+      "percentDiscount": 0,
+      "leafletId": 501462,
+      "pageNumber": 12,
+      "dateStart": {
+        "date": "2026-06-12 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-15 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0,
+          "y": 0
+        },
+        "bottomRightCorner": {
+          "x": 1,
+          "y": 1
+        }
+      },
+      "availabilityLabel": {
+        "message": "od dziś",
+        "class": "lav-new"
+      }
+    },
+    {
+      "hash": "f8da18d8b",
+      "name": "Tabletki do zmywarki Frosch Classic Limone",
+      "image": "https://imgproxy.blix.pl/product_occurrence//e40cc5fd-d26b-43b9-a651-b1ca4dc8abfb.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Frosch",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eab2a-16d8-716d-9055-940f09b58f05",
+      "price": 4999,
+      "percentDiscount": 0,
+      "leafletId": 501462,
+      "pageNumber": 11,
+      "dateStart": {
+        "date": "2026-06-12 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-15 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0,
+          "y": 0
+        },
+        "bottomRightCorner": {
+          "x": 1,
+          "y": 1
+        }
+      },
+      "availabilityLabel": {
+        "message": "od dziś",
+        "class": "lav-new"
+      }
+    },
+    {
+      "hash": "4124c18c1",
+      "name": "Odkamieniacz w płynie Meglio",
+      "image": "https://imgproxy.blix.pl/product_occurrence//1bcff2b2-eea7-46a2-bd5d-065dc1ab5f18.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Meglio",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eab2a-16d7-774d-9848-186666c1ac28",
+      "price": 1199,
+      "percentDiscount": 0,
+      "leafletId": 501462,
+      "pageNumber": 10,
+      "dateStart": {
+        "date": "2026-06-12 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-15 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0,
+          "y": 0
+        },
+        "bottomRightCorner": {
+          "x": 1,
+          "y": 1
+        }
+      },
+      "availabilityLabel": {
+        "message": "od dziś",
+        "class": "lav-new"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Odświeżacz powietrza w patyczkach Glade Peach Paradise",
+      "image": "https://imgproxy.blix.pl/product_occurrence//ada770de-9e28-4bf8-9485-5e83c97a4747.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Glade",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eab2a-16d6-7ee2-9d8a-615d8f7b7ce7",
+      "price": 2199,
+      "percentDiscount": 0,
+      "leafletId": 501462,
+      "pageNumber": 9,
+      "dateStart": {
+        "date": "2026-06-12 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-15 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0,
+          "y": 0
+        },
+        "bottomRightCorner": {
+          "x": 1,
+          "y": 1
+        }
+      },
+      "availabilityLabel": {
+        "message": "od dziś",
+        "class": "lav-new"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Sałatka z łososiem EvraFish z kaszą pęczak, ciecierzycą, papryką i kurkumą",
+      "image": "https://imgproxy.blix.pl/product_occurrence//49227a8f-98a2-4649-8f0f-91b8e8b8f1fc.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Evrafish",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eab2a-16d1-73bb-9c48-f3299eabfe3f",
+      "price": 899,
+      "percentDiscount": 0,
+      "leafletId": 501462,
+      "pageNumber": 0,
+      "dateStart": {
+        "date": "2026-06-12 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-15 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0,
+          "y": 0
+        },
+        "bottomRightCorner": {
+          "x": 1,
+          "y": 1
+        }
+      },
+      "availabilityLabel": {
+        "message": "od dziś",
+        "class": "lav-new"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Sos śmietanowy Develey w stylu francuskim",
+      "image": "https://imgproxy.blix.pl/product_occurrence//a853779b-8e33-4ca1-ac28-b6fbbe384324.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Develey",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eab2a-16d5-7d7d-82ca-2b438cb2e2e4",
+      "price": 899,
+      "percentDiscount": 0,
+      "leafletId": 501462,
+      "pageNumber": 7,
+      "dateStart": {
+        "date": "2026-06-12 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-15 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0,
+          "y": 0
+        },
+        "bottomRightCorner": {
+          "x": 1,
+          "y": 1
+        }
+      },
+      "availabilityLabel": {
+        "message": "od dziś",
+        "class": "lav-new"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Zestaw do loków Niuqi Professional",
+      "image": "https://imgproxy.blix.pl/product_occurrence//e794fdca-4fe5-4a5b-b868-9180c05e728e.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Niuqi",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eab2a-16d5-7421-82ca-2b438c89e4eb",
+      "price": 1699,
+      "percentDiscount": 0,
+      "leafletId": 501462,
+      "pageNumber": 6,
+      "dateStart": {
+        "date": "2026-06-12 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-15 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0,
+          "y": 0
+        },
+        "bottomRightCorner": {
+          "x": 1,
+          "y": 1
+        }
+      },
+      "availabilityLabel": {
+        "message": "od dziś",
+        "class": "lav-new"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Kwiat Campanula Blue Ocean",
+      "image": "https://imgproxy.blix.pl/product_occurrence//44b21823-6429-48b3-a1fa-44c370c064b0.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Biedronka",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eab2a-16d4-7a0b-9d78-06969a1a2188",
+      "price": 1299,
+      "percentDiscount": 0,
+      "leafletId": 501462,
+      "pageNumber": 5,
+      "dateStart": {
+        "date": "2026-06-12 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-15 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0,
+          "y": 0
+        },
+        "bottomRightCorner": {
+          "x": 1,
+          "y": 1
+        }
+      },
+      "availabilityLabel": {
+        "message": "od dziś",
+        "class": "lav-new"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Napój gazowany Oshee Vitamin Boost Zero brzoskwinia-cytryna",
+      "image": "https://imgproxy.blix.pl/product_occurrence//5778da2c-b36b-4724-b9c5-f617a51be3be.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Oshee",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eab2a-16d4-70d3-9d78-0696998811cc",
+      "price": 329,
+      "percentDiscount": 0,
+      "leafletId": 501462,
+      "pageNumber": 4,
+      "dateStart": {
+        "date": "2026-06-12 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-15 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0,
+          "y": 0
+        },
+        "bottomRightCorner": {
+          "x": 1,
+          "y": 1
+        }
+      },
+      "availabilityLabel": {
+        "message": "od dziś",
+        "class": "lav-new"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Chipsy Lay's Dutch Fries with Peanut Curry Sauce",
+      "image": "https://imgproxy.blix.pl/product_occurrence//9df0872a-7bcb-4f10-badf-89fde1953a58.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Lay's",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eab2a-16d3-773c-9573-ec62d1f3004c",
+      "price": 999,
+      "percentDiscount": 0,
+      "leafletId": 501462,
+      "pageNumber": 3,
+      "dateStart": {
+        "date": "2026-06-12 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-15 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0,
+          "y": 0
+        },
+        "bottomRightCorner": {
+          "x": 1,
+          "y": 1
+        }
+      },
+      "availabilityLabel": {
+        "message": "od dziś",
+        "class": "lav-new"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Matcha Latte Jacobs o smaku truskawkowym",
+      "image": "https://imgproxy.blix.pl/product_occurrence//def57f53-4e18-4228-b357-e01ccb86868e.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Jacobs",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eab2a-16d2-7d64-bf49-140dab27cbec",
+      "price": 1049,
+      "percentDiscount": 0,
+      "leafletId": 501462,
+      "pageNumber": 2,
+      "dateStart": {
+        "date": "2026-06-12 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-15 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0,
+          "y": 0
+        },
+        "bottomRightCorner": {
+          "x": 1,
+          "y": 1
+        }
+      },
+      "availabilityLabel": {
+        "message": "od dziś",
+        "class": "lav-new"
+      }
+    },
+    {
+      "hash": null,
+      "name": "Plastry z opatrunkiem Celther Hello Kitty",
+      "image": "https://imgproxy.blix.pl/product_occurrence//71d5672f-a7d2-4d40-830e-772f4626ba1b.jpg",
+      "manufacturerName": null,
+      "manufacturerUuid": null,
+      "brandName": "Celther",
+      "brandUuid": null,
+      "subBrandName": null,
+      "subBrandUuid": null,
+      "hiperCategoryId": null,
+      "offerSubcategoryId": null,
+      "productLeafletPageUuid": "019eab2a-16d2-7364-bf49-140daab879b4",
+      "price": 899,
+      "percentDiscount": 0,
+      "leafletId": 501462,
+      "pageNumber": 1,
+      "dateStart": {
+        "date": "2026-06-12 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "dateEnd": {
+        "date": "2026-06-15 23:59:59.000000",
+        "timezone_type": 3,
+        "timezone": "Europe/Warsaw"
+      },
+      "area": {
+        "topLeftCorner": {
+          "x": 0,
+          "y": 0
+        },
+        "bottomRightCorner": {
+          "x": 1,
+          "y": 1
+        }
+      },
+      "availabilityLabel": {
+        "message": "od dziś",
+        "class": "lav-new"
+      }
+    }
+  ],
+  "id": 501462,
+  "badge": {
+    "message": "od dziś",
+    "class": "lav-new"
+  },
+  "nextLeafletData": {
+    "id": 502785,
+    "brandId": 23,
+    "brandSlug": "biedronka"
+  }
+}

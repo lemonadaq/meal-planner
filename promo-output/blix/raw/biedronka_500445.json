@@ -1,0 +1,1068 @@
+{
+  "viewer": {
+    "leaflet_url": "https://blix.pl/sklep/biedronka/gazetka/500445/",
+    "leaflet_name": "Od poniedziałku",
+    "date_start": {
+      "date": "2026-06-01 00:00:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "date_end": {
+      "date": "2026-06-06 23:59:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "date_publish": {
+      "date": "2026-05-31 14:01:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "date_publish_end": {
+      "date": "2026-06-06 23:59:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "img_url": "https://gazetki.blix.pl/api/",
+    "has_alcohol": false,
+    "pages": [
+      {
+        "page": 0,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=1",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/3c47cfc3-9014-4b99-95b7-6b737a86ddf2.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 1,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=2",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/96d8ff93-fb2e-4712-bb0c-cd2cdbdb87ab.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 2,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=3",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/b8c61a9c-2226-4423-b466-7ad927af8b20.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 3,
+        "width": 1996,
+        "height": 3248,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=4",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/4d35d840-872b-40ba-9c87-1dc52d4d4093.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 4,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=5",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/0525ad02-459b-457f-9dd5-3ecce4d4e064.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 5,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=6",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/cc7b7dd6-8846-4edc-bfc7-fa2e49017625.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 6,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=7",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/00f4065e-05d4-4a44-99d6-2c4f6c70162c.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 7,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=8",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/0b56877a-6f2d-44d2-bdf9-86b493c4902f.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 8,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=9",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/cbfd09b7-016e-4cc9-a1fc-1e31c69810a2.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 9,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=10",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/a09568f1-66ff-4f2d-8c59-b7c81a63fc71.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 10,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=11",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/656e45ad-3a33-450a-9682-702b3c2b0007.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 11,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=12",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/03ba56f4-7960-4a34-8fcb-058d1930d300.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 12,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=13",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/971585c2-8840-4908-9ada-5eba5c4f5a9b.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 13,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=14",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/d596a7fe-1e1c-407c-b1b5-1f29f0ab9d5b.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 14,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=15",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/d20e35bc-af09-42ec-8514-a601f5294c82.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 15,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=16",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/d0e896e9-6eaa-4b5f-afa2-b8a8933b1512.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 16,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=17",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/7ef08e71-917b-43ec-908d-7606e012aaff.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 17,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=18",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/c0bc848a-6aa0-4d01-b487-14ff8f1bfa8c.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 18,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=19",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/7361b0fd-da54-44e5-bc49-8bfa009171ae.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 19,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=20",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/4f78d92b-3f2d-492e-b940-bff0f2c01674.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 20,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=21",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/a957dc78-c81c-4f43-ba13-a6f51573d941.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 21,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=22",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/4d359ead-b514-4b15-8da3-f30559c6645a.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 22,
+        "width": 998,
+        "height": 1624,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=23",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/deec80a5-82b5-4f49-bcc2-afc1d507de3e.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 23,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=24",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/aac5f453-e2a4-4b7e-8dc0-5826df4bd87a.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 24,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=25",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/684121e5-3bb4-49d3-9f98-77416c3dd1e2.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 25,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=26",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/c75f0c9e-5b5a-4d92-a162-0d05502e8d84.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 26,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=27",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/68bc9e3a-10d7-4e1e-ad75-246201381193.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 27,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=28",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/2fe401b7-9673-4585-9546-88e4b1036c25.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 28,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=29",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/b920cca6-c6a5-49e0-9cfe-7748a9c8fadc.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 29,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=30",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/6633da4e-c76c-4d41-bb88-bd58c4e59a42.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 30,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=31",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/4f0feca5-d57e-4d2f-ac44-35b856e0b4c9.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 31,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=32",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/ce96ab82-0164-47c0-a431-df5782fd41e9.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 32,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=33",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/69c04237-d6fe-4612-8a84-69df4e628f1d.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 33,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=34",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/b25e3b07-e2b5-4234-a1b2-055a653daf34.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 34,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=35",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/52dff39b-e7b5-4ed8-8d34-6487b9eba94f.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 35,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=36",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/386f20c6-f705-49ed-92fe-b4e46fccb98e.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 36,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=37",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/34b4b83e-a9b7-4550-aa07-019217629a58.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 37,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=38",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/8f2f6c9e-fc53-45cf-913f-9d02a70b9f0b.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 38,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=39",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/a97df04f-9ce8-4831-9a37-3129cfcbb540.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 39,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=40",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/776f2605-8716-4e5d-bd9e-e13e5c820b54.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 40,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=41",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/ab889c9a-79e9-475f-a1ed-d0255cd0d2f1.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 41,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=42",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/183f2ac7-9f72-4416-aa11-40feeac13127.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 42,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=43",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/268635be-55bb-402d-b7fd-94b484938aa8.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 43,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=44",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/e04bfde5-0c49-4aff-97b0-d89060305c59.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 44,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=45",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/f7920531-9f0b-4444-a0e6-00270be32408.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 45,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=46",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/253a0c3f-508a-4e76-b8d1-adad72f45b1b.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 46,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=47",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/805ca3fb-2c7e-44c3-b0d6-fae82356429d.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 47,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=48",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/b9f6f37c-2043-4645-9ce2-51f05b3e41a9.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 48,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=49",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/72ee3f6b-deaa-42ab-b210-fac5158c3f6f.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 49,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=50",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/45795873-d582-4a3d-aead-1ca74ba7b036.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 50,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=51",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/99fce4e2-f4a6-4f7e-9fb4-2992366ffeab.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 51,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=52",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/eb63d9b2-6761-4815-ba38-c13a5caf978b.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 52,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=53",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/a425f64e-d611-4892-adc3-bff772cf89c8.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 53,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=54",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/0e44951a-1d7f-4b60-8582-f778ef381844.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 54,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=55",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/a9159f84-866c-46c9-83ea-498bdb446036.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 55,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=56",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/62636c87-fd4d-4d0b-aaaf-c936d83ea273.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 56,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=57",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/07f98c67-3c73-48d9-a787-6c09e2736702.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 57,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=58",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/ed58d2d0-9a88-476a-8351-1ec5ede6750f.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 58,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=59",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/710c6a84-284b-46ba-aa0f-b2ba0957d779.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 59,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=60",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/9e77446b-d60d-4409-94df-d159dddbd3df.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 60,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=61",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/fad24892-6581-4beb-b48c-f249f27ffc58.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 61,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=62",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/b7be5394-9715-4ece-9eee-3174fba27f68.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 62,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=63",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/52dc8408-a871-41c3-9a16-366cff0486a5.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 63,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=64",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/d971a36a-60b1-44dd-823c-7bb90fa53c06.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 64,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=65",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/60fe4611-028b-454c-93fb-67c216c33b56.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 65,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=66",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/2aa6dbbb-0b3f-46d8-b60a-6c4d997b296c.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 66,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=67",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/0d07e2b2-2f8e-4a2d-b2a7-7af67ad91dd6.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 67,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=68",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/63a1cb58-5a59-4abd-b641-cb3871924a44.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 68,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=69",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/bdcb0729-54e9-4d3d-82e6-de475558e82b.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 69,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=70",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/031d43fb-7b05-4664-9341-27f1140608c4.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 70,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=71",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/660eb850-f46e-4a66-af71-d03b053fce7f.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 71,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=72",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/9c8c45d3-4459-498c-aa5b-acc07ddb572a.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 72,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=73",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/063916f1-0c4f-4212-9f90-88b4f6340170.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 73,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=74",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/7f3bb5e5-c2bc-4198-8503-823a85c35982.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 74,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=75",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/6daa96d1-1c3c-438d-98d9-eb4480ed64be.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 75,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=76",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/022fe373-f398-402e-a3c6-ae4157cb2f71.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 76,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=77",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/fe57acf7-058c-486f-8793-20a74f1ed920.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 77,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=78",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/9045962c-5a58-42f2-856d-42065e0901a1.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 78,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=79",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/7c2a3365-cd5a-4636-ad23-2a30486f78c3.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 79,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=80",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/bd0400ef-14f3-4b92-a876-81813b1513b6.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 80,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=81",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/67551c99-83d0-4884-a2e1-8f1aabd81cc1.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 81,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=82",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/8bd55537-40d9-4171-b8b4-2afb32693c7c.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 82,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=83",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/2e2dc2fe-705c-4daa-9475-20cbe66deb58.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 83,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=84",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/83083ad0-6b82-4e8b-b2dd-ba47fd425ce0.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 84,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=85",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/dc69e08c-0f40-406d-994a-e03e36ba2e02.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 85,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=86",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/8028fa3a-9ebe-42c3-be30-5f5030a35955.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 86,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=87",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/78bd56b7-07d3-4a4b-b80e-7a5e9a682f80.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 87,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=88",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/14659d6b-c31a-4960-9ac6-d48845bc75a4.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 88,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=89",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/2d44b909-f9db-43f1-952f-09072754b07f.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 89,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=90",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/d9765b0f-cd8c-43c7-8aa5-cb5057c2cf8f.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 90,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=91",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/95250349-d1b5-4280-a7e5-575dd04d2afe.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 91,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=92",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/fd29e861-1338-4ee9-9cab-c60530c122f6.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 92,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=93",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/fa2bec43-1fd2-4d45-bdaa-604c11d4c525.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 93,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=94",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/de441ae7-cc7b-4649-815a-2542ae18c364.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 94,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=95",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/3822e63b-7b40-4a67-8ca4-6d46447897aa.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 95,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=96",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/0c858ddf-1a21-41dc-b6da-88d28dab576b.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 96,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=97",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/51206e39-bb25-41f2-ba96-eb1cf12a92c3.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 97,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=98",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/c4bb790b-940e-4983-abd6-06ef76a97774.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 98,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=99",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/e75f6162-3895-495b-84bf-439ddee740ba.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 99,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=100",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/9f0342e7-332c-493f-953a-ff555c7cf2b1.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 100,
+        "width": 1146,
+        "height": 1800,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=101",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/8299bb28-0fa4-4470-9c52-ac9ab41d9976.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      },
+      {
+        "page": 101,
+        "width": 1080,
+        "height": 1700,
+        "page_uri": "https://blix.pl/sklep/biedronka/gazetka/500445/?pageNumber=102",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/500445/c06a78bcfe3023ad91e57beb85d9ce9e.jpeg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 500445
+      }
+    ]
+  },
+  "brand": {
+    "id": 23,
+    "thumbnail": "https://imgproxy.blix.pl/image/brand/thumbnail_23.jpg",
+    "name": "Biedronka",
+    "slug": "biedronka",
+    "logo_uri": "https://imgproxy.blix.pl/image/brand/thumbnail_23.jpg"
+  },
+  "brandUrl": "https://blix.pl/sklep/biedronka/",
+  "inserts": [],
+  "keywords": [],
+  "description": "<p>Obejrzyj najnowszą gazetkę sieci <strong>Biedronka, Od poniedziałku</strong>, obowiązującą od 1 czerwca do 6 czerwca. Ta aktualna gazetka <strong>Biedronka</strong> zawiera wiele wspaniałych promocji na różnego rodzaju produkty.</p><p>Nie czekaj! Sprawdź, co jeszcze ma do zaoferowania <strong>Biedronka</strong> w miesiącu czerwiec!</p>",
+  "lastPageData": [
+    {
+      "leaflet": {
+        "id": 500874,
+        "brandId": 112,
+        "name": "Katalog alkoholi",
+        "datePublish": {
+          "date": "2026-06-02 15:15:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "datePublishEnd": {
+          "date": "2026-06-02 15:15:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateStart": {
+          "date": "2026-06-02 15:15:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateEnd": {
+          "date": "2026-06-02 15:15:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "coverImpressionPixels": [],
+        "priority": false,
+        "hasAlcohol": true,
+        "isHidden": false
+      },
+      "page": {
+        "page": 0,
+        "imageUrl": "https://imgproxy.blix.pl/image/leaflet/500874/9efdbfc1-054c-47c6-8453-e70050db490d.jpg?ext=jpg",
+        "leafletId": 500874,
+        "type": 0
+      },
+      "brand": {
+        "id": 112,
+        "thumbnail": "https://imgproxy.blix.pl/image/brand/7b07a75229f0e153750647108b4fe65d.png",
+        "name": "POLOmarket",
+        "slug": "polomarket",
+        "logo_uri": "https://imgproxy.blix.pl/image/brand/7b07a75229f0e153750647108b4fe65d.png"
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    },
+    {
+      "leaflet": {
+        "id": 494115,
+        "brandId": 112,
+        "name": "Katalog Przełamanie Lodów",
+        "datePublish": {
+          "date": "2026-05-04 10:14:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "datePublishEnd": {
+          "date": "2026-05-04 10:14:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateStart": {
+          "date": "2026-05-04 10:14:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "dateEnd": {
+          "date": "2026-05-04 10:14:00.000000",
+          "timezone_type": 3,
+          "timezone": "Europe/Warsaw"
+        },
+        "coverImpressionPixels": [],
+        "priority": false,
+        "hasAlcohol": false,
+        "isHidden": false
+      },
+      "page": {
+        "page": 0,
+        "imageUrl": "https://imgproxy.blix.pl/image/leaflet/494115/fde4db1b-9166-4b08-9277-1da67ef4ba4a.jpg?ext=jpg",
+        "leafletId": 494115,
+        "type": 0
+      },
+      "brand": {
+        "id": 112,
+        "thumbnail": "https://imgproxy.blix.pl/image/brand/7b07a75229f0e153750647108b4fe65d.png",
+        "name": "POLOmarket",
+        "slug": "polomarket",
+        "logo_uri": "https://imgproxy.blix.pl/image/brand/7b07a75229f0e153750647108b4fe65d.png"
+      },
+      "availabilityLabel": {
+        "message": "aktualna",
+        "class": "lav-available"
+      }
+    }
+  ],
+  "productOffers": [],
+  "id": 500445,
+  "badge": {
+    "message": "archiwalna",
+    "class": "lav-archive"
+  },
+  "nextLeafletData": {
+    "id": 501207,
+    "brandId": 31,
+    "brandSlug": "carrefour"
+  }
+}

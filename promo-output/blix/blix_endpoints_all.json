@@ -1,0 +1,604 @@
+[
+  {
+    "store_slug": "auchan",
+    "leaflet_id": "501438",
+    "leaflet_url": "https://blix.pl/sklep/auchan/gazetka/501438/",
+    "endpoint_url": "https://blix.pl/getleaflet/auchan/501438/",
+    "source_page_url": "https://blix.pl/sklep/auchan/"
+  },
+  {
+    "store_slug": "auchan",
+    "leaflet_id": "501435",
+    "leaflet_url": "https://blix.pl/sklep/auchan/gazetka/501435/",
+    "endpoint_url": "https://blix.pl/getleaflet/auchan/501435/",
+    "source_page_url": "https://blix.pl/sklep/auchan/"
+  },
+  {
+    "store_slug": "auchan",
+    "leaflet_id": "501426",
+    "leaflet_url": "https://blix.pl/sklep/auchan/gazetka/501426/",
+    "endpoint_url": "https://blix.pl/getleaflet/auchan/501426/",
+    "source_page_url": "https://blix.pl/sklep/auchan/"
+  },
+  {
+    "store_slug": "auchan",
+    "leaflet_id": "501423",
+    "leaflet_url": "https://blix.pl/sklep/auchan/gazetka/501423/",
+    "endpoint_url": "https://blix.pl/getleaflet/auchan/501423/",
+    "source_page_url": "https://blix.pl/sklep/auchan/"
+  },
+  {
+    "store_slug": "auchan",
+    "leaflet_id": "501129",
+    "leaflet_url": "https://blix.pl/sklep/auchan/gazetka/501129/",
+    "endpoint_url": "https://blix.pl/getleaflet/auchan/501129/",
+    "source_page_url": "https://blix.pl/sklep/auchan/"
+  },
+  {
+    "store_slug": "auchan",
+    "leaflet_id": "500334",
+    "leaflet_url": "https://blix.pl/sklep/auchan/gazetka/500334/",
+    "endpoint_url": "https://blix.pl/getleaflet/auchan/500334/",
+    "source_page_url": "https://blix.pl/sklep/auchan/"
+  },
+  {
+    "store_slug": "auchan",
+    "leaflet_id": "500331",
+    "leaflet_url": "https://blix.pl/sklep/auchan/gazetka/500331/",
+    "endpoint_url": "https://blix.pl/getleaflet/auchan/500331/",
+    "source_page_url": "https://blix.pl/sklep/auchan/"
+  },
+  {
+    "store_slug": "auchan",
+    "leaflet_id": "500277",
+    "leaflet_url": "https://blix.pl/sklep/auchan/gazetka/500277/",
+    "endpoint_url": "https://blix.pl/getleaflet/auchan/500277/",
+    "source_page_url": "https://blix.pl/sklep/auchan/"
+  },
+  {
+    "store_slug": "auchan",
+    "leaflet_id": "500271",
+    "leaflet_url": "https://blix.pl/sklep/auchan/gazetka/500271/",
+    "endpoint_url": "https://blix.pl/getleaflet/auchan/500271/",
+    "source_page_url": "https://blix.pl/sklep/auchan/"
+  },
+  {
+    "store_slug": "auchan",
+    "leaflet_id": "499776",
+    "leaflet_url": "https://blix.pl/sklep/auchan/gazetka/499776/",
+    "endpoint_url": "https://blix.pl/getleaflet/auchan/499776/",
+    "source_page_url": "https://blix.pl/sklep/auchan/"
+  },
+  {
+    "store_slug": "auchan",
+    "leaflet_id": "498702",
+    "leaflet_url": "https://blix.pl/sklep/auchan/gazetka/498702/",
+    "endpoint_url": "https://blix.pl/getleaflet/auchan/498702/",
+    "source_page_url": "https://blix.pl/sklep/auchan/"
+  },
+  {
+    "store_slug": "auchan",
+    "leaflet_id": "498309",
+    "leaflet_url": "https://blix.pl/sklep/auchan/gazetka/498309/",
+    "endpoint_url": "https://blix.pl/getleaflet/auchan/498309/",
+    "source_page_url": "https://blix.pl/sklep/auchan/"
+  },
+  {
+    "store_slug": "auchan",
+    "leaflet_id": "497160",
+    "leaflet_url": "https://blix.pl/sklep/auchan/gazetka/497160/",
+    "endpoint_url": "https://blix.pl/getleaflet/auchan/497160/",
+    "source_page_url": "https://blix.pl/sklep/auchan/"
+  },
+  {
+    "store_slug": "auchan",
+    "leaflet_id": "497154",
+    "leaflet_url": "https://blix.pl/sklep/auchan/gazetka/497154/",
+    "endpoint_url": "https://blix.pl/getleaflet/auchan/497154/",
+    "source_page_url": "https://blix.pl/sklep/auchan/"
+  },
+  {
+    "store_slug": "auchan",
+    "leaflet_id": "497151",
+    "leaflet_url": "https://blix.pl/sklep/auchan/gazetka/497151/",
+    "endpoint_url": "https://blix.pl/getleaflet/auchan/497151/",
+    "source_page_url": "https://blix.pl/sklep/auchan/"
+  },
+  {
+    "store_slug": "biedronka",
+    "leaflet_id": "502785",
+    "leaflet_url": "https://blix.pl/sklep/biedronka/gazetka/502785/",
+    "endpoint_url": "https://blix.pl/getleaflet/biedronka/502785/",
+    "source_page_url": "https://blix.pl/sklep/biedronka/"
+  },
+  {
+    "store_slug": "biedronka",
+    "leaflet_id": "502440",
+    "leaflet_url": "https://blix.pl/sklep/biedronka/gazetka/502440/",
+    "endpoint_url": "https://blix.pl/getleaflet/biedronka/502440/",
+    "source_page_url": "https://blix.pl/sklep/biedronka/"
+  },
+  {
+    "store_slug": "biedronka",
+    "leaflet_id": "502425",
+    "leaflet_url": "https://blix.pl/sklep/biedronka/gazetka/502425/",
+    "endpoint_url": "https://blix.pl/getleaflet/biedronka/502425/",
+    "source_page_url": "https://blix.pl/sklep/biedronka/"
+  },
+  {
+    "store_slug": "biedronka",
+    "leaflet_id": "502398",
+    "leaflet_url": "https://blix.pl/sklep/biedronka/gazetka/502398/",
+    "endpoint_url": "https://blix.pl/getleaflet/biedronka/502398/",
+    "source_page_url": "https://blix.pl/sklep/biedronka/"
+  },
+  {
+    "store_slug": "biedronka",
+    "leaflet_id": "502392",
+    "leaflet_url": "https://blix.pl/sklep/biedronka/gazetka/502392/",
+    "endpoint_url": "https://blix.pl/getleaflet/biedronka/502392/",
+    "source_page_url": "https://blix.pl/sklep/biedronka/"
+  },
+  {
+    "store_slug": "biedronka",
+    "leaflet_id": "502386",
+    "leaflet_url": "https://blix.pl/sklep/biedronka/gazetka/502386/",
+    "endpoint_url": "https://blix.pl/getleaflet/biedronka/502386/",
+    "source_page_url": "https://blix.pl/sklep/biedronka/"
+  },
+  {
+    "store_slug": "biedronka",
+    "leaflet_id": "502380",
+    "leaflet_url": "https://blix.pl/sklep/biedronka/gazetka/502380/",
+    "endpoint_url": "https://blix.pl/getleaflet/biedronka/502380/",
+    "source_page_url": "https://blix.pl/sklep/biedronka/"
+  },
+  {
+    "store_slug": "biedronka",
+    "leaflet_id": "502374",
+    "leaflet_url": "https://blix.pl/sklep/biedronka/gazetka/502374/",
+    "endpoint_url": "https://blix.pl/getleaflet/biedronka/502374/",
+    "source_page_url": "https://blix.pl/sklep/biedronka/"
+  },
+  {
+    "store_slug": "biedronka",
+    "leaflet_id": "502200",
+    "leaflet_url": "https://blix.pl/sklep/biedronka/gazetka/502200/",
+    "endpoint_url": "https://blix.pl/getleaflet/biedronka/502200/",
+    "source_page_url": "https://blix.pl/sklep/biedronka/"
+  },
+  {
+    "store_slug": "biedronka",
+    "leaflet_id": "502095",
+    "leaflet_url": "https://blix.pl/sklep/biedronka/gazetka/502095/",
+    "endpoint_url": "https://blix.pl/getleaflet/biedronka/502095/",
+    "source_page_url": "https://blix.pl/sklep/biedronka/"
+  },
+  {
+    "store_slug": "biedronka",
+    "leaflet_id": "502062",
+    "leaflet_url": "https://blix.pl/sklep/biedronka/gazetka/502062/",
+    "endpoint_url": "https://blix.pl/getleaflet/biedronka/502062/",
+    "source_page_url": "https://blix.pl/sklep/biedronka/"
+  },
+  {
+    "store_slug": "biedronka",
+    "leaflet_id": "501681",
+    "leaflet_url": "https://blix.pl/sklep/biedronka/gazetka/501681/",
+    "endpoint_url": "https://blix.pl/getleaflet/biedronka/501681/",
+    "source_page_url": "https://blix.pl/sklep/biedronka/"
+  },
+  {
+    "store_slug": "biedronka",
+    "leaflet_id": "501552",
+    "leaflet_url": "https://blix.pl/sklep/biedronka/gazetka/501552/",
+    "endpoint_url": "https://blix.pl/getleaflet/biedronka/501552/",
+    "source_page_url": "https://blix.pl/sklep/biedronka/"
+  },
+  {
+    "store_slug": "biedronka",
+    "leaflet_id": "501471",
+    "leaflet_url": "https://blix.pl/sklep/biedronka/gazetka/501471/",
+    "endpoint_url": "https://blix.pl/getleaflet/biedronka/501471/",
+    "source_page_url": "https://blix.pl/sklep/biedronka/"
+  },
+  {
+    "store_slug": "biedronka",
+    "leaflet_id": "501462",
+    "leaflet_url": "https://blix.pl/sklep/biedronka/gazetka/501462/",
+    "endpoint_url": "https://blix.pl/getleaflet/biedronka/501462/",
+    "source_page_url": "https://blix.pl/sklep/biedronka/"
+  },
+  {
+    "store_slug": "biedronka",
+    "leaflet_id": "501300",
+    "leaflet_url": "https://blix.pl/sklep/biedronka/gazetka/501300/",
+    "endpoint_url": "https://blix.pl/getleaflet/biedronka/501300/",
+    "source_page_url": "https://blix.pl/sklep/biedronka/"
+  },
+  {
+    "store_slug": "biedronka",
+    "leaflet_id": "501240",
+    "leaflet_url": "https://blix.pl/sklep/biedronka/gazetka/501240/",
+    "endpoint_url": "https://blix.pl/getleaflet/biedronka/501240/",
+    "source_page_url": "https://blix.pl/sklep/biedronka/"
+  },
+  {
+    "store_slug": "biedronka",
+    "leaflet_id": "501204",
+    "leaflet_url": "https://blix.pl/sklep/biedronka/gazetka/501204/",
+    "endpoint_url": "https://blix.pl/getleaflet/biedronka/501204/",
+    "source_page_url": "https://blix.pl/sklep/biedronka/"
+  },
+  {
+    "store_slug": "biedronka",
+    "leaflet_id": "501201",
+    "leaflet_url": "https://blix.pl/sklep/biedronka/gazetka/501201/",
+    "endpoint_url": "https://blix.pl/getleaflet/biedronka/501201/",
+    "source_page_url": "https://blix.pl/sklep/biedronka/"
+  },
+  {
+    "store_slug": "biedronka",
+    "leaflet_id": "501153",
+    "leaflet_url": "https://blix.pl/sklep/biedronka/gazetka/501153/",
+    "endpoint_url": "https://blix.pl/getleaflet/biedronka/501153/",
+    "source_page_url": "https://blix.pl/sklep/biedronka/"
+  },
+  {
+    "store_slug": "biedronka",
+    "leaflet_id": "501147",
+    "leaflet_url": "https://blix.pl/sklep/biedronka/gazetka/501147/",
+    "endpoint_url": "https://blix.pl/getleaflet/biedronka/501147/",
+    "source_page_url": "https://blix.pl/sklep/biedronka/"
+  },
+  {
+    "store_slug": "biedronka",
+    "leaflet_id": "500787",
+    "leaflet_url": "https://blix.pl/sklep/biedronka/gazetka/500787/",
+    "endpoint_url": "https://blix.pl/getleaflet/biedronka/500787/",
+    "source_page_url": "https://blix.pl/sklep/biedronka/"
+  },
+  {
+    "store_slug": "biedronka",
+    "leaflet_id": "500637",
+    "leaflet_url": "https://blix.pl/sklep/biedronka/gazetka/500637/",
+    "endpoint_url": "https://blix.pl/getleaflet/biedronka/500637/",
+    "source_page_url": "https://blix.pl/sklep/biedronka/"
+  },
+  {
+    "store_slug": "biedronka",
+    "leaflet_id": "500532",
+    "leaflet_url": "https://blix.pl/sklep/biedronka/gazetka/500532/",
+    "endpoint_url": "https://blix.pl/getleaflet/biedronka/500532/",
+    "source_page_url": "https://blix.pl/sklep/biedronka/"
+  },
+  {
+    "store_slug": "biedronka",
+    "leaflet_id": "500451",
+    "leaflet_url": "https://blix.pl/sklep/biedronka/gazetka/500451/",
+    "endpoint_url": "https://blix.pl/getleaflet/biedronka/500451/",
+    "source_page_url": "https://blix.pl/sklep/biedronka/"
+  },
+  {
+    "store_slug": "biedronka",
+    "leaflet_id": "500448",
+    "leaflet_url": "https://blix.pl/sklep/biedronka/gazetka/500448/",
+    "endpoint_url": "https://blix.pl/getleaflet/biedronka/500448/",
+    "source_page_url": "https://blix.pl/sklep/biedronka/"
+  },
+  {
+    "store_slug": "biedronka",
+    "leaflet_id": "500445",
+    "leaflet_url": "https://blix.pl/sklep/biedronka/gazetka/500445/",
+    "endpoint_url": "https://blix.pl/getleaflet/biedronka/500445/",
+    "source_page_url": "https://blix.pl/sklep/biedronka/"
+  },
+  {
+    "store_slug": "biedronka",
+    "leaflet_id": "500358",
+    "leaflet_url": "https://blix.pl/sklep/biedronka/gazetka/500358/",
+    "endpoint_url": "https://blix.pl/getleaflet/biedronka/500358/",
+    "source_page_url": "https://blix.pl/sklep/biedronka/"
+  },
+  {
+    "store_slug": "biedronka",
+    "leaflet_id": "500349",
+    "leaflet_url": "https://blix.pl/sklep/biedronka/gazetka/500349/",
+    "endpoint_url": "https://blix.pl/getleaflet/biedronka/500349/",
+    "source_page_url": "https://blix.pl/sklep/biedronka/"
+  },
+  {
+    "store_slug": "biedronka",
+    "leaflet_id": "500346",
+    "leaflet_url": "https://blix.pl/sklep/biedronka/gazetka/500346/",
+    "endpoint_url": "https://blix.pl/getleaflet/biedronka/500346/",
+    "source_page_url": "https://blix.pl/sklep/biedronka/"
+  },
+  {
+    "store_slug": "biedronka",
+    "leaflet_id": "499974",
+    "leaflet_url": "https://blix.pl/sklep/biedronka/gazetka/499974/",
+    "endpoint_url": "https://blix.pl/getleaflet/biedronka/499974/",
+    "source_page_url": "https://blix.pl/sklep/biedronka/"
+  },
+  {
+    "store_slug": "biedronka",
+    "leaflet_id": "498336",
+    "leaflet_url": "https://blix.pl/sklep/biedronka/gazetka/498336/",
+    "endpoint_url": "https://blix.pl/getleaflet/biedronka/498336/",
+    "source_page_url": "https://blix.pl/sklep/biedronka/"
+  },
+  {
+    "store_slug": "kaufland",
+    "leaflet_id": "502239",
+    "leaflet_url": "https://blix.pl/sklep/kaufland/gazetka/502239/",
+    "endpoint_url": "https://blix.pl/getleaflet/kaufland/502239/",
+    "source_page_url": "https://blix.pl/sklep/kaufland/"
+  },
+  {
+    "store_slug": "kaufland",
+    "leaflet_id": "501795",
+    "leaflet_url": "https://blix.pl/sklep/kaufland/gazetka/501795/",
+    "endpoint_url": "https://blix.pl/getleaflet/kaufland/501795/",
+    "source_page_url": "https://blix.pl/sklep/kaufland/"
+  },
+  {
+    "store_slug": "kaufland",
+    "leaflet_id": "501780",
+    "leaflet_url": "https://blix.pl/sklep/kaufland/gazetka/501780/",
+    "endpoint_url": "https://blix.pl/getleaflet/kaufland/501780/",
+    "source_page_url": "https://blix.pl/sklep/kaufland/"
+  },
+  {
+    "store_slug": "kaufland",
+    "leaflet_id": "501648",
+    "leaflet_url": "https://blix.pl/sklep/kaufland/gazetka/501648/",
+    "endpoint_url": "https://blix.pl/getleaflet/kaufland/501648/",
+    "source_page_url": "https://blix.pl/sklep/kaufland/"
+  },
+  {
+    "store_slug": "kaufland",
+    "leaflet_id": "501459",
+    "leaflet_url": "https://blix.pl/sklep/kaufland/gazetka/501459/",
+    "endpoint_url": "https://blix.pl/getleaflet/kaufland/501459/",
+    "source_page_url": "https://blix.pl/sklep/kaufland/"
+  },
+  {
+    "store_slug": "kaufland",
+    "leaflet_id": "501450",
+    "leaflet_url": "https://blix.pl/sklep/kaufland/gazetka/501450/",
+    "endpoint_url": "https://blix.pl/getleaflet/kaufland/501450/",
+    "source_page_url": "https://blix.pl/sklep/kaufland/"
+  },
+  {
+    "store_slug": "kaufland",
+    "leaflet_id": "501120",
+    "leaflet_url": "https://blix.pl/sklep/kaufland/gazetka/501120/",
+    "endpoint_url": "https://blix.pl/getleaflet/kaufland/501120/",
+    "source_page_url": "https://blix.pl/sklep/kaufland/"
+  },
+  {
+    "store_slug": "kaufland",
+    "leaflet_id": "500904",
+    "leaflet_url": "https://blix.pl/sklep/kaufland/gazetka/500904/",
+    "endpoint_url": "https://blix.pl/getleaflet/kaufland/500904/",
+    "source_page_url": "https://blix.pl/sklep/kaufland/"
+  },
+  {
+    "store_slug": "kaufland",
+    "leaflet_id": "500616",
+    "leaflet_url": "https://blix.pl/sklep/kaufland/gazetka/500616/",
+    "endpoint_url": "https://blix.pl/getleaflet/kaufland/500616/",
+    "source_page_url": "https://blix.pl/sklep/kaufland/"
+  },
+  {
+    "store_slug": "kaufland",
+    "leaflet_id": "500490",
+    "leaflet_url": "https://blix.pl/sklep/kaufland/gazetka/500490/",
+    "endpoint_url": "https://blix.pl/getleaflet/kaufland/500490/",
+    "source_page_url": "https://blix.pl/sklep/kaufland/"
+  },
+  {
+    "store_slug": "kaufland",
+    "leaflet_id": "500262",
+    "leaflet_url": "https://blix.pl/sklep/kaufland/gazetka/500262/",
+    "endpoint_url": "https://blix.pl/getleaflet/kaufland/500262/",
+    "source_page_url": "https://blix.pl/sklep/kaufland/"
+  },
+  {
+    "store_slug": "kaufland",
+    "leaflet_id": "499719",
+    "leaflet_url": "https://blix.pl/sklep/kaufland/gazetka/499719/",
+    "endpoint_url": "https://blix.pl/getleaflet/kaufland/499719/",
+    "source_page_url": "https://blix.pl/sklep/kaufland/"
+  },
+  {
+    "store_slug": "kaufland",
+    "leaflet_id": "499683",
+    "leaflet_url": "https://blix.pl/sklep/kaufland/gazetka/499683/",
+    "endpoint_url": "https://blix.pl/getleaflet/kaufland/499683/",
+    "source_page_url": "https://blix.pl/sklep/kaufland/"
+  },
+  {
+    "store_slug": "kaufland",
+    "leaflet_id": "499110",
+    "leaflet_url": "https://blix.pl/sklep/kaufland/gazetka/499110/",
+    "endpoint_url": "https://blix.pl/getleaflet/kaufland/499110/",
+    "source_page_url": "https://blix.pl/sklep/kaufland/"
+  },
+  {
+    "store_slug": "kaufland",
+    "leaflet_id": "499050",
+    "leaflet_url": "https://blix.pl/sklep/kaufland/gazetka/499050/",
+    "endpoint_url": "https://blix.pl/getleaflet/kaufland/499050/",
+    "source_page_url": "https://blix.pl/sklep/kaufland/"
+  },
+  {
+    "store_slug": "kaufland",
+    "leaflet_id": "498732",
+    "leaflet_url": "https://blix.pl/sklep/kaufland/gazetka/498732/",
+    "endpoint_url": "https://blix.pl/getleaflet/kaufland/498732/",
+    "source_page_url": "https://blix.pl/sklep/kaufland/"
+  },
+  {
+    "store_slug": "kaufland",
+    "leaflet_id": "498729",
+    "leaflet_url": "https://blix.pl/sklep/kaufland/gazetka/498729/",
+    "endpoint_url": "https://blix.pl/getleaflet/kaufland/498729/",
+    "source_page_url": "https://blix.pl/sklep/kaufland/"
+  },
+  {
+    "store_slug": "kaufland",
+    "leaflet_id": "458402",
+    "leaflet_url": "https://blix.pl/sklep/kaufland/gazetka/458402/",
+    "endpoint_url": "https://blix.pl/getleaflet/kaufland/458402/",
+    "source_page_url": "https://blix.pl/sklep/kaufland/"
+  },
+  {
+    "store_slug": "lidl",
+    "leaflet_id": "502662",
+    "leaflet_url": "https://blix.pl/sklep/lidl/gazetka/502662/",
+    "endpoint_url": "https://blix.pl/getleaflet/lidl/502662/",
+    "source_page_url": "https://blix.pl/sklep/lidl/"
+  },
+  {
+    "store_slug": "lidl",
+    "leaflet_id": "502182",
+    "leaflet_url": "https://blix.pl/sklep/lidl/gazetka/502182/",
+    "endpoint_url": "https://blix.pl/getleaflet/lidl/502182/",
+    "source_page_url": "https://blix.pl/sklep/lidl/"
+  },
+  {
+    "store_slug": "lidl",
+    "leaflet_id": "501444",
+    "leaflet_url": "https://blix.pl/sklep/lidl/gazetka/501444/",
+    "endpoint_url": "https://blix.pl/getleaflet/lidl/501444/",
+    "source_page_url": "https://blix.pl/sklep/lidl/"
+  },
+  {
+    "store_slug": "lidl",
+    "leaflet_id": "501348",
+    "leaflet_url": "https://blix.pl/sklep/lidl/gazetka/501348/",
+    "endpoint_url": "https://blix.pl/getleaflet/lidl/501348/",
+    "source_page_url": "https://blix.pl/sklep/lidl/"
+  },
+  {
+    "store_slug": "lidl",
+    "leaflet_id": "501267",
+    "leaflet_url": "https://blix.pl/sklep/lidl/gazetka/501267/",
+    "endpoint_url": "https://blix.pl/getleaflet/lidl/501267/",
+    "source_page_url": "https://blix.pl/sklep/lidl/"
+  },
+  {
+    "store_slug": "lidl",
+    "leaflet_id": "501159",
+    "leaflet_url": "https://blix.pl/sklep/lidl/gazetka/501159/",
+    "endpoint_url": "https://blix.pl/getleaflet/lidl/501159/",
+    "source_page_url": "https://blix.pl/sklep/lidl/"
+  },
+  {
+    "store_slug": "lidl",
+    "leaflet_id": "500793",
+    "leaflet_url": "https://blix.pl/sklep/lidl/gazetka/500793/",
+    "endpoint_url": "https://blix.pl/getleaflet/lidl/500793/",
+    "source_page_url": "https://blix.pl/sklep/lidl/"
+  },
+  {
+    "store_slug": "lidl",
+    "leaflet_id": "500640",
+    "leaflet_url": "https://blix.pl/sklep/lidl/gazetka/500640/",
+    "endpoint_url": "https://blix.pl/getleaflet/lidl/500640/",
+    "source_page_url": "https://blix.pl/sklep/lidl/"
+  },
+  {
+    "store_slug": "lidl",
+    "leaflet_id": "500145",
+    "leaflet_url": "https://blix.pl/sklep/lidl/gazetka/500145/",
+    "endpoint_url": "https://blix.pl/getleaflet/lidl/500145/",
+    "source_page_url": "https://blix.pl/sklep/lidl/"
+  },
+  {
+    "store_slug": "lidl",
+    "leaflet_id": "500142",
+    "leaflet_url": "https://blix.pl/sklep/lidl/gazetka/500142/",
+    "endpoint_url": "https://blix.pl/getleaflet/lidl/500142/",
+    "source_page_url": "https://blix.pl/sklep/lidl/"
+  },
+  {
+    "store_slug": "lidl",
+    "leaflet_id": "500103",
+    "leaflet_url": "https://blix.pl/sklep/lidl/gazetka/500103/",
+    "endpoint_url": "https://blix.pl/getleaflet/lidl/500103/",
+    "source_page_url": "https://blix.pl/sklep/lidl/"
+  },
+  {
+    "store_slug": "lidl",
+    "leaflet_id": "499743",
+    "leaflet_url": "https://blix.pl/sklep/lidl/gazetka/499743/",
+    "endpoint_url": "https://blix.pl/getleaflet/lidl/499743/",
+    "source_page_url": "https://blix.pl/sklep/lidl/"
+  },
+  {
+    "store_slug": "lidl",
+    "leaflet_id": "498843",
+    "leaflet_url": "https://blix.pl/sklep/lidl/gazetka/498843/",
+    "endpoint_url": "https://blix.pl/getleaflet/lidl/498843/",
+    "source_page_url": "https://blix.pl/sklep/lidl/"
+  },
+  {
+    "store_slug": "lidl",
+    "leaflet_id": "498474",
+    "leaflet_url": "https://blix.pl/sklep/lidl/gazetka/498474/",
+    "endpoint_url": "https://blix.pl/getleaflet/lidl/498474/",
+    "source_page_url": "https://blix.pl/sklep/lidl/"
+  },
+  {
+    "store_slug": "lidl",
+    "leaflet_id": "498369",
+    "leaflet_url": "https://blix.pl/sklep/lidl/gazetka/498369/",
+    "endpoint_url": "https://blix.pl/getleaflet/lidl/498369/",
+    "source_page_url": "https://blix.pl/sklep/lidl/"
+  },
+  {
+    "store_slug": "lidl",
+    "leaflet_id": "497973",
+    "leaflet_url": "https://blix.pl/sklep/lidl/gazetka/497973/",
+    "endpoint_url": "https://blix.pl/getleaflet/lidl/497973/",
+    "source_page_url": "https://blix.pl/sklep/lidl/"
+  },
+  {
+    "store_slug": "lidl",
+    "leaflet_id": "497637",
+    "leaflet_url": "https://blix.pl/sklep/lidl/gazetka/497637/",
+    "endpoint_url": "https://blix.pl/getleaflet/lidl/497637/",
+    "source_page_url": "https://blix.pl/sklep/lidl/"
+  },
+  {
+    "store_slug": "lidl",
+    "leaflet_id": "496986",
+    "leaflet_url": "https://blix.pl/sklep/lidl/gazetka/496986/",
+    "endpoint_url": "https://blix.pl/getleaflet/lidl/496986/",
+    "source_page_url": "https://blix.pl/sklep/lidl/"
+  },
+  {
+    "store_slug": "lidl",
+    "leaflet_id": "496701",
+    "leaflet_url": "https://blix.pl/sklep/lidl/gazetka/496701/",
+    "endpoint_url": "https://blix.pl/getleaflet/lidl/496701/",
+    "source_page_url": "https://blix.pl/sklep/lidl/"
+  },
+  {
+    "store_slug": "lidl",
+    "leaflet_id": "496692",
+    "leaflet_url": "https://blix.pl/sklep/lidl/gazetka/496692/",
+    "endpoint_url": "https://blix.pl/getleaflet/lidl/496692/",
+    "source_page_url": "https://blix.pl/sklep/lidl/"
+  },
+  {
+    "store_slug": "lidl",
+    "leaflet_id": "496683",
+    "leaflet_url": "https://blix.pl/sklep/lidl/gazetka/496683/",
+    "endpoint_url": "https://blix.pl/getleaflet/lidl/496683/",
+    "source_page_url": "https://blix.pl/sklep/lidl/"
+  }
+]

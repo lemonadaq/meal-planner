@@ -1,0 +1,350 @@
+{
+  "viewer": {
+    "leaflet_url": "https://blix.pl/sklep/kaufland/gazetka/499719/",
+    "leaflet_name": "Mocny Start",
+    "date_start": {
+      "date": "2026-06-01 00:00:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "date_end": {
+      "date": "2026-06-02 23:59:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "date_publish": {
+      "date": "2026-05-30 00:00:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "date_publish_end": {
+      "date": "2026-06-02 23:59:00.000000",
+      "timezone_type": 3,
+      "timezone": "Europe/Warsaw"
+    },
+    "img_url": "https://gazetki.blix.pl/api/",
+    "has_alcohol": false,
+    "pages": [
+      {
+        "page": 0,
+        "width": 1535,
+        "height": 2165,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/499719/?pageNumber=1",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/499719/66f475a9-1295-4aa1-b12c-dfc7e3a271da.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 499719
+      },
+      {
+        "page": 1,
+        "width": 1535,
+        "height": 2165,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/499719/?pageNumber=2",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/499719/9bb5afbf-5db5-42b0-8430-4b68e16c6db8.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 499719
+      },
+      {
+        "page": 2,
+        "width": 1535,
+        "height": 2165,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/499719/?pageNumber=3",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/499719/3b6916b7-9a8f-41b0-94f9-5db56e1ea5b7.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 499719
+      },
+      {
+        "page": 3,
+        "width": 1535,
+        "height": 2165,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/499719/?pageNumber=4",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/499719/ddb51f91-a975-4f0e-be93-7b8beffe215c.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 499719
+      },
+      {
+        "page": 4,
+        "width": 1535,
+        "height": 2165,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/499719/?pageNumber=5",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/499719/fc751ed1-7bfc-4330-8cc3-5c3c63d33ee4.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 499719
+      },
+      {
+        "page": 5,
+        "width": 1535,
+        "height": 2165,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/499719/?pageNumber=6",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/499719/d51596d1-e536-416d-8767-d0fb1f67f471.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 499719
+      },
+      {
+        "page": 6,
+        "width": 1535,
+        "height": 2165,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/499719/?pageNumber=7",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/499719/4fff8ca7-f790-4935-a28e-46ed182ee1b3.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 499719
+      },
+      {
+        "page": 7,
+        "width": 1535,
+        "height": 2165,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/499719/?pageNumber=8",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/499719/0d39cf17-8c3f-4749-b6f6-e3c21ed7b87f.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 499719
+      },
+      {
+        "page": 8,
+        "width": 1535,
+        "height": 2165,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/499719/?pageNumber=9",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/499719/d540a89a-e61e-4183-9e03-384731ca391e.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 499719
+      },
+      {
+        "page": 9,
+        "width": 1535,
+        "height": 2165,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/499719/?pageNumber=10",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/499719/04a342cd-36a3-4968-b818-e2e917807bd1.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 499719
+      },
+      {
+        "page": 10,
+        "width": 1535,
+        "height": 2165,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/499719/?pageNumber=11",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/499719/6fb29224-9355-46e6-bfd8-a001e3d2ca10.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 499719
+      },
+      {
+        "page": 11,
+        "width": 1535,
+        "height": 2165,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/499719/?pageNumber=12",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/499719/3b5172e7-69cf-47a2-985e-3f862b6c63cc.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 499719
+      },
+      {
+        "page": 12,
+        "width": 1535,
+        "height": 2165,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/499719/?pageNumber=13",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/499719/66e34a1d-7744-4df8-8bd5-fffcc91a4458.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 499719
+      },
+      {
+        "page": 13,
+        "width": 1535,
+        "height": 2165,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/499719/?pageNumber=14",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/499719/a411f7dc-87b1-4cb1-8a76-38dd2e2de299.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 499719
+      },
+      {
+        "page": 14,
+        "width": 1535,
+        "height": 2165,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/499719/?pageNumber=15",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/499719/55d8981c-1abe-40a6-a07d-b6c2cb931a38.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 499719
+      },
+      {
+        "page": 15,
+        "width": 1535,
+        "height": 2165,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/499719/?pageNumber=16",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/499719/6d9d9abe-56bb-4fa0-a4c3-ca74f91ee375.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 499719
+      },
+      {
+        "page": 16,
+        "width": 1535,
+        "height": 2165,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/499719/?pageNumber=17",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/499719/841767af-8856-481f-9135-6081179c4724.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 499719
+      },
+      {
+        "page": 17,
+        "width": 1535,
+        "height": 2165,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/499719/?pageNumber=18",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/499719/7cb9007b-1c82-4727-9631-581d7161c8aa.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 499719
+      },
+      {
+        "page": 18,
+        "width": 1535,
+        "height": 2165,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/499719/?pageNumber=19",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/499719/06b31c51-075d-498d-bc54-652bbc165f43.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 499719
+      },
+      {
+        "page": 19,
+        "width": 1535,
+        "height": 2165,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/499719/?pageNumber=20",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/499719/c35993fd-cc4f-438d-ac09-36e1eb3935e3.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 499719
+      },
+      {
+        "page": 20,
+        "width": 1535,
+        "height": 2165,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/499719/?pageNumber=21",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/499719/4667b7ff-6f36-4c9d-a423-f6faff0c4c1a.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 499719
+      },
+      {
+        "page": 21,
+        "width": 1535,
+        "height": 2165,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/499719/?pageNumber=22",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/499719/8df26801-ce77-400b-8fec-d5ea89958cab.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 499719
+      },
+      {
+        "page": 22,
+        "width": 1535,
+        "height": 2165,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/499719/?pageNumber=23",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/499719/1688e9ed-71dc-4f39-b3b5-39b1dd66d115.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 499719
+      },
+      {
+        "page": 23,
+        "width": 1535,
+        "height": 2165,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/499719/?pageNumber=24",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/499719/d7c8f3d3-57c1-449e-99d6-2e73f2e287dc.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 499719
+      },
+      {
+        "page": 24,
+        "width": 1535,
+        "height": 2165,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/499719/?pageNumber=25",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/499719/19adb555-ef05-4028-8071-bfb9ed871063.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 499719
+      },
+      {
+        "page": 25,
+        "width": 1535,
+        "height": 2165,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/499719/?pageNumber=26",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/499719/20439afa-8390-4d82-8d49-7ee77402eae1.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 499719
+      },
+      {
+        "page": 26,
+        "width": 1535,
+        "height": 2165,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/499719/?pageNumber=27",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/499719/af72f701-7fa5-49e1-b2cc-b99c12498477.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 499719
+      },
+      {
+        "page": 27,
+        "width": 1535,
+        "height": 2165,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/499719/?pageNumber=28",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/499719/018f39cd-d21c-4358-a781-f58c2ba368a7.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 499719
+      },
+      {
+        "page": 28,
+        "width": 1535,
+        "height": 2165,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/499719/?pageNumber=29",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/499719/856dddaa-bd04-43eb-b704-65a977ebee9a.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 499719
+      },
+      {
+        "page": 29,
+        "width": 1535,
+        "height": 2165,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/499719/?pageNumber=30",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/499719/b4568237-99f1-489d-aef6-7689fcd8194a.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 499719
+      },
+      {
+        "page": 30,
+        "width": 1535,
+        "height": 2165,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/499719/?pageNumber=31",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/499719/40d99bb8-89f3-477b-8fad-2ce8b319f765.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 499719
+      },
+      {
+        "page": 31,
+        "width": 1535,
+        "height": 2165,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/499719/?pageNumber=32",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/499719/940a567a-a75b-4552-a76f-fe2610270d24.jpg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 499719
+      },
+      {
+        "page": 32,
+        "width": 1080,
+        "height": 1700,
+        "page_uri": "https://blix.pl/sklep/kaufland/gazetka/499719/?pageNumber=33",
+        "click_url": null,
+        "image_url": "https://imgproxy.blix.pl/image/leaflet/499719/b0f19de42cd3444f1e7c7f963e0b9954.jpeg?ext=$$$EXT$$$&bucket=$$$BUCKET$$$",
+        "leaflet_id": 499719
+      }
+    ]
+  },
+  "brand": {
+    "id": 46,
+    "thumbnail": "https://imgproxy.blix.pl/image/brand/9b5e19eb2c9ea489e10171d4a49509f3.jpeg",
+    "name": "Kaufland",
+    "slug": "kaufland",
+    "logo_uri": "https://imgproxy.blix.pl/image/brand/9b5e19eb2c9ea489e10171d4a49509f3.jpeg"
+  },
+  "brandUrl": "https://blix.pl/sklep/kaufland/",
+  "inserts": [],
+  "keywords": [],
+  "description": "<p>Obejrzyj najnowszą gazetkę sieci <strong>Kaufland, Mocny Start</strong>, obowiązującą od 1 czerwca do 2 czerwca. Ta aktualna gazetka <strong>Kaufland</strong> zawiera wiele wspaniałych promocji na różnego rodzaju produkty.</p><p>Nie czekaj! Sprawdź, co jeszcze ma do zaoferowania <strong>Kaufland</strong> w miesiącu czerwiec!</p>",
+  "lastPageData": [],
+  "productOffers": [],
+  "id": 499719,
+  "badge": {
+    "message": "archiwalna",
+    "class": "lav-archive"
+  },
+  "nextLeafletData": {
+    "id": 501426,
+    "brandId": 47,
+    "brandSlug": "auchan"
+  }
+}
