@@ -105,8 +105,14 @@ export default function Home({ user, householdId, onTabChange, onPlanujSlot, onU
   const [loading, setLoading] = useState(true)
   const [planowanie, setPlanowanie] = useState(null)
   const [toast, setToast] = useState(null)
+  const [losujAnimKey, setLosujAnimKey] = useState(0)
   function pokazToast(msg) {
     setToast({ id: Date.now(), msg })
+  }
+
+  function losujZAnimacja() {
+    setLosujAnimKey(k => k + 1)
+    setTimeout(losujInne, 380)
   }
 
   // Konfiguracja slotów posiłków — dynamiczna lista per dzień tygodnia
@@ -370,14 +376,51 @@ export default function Home({ user, householdId, onTabChange, onPlanujSlot, onU
         <section style={s.sugestiaSekcja}>
           <div style={s.sugestiaHeader}>
             <h2 style={s.h2}>Może ugotujesz na {RODZAJ_LABEL[typSugestii]}?</h2>
-            <button
-              style={s.link}
-              onClick={losujInne}
-              disabled={sugestieMozliwe.filter(d => d.rodzaj === typSugestii).length < 2}
-              title="Pokaż inne"
-            >
-              🔄 Inne
-            </button>
+            {/* PROTOTYPY — powiedz który zostawić (A/B/C) */}
+            <>
+              <style>{`
+                @keyframes losujSpin {
+                  0%   { transform: rotate(0deg) scale(1); }
+                  40%  { transform: rotate(220deg) scale(1.25); }
+                  100% { transform: rotate(360deg) scale(1); }
+                }
+                .losuj-spin-icon { animation: losujSpin 0.45s cubic-bezier(.36,.07,.19,.97); }
+              `}</style>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'flex-start' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+                  <button
+                    style={{ background: t.accent, color: '#fff', border: 'none', borderRadius: 999, padding: '8px 13px', fontSize: 12.5, fontWeight: 700, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 5, fontFamily: fonts.sans }}
+                    onClick={losujZAnimacja}
+                    disabled={sugestieMozliwe.filter(d => d.rodzaj === typSugestii).length < 2}
+                  >
+                    <span key={losujAnimKey} className={losujAnimKey > 0 ? 'losuj-spin-icon' : ''} style={{ display: 'inline-block' }}>🎲</span>
+                    Losuj
+                  </button>
+                  <span style={{ fontFamily: fonts.sans, fontSize: 9, fontWeight: 700, color: t.mute, letterSpacing: 0.6 }}>A</span>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+                  <button
+                    style={{ background: t.accentSoft, color: t.accentDark, border: 'none', borderRadius: 999, padding: '8px 13px', fontSize: 12.5, fontWeight: 600, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 5, fontFamily: fonts.sans }}
+                    onClick={losujInne}
+                    disabled={sugestieMozliwe.filter(d => d.rodzaj === typSugestii).length < 2}
+                  >
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4"/></svg>
+                    Inne danie
+                  </button>
+                  <span style={{ fontFamily: fonts.sans, fontSize: 9, fontWeight: 700, color: t.mute, letterSpacing: 0.6 }}>B</span>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+                  <button
+                    style={{ background: 'none', color: t.accent, border: `1.5px solid ${t.accent}`, borderRadius: 999, padding: '7px 12px', fontSize: 12.5, fontWeight: 600, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 5, fontFamily: fonts.sans }}
+                    onClick={losujInne}
+                    disabled={sugestieMozliwe.filter(d => d.rodzaj === typSugestii).length < 2}
+                  >
+                    ⟳ Inne danie
+                  </button>
+                  <span style={{ fontFamily: fonts.sans, fontSize: 9, fontWeight: 700, color: t.mute, letterSpacing: 0.6 }}>C</span>
+                </div>
+              </div>
+            </>
           </div>
 
           <div style={s.sugestiaTypy}>
