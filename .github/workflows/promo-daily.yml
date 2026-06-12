@@ -25,6 +25,9 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-
+      - name: Check env variables
+        run: |
+          if [ -z "$SUPABASE_URL" ]; then echo "SUPABASE_URL missing"; exit 1; else echo "SUPABASE_URL OK"; fi
+          if [ -z "$SUPABASE_SERVICE_ROLE_KEY" ]; then echo "SUPABASE_SERVICE_ROLE_KEY missing"; exit 1; else echo "SUPABASE_SERVICE_ROLE_KEY OK"; fi
       - name: Run promo pipeline
         run: npm run promo:daily
