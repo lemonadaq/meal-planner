@@ -9,6 +9,11 @@ jobs:
   scrape-promos:
     runs-on: ubuntu-latest
 
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      BLIX_STORES: biedronka,lidl,kaufland,auchan
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -23,7 +28,3 @@ jobs:
 
       - name: Run promo pipeline
         run: npm run promo:daily
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-          BLIX_STORES: biedronka,lidl,kaufland,auchan
