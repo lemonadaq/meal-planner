@@ -116,8 +116,12 @@ function parsePrice(value) {
   if (value === null || value === undefined) return null;
 
   if (typeof value === "number") {
-    if (Number.isFinite(value) && value > 0 && value < 10000) return value;
-    return null;
+    if (!Number.isFinite(value) || value <= 0) return null;
+    if (Number.isInteger(value)) {
+      const wZlotych = value / 100;
+      return wZlotych < 10000 ? wZlotych : null;
+    }
+    return value < 10000 ? value : null;
   }
 
   let text = String(value)

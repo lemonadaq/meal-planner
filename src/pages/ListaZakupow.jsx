@@ -8,7 +8,7 @@ import { dopasujPromocje, pobierzAktualnePromocje } from '../promocjeMatch'
 
 // ── Promocje: mock do testów UI (domyślnie wyłączony) ──
 // Włącz MOCK_PROMO = true żeby zobaczyć chipy/banner bez danych w tabeli `promocje`.
-const MOCK_PROMO = true
+const MOCK_PROMO = false
 const MOCK_PROMO_DANE = [
   { store: 'Lidl',      old: 8.49,  now: 5.99, off: '-29%',     until: 'do niedzieli' },
   { store: 'Biedronka', old: null,  now: 3.50, off: '2 za 7 zł', until: 'do jutra' },

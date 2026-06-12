@@ -108,12 +108,21 @@ export function dopasujPromocje(items, promocje) {
 // promocje to wzmocnienie, nigdy blokada listy (np. tabela jeszcze nie istnieje).
 export async function pobierzAktualnePromocje() {
   try {
+    const teraz = new Date().toISOString()
     const { data, error } = await supabase
-      .from('promocje')
-      .select('*')
-      .gte('wazne_do', dzisLocal())
+      .from('promo_offers')
+      .select('product_name, price, old_price, store_name, offer_end_at')
+      .or(`offer_end_at.is.null,offer_end_at.gte.${teraz}`)
     if (error) return []
-    return data || []
+    return (data || []).map(p => ({
+      nazwa_norm: p.product_name,
+      nazwa: p.product_name,
+      cena_nowa: p.price,
+      cena_stara: p.old_price,
+      sklep: p.store_name,
+      wazne_do: p.offer_end_at ? p.offer_end_at.substring(0, 10) : null,
+      rabat_label: null,
+    }))
   } catch (e) {
     return []
   }
