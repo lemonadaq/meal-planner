@@ -347,6 +347,8 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
 
       // Undo tylko jeśli stary wpis miał danie (zmiana z czegoś na coś)
       if (kopia.danie && kopia.danie !== nazwa) {
+        logujSygnal({ userId: user.id, householdId, danie: kopia.danie, akcja: 'podmien_out', kontekstSlot: posilek, kontekstData: dataStr })
+        logujSygnal({ userId: user.id, householdId, danie: nazwa, akcja: 'podmien_in', kontekstSlot: posilek, kontekstData: dataStr })
         pokazToast(`Zmieniono na: ${nazwa}`, async () => {
           await supabase.from('kalendarz')
             .update({
@@ -397,10 +399,20 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
       ;(data || []).forEach(r => { wyniki[`${r.data}_${r.posilek}`] = r })
     }
     for (const u of updaty) {
+      const stareDanie = plan[`${u.dataStr}_${u.posilek}`]?.danie
       const { data } = await supabase.from('kalendarz')
         .update({ danie, dodatki: [], podmiany: {} })
         .eq('id', u.id).select().single()
       if (data) wyniki[`${data.data}_${data.posilek}`] = data
+      if (stareDanie && stareDanie !== danie) {
+        logujSygnal({ userId: user.id, householdId, danie: stareDanie, akcja: 'podmien_out', kontekstSlot: u.posilek, kontekstData: u.dataStr })
+        logujSygnal({ userId: user.id, householdId, danie, akcja: 'podmien_in', kontekstSlot: u.posilek, kontekstData: u.dataStr })
+      } else if (!stareDanie) {
+        logujSygnal({ userId: user.id, householdId, danie, akcja: 'zaplanuj', kontekstSlot: u.posilek, kontekstData: u.dataStr })
+      }
+    }
+    for (const ins of inserty) {
+      logujSygnal({ userId: user.id, householdId, danie, akcja: 'zaplanuj', kontekstSlot: ins.posilek, kontekstData: ins.data })
     }
 
     setPlan(p => ({ ...p, ...wyniki }))
@@ -506,6 +518,7 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
         })
       }
 
+      logujSygnal({ userId: user.id, householdId, danie: zrodlo.danie, akcja: 'przenies', kontekstSlot: naPosilek, kontekstData: naDataStr })
       pokazToast(`Przeniesiono: ${zrodlo.danie}`, async () => {
         const aktualny = data || { ...zrodlo, data: naDataStr, posilek: naPosilek }
         const { data: cof } = await supabase.from('kalendarz')
@@ -576,6 +589,8 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
       })
     }
 
+    logujSygnal({ userId: user.id, householdId, danie: zrodlo.danie, akcja: 'przenies', kontekstSlot: naPosilek, kontekstData: naDataStr })
+    logujSygnal({ userId: user.id, householdId, danie: cel.danie, akcja: 'przenies', kontekstSlot: zPosilek, kontekstData: zDataStr })
     pokazToast(`Zamieniono: ${zrodlo.danie}`)
   }
 

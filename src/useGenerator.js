@@ -7,6 +7,8 @@ import { supabase } from './supabase'
 import { generujPlanTygodnia } from './generatorPlanu'
 import { slotyWDniu, kluczDnia, sanityzuj } from './useSloty'
 import { formatDataLocal } from './dataHelpers'
+import { budujMapeSkladnikow } from './mapaPodobienstwa'
+import { budujWagiUczenia } from './wagiPreferencji'
 
 // Mapowanie rodzaju dania na słowa-klucze slotów (spójne z Home.jsx)
 const RODZAJ_KEYWORDS = {
@@ -35,10 +37,10 @@ export function useGenerator({ user, householdId, slotyConfig }) {
   const generuj = useCallback(async ({ dniTygodnia, istniejacyPlan = {}, tryb = 'puste', opcje = {} }) => {
     if (!householdId) return { error: 'Brak household' }
 
-    // 1. Pobierz wszystkie unikalne dania (jeden wiersz = jedno danie po nazwie)
+    // 1. Pobierz wszystkie wiersze dań (Składnik/Kategoria potrzebne do mapy podobieństwa)
     const { data: wiersze, error } = await supabase
       .from('dania')
-      .select('"Danie", rodzaj, "TYP", zdjecie, ulubione')
+      .select('"Danie", rodzaj, "TYP", zdjecie, ulubione, "Składnik", "Kategoria"')
     if (error) return { error }
 
     // Deduplikacja po nazwie (tabela ma wiele wierszy/składników na danie)
@@ -48,6 +50,23 @@ export function useGenerator({ user, householdId, slotyConfig }) {
       if (!mapaDan.has(w.Danie)) mapaDan.set(w.Danie, w)
     }
     const dania = [...mapaDan.values()]
+
+    // 1b. Pobierz sygnały preferencji i zbuduj wagi uczenia
+    let uczenie = {}
+    try {
+      const cutoff = new Date(Date.now() - 180 * 24 * 60 * 60 * 1000).toISOString()
+      const { data: sygnaly } = await supabase
+        .from('preferencje_sygnaly')
+        .select('danie, akcja, created_at')
+        .eq('household_id', householdId)
+        .gte('created_at', cutoff)
+        .order('created_at', { ascending: false })
+        .limit(2000)
+      const mapaSkladnikow = budujMapeSkladnikow(wiersze || [])
+      uczenie = budujWagiUczenia({ sygnaly: sygnaly || [], mapaSkladnikow })
+    } catch (e) {
+      // Preferencje to wzmocnienie, nigdy blokada — generuj normalnie przy błędzie
+    }
 
     // 2. Zbuduj strukturę dni + slotów dla generatora
     const cfg = sanityzuj(slotyConfig)
@@ -65,7 +84,8 @@ export function useGenerator({ user, householdId, slotyConfig }) {
     }
 
     // 3. Jeśli tryb 'puste' — przekaż istniejące dania jako już "użyte" + pomiń zajęte sloty
-    let planSurowy = generujPlanTygodnia({ dni, dniSlotyMap, dania, opcje })
+    const opcjeZUczeniem = { ...opcje, uczenie: { ...uczenie, ...(opcje.uczenie || {}) } }
+    let planSurowy = generujPlanTygodnia({ dni, dniSlotyMap, dania, opcje: opcjeZUczeniem })
 
     // 4. Złóż listę wpisów do zapisania
     const doInsertu = []
@@ -116,7 +136,7 @@ export function useGenerator({ user, householdId, slotyConfig }) {
 
     const { data: wiersze } = await supabase
       .from('dania')
-      .select('"Danie", rodzaj, "TYP"')
+      .select('"Danie", rodzaj, "TYP", "Składnik", "Kategoria"')
     const mapaDan = new Map()
     for (const w of wiersze || []) {
       if (w.Danie && w.rodzaj && !mapaDan.has(w.Danie)) mapaDan.set(w.Danie, w)
@@ -125,9 +145,26 @@ export function useGenerator({ user, householdId, slotyConfig }) {
     const pula = [...mapaDan.values()].filter(d => d.rodzaj === rodzaj && !unikaj.includes(d.Danie))
     if (pula.length === 0) return { error: 'Brak alternatyw' }
 
+    let uczenie = {}
+    try {
+      const cutoff = new Date(Date.now() - 180 * 24 * 60 * 60 * 1000).toISOString()
+      const { data: sygnaly } = await supabase
+        .from('preferencje_sygnaly')
+        .select('danie, akcja, created_at')
+        .eq('household_id', householdId)
+        .gte('created_at', cutoff)
+        .order('created_at', { ascending: false })
+        .limit(2000)
+      const mapaSkladnikow = budujMapeSkladnikow(wiersze || [])
+      uczenie = budujWagiUczenia({ sygnaly: sygnaly || [], mapaSkladnikow })
+    } catch (e) {
+      // Preferencje to wzmocnienie, nigdy blokada
+    }
+
     const dni = [{ klucz: kluczDnia(dataStr), dataStr }]
     const dniSlotyMap = { [kluczDnia(dataStr)]: [{ id: slotId, nazwa: nazwaSlotu, rodzajDopasowany: rodzaj }] }
-    const plan = generujPlanTygodnia({ dni, dniSlotyMap, dania: pula, opcje })
+    const opcjeZUczeniem = { ...opcje, uczenie: { ...uczenie, ...(opcje.uczenie || {}) } }
+    const plan = generujPlanTygodnia({ dni, dniSlotyMap, dania: pula, opcje: opcjeZUczeniem })
     const nowa = plan[`${dataStr}_${slotId}`]
     if (!nowa) return { error: 'Nie wylosowano' }
 
