@@ -3,6 +3,17 @@ import { supabase } from '../supabase'
 import { t, fonts, ui } from '../theme'
 import Toast from '../components/Toast'
 import { formatDataLocal, dzisLocal } from '../dataHelpers'
+import { PromoBanner, PromoChip, PromoDetail, StoreDot } from '../components/Promocje'
+import { dopasujPromocje, pobierzAktualnePromocje } from '../promocjeMatch'
+
+// ── Promocje: mock do testów UI (domyślnie wyłączony) ──
+// Włącz MOCK_PROMO = true żeby zobaczyć chipy/banner bez danych w tabeli `promocje`.
+const MOCK_PROMO = false
+const MOCK_PROMO_DANE = [
+  { store: 'Lidl',      old: 8.49,  now: 5.99, off: '-29%',     until: 'do niedzieli' },
+  { store: 'Biedronka', old: null,  now: 3.50, off: '2 za 7 zł', until: 'do jutra' },
+  { store: 'Kaufland',  old: 12.99, now: 9.49, off: '-27%',     until: 'dziś!' },
+]
 
 const KATEGORIE = [
   { id: '1_Warzywa i owoce',   label: 'Warzywa i owoce' },
@@ -563,6 +574,11 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
   // Mapa: baza_klucz -> {id, nazwa, ilosc, kategoria, usuniety}
   const [korektyZakupow, setKorektyZakupow] = useState({})
 
+  // Promocje sklepowe — globalne (bez household_id), fetch raz na wejście w listę.
+  const [promocje, setPromocje] = useState([])
+  // Klucz itemu z rozwiniętym szczegółem promocji (jeden otwarty naraz)
+  const [openPromoKlucz, setOpenPromoKlucz] = useState(null)
+
   const [toast, setToast] = useState(null)
   const blokujDodawanieDo = useRef(0)
   const generujRef = useRef(null)
@@ -617,6 +633,15 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     pobierz()
     return () => { anulowane = true }
   }, [householdId])
+
+  // ── Promocje — ładowanie z bazy (globalne, raz na mount) ──
+  useEffect(() => {
+    let anulowane = false
+    pobierzAktualnePromocje().then(data => {
+      if (!anulowane) setPromocje(data)
+    })
+    return () => { anulowane = true }
+  }, [])
 
   // Tablica nazw (do UI) wyprodukowana z rows, posortowana i zdedupowana.
   const produktyWDomu = useMemo(
@@ -1636,9 +1661,20 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
 
   // Wszystkie itemy razem: plan (po korektach, po Mam w domu) + własne + cykliczne.
   // Cykliczne i własne zostają nawet jeśli pasują do „Mam w domu” — to świadoma decyzja.
-  const wszystkieItemy = useMemo(() => {
+  const wszystkieItemyBezPromo = useMemo(() => {
     return [...listaPoProduktachDomowych, ...wlasneJakoItems, ...cyklicneJakoItems]
   }, [listaPoProduktachDomowych, wlasneJakoItems, cyklicneJakoItems])
+
+  // Dopnij promocje do itemów (item.promo = {store, old, now, off, until} | null).
+  const wszystkieItemy = useMemo(() => {
+    if (MOCK_PROMO) {
+      return wszystkieItemyBezPromo.map((it, i) =>
+        i % 3 === 0 ? { ...it, promo: MOCK_PROMO_DANE[(i / 3) % MOCK_PROMO_DANE.length] } : { ...it, promo: null }
+      )
+    }
+    if (!promocje.length) return wszystkieItemyBezPromo
+    return dopasujPromocje(wszystkieItemyBezPromo, promocje)
+  }, [wszystkieItemyBezPromo, promocje])
 
   // Czy item jest kupione?
   // - 'wlasne' → kolumna `odznaczone` w zakupy_wlasne
@@ -1764,20 +1800,28 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
           </div>
         ) : (
           <>
+            <PromoBanner items={doKupienia} />
+
             {Object.entries(kategorie).map(([katLabel, { items }]) => (
               <section key={katLabel} style={s.katSekcja}>
                 <h3 style={s.katHeader}>{katLabel}</h3>
                 <div style={s.katLista}>
                   {items.map(item => (
-                    <ItemRow
-                      key={item.klucz}
-                      item={item}
-                      kupione={false}
-                      onTap={() => toggleAny(item)}
-                      onLongPress={() => rozpocznijEdycjeItemu(item)}
-                      onEdit={() => rozpocznijEdycjeItemu(item)}
-                      onHome={item.zrodlo === 'plan' ? () => dodajDoMamWDomu(item.skladnik) : null}
-                    />
+                    <div key={item.klucz}>
+                      <ItemRow
+                        item={item}
+                        kupione={false}
+                        onToggle={() => toggleAny(item)}
+                        onLongPress={() => rozpocznijEdycjeItemu(item)}
+                        onEdit={() => rozpocznijEdycjeItemu(item)}
+                        onHome={item.zrodlo === 'plan' ? () => dodajDoMamWDomu(item.skladnik) : null}
+                        promoOpen={openPromoKlucz === item.klucz}
+                        onPromoToggle={() => setOpenPromoKlucz(k => k === item.klucz ? null : item.klucz)}
+                      />
+                      {openPromoKlucz === item.klucz && item.promo && (
+                        <PromoDetail promo={item.promo} />
+                      )}
+                    </div>
                   ))}
                 </div>
               </section>
@@ -1800,7 +1844,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
                       key={item.klucz}
                       item={item}
                       kupione={true}
-                      onTap={() => toggleAny(item)}
+                      onToggle={() => toggleAny(item)}
                       onEdit={() => rozpocznijEdycjeItemu(item)}
                       onHome={item.zrodlo === 'plan' ? () => dodajDoMamWDomu(item.skladnik) : null}
                     />
@@ -2090,15 +2134,19 @@ function SzybkieDodawanie({ value, onChange, onDodaj }) {
 }
 
 // ════════════════════════════════════════════════════════════
-// Pojedynczy wiersz listy — z long-pressem dla edycji
-function ItemRow({ item, kupione, onTap, onLongPress, onEdit, onHome }) {
+// Pojedynczy wiersz listy — z long-pressem dla edycji.
+// Odhaczanie „kupione" TYLKO checkboxem (decyzja Filipa, Zadanie-promocje.md A4).
+// Tap w resztę wiersza: gdy item.promo → toggluje szczegół promocji; bez promo → nic.
+function ItemRow({ item, kupione, onToggle, onLongPress, onEdit, onHome, promoOpen, onPromoToggle }) {
   const s = makeS()
   const longPressTimer = useRef(null)
   const startPos = useRef(null)
   const triggered = useRef(false)
+  const moved = useRef(false)
 
   function down(e) {
     triggered.current = false
+    moved.current = false
     startPos.current = { x: e.clientX, y: e.clientY }
     if (onLongPress) {
       longPressTimer.current = setTimeout(() => {
@@ -2109,12 +2157,15 @@ function ItemRow({ item, kupione, onTap, onLongPress, onEdit, onHome }) {
     }
   }
   function move(e) {
-    if (!startPos.current || !longPressTimer.current) return
+    if (!startPos.current) return
     const dx = Math.abs(e.clientX - startPos.current.x)
     const dy = Math.abs(e.clientY - startPos.current.y)
     if (dx > 10 || dy > 10) {
-      clearTimeout(longPressTimer.current)
-      longPressTimer.current = null
+      moved.current = true
+      if (longPressTimer.current) {
+        clearTimeout(longPressTimer.current)
+        longPressTimer.current = null
+      }
     }
   }
   function up() {
@@ -2123,7 +2174,10 @@ function ItemRow({ item, kupione, onTap, onLongPress, onEdit, onHome }) {
       clearTimeout(longPressTimer.current)
       longPressTimer.current = null
     }
-    if (!triggered.current) onTap()
+    // Tylko czysty tap (bez ruchu = nie scroll, bez long-pressa) rozwija promocję
+    if (!triggered.current && !moved.current && !kupione && item.promo && onPromoToggle) {
+      onPromoToggle()
+    }
     startPos.current = null
   }
   function cancel() {
@@ -2131,6 +2185,7 @@ function ItemRow({ item, kupione, onTap, onLongPress, onEdit, onHome }) {
     longPressTimer.current = null
     startPos.current = null
     triggered.current = false
+    moved.current = false
   }
 
   const isWlasny = item.zrodlo === 'wlasne'
@@ -2144,11 +2199,19 @@ function ItemRow({ item, kupione, onTap, onLongPress, onEdit, onHome }) {
       onPointerUp={up}
       onPointerCancel={cancel}
     >
-      <div style={{ ...s.checkbox, ...(kupione ? s.checkboxDone : {}) }}>
-        {kupione && (
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12l5 5L20 7"/></svg>
-        )}
-      </div>
+      <button
+        style={s.checkboxHit}
+        onPointerDown={e => e.stopPropagation()}
+        onPointerUp={e => e.stopPropagation()}
+        onClick={e => { e.stopPropagation(); onToggle() }}
+        aria-label={kupione ? `Odznacz ${item.skladnik}` : `Kupione: ${item.skladnik}`}
+      >
+        <span style={{ ...s.checkbox, ...(kupione ? s.checkboxDone : {}) }}>
+          {kupione && (
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12l5 5L20 7"/></svg>
+          )}
+        </span>
+      </button>
       <div style={s.itemInfo}>
         <div style={{ ...s.itemNazwa, ...(kupione ? { textDecoration: 'line-through', color: t.muteLight } : {}) }}>
           {item.skladnik}
@@ -2166,6 +2229,11 @@ function ItemRow({ item, kupione, onTap, onLongPress, onEdit, onHome }) {
               <span style={s.itemIloscHint}>
                 {' '}potrzeba {formatujOryginalnaIlosc(item.opakowania)}
               </span>
+              {!kupione && item.promo && (
+                <span style={s.itemPromoSklep}>
+                  {' · '}<StoreDot store={item.promo.store} size={6} /> {item.promo.store}
+                </span>
+              )}
             </div>
           </>
         ) : (
@@ -2175,9 +2243,17 @@ function ItemRow({ item, kupione, onTap, onLongPress, onEdit, onHome }) {
                 ? formatujWage(item.ilosc, item.jednostka)
                 : (item.iloscOryginalna || '—')}
             </strong>
+            {!kupione && item.promo && (
+              <span style={s.itemPromoSklep}>
+                {' · '}<StoreDot store={item.promo.store} size={6} /> {item.promo.store}
+              </span>
+            )}
           </div>
         )}
       </div>
+      {!kupione && item.promo && (
+        <PromoChip promo={item.promo} open={!!promoOpen} />
+      )}
       {onHome && (
         <button
           style={s.itemHomeBtn}
@@ -2741,6 +2817,14 @@ function makeS() {
     touchAction: 'manipulation',
   },
   itemDone: { opacity: 0.7 },
+  // Hit-area checkboxa min 40×40 (dotykowo), wizualnie kółko 22px bez zmian.
+  // Ujemne marginesy kompensują padding, żeby layout wiersza się nie rozjechał.
+  checkboxHit: {
+    background: 'none', border: 'none', padding: 9, margin: -9,
+    minWidth: 40, minHeight: 40, flexShrink: 0,
+    display: 'grid', placeItems: 'center', cursor: 'pointer',
+    touchAction: 'manipulation',
+  },
   checkbox: {
     width: 22, height: 22, borderRadius: '50%',
     border: `1.5px solid ${t.borderStrong}`, flexShrink: 0,
@@ -2748,6 +2832,10 @@ function makeS() {
     background: t.surface, transition: 'all .15s',
   },
   checkboxDone: { background: t.accent, borderColor: t.accent },
+  itemPromoSklep: {
+    color: t.textSoft, fontSize: 11.5,
+    display: 'inline-flex', alignItems: 'center', gap: 4,
+  },
   itemInfo: { flex: 1, minWidth: 0 },
   itemNazwa: {
     fontSize: 14, fontWeight: 500, color: t.text, lineHeight: 1.2,

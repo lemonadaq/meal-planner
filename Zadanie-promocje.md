@@ -306,4 +306,44 @@ Na start sesji poproś o / potwierdź:
 
 ## Notatki z sesji (status)
 
-_(uzupełniane na bieżąco)_
+### Co zrobiono (sesja 1)
+
+- [x] **B** — migracja SQL przekazana Filipowi w chacie (do odpalenia w Supabase SQL editor).
+      Kod frontendu jest odporny na brak tabeli (`pobierzAktualnePromocje()` zwraca `[]`).
+- [x] **A** — UI kompletny:
+  - `src/components/Promocje.jsx` — `PromoBanner`, `PromoChip`, `PromoDetail`, `StoreDot`,
+    `zl`, `STORE_DOT` (design 1:1 z briefu, klucze `item.klucz` / `item.skladnik`).
+  - keyframe `expandIn` w `src/index.css`.
+  - `ListaZakupow.jsx`: banner nad sekcjami, chip + druga linia sklepu w wierszu,
+    `PromoDetail` rozwijany pod wierszem (stan `openPromoKlucz`, jeden naraz).
+  - **Decyzja Filipa (A4): odhaczanie TYLKO checkboxem — dla wszystkich wierszy.**
+    Tap w wiersz: z promo → toggle szczegółu; bez promo → nic. Hit-area checkboxa
+    40×40 (padding 9 + ujemny margines, wizualnie bez zmian). Long-press → edycja
+    bez zmian. Tap vs scroll rozróżniany przez ref `moved` (>10px = scroll).
+  - Mock za flagą `MOCK_PROMO = false` (góra `ListaZakupow.jsx`) — włącz na `true`,
+    żeby zobaczyć UI bez danych (co 3. item dostaje sztuczną promocję).
+  - `TrybSklepu` nie renderuje promo — dostaje itemy z polem `promo`, ignoruje je (OK).
+- [x] **C** — `src/promocjeMatch.js`: `dopasujPromocje()` (exact + token overlap +
+      najtańsza przy wielu), `pobierzAktualnePromocje()` (fetch z `gte('wazne_do', dziś)`,
+      `[]` przy błędzie), `etykietaWazneDo()` („dziś!"/„do jutra"/„do niedzieli"/„do DD.MM").
+      Stop-words + filtr gramatur w tokenizacji. Polskie znaki zachowane (jak `nazwa_norm`).
+- [~] **D** — scraper NIE zaczęty; rekonesans D0 częściowo zrobiony (z chmury, IP datacenter):
+  - **Lidl**: `robots.txt` łagodny — blokuje tylko ścieżki API (`/user-api/*`, `/cqe/*`)
+    i parametry wyszukiwania; strony ofert nie są zabronione. ALE strona oferty
+    (`/c/oferta-od-poniedzialku/...`) to Vue SPA — w HTML zero danych produktowych
+    (brak `__NEXT_DATA__`, brak cen), wszystko dociągane XHR-em po wykonaniu JS.
+    Do zrobienia na PC Filipa: podejrzeć w DevTools (zakładka Network) jaki endpoint
+    zwraca produkty. Uwaga: jeśli to `/user-api/*` — robots.txt tego zabrania,
+    wtedy zostaje Playwright albo tryb `--plik`.
+  - **Kaufland**: Cloudflare managed challenge (captcha) już na `robots.txt` z IP
+    datacenter. Z domowego IP może być inaczej, ale zgodnie z briefem nie kombinujemy
+    z obejściami → najpewniej tryb `--plik` (Filip zapisuje stronę ręcznie / kopiuje
+    JSON z DevTools).
+- Walidacja esbuild: ✅ (`ListaZakupow.jsx`, `Promocje.jsx`, `promocjeMatch.js` budują się czysto).
+
+### Co zostało
+
+1. Filip: odpalić migrację SQL (część B) w Supabase.
+2. Test UI na telefonie z `MOCK_PROMO = true` (albo z ręcznym rekordem w tabeli).
+3. Część D: rekonesans + scrapery (osobna sesja, najlepiej z PC/hotspota Filipa).
+4. Po realnych danych: ocena jakości matchingu, ewentualnie fuzzy pg_trgm przez RPC.

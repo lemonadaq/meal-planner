@@ -41,3 +41,6 @@ button {
 @keyframes toastIn  { 0% { transform: translateY(140%); opacity: 0 } 60% { transform: translateY(-4%); opacity: 1 } 100% { transform: translateY(0); opacity: 1 } }
 @keyframes toastOut { from { transform: translateY(0); opacity: 1 } to { transform: translateY(140%); opacity: 0 } }
 @keyframes toastShrink { from { transform: scaleX(1) } to { transform: scaleX(0) } }
+
+/* ─── Promocje (rozwijane szczegóły/banner) ──────────────────────────────── */
+@keyframes expandIn { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:translateY(0); } }
