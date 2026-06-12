@@ -64,8 +64,12 @@ export function useGenerator({ user, householdId, slotyConfig }) {
         .limit(2000)
       const mapaSkladnikow = budujMapeSkladnikow(wiersze || [])
       uczenie = budujWagiUczenia({ sygnaly: sygnaly || [], mapaSkladnikow })
+      // DEBUG — usuń po weryfikacji
+      const top = Object.entries(uczenie).sort((a, b) => b[1] - a[1])
+      console.log('[uczenie] sygnałów:', (sygnaly || []).length, '| top 5:', top.slice(0, 5), '| bottom 5:', top.slice(-5))
     } catch (e) {
       // Preferencje to wzmocnienie, nigdy blokada — generuj normalnie przy błędzie
+      console.warn('[uczenie] błąd pobierania sygnałów:', e)
     }
 
     // 2. Zbuduj strukturę dni + slotów dla generatora
