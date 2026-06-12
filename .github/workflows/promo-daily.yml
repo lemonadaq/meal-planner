@@ -23,8 +23,21 @@ jobs:
         with:
           node-version: 24
 
+      - name: Get week number
+        id: week
+        run: echo "week=$(date +'%Y-W%V')" >> $GITHUB_OUTPUT
+
+      - name: Cache leaflet HTTP responses
+        uses: actions/cache@v4
+        with:
+          path: promo-output/blix/cache/endpoints
+          key: promo-endpoints-${{ steps.week.outputs.week }}
+          restore-keys: |
+            promo-endpoints-
+
       - name: Install dependencies
         run: npm ci
+
       - name: Check env variables
         run: |
           if [ -z "$SUPABASE_URL" ]; then echo "SUPABASE_URL missing"; exit 1; else echo "SUPABASE_URL OK"; fi
