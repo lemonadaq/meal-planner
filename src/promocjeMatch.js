@@ -92,7 +92,9 @@ export function dopasujPromocje(items, promocje) {
 
     const pasujace = przygotowane.filter(p =>
       p.norm === norm ||
-      zawieraWszystkie(tokenyItemu, p.tokeny) ||
+      // Promo ogólna → składnik szczegółowy (np. promo "kurczak" pasuje do "kurczak pierś").
+      // Odwrotny kierunek celowo usunięty: powodował fałszywe dopasowania,
+      // np. składnik "cebula" dopasowywał się do promo "cebula prażona".
       zawieraWszystkie(p.tokeny, tokenyItemu)
     )
     if (!pasujace.length) return { ...item, promo: null, promos: [] }
