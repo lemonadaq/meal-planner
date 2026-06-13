@@ -101,6 +101,17 @@ Do wykorzystania później: `src/hooks/useUndo.js` (generyczny undo) — wrzucon
 
 ---
 
+## GRUPA I — Brakujące pola edycji dania (DanieDetail.jsx)
+**Pliki:** DanieDetail.jsx
+
+- [ ] Brak możliwości edycji **rodzaju dania** (śniadanie/obiad/kolacja/zupa itd.) — pole `rodzaj` w tabeli `dania`.
+- [ ] Brak możliwości edycji **czasu przygotowania** — pole `czas_minuty`.
+- [ ] Brak możliwości edycji **trybu podania** (samodzielne / z dodatkiem) — pole `TYP`.
+
+W widoku normalnym te pola też nie są w ogóle wyświetlane — dodać chipki pod tytułem dania.
+
+---
+
 ## Notatka
 
 - ✅ Zrobione: A, B, C, E, F (krzyżyk + białe kółka), G, H, I.
