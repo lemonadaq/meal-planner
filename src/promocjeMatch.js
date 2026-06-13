@@ -74,7 +74,7 @@ function promoZRekordu(p) {
 //   1. exact: nazwa_norm === znormalizowany skladnik
 //   2. token overlap: tokeny składnika ⊆ tokeny promo LUB odwrotnie
 //   3. kilka dopasowań → najtańsza cena_nowa
-export function dopasujPromocje(items, promocje, preferowanySlep = null) {
+export function dopasujPromocje(items, promocje) {
   if (!promocje?.length) return items
 
   const przygotowane = promocje
@@ -87,7 +87,7 @@ export function dopasujPromocje(items, promocje, preferowanySlep = null) {
 
   return items.map(item => {
     const norm = normalizujNazwePromo(item.skladnik)
-    if (!norm) return { ...item, promo: null }
+    if (!norm) return { ...item, promo: null, promos: [] }
     const tokenyItemu = tokenizuj(item.skladnik)
 
     const pasujace = przygotowane.filter(p =>
@@ -95,22 +95,21 @@ export function dopasujPromocje(items, promocje, preferowanySlep = null) {
       zawieraWszystkie(tokenyItemu, p.tokeny) ||
       zawieraWszystkie(p.tokeny, tokenyItemu)
     )
-    if (!pasujace.length) return { ...item, promo: null }
+    if (!pasujace.length) return { ...item, promo: null, promos: [] }
 
-    if (preferowanySlep) {
-      const zPreferowanego = pasujace.filter(p => p.rekord.sklep === preferowanySlep)
-      if (zPreferowanego.length) {
-        const najtansza = zPreferowanego.reduce((min, p) =>
-          +p.rekord.cena_nowa < +min.rekord.cena_nowa ? p : min
-        )
-        return { ...item, promo: promoZRekordu(najtansza.rekord) }
-      }
+    // Najtańsza oferta per sklep
+    const perSklep = new Map()
+    for (const p of pasujace) {
+      const sklep = p.rekord.sklep
+      const stary = perSklep.get(sklep)
+      if (!stary || +p.rekord.cena_nowa < +stary.rekord.cena_nowa) perSklep.set(sklep, p)
     }
 
-    const najtansza = pasujace.reduce((min, p) =>
-      +p.rekord.cena_nowa < +min.rekord.cena_nowa ? p : min
-    )
-    return { ...item, promo: promoZRekordu(najtansza.rekord) }
+    const promos = [...perSklep.values()]
+      .map(p => promoZRekordu(p.rekord))
+      .sort((a, b) => a.now - b.now)
+
+    return { ...item, promo: promos[0], promos }
   })
 }
 
