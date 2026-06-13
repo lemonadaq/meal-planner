@@ -109,12 +109,21 @@ export function dopasujPromocje(items, promocje) {
 export async function pobierzAktualnePromocje() {
   try {
     const teraz = new Date().toISOString()
-    const { data, error } = await supabase
-      .from('promo_offers')
-      .select('product_name, price, old_price, store_name, offer_end_at')
-      .or(`offer_end_at.is.null,offer_end_at.gte.${teraz}`)
-    if (error) return []
-    return (data || []).map(p => ({
+    const PAGE = 1000
+    const wszystkie = []
+    let od = 0
+    while (true) {
+      const { data, error } = await supabase
+        .from('promo_offers')
+        .select('product_name, price, old_price, store_name, offer_end_at')
+        .gte('offer_end_at', teraz)
+        .range(od, od + PAGE - 1)
+      if (error || !data?.length) break
+      wszystkie.push(...data)
+      if (data.length < PAGE) break
+      od += PAGE
+    }
+    return wszystkie.map(p => ({
       nazwa_norm: p.product_name,
       nazwa: p.product_name,
       cena_nowa: p.price,
