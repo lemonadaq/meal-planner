@@ -1243,6 +1243,7 @@ function WidokDnia({
   const dataStr = formatData(dzien)
   const [filtr, setFiltr] = useState('')
   const [dragState, setDragState] = useState(null)
+  const [hoverPosilek, setHoverPosilek] = useState(null)
 
   // Refy do slotów (dla wykrywania drop): zarówno głównych jak i side-slotów
   // Klucz: `${posilek}` dla dania, `${posilek}_side_${i}` dla side-slotów
@@ -1471,6 +1472,12 @@ function WidokDnia({
       dragRef.current = stan
       setDragState(stan)
 
+      // Podświetl tylko slot pod kursorem (A3)
+      if (stan.typ === 'danie') {
+        const cel = znajdzCel(e.clientX, e.clientY)
+        setHoverPosilek(cel && !cel.includes('_side_') ? cel : null)
+      }
+
       // Edge scroll: blisko górnej / dolnej krawędzi viewportu
       const vh = window.innerHeight
       if (e.clientY < EDGE_SCROLL_THRESHOLD) {
@@ -1538,6 +1545,7 @@ function WidokDnia({
 
       dragRef.current = null
       setDragState(null)
+      setHoverPosilek(null)
       wyczyscGesture()
     }
 
@@ -1781,7 +1789,7 @@ function WidokDnia({
   }, [efektywneTypy, dania, dodatki, surowki, filtr, skladnikiDan])
 
   const tytulGalerii = subTryb
-    ? `${subTryb.typ === 'surowka' ? 'Surówka' : 'Dodatek'} do: ${subTryb.posilek}`
+    ? `${subTryb.typ === 'surowka' ? 'Surówka' : 'Dodatek'} do: ${(nazwaSlotu?.(subTryb.posilek) || subTryb.posilek).toLowerCase()}`
     : 'Galeria'
 
   const planStickyStyle = dragState?.podniesiony
@@ -1812,13 +1820,16 @@ function WidokDnia({
       {/* STICKY: sloty z planem dnia na górze, zostają widoczne podczas scrolla */}
       <div style={{
         ...planStickyStyle,
-        opacity: subTryb ? 0.55 : 1,
+        opacity: 1,
         transition: 'opacity .2s',
       }}>
         {subTryb && (
           <div style={s.dzienAkcje}>
+            <span style={s.dzienKontekst}>
+              {subTryb.typ === 'surowka' ? '🥗 Surówka' : '➕ Dodatek'} do: {(nazwaSlotu?.(subTryb.posilek) || subTryb.posilek).toLowerCase()}
+            </span>
             <button style={s.dzienAkcjaBtnText} onClick={() => onSetSubTryb(null)}>
-              Anuluj wybór
+              Anuluj
             </button>
           </div>
         )}
@@ -1826,7 +1837,6 @@ function WidokDnia({
           {slotyTegoDnia.map(posilek => {
             const wpis = plan[`${dataStr}_${posilek}`]
             const dragTyp = dragState?.podniesiony ? dragState.typ : null
-            const podswietl = dragTyp === 'danie'
             const slotItemWidth = kolumnGrida === 4 ? 'calc(25% - 6px)' : 'calc(33.333% - 6px)'
             return (
               <SlotDuzy
@@ -1842,7 +1852,7 @@ function WidokDnia({
                 dodatkiMap={dodatkiMap}
                 surowkiMap={surowkiMap}
                 domyslnePorcje={domyslnePorcje}
-                podswietlony={podswietl}
+                podswietlony={dragTyp === 'danie' && hoverPosilek === posilek}
                 podswietlSide={dragTyp === 'dodatek' || dragTyp === 'surowka'}
                 onClick={() => wpis?.danie && onSelectDanie?.(wpis.danie)}
                 onUsun={() => onUsunPosilek(dataStr, posilek)}
@@ -2712,6 +2722,10 @@ function makeS() {
   dzienAkcje: {
     display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 8,
     marginTop: 10,
+  },
+  dzienKontekst: {
+    flex: 1,
+    fontSize: 13, fontWeight: 600, color: t.text,
   },
   dzienAkcjaBtn: {
     background: t.surface, border: `1px solid ${t.border}`,

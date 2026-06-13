@@ -18,6 +18,23 @@ html, body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  /* Natywne feel: wyłącz zaznaczanie tekstu / menu long-press (naprawia chipy!) */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Pewność dla chipów i przycisków */
+button, [role="button"] {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Opt-in tam, gdzie kopiowanie ma sens */
+input, textarea, [contenteditable], [data-selectable] {
+  -webkit-user-select: text;
+  user-select: text;
 }
 
 #root {
