@@ -104,7 +104,7 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
   // Konfiguracja slotów (per household) — dynamiczna lista posiłków per dzień tygodnia
   const { config: slotyConfig } = useSloty(householdId)
 
-  const { generuj } = useGenerator({ user, householdId, slotyConfig })
+  const { generuj, wymienDanie } = useGenerator({ user, householdId, slotyConfig })
 
   // Helper: lista ID slotów dla podanego dnia (string YYYY-MM-DD lub obiekt Date)
   const slotyDlaDnia = useCallback((dataLubStr) => {
@@ -480,6 +480,26 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
     })
   }
 
+  async function wymienPosilek(wpis) {
+    if (!wpis?.id) return
+    const stareDanie = wpis.danie
+    const klucz = `${wpis.data}_${wpis.posilek}`
+    const { nowaNazwa, error } = await wymienDanie({
+      dataStr: wpis.data,
+      slotId: wpis.posilek,
+      nazwaSlotu: nazwaSlotu(wpis.posilek),
+      wpisId: wpis.id,
+      unikaj: [stareDanie],
+    })
+    if (error || !nowaNazwa) { pokazToast('Brak alternatyw dla tego posiłku'); return }
+    setPlan(p => ({ ...p, [klucz]: { ...wpis, danie: nowaNazwa, dodatki: [], podmiany: {} } }))
+    pokazToast(`Zmieniono na: ${nowaNazwa}`, async () => {
+      await supabase.from('kalendarz').update({ danie: stareDanie, dodatki: wpis.dodatki || [], podmiany: wpis.podmiany || {} }).eq('id', wpis.id)
+      setPlan(p => ({ ...p, [klucz]: wpis }))
+      setToast(null)
+    })
+  }
+
   async function przeniesPosilek(zDataStr, zPosilek, naDataStr, naPosilek) {
     const zKlucz = `${zDataStr}_${zPosilek}`
     const naKlucz = `${naDataStr}_${naPosilek}`
@@ -815,6 +835,7 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
             nazwaSlotu={nazwaSlotu}
             kolorSlotu={kolorSlotu}
             dniDostepne={dniDostepne}
+            onWymienPosilek={wymienPosilek}
           />
         )}
 
@@ -847,6 +868,7 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
             wieloDniModal={wieloDniModal}
             onWieloDniModal={setWieloDniModal}
             onZaplanujWieleDni={zaplanujNaWieleDni}
+            onWymienPosilek={wymienPosilek}
           />
         )}
       </div>
@@ -921,7 +943,7 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
 function WidokTygodnia({
   dni, plan, daniaMap, onSelectDanie, onClickPusty, onClickDzien,
   onUsunPosilek, onPrzeniesPosilek, onKopiujTydzien, onGeneruj,
-  slotyDlaDnia, nazwaSlotu, kolorSlotu, dniDostepne,
+  slotyDlaDnia, nazwaSlotu, kolorSlotu, dniDostepne, onWymienPosilek,
 }) {
   const s = makeS()
   const maZawartosc = Object.values(plan).some(p => p.danie)
@@ -1199,6 +1221,7 @@ function WidokTygodnia({
                         else onClickPusty(di)
                       }}
                       onDelete={wpis?.danie ? () => onUsunPosilek(dataStr, posilek) : null}
+                      onWymien={wpis?.danie ? () => onWymienPosilek(wpis) : null}
                     />
                   </div>
                 )
@@ -1238,6 +1261,7 @@ function WidokDnia({
   onZmienPorcje, onPodmien, onKopiujDzien,
   slotyDlaDnia, nazwaSlotu, kolorSlotu,
   wieloDniModal, onWieloDniModal, onZaplanujWieleDni,
+  onWymienPosilek,
 }) {
   const s = makeS()
   const dataStr = formatData(dzien)
@@ -1859,6 +1883,7 @@ function WidokDnia({
                 onUsunSide={(slotIdx) => onUsunSide(dataStr, posilek, slotIdx)}
                 onZmienPorcje={(p) => onZmienPorcje(dataStr, posilek, p)}
                 onPodmien={() => onPodmien(wpis)}
+                onWymien={wpis?.danie ? () => onWymienPosilek(wpis) : null}
                 onWybierzSide={(slotIdx) => {
                   onSetSubTryb({ dataStr, posilek, typ: 'dodatek', slotIdx })
                 }}
@@ -1998,7 +2023,7 @@ function WidokDnia({
 }
 
 // ════════════════════════════════════════════════════════════
-function KafelekPosilek({ posilek, posilekLabel, posilekKolor, wpis, daniaMeta, onClick, onDelete, setRef, onPointerDownDrag, onTouchStartDrag, podswietlony, przeciagany, style }) {
+function KafelekPosilek({ posilek, posilekLabel, posilekKolor, wpis, daniaMeta, onClick, onDelete, onWymien, setRef, onPointerDownDrag, onTouchStartDrag, podswietlony, przeciagany, style }) {
   const s = makeS()
   const masDanie = !!wpis?.danie
   const label = (posilekLabel || posilek || '').toUpperCase()
@@ -2040,6 +2065,19 @@ function KafelekPosilek({ posilek, posilekLabel, posilekKolor, wpis, daniaMeta, 
           <span style={{ ...s.kafelekLabel, background: kolor }}>
             {label}
           </span>
+          {onWymien && (
+            <button
+              type="button"
+              style={{ ...s.kafelekDelete, right: 37 }}
+              onPointerDown={(e) => e.stopPropagation()}
+              onTouchStart={(e) => e.stopPropagation()}
+              onClick={(e) => { e.stopPropagation(); onWymien() }}
+              aria-label={`Inne danie`}
+              title="Inne danie"
+            >
+              🔄
+            </button>
+          )}
           {onDelete && (
             <button
               type="button"
@@ -2075,7 +2113,7 @@ function SlotDuzy({
   setRef, setSideRef, posilek, posilekLabel, posilekKolor, wpis, daniaMeta, dodatkiMap, surowkiMap,
   domyslnePorcje, podswietlony, podswietlSide,
   onClick, onUsun, onUsunSide,
-  onZmienPorcje, onPodmien,
+  onZmienPorcje, onPodmien, onWymien,
   onWybierzSide, style,
 }) {
   const s = makeS()
@@ -2148,6 +2186,9 @@ function SlotDuzy({
           <button style={s.malyBtn} onClick={(e) => { e.stopPropagation(); onPodmien() }} title="Podmień składniki">
             ↻{liczbaPodmian > 0 ? ` ${liczbaPodmian}` : ''}
           </button>
+          {onWymien && (
+            <button style={s.malyBtn} onClick={(e) => { e.stopPropagation(); onWymien() }} title="Inne danie">🔄</button>
+          )}
           <button style={s.malyBtn} onClick={(e) => { e.stopPropagation(); onUsun() }} title="Usuń posiłek">✕</button>
         </div>
       )}
