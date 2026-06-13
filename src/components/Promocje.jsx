@@ -29,7 +29,7 @@ export function PromoBanner({ items }) {
     }
   }
   const sklepy = Object.entries(perSklep).sort((a, b) => b[1].length - a[1].length)
-  const lacznieOkazji = sklepy.reduce((s, [, v]) => s + v.length, 0)
+  const lacznieOkazji = zPromo.length
 
   return (
     <div onClick={() => setOpen(o => !o)} style={{
