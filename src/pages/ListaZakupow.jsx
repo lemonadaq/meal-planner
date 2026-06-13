@@ -1048,7 +1048,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     // Uzupełnij o pozycje zapisane lokalnie (np. odznaczone gdy planowano inny tydzień)
     try {
       const ssKey = storageKey + poniedzialek
-      const saved = JSON.parse(sessionStorage.getItem(ssKey) || '[]')
+      const saved = JSON.parse(localStorage.getItem(ssKey) || '[]')
       for (const k of saved) { if (aktualneKlucze.has(k)) odtworzone.add(k) }
     } catch {}
 
@@ -1173,7 +1173,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
 
   function zapiszStanOdznaczenia(nowySet) {
     try {
-      sessionStorage.setItem(storageKey + aktualnyPoniedzialek, JSON.stringify([...nowySet]))
+      localStorage.setItem(storageKey + aktualnyPoniedzialek, JSON.stringify([...nowySet]))
     } catch {}
   }
 
