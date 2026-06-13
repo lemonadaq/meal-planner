@@ -1701,9 +1701,9 @@ function WidokDnia({
   const [wybraneTypy, setWybraneTypy] = useState(() => {
     try {
       const saved = JSON.parse(sessionStorage.getItem('planer_wybraneTypy'))
-      if (Array.isArray(saved) && saved.length) return new Set(saved)
+      if (Array.isArray(saved)) return new Set(saved)
     } catch { /* pusty fallback */ }
-    return new Set(TYPY_GLOWNE) // domyślnie wszystkie główne, bez stron
+    return new Set() // domyślnie nic nie wybrane = pokaż wszystko
   })
 
   useEffect(() => {
@@ -1731,8 +1731,10 @@ function WidokDnia({
   // Dwie listy: główne i strony. Każda alfabetyczna. Render decyduje czy
   // pokazać je razem (jeden grid) czy w dwóch sekcjach.
   const { itemyGlowne, itemyStrony } = useMemo(() => {
-    const efGlowne = TYPY_GLOWNE.filter(t => efektywneTypy.has(t))
-    const efStrony = TYPY_STRONY.filter(t => efektywneTypy.has(t))
+    // Puste wybraneTypy = brak filtra (pokaż wszystko)
+    const brakFiltru = efektywneTypy.size === 0
+    const efGlowne = brakFiltru ? TYPY_GLOWNE : TYPY_GLOWNE.filter(t => efektywneTypy.has(t))
+    const efStrony = brakFiltru ? TYPY_STRONY : TYPY_STRONY.filter(t => efektywneTypy.has(t))
 
     const glowne = efGlowne.length
       ? dania

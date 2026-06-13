@@ -73,11 +73,15 @@ export function useGenerator({ user, householdId, slotyConfig }) {
     }
 
     // 2. Zbuduj strukturę dni + slotów dla generatora
+    // Pomijaj dni które już minęły (nie ma sensu planować przeszłości)
+    const dzis = new Date(); dzis.setHours(0, 0, 0, 0)
+    const dniBezPrzeszlosci = dniTygodnia.filter(d => { const dd = new Date(d); dd.setHours(0,0,0,0); return dd >= dzis })
+
     const cfg = sanityzuj(slotyConfig)
-    const dni = dniTygodnia.map(d => ({ klucz: kluczDnia(d), dataStr: formatDataLocal(d) }))
+    const dni = dniBezPrzeszlosci.map(d => ({ klucz: kluczDnia(d), dataStr: formatDataLocal(d) }))
 
     const dniSlotyMap = {}
-    for (const d of dniTygodnia) {
+    for (const d of dniBezPrzeszlosci) {
       const klucz = kluczDnia(d)
       const sloty = slotyWDniu(cfg, klucz).map(s => ({
         id: s.id,
