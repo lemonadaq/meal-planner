@@ -586,8 +586,8 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
   const blokujDodawanieDo = useRef(0)
   const generujRef = useRef(null)
   // Stan odznaczonych jest teraz w bazie (zakupy_historia, wspólne dla rodziny),
-  // a nie w localStorage — funkcja zostaje jako no-op, żeby nie zmieniać call-site'ów.
-  const storageKey = `lista_zakupow_${user.id}` // legacy, niezużywane
+  // plus lokalny backup w sessionStorage (żeby nie gubić przy zmianie tygodnia w planerze).
+  const storageKey = `odznaczone_${householdId}_`
 
   function pokazToast(msg, onUndo) {
     setToast({ id: Date.now(), msg, onUndo })
@@ -1045,6 +1045,12 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
         mapaHistoriaId[klucz] = h.id
       }
     })
+    // Uzupełnij o pozycje zapisane lokalnie (np. odznaczone gdy planowano inny tydzień)
+    try {
+      const ssKey = storageKey + poniedzialek
+      const saved = JSON.parse(sessionStorage.getItem(ssKey) || '[]')
+      for (const k of saved) { if (aktualneKlucze.has(k)) odtworzone.add(k) }
+    } catch {}
 
     setLista(posortowane)
     setOdznaczone(odtworzone)
@@ -1165,8 +1171,10 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     return () => { supabase.removeChannel(channel) }
   }, [householdId])
 
-  function zapiszStanOdznaczenia(/* nowySet */) {
-    // No-op — stan jest w bazie (zakupy_historia) i synchronizowany przez Realtime.
+  function zapiszStanOdznaczenia(nowySet) {
+    try {
+      sessionStorage.setItem(storageKey + aktualnyPoniedzialek, JSON.stringify([...nowySet]))
+    } catch {}
   }
 
   // ── Toggle zwykłego skladnika (z planu lub cyklicznego) — zapisuje w zakupy_historia ──
