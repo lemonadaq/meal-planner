@@ -500,10 +500,9 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
                       onChange={e => { const n = [...edSkladniki]; n[i].Skladnik = e.target.value; setEdSkladniki(n) }} />
                     <input style={{ ...s.edInput, flex: 1 }} value={sk.Ilosc} placeholder="Ilość"
                       onChange={e => { const n = [...edSkladniki]; n[i].Ilosc = e.target.value; setEdSkladniki(n) }} />
-                    <select style={{ ...s.edInput, flex: 1 }} value={sk.Jednostka}
-                      onChange={e => { const n = [...edSkladniki]; n[i].Jednostka = e.target.value; setEdSkladniki(n) }}>
-                      {JEDNOSTKI.map(j => <option key={j} value={j}>{j}</option>)}
-                    </select>
+                    <input list="jednostki-list" style={{ ...s.edInput, flex: 1 }} value={sk.Jednostka}
+                      placeholder="jednostka"
+                      onChange={e => { const n = [...edSkladniki]; n[i].Jednostka = e.target.value; setEdSkladniki(n) }} />
                     <button style={s.btnUsun} onClick={() => usunSkladnik(i)} title="Usuń">✕</button>
                   </div>
                   <select style={{ ...s.edInput, ...s.kategoriaSelect }} value={sk.Kategoria}
@@ -512,6 +511,9 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
                   </select>
                 </div>
               ))}
+              <datalist id="jednostki-list">
+                {JEDNOSTKI.map(j => <option key={j} value={j} />)}
+              </datalist>
               <button style={s.btnDodajSkladnik} onClick={dodajPustySkladnik}>
                 + Dodaj składnik
               </button>

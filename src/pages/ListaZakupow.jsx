@@ -5,6 +5,7 @@ import Toast from '../components/Toast'
 import { formatDataLocal, dzisLocal } from '../dataHelpers'
 import { PromoBanner, PromoChip, PromoDetail, StoreDot } from '../components/Promocje'
 import { dopasujPromocje, pobierzAktualnePromocje } from '../promocjeMatch'
+import { useSloty, kluczDnia } from '../useSloty'
 
 // ── Promocje: mock do testów UI (domyślnie wyłączony) ──
 // Włącz MOCK_PROMO = true żeby zobaczyć chipy/banner bez danych w tabeli `promocje`.
@@ -574,6 +575,8 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
   // Mapa: baza_klucz -> {id, nazwa, ilosc, kategoria, usuniety}
   const [korektyZakupow, setKorektyZakupow] = useState({})
 
+  const { config: slotyConfig } = useSloty(householdId)
+
   // Promocje sklepowe — globalne (bez household_id), fetch raz na wejście w listę.
   const [promocje, setPromocje] = useState([])
   // Klucz itemu z rozwiniętym szczegółem promocji (jeden otwarty naraz)
@@ -892,7 +895,11 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     const porcjeWszystkich = {}
     const globalnePodmiany = {}
 
-    ;(planData || []).forEach(p => {
+    ;(planData || []).filter(p => {
+      if (!p.posilek) return true
+      const kd = kluczDnia(p.data)
+      return (slotyConfig.dni?.[kd] || []).includes(p.posilek)
+    }).forEach(p => {
       const porcje = p.porcje != null ? +p.porcje : +domyslnePorcje
       if (p.danie) porcjeWszystkich[p.danie] = (porcjeWszystkich[p.danie] || 0) + porcje
       const dodatkiTab = Array.isArray(p.dodatki) ? p.dodatki : []
@@ -1043,7 +1050,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     setOdznaczone(odtworzone)
     setHistoriaIds(mapaHistoriaId)
     setLoading(false)
-  }, [householdId, domyslnePorcje, korektyZakupow, tydzienKalendarza, offsetLokalny])
+  }, [householdId, domyslnePorcje, korektyZakupow, tydzienKalendarza, offsetLokalny, slotyConfig])
 
   useEffect(() => { generuj() }, [generuj])
 

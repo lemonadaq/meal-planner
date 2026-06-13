@@ -101,8 +101,40 @@ Do wykorzystania później: `src/hooks/useUndo.js` (generyczny undo) — wrzucon
 
 ---
 
+---
+
+## GRUPA J — Generator planu: ulepszenia
+**Pliki:** useGenerator.js, Kalendarz.jsx (opcje generatora)
+
+- [x] **Nie wrzucaj w minione dni** — gdy generujesz dla bieżącego tygodnia, pomiń dni przed dzisiaj. ✅ ZROBIONE (2026-06)
+- [ ] **Opcja "pomijaj dzień"** — per dzień możliwość wykluczenia go z generowania (np. piątek = zawsze sam planujesz).
+- [ ] **"Gotuj raz, jedz dwa razy"** — opcja żeby generator wrzucił to samo danie na 2 kolejne dni (obiad/kolacja).
+
+---
+
+## GRUPA K — Filtry w galerii dnia planera
+**Pliki:** Kalendarz.jsx
+
+- [x] **Odwrócona logika chipsów** — domyślnie nic nie zaznaczone = pokaż wszystko; klik zaznacza/odznacza typ; klik na zaznaczony usuwa filtr. ✅ ZROBIONE (2026-06)
+
+---
+
+## GRUPA L — Tymczasowy dodatkowy slot
+**Pliki:** useSloty.js, Kalendarz.jsx, KonfiguracjaSlotow.jsx
+
+- [ ] Możliwość dodania extra slotu tylko na wybrany tydzień (np. dodatkowy obiad w weekend gdy jestem w domu) — bez zmiany globalnej konfiguracji. Wymaga koncepcji "nadpisania tygodniowego" w households lub osobnej tabeli.
+
+---
+
+## GRUPA M — Promocje: stare ceny i zwrot z inwestycji
+**Pliki:** blix-scraper.mjs, promo_offers tabela, Promocje.jsx
+
+- [ ] Blix API nie dostarcza `cena_stara` — żeby pokazać oszczędności, trzeba przechowywać historię cen w bazie i wyliczać różnicę między bieżącą a poprzednią ceną (np. sprzed 2 tygodni). Wymagana zmiana: scraper zapisuje każdą cenę z datą → przy wyświetlaniu `cena_stara` = ostatnia cena z poprzedniego skanu.
+
+---
+
 ## Notatka
 
-- ✅ Zrobione: A, B, C, E, F (krzyżyk + białe kółka), G, H, I.
-- ❌ Pozostało: D (kopiowanie tygodnia + bug fantomowych dań).
+- ✅ Zrobione: A, B, C, E, F (krzyżyk + białe kółka), G, H, I, J (minione dni), K (filtry).
+- ❌ Pozostało: D (kopiowanie tygodnia + bug fantomowych dań), F (krzyżyk w wyszukiwarce + białe kółka), G (scalanie składników), J (pomijaj dzień, gotuj raz), L (tymczasowy slot), M (stare ceny).
 - D + bug fantomowy mają prawdopodobnie wspólną przyczynę (rozjazd kalendarz ↔ lista zakupów) — diagnozować razem.

@@ -73,11 +73,20 @@ export function useGenerator({ user, householdId, slotyConfig }) {
     }
 
     // 2. Zbuduj strukturę dni + slotów dla generatora
+    // Pomijaj dni które już minęły (nie ma sensu planować przeszłości)
+    const dzis = new Date(); dzis.setHours(0, 0, 0, 0)
+    const dniBezPrzeszlosci = dniTygodnia.filter(d => { const dd = new Date(d); dd.setHours(0,0,0,0); return dd >= dzis })
+    // Pomijaj dni wybrane przez użytkownika
+    const pomijajDaty = new Set(opcje.pomijajDaty || [])
+    const dniFinalnie = pomijajDaty.size > 0
+      ? dniBezPrzeszlosci.filter(d => !pomijajDaty.has(formatDataLocal(d)))
+      : dniBezPrzeszlosci
+
     const cfg = sanityzuj(slotyConfig)
-    const dni = dniTygodnia.map(d => ({ klucz: kluczDnia(d), dataStr: formatDataLocal(d) }))
+    const dni = dniFinalnie.map(d => ({ klucz: kluczDnia(d), dataStr: formatDataLocal(d) }))
 
     const dniSlotyMap = {}
-    for (const d of dniTygodnia) {
+    for (const d of dniFinalnie) {
       const klucz = kluczDnia(d)
       const sloty = slotyWDniu(cfg, klucz).map(s => ({
         id: s.id,
@@ -90,6 +99,21 @@ export function useGenerator({ user, householdId, slotyConfig }) {
     // 3. Jeśli tryb 'puste' — przekaż istniejące dania jako już "użyte" + pomiń zajęte sloty
     const opcjeZUczeniem = { ...opcje, uczenie: { ...uczenie, ...(opcje.uczenie || {}) } }
     let planSurowy = generujPlanTygodnia({ dni, dniSlotyMap, dania, opcje: opcjeZUczeniem })
+
+    // Opcja: "dwa dni z rzędu" — paruj kolejne dni (0+1, 2+3...), dzień parzysty dostaje to samo danie
+    if (opcje.powtarzaj2dni && dni.length >= 2) {
+      for (let i = 0; i + 1 < dni.length; i += 2) {
+        const d1 = dni[i], d2 = dni[i + 1]
+        const sloty = dniSlotyMap[d1.klucz] || []
+        for (const slot of sloty) {
+          const k1 = `${d1.dataStr}_${slot.id}`
+          const k2 = `${d2.dataStr}_${slot.id}`
+          if (planSurowy[k1] !== undefined && planSurowy[k2] !== undefined) {
+            planSurowy[k2] = planSurowy[k1]
+          }
+        }
+      }
+    }
 
     // 4. Złóż listę wpisów do zapisania
     const doInsertu = []

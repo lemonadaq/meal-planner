@@ -138,6 +138,14 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
     const d = new Date(poniedzialek); d.setDate(d.getDate() + i); return d
   }), [poniedzialek])
 
+  const dniDostepne = useMemo(() => {
+    const dzis = new Date(); dzis.setHours(0, 0, 0, 0)
+    const skroty = ['Nd','Pon','Wt','Śr','Czw','Pt','Sob']
+    return dni
+      .filter(d => { const dd = new Date(d); dd.setHours(0,0,0,0); return dd >= dzis })
+      .map(d => ({ dataStr: formatData(d), label: skroty[d.getDay()] }))
+  }, [dni])
+
   function otworzDzien(di) {
     setSubTryb(null)
     setWidok('dzien')
@@ -312,8 +320,8 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
   const dodatkiMap = useMemo(() => { const m = {}; dodatki.forEach(d => { m[d.Dodatek] = d }); return m }, [dodatki])
   const surowkiMap = useMemo(() => { const m = {}; surowki.forEach(d => { m[d['Surówka']] = d }); return m }, [surowki])
 
-  async function generujPlan(tryb) {
-    const wynik = await generuj({ dniTygodnia: dni, istniejacyPlan: plan, tryb })
+  async function generujPlan(tryb, opcje = {}) {
+    const wynik = await generuj({ dniTygodnia: dni, istniejacyPlan: plan, tryb, opcje })
     if (wynik.error) {
       pokazToast('Nie udało się ułożyć planu')
       return
@@ -806,6 +814,7 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
             slotyDlaDnia={slotyDlaDnia}
             nazwaSlotu={nazwaSlotu}
             kolorSlotu={kolorSlotu}
+            dniDostepne={dniDostepne}
           />
         )}
 
@@ -912,7 +921,7 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
 function WidokTygodnia({
   dni, plan, daniaMap, onSelectDanie, onClickPusty, onClickDzien,
   onUsunPosilek, onPrzeniesPosilek, onKopiujTydzien, onGeneruj,
-  slotyDlaDnia, nazwaSlotu, kolorSlotu,
+  slotyDlaDnia, nazwaSlotu, kolorSlotu, dniDostepne,
 }) {
   const s = makeS()
   const maZawartosc = Object.values(plan).some(p => p.danie)
@@ -1139,14 +1148,14 @@ function WidokTygodnia({
     <div style={s.tydzienList}>
       {maZawartosc ? (
         <>
-          <GeneratorPlanu maZaplanowane={true} onGeneruj={onGeneruj} />
+          <GeneratorPlanu maZaplanowane={true} onGeneruj={onGeneruj} dniDostepne={dniDostepne} />
           <button style={{ ...s.kopiujTydzienBtn, marginTop: 10 }} onClick={onKopiujTydzien}>
             ⎘ Kopiuj z ub. tygodnia
           </button>
         </>
       ) : (
         <>
-          <GeneratorPlanu maZaplanowane={false} onGeneruj={onGeneruj} />
+          <GeneratorPlanu maZaplanowane={false} onGeneruj={onGeneruj} dniDostepne={dniDostepne} />
           <button style={{ ...s.kopiujTydzienBtn, marginTop: 10 }} onClick={onKopiujTydzien}>
             ⎘ Skopiuj plan z poprzedniego tygodnia
           </button>
@@ -1701,9 +1710,9 @@ function WidokDnia({
   const [wybraneTypy, setWybraneTypy] = useState(() => {
     try {
       const saved = JSON.parse(sessionStorage.getItem('planer_wybraneTypy'))
-      if (Array.isArray(saved) && saved.length) return new Set(saved)
+      if (Array.isArray(saved)) return new Set(saved)
     } catch { /* pusty fallback */ }
-    return new Set(TYPY_GLOWNE) // domyślnie wszystkie główne, bez stron
+    return new Set() // domyślnie nic nie wybrane = pokaż wszystko
   })
 
   useEffect(() => {
@@ -1731,8 +1740,10 @@ function WidokDnia({
   // Dwie listy: główne i strony. Każda alfabetyczna. Render decyduje czy
   // pokazać je razem (jeden grid) czy w dwóch sekcjach.
   const { itemyGlowne, itemyStrony } = useMemo(() => {
-    const efGlowne = TYPY_GLOWNE.filter(t => efektywneTypy.has(t))
-    const efStrony = TYPY_STRONY.filter(t => efektywneTypy.has(t))
+    // Puste wybraneTypy = brak filtra (pokaż wszystko)
+    const brakFiltru = efektywneTypy.size === 0
+    const efGlowne = brakFiltru ? TYPY_GLOWNE : TYPY_GLOWNE.filter(t => efektywneTypy.has(t))
+    const efStrony = brakFiltru ? TYPY_STRONY : TYPY_STRONY.filter(t => efektywneTypy.has(t))
 
     const glowne = efGlowne.length
       ? dania
