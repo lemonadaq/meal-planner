@@ -99,11 +99,12 @@ export function dopasujPromocje(items, promocje, preferowanySlep = null) {
 
     if (preferowanySlep) {
       const zPreferowanego = pasujace.filter(p => p.rekord.sklep === preferowanySlep)
-      if (!zPreferowanego.length) return { ...item, promo: null }
-      const najtansza = zPreferowanego.reduce((min, p) =>
-        +p.rekord.cena_nowa < +min.rekord.cena_nowa ? p : min
-      )
-      return { ...item, promo: promoZRekordu(najtansza.rekord) }
+      if (zPreferowanego.length) {
+        const najtansza = zPreferowanego.reduce((min, p) =>
+          +p.rekord.cena_nowa < +min.rekord.cena_nowa ? p : min
+        )
+        return { ...item, promo: promoZRekordu(najtansza.rekord) }
+      }
     }
 
     const najtansza = pasujace.reduce((min, p) =>
