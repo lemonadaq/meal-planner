@@ -29,6 +29,28 @@ function tokenizuj(nazwa) {
     .filter(tok => tok.length > 1 && !STOP_WORDS.has(tok) && !GRAMATURA_RGX.test(tok))
 }
 
+// Słowa-transformacje: jeśli promo je zawiera a składnik nie → inny produkt.
+// Marka/jakość (Mlekowita, UHT, Extra) NIE wyklucza — zmienia tylko wariant.
+const TRANSFORM_WORDS = new Set([
+  'prażona', 'prażony', 'prażone',
+  'smażona', 'smażony', 'smażone',
+  'konserwowa', 'konserwowy', 'konserwowe', 'konserwowany', 'konserwowana',
+  'marynowana', 'marynowany', 'marynowane',
+  'suszona', 'suszony', 'suszone',
+  'kiszona', 'kiszony', 'kiszone',
+  'mielona', 'mielony', 'mielone',
+  'wędzona', 'wędzony', 'wędzone',
+  'pieczona', 'pieczony', 'pieczone',
+  'duszona', 'duszony', 'duszone',
+  'liofilizowana', 'liofilizowany', 'liofilizowane',
+])
+
+// Promo zawiera słowo-transformację, którego nie ma w tokenacha składnika →
+// to inny produkt, nawet jeśli bazowe słowo się zgadza (cebula ≠ cebula prażona).
+function maZakazanaTransformacje(p, zbiorTokenowItemu) {
+  return p.tokeny.some(t => TRANSFORM_WORDS.has(t) && !zbiorTokenowItemu.has(t))
+}
+
 // Czy wszystkie tokeny `a` występują w tokenach `b`?
 function zawieraWszystkie(a, b) {
   if (!a.length) return false
@@ -90,13 +112,16 @@ export function dopasujPromocje(items, promocje) {
     if (!norm) return { ...item, promo: null, promos: [] }
     const tokenyItemu = tokenizuj(item.skladnik)
 
-    const pasujace = przygotowane.filter(p =>
-      p.norm === norm ||
-      // Promo ogólna → składnik szczegółowy (np. promo "kurczak" pasuje do "kurczak pierś").
-      // Odwrotny kierunek celowo usunięty: powodował fałszywe dopasowania,
-      // np. składnik "cebula" dopasowywał się do promo "cebula prażona".
-      zawieraWszystkie(p.tokeny, tokenyItemu)
-    )
+    const zbiorTokenowItemu = new Set(tokenyItemu)
+    const pasujace = przygotowane.filter(p => {
+      // Promo z "prażona", "wędzona" itp. kiedy składnik jej nie ma → inny produkt
+      if (maZakazanaTransformacje(p, zbiorTokenowItemu)) return false
+      return (
+        p.norm === norm ||
+        zawieraWszystkie(tokenyItemu, p.tokeny) ||  // składnik ⊆ promo (promo bardziej szczegółowa)
+        zawieraWszystkie(p.tokeny, tokenyItemu)      // promo ⊆ składnik (promo ogólniejsza)
+      )
+    })
     if (!pasujace.length) return { ...item, promo: null, promos: [] }
 
     // Najtańsza oferta per sklep
