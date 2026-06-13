@@ -3,7 +3,7 @@ import { supabase } from '../supabase'
 import { t, fonts, ui } from '../theme'
 import Toast from '../components/Toast'
 import { formatDataLocal, dzisLocal } from '../dataHelpers'
-import { PromoBanner, PromoChip, PromoDetail, StoreDot } from '../components/Promocje'
+import { PromoBanner, PromoChip, PromoDetail, StoreDot, StoreChips } from '../components/Promocje'
 import { dopasujPromocje, pobierzAktualnePromocje } from '../promocjeMatch'
 
 // ── Promocje: mock do testów UI (domyślnie wyłączony) ──
@@ -576,6 +576,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
 
   // Promocje sklepowe — globalne (bez household_id), fetch raz na wejście w listę.
   const [promocje, setPromocje] = useState([])
+  const [preferowanySlep, setPreferowanySlep] = useState(null)
   // Klucz itemu z rozwiniętym szczegółem promocji (jeden otwarty naraz)
   const [openPromoKlucz, setOpenPromoKlucz] = useState(null)
 
@@ -1673,8 +1674,8 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
       )
     }
     if (!promocje.length) return wszystkieItemyBezPromo
-    return dopasujPromocje(wszystkieItemyBezPromo, promocje)
-  }, [wszystkieItemyBezPromo, promocje])
+    return dopasujPromocje(wszystkieItemyBezPromo, promocje, preferowanySlep)
+  }, [wszystkieItemyBezPromo, promocje, preferowanySlep])
 
   // Czy item jest kupione?
   // - 'wlasne' → kolumna `odznaczone` w zakupy_wlasne
@@ -1800,6 +1801,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
           </div>
         ) : (
           <>
+            <StoreChips preferowany={preferowanySlep} onChange={setPreferowanySlep} />
             <PromoBanner items={doKupienia} />
 
             {Object.entries(kategorie).map(([katLabel, { items }]) => (

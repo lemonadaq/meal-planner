@@ -16,10 +16,36 @@ export const zl = (v) => v.toFixed(2).replace('.', ',') + ' zł'
 
 // kolory-kropki sklepów (neutralne, nie loga) — celowo stałe w obu motywach
 export const STORE_DOT = { Biedronka:'#C9A33B', Lidl:'#4A7FB5', Kaufland:'#B5564A', Auchan:'#8A6B43' }
+const SKLEPY = ['Lidl', 'Biedronka', 'Kaufland', 'Auchan']
 
 export function StoreDot({ store, size = 8 }) {
   return <span style={{ width:size, height:size, borderRadius:'50%',
     background: STORE_DOT[store] || t.mute, display:'inline-block', flex:'0 0 auto' }} />
+}
+
+// ── Chipsy wyboru sklepu ──
+export function StoreChips({ preferowany, onChange }) {
+  return (
+    <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap', marginBottom: 10 }}>
+      {SKLEPY.map(sklep => {
+        const aktywny = preferowany === sklep
+        return (
+          <button key={sklep} onClick={() => onChange(aktywny ? null : sklep)} style={{
+            display: 'flex', alignItems: 'center', gap: 5,
+            padding: '5px 11px', borderRadius: 20,
+            border: `1.5px solid ${aktywny ? STORE_DOT[sklep] : t.border}`,
+            background: aktywny ? STORE_DOT[sklep] + '22' : t.surface,
+            color: aktywny ? STORE_DOT[sklep] : t.mute,
+            fontSize: 13, fontWeight: aktywny ? 700 : 500,
+            cursor: 'pointer',
+          }}>
+            <StoreDot store={sklep} size={7} />
+            {sklep}
+          </button>
+        )
+      })}
+    </div>
+  )
 }
 
 // ── Zwijana karta nad listą: „N okazji na Twojej liście" ──
@@ -27,7 +53,7 @@ export function PromoBanner({ items }) {
   const [open, setOpen] = useState(false)
   const promos = items.filter(i => i.promo)
   if (!promos.length) return null
-  const saved = promos.reduce((s, i) => s + ((i.promo.old ?? i.promo.now) - i.promo.now), 0)
+  const saved = promos.reduce((s, i) => s + ((i.promo.old ?? 0) - i.promo.now), 0)
   return (
     <div onClick={() => setOpen(o => !o)} style={{
       background: t.secondarySoft, borderRadius: 16, padding: '13px 14px',
@@ -37,7 +63,7 @@ export function PromoBanner({ items }) {
         <span style={{ fontSize: 18 }}>🏷️</span>
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: 13.5, fontWeight: 600, color: t.text }}>{promos.length} okazji na Twojej liście</div>
-          <div style={{ fontSize: 12, color: t.secondary, fontWeight: 600, marginTop: 1 }}>oszczędzasz ~{zl(saved)}</div>
+          {saved > 0 && <div style={{ fontSize: 12, color: t.secondary, fontWeight: 600, marginTop: 1 }}>oszczędzasz ~{zl(saved)}</div>}
         </div>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={t.secondary} strokeWidth="2.4"
           strokeLinecap="round" strokeLinejoin="round"

@@ -74,7 +74,7 @@ function promoZRekordu(p) {
 //   1. exact: nazwa_norm === znormalizowany skladnik
 //   2. token overlap: tokeny składnika ⊆ tokeny promo LUB odwrotnie
 //   3. kilka dopasowań → najtańsza cena_nowa
-export function dopasujPromocje(items, promocje) {
+export function dopasujPromocje(items, promocje, preferowanySlep = null) {
   if (!promocje?.length) return items
 
   const przygotowane = promocje
@@ -96,6 +96,16 @@ export function dopasujPromocje(items, promocje) {
       zawieraWszystkie(p.tokeny, tokenyItemu)
     )
     if (!pasujace.length) return { ...item, promo: null }
+
+    if (preferowanySlep) {
+      const zPreferowanego = pasujace.filter(p => p.rekord.sklep === preferowanySlep)
+      if (zPreferowanego.length) {
+        const najtansza = zPreferowanego.reduce((min, p) =>
+          +p.rekord.cena_nowa < +min.rekord.cena_nowa ? p : min
+        )
+        return { ...item, promo: promoZRekordu(najtansza.rekord) }
+      }
+    }
 
     const najtansza = pasujace.reduce((min, p) =>
       +p.rekord.cena_nowa < +min.rekord.cena_nowa ? p : min
