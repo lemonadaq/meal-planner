@@ -99,7 +99,16 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
   const [wybranaData, setWybranaData] = useState(() => formatData(new Date()))
   // Modal wyboru wielu dni przy planowaniu z galerii
   const [wieloDniModal, setWieloDniModal] = useState(null) // { danie, posilek, dataStr } | null
+  const [kompakt, setKompakt] = useState(() => localStorage.getItem('widok_gestosc') === 'kompakt')
   const recznyWyborDniaRef = useRef(false)
+
+  function toggleKompakt() {
+    setKompakt(k => {
+      const nowy = !k
+      localStorage.setItem('widok_gestosc', nowy ? 'kompakt' : 'komfort')
+      return nowy
+    })
+  }
 
   // Konfiguracja slotów (per household) — dynamiczna lista posiłków per dzień tygodnia
   const { config: slotyConfig } = useSloty(householdId)
@@ -757,6 +766,9 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
                 <h1 style={s.title}><em style={s.italic}>Twój</em> tydzień</h1>
               </div>
               <div style={s.headerActions}>
+                <button style={s.navBtn} onClick={toggleKompakt} title={kompakt ? 'Widok komfortowy' : 'Widok kompaktowy'}>
+                  {kompakt ? '⊞' : '≡'}
+                </button>
                 <button style={s.navBtn} onClick={() => setTydzien(t => t - 1)}>‹</button>
                 <button style={s.navBtn} onClick={() => setTydzien(t => t + 1)}>›</button>
               </div>
@@ -836,6 +848,7 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
             kolorSlotu={kolorSlotu}
             dniDostepne={dniDostepne}
             onWymienPosilek={wymienPosilek}
+            kompakt={kompakt}
           />
         )}
 
@@ -943,7 +956,7 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
 function WidokTygodnia({
   dni, plan, daniaMap, onSelectDanie, onClickPusty, onClickDzien,
   onUsunPosilek, onPrzeniesPosilek, onKopiujTydzien, onGeneruj,
-  slotyDlaDnia, nazwaSlotu, kolorSlotu, dniDostepne, onWymienPosilek,
+  slotyDlaDnia, nazwaSlotu, kolorSlotu, dniDostepne, onWymienPosilek, kompakt,
 }) {
   const s = makeS()
   const maZawartosc = Object.values(plan).some(p => p.danie)
@@ -1198,12 +1211,12 @@ function WidokTygodnia({
               </span>
               <span style={s.dzienHeaderHint}>Otwórz dzień</span>
             </button>
-            <div style={s.kafelkiRzad}>
+            <div style={kompakt ? s.kafelkiRzadKompakt : s.kafelkiRzad}>
               {slotyDnia.map(posilek => {
                 const key = slotKey(dataStr, posilek)
                 const wpis = plan[`${dataStr}_${posilek}`]
                 return (
-                  <div key={posilek} style={{ flex: `0 0 ${tileW}`, maxWidth: tileW }}>
+                  <div key={posilek} style={kompakt ? { width: '100%' } : { flex: `0 0 ${tileW}`, maxWidth: tileW }}>
                     <KafelekPosilek
                       setRef={(el) => ustawSlotRef(key, el)}
                       posilek={posilek}
@@ -1213,6 +1226,7 @@ function WidokTygodnia({
                       daniaMeta={daniaMap[wpis?.danie]}
                       podswietlony={hoverKey === key}
                       przeciagany={dragSet?.sourceKey === key}
+                      kompakt={kompakt}
                       onPointerDownDrag={(e) => zacznijPointer(e, dataStr, posilek, wpis, daniaMap[wpis?.danie])}
                       onTouchStartDrag={(e) => zacznijTouch(e, dataStr, posilek, wpis, daniaMap[wpis?.danie])}
                       onClick={() => {
@@ -2023,7 +2037,7 @@ function WidokDnia({
 }
 
 // ════════════════════════════════════════════════════════════
-function KafelekPosilek({ posilek, posilekLabel, posilekKolor, wpis, daniaMeta, onClick, onDelete, onWymien, setRef, onPointerDownDrag, onTouchStartDrag, podswietlony, przeciagany, style }) {
+function KafelekPosilek({ posilek, posilekLabel, posilekKolor, wpis, daniaMeta, onClick, onDelete, onWymien, setRef, onPointerDownDrag, onTouchStartDrag, podswietlony, przeciagany, kompakt, style }) {
   const s = makeS()
   const masDanie = !!wpis?.danie
   const label = (posilekLabel || posilek || '').toUpperCase()
@@ -2034,6 +2048,55 @@ function KafelekPosilek({ posilek, posilekLabel, posilekKolor, wpis, daniaMeta, 
       e.preventDefault()
       onClick?.()
     }
+  }
+
+  if (kompakt) {
+    return (
+      <div
+        ref={setRef}
+        role="button"
+        tabIndex={0}
+        onClick={onClick}
+        onKeyDown={handleKeyDown}
+        onPointerDown={onPointerDownDrag}
+        onTouchStart={onTouchStartDrag}
+        style={{
+          ...s.kafelekKompakt,
+          ...(podswietlony ? s.kafelekDropHover : {}),
+          opacity: przeciagany ? 0.35 : 1,
+        }}
+      >
+        <div style={s.kafelekKompaktThumb}>
+          {masDanie ? (
+            daniaMeta?.zdjecie ? (
+              <img src={daniaMeta.zdjecie} alt={wpis.danie} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+            ) : (
+              <div style={{ width: '100%', height: '100%', background: kolorDania(wpis.danie), display: 'grid', placeItems: 'center' }}>
+                <span style={{ fontSize: 22 }}>{emojiDania(wpis.danie)}</span>
+              </div>
+            )
+          ) : (
+            <div style={{ width: '100%', height: '100%', background: t.surfaceAlt, display: 'grid', placeItems: 'center' }}>
+              <span style={{ fontSize: 18, color: t.mute }}>+</span>
+            </div>
+          )}
+        </div>
+        <div style={s.kafelekKompaktInfo}>
+          <span style={{ ...s.kafelekKompaktLabel, background: kolor }}>{label}</span>
+          <span style={s.kafelekKompaktNazwa}>{masDanie ? wpis.danie : 'Dodaj posiłek'}</span>
+        </div>
+        {masDanie && (
+          <div style={s.kafelekKompaktAkcje}>
+            {onWymien && (
+              <button style={s.kafelekKompaktBtn} onPointerDown={e => e.stopPropagation()} onTouchStart={e => e.stopPropagation()} onClick={e => { e.stopPropagation(); onWymien() }} title="Inne danie">🔄</button>
+            )}
+            {onDelete && (
+              <button style={s.kafelekKompaktBtn} onPointerDown={e => e.stopPropagation()} onTouchStart={e => e.stopPropagation()} onClick={e => { e.stopPropagation(); onDelete() }} title="Usuń">✕</button>
+            )}
+          </div>
+        )}
+      </div>
+    )
   }
 
   return (
@@ -2629,12 +2692,15 @@ function makeS() {
     justifyContent: 'space-between',
     gap: 8,
     marginBottom: 8,
-    padding: '2px 4px',
+    padding: '6px 4px 4px',
     border: 'none',
-    background: 'transparent',
+    background: t.bg,
     cursor: 'pointer',
     fontFamily: fonts.sans,
     textAlign: 'left',
+    position: 'sticky',
+    top: 0,
+    zIndex: 10,
   },
   dzienHeaderLeft: { display: 'flex', alignItems: 'baseline', gap: 8, minWidth: 0 },
   dzienHeaderHint: { fontSize: 10.5, color: t.muteLight, fontWeight: 600 },
@@ -2644,6 +2710,7 @@ function makeS() {
     padding: '1px 6px', background: t.warmSoft, borderRadius: 4,
   },
   kafelkiRzad: { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 6 },
+  kafelkiRzadKompakt: { display: 'flex', flexDirection: 'column', gap: 4 },
 
   kafelek: {
     position: 'relative', aspectRatio: '1', borderRadius: 16,
@@ -2672,6 +2739,37 @@ function makeS() {
     display: 'grid', placeItems: 'center',
     cursor: 'pointer', zIndex: 3,
     boxShadow: '0 3px 10px rgba(0,0,0,.2)',
+  },
+  kafelekKompakt: {
+    display: 'flex', alignItems: 'center', gap: 10,
+    borderRadius: 12, background: t.surface, border: 'none',
+    padding: '0 10px 0 0', overflow: 'hidden', cursor: 'pointer',
+    boxShadow: '0 1px 2px rgba(74,55,40,.06)',
+    touchAction: 'pan-y', userSelect: 'none', WebkitUserSelect: 'none',
+    minHeight: 56,
+  },
+  kafelekKompaktThumb: {
+    width: 56, minWidth: 56, height: 56, overflow: 'hidden', borderRadius: 0, flexShrink: 0,
+  },
+  kafelekKompaktInfo: {
+    flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 3,
+  },
+  kafelekKompaktLabel: {
+    display: 'inline-block',
+    color: '#fff', fontSize: 7.5, fontWeight: 800, letterSpacing: 1,
+    padding: '2px 5px', borderRadius: 4,
+  },
+  kafelekKompaktNazwa: {
+    fontFamily: fonts.sans, fontSize: 13, fontWeight: 600, color: t.text,
+    lineHeight: 1.3, overflow: 'hidden', display: '-webkit-box',
+    WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
+  },
+  kafelekKompaktAkcje: {
+    display: 'flex', gap: 4, flexShrink: 0,
+  },
+  kafelekKompaktBtn: {
+    background: 'transparent', border: 'none', cursor: 'pointer',
+    fontSize: 16, padding: '4px 2px', color: t.mute, lineHeight: 1,
   },
   kafelekNazwa: {
     position: 'absolute', bottom: 0, left: 0, right: 0, padding: '24px 8px 8px',
