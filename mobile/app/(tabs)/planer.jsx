@@ -6,6 +6,7 @@ import { supabase } from '../../shared/supabase'
 import { t, fonts, useThemeVersion } from '../../shared/theme'
 import { formatDataLocal as formatData } from '../../shared/dataHelpers'
 import { useSloty, slotyWDniu, kluczDnia, sanityzuj } from '../../shared/useSloty'
+import { useGenerator } from '../../shared/useGenerator'
 import { useAuth } from '../../hooks/useAuth'
 
 const DNI = ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Nd']
@@ -71,6 +72,8 @@ export default function PlanerScreen() {
 
   const { config: slotyConfig } = useSloty(householdId)
   const cfg = sanityzuj(slotyConfig)
+  const { generuj, wymienDanie } = useGenerator({ user, householdId, slotyConfig })
+  const [generowanie, setGenerowanie] = useState(false)
 
   const pon = useMemo(() => poniedzialekTygodnia(tydzien), [tydzien])
   const dni = useMemo(() => dniTygodnia(pon), [pon])
@@ -117,6 +120,42 @@ export default function PlanerScreen() {
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
   }, [plan])
 
+  const generujPlan = useCallback(async (tryb = 'puste') => {
+    if (!householdId || generowanie) return
+    setGenerowanie(true)
+    try {
+      const wynik = await generuj({ dniTygodnia: dni, istniejacyPlan: plan, tryb })
+      if (wynik?.error) {
+        Alert.alert('Błąd', 'Nie udało się ułożyć planu')
+      } else {
+        await pobierzPlan()
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+        Alert.alert('Gotowe', `Ułożono ${wynik?.ileDodano || 0} posiłków`)
+      }
+    } catch (e) {
+      Alert.alert('Błąd', e.message)
+    }
+    setGenerowanie(false)
+  }, [householdId, generowanie, generuj, dni, plan, pobierzPlan])
+
+  const wymienPosilek = useCallback(async (wpis) => {
+    if (!wpis?.id) return
+    const { nowaNazwa, error } = await wymienDanie({
+      dataStr: wpis.data,
+      slotId: wpis.posilek,
+      nazwaSlotu: nazwaSlotu(wpis.posilek),
+      wpisId: wpis.id,
+      unikaj: [wpis.danie],
+    })
+    if (error || !nowaNazwa) {
+      Alert.alert('Brak alternatyw', 'Nie znaleziono innego dania tego rodzaju')
+      return
+    }
+    const klucz = `${wpis.data}_${wpis.posilek}`
+    setPlan(p => ({ ...p, [klucz]: { ...wpis, danie: nowaNazwa, dodatki: [], podmiany: {} } }))
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+  }, [wymienDanie, nazwaSlotu])
+
   const formatMiesiac = (d) => {
     const mies = ['Styczeń','Luty','Marzec','Kwiecień','Maj','Czerwiec','Lipiec','Sierpień','Wrzesień','Październik','Listopad','Grudzień']
     return `${mies[d.getMonth()]} ${d.getFullYear()}`
@@ -158,6 +197,24 @@ export default function PlanerScreen() {
         contentContainerStyle={s.scrollContent}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={t.accent} />}
       >
+        <Pressable
+          style={[s.genBtn, generowanie && s.genBtnDisabled]}
+          onPress={() => {
+            const maZawartosc = Object.values(plan).some(p => p.danie)
+            if (maZawartosc) {
+              Alert.alert('Ułóż plan', 'Co zrobić z istniejącymi posiłkami?', [
+                { text: 'Anuluj', style: 'cancel' },
+                { text: 'Uzupełnij puste', onPress: () => generujPlan('puste') },
+                { text: 'Ułóż od nowa', style: 'destructive', onPress: () => generujPlan('wszystko') },
+              ])
+            } else {
+              generujPlan('wszystko')
+            }
+          }}
+          disabled={generowanie}
+        >
+          <Text style={s.genTxt}>{generowanie ? 'Generuję...' : '✨  Ułóż plan na tydzień'}</Text>
+        </Pressable>
         {dni.map((dzien, di) => {
           const dataStr = formatData(dzien)
           const today = isDzis(dzien)
@@ -176,6 +233,7 @@ export default function PlanerScreen() {
                     key={posilek}
                     wpis={wpis}
                     slotLabel={nazwaSlotu(posilek)}
+                    onWymien={wpis?.danie ? () => wymienPosilek(wpis) : null}
                     onUsun={() => {
                       Alert.alert('Usuń', `Usunąć ${wpis?.danie}?`, [
                         { text: 'Anuluj', style: 'cancel' },
@@ -193,7 +251,7 @@ export default function PlanerScreen() {
   )
 }
 
-function PosilekRow({ wpis, slotLabel, onUsun }) {
+function PosilekRow({ wpis, slotLabel, onWymien, onUsun }) {
   const s = makeS()
   const masDanie = !!wpis?.danie
 
@@ -215,6 +273,11 @@ function PosilekRow({ wpis, slotLabel, onUsun }) {
         <Text style={[s.rowSlot, { color: t.accent }]}>{slotLabel.toUpperCase()}</Text>
         <Text style={s.rowNazwa} numberOfLines={2}>{wpis.danie}</Text>
       </View>
+      {onWymien && (
+        <Pressable style={s.rowBtn} onPress={onWymien} hitSlop={8}>
+          <Text style={s.rowBtnTxt}>🔄</Text>
+        </Pressable>
+      )}
       <Pressable style={s.rowBtn} onPress={onUsun} hitSlop={8}>
         <Text style={s.rowBtnTxt}>✕</Text>
       </Pressable>
@@ -256,6 +319,12 @@ function makeS() {
     dayNumToday: { color: '#fff' },
     scroll: { flex: 1 },
     scrollContent: { paddingHorizontal: 16, paddingBottom: 40 },
+    genBtn: {
+      backgroundColor: t.accent, borderRadius: 14, padding: 16,
+      alignItems: 'center', marginBottom: 16,
+    },
+    genBtnDisabled: { opacity: 0.5 },
+    genTxt: { fontFamily: fonts.sans, fontSize: 15, fontWeight: '600', color: '#fff' },
     dzienBlok: { marginBottom: 16 },
     dzienHeader: {
       flexDirection: 'row', alignItems: 'center', gap: 8,

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { View, Text, FlatList, Image, TextInput, Pressable, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { router } from 'expo-router'
 import { supabase } from '../../shared/supabase'
 import { t, fonts, useThemeVersion } from '../../shared/theme'
 import { useAuth } from '../../hooks/useAuth'
@@ -51,7 +52,7 @@ export default function PrzepisyScreen() {
   const s = makeS()
 
   const renderItem = ({ item }) => (
-    <Pressable style={s.card}>
+    <Pressable style={s.card} onPress={() => router.push(`/przepis/${encodeURIComponent(item.Danie)}`)}>
       <View style={[s.thumb, { backgroundColor: getKolor(item.Danie) }]}>
         {item.zdjecie ? (
           <Image source={{ uri: item.zdjecie }} style={s.thumbImg} />
