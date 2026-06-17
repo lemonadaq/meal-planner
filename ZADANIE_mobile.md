@@ -33,28 +33,26 @@ Każdy ekran = nowy komponent RN używający tych samych hooków co web.
 
 - [x] **Nawigacja** — Tab bar (Home, Planer, Przepisy, Zakupy, Więcej) z Ionicons
 - [x] **Home → index.jsx** — powitanie, plan dzisiaj/jutro, CTA planer, pull-to-refresh
-- [~] **Kalendarz → planer.jsx** — widok tygodnia (kompaktowe wiersze), strip dni, nawigacja tygodniowa, usuwanie z Alert, generator planu, 🔄 wymień danie. Brakuje:
-  - [ ] Widok dnia + galeria dań do wyboru
+- [~] **Kalendarz → planer.jsx** — widok tygodnia (kompaktowe wiersze), strip dni, nawigacja tygodniowa, usuwanie z Alert, generator planu, 🔄 wymień danie, dish picker modal (tap "+" → filtrowana galeria → tap = przypisz danie). Brakuje:
   - [ ] Drag & drop: `react-native-reanimated` + `react-native-gesture-handler`
 - [x] **Dania → przepisy.jsx** — FlatList grid 2 kolumny, wyszukiwarka z ✕, chipsy filtrów (rodzaj), nawigacja do detail, FAB dodaj danie
-- [x] **DanieDetail → przepis/[nazwa].jsx** — hero image/emoji, chipki (rodzaj, TYP, czas), lista składników
+- [x] **DanieDetail → przepis/[nazwa].jsx** — hero image/emoji, chipki (rodzaj, TYP, czas), lista składników, kroki przygotowania, ulubione toggle, share, delete
   - [ ] Edycja inline (nazwa, rodzaj, składniki)
 - [x] **DodajDanie → dodaj.jsx** — formularz z nazwą, rodzaj, typ, czas, składniki, przepis, zdjęcie (aparat/galeria via expo-image-picker), upload do Supabase Storage
 - [x] **ListaZakupow → zakupy.jsx** — SectionList z kategoriami, checkbox z haptic, AsyncStorage persistencja kupionych, "Wyczyść ✓". Brakuje:
   - [ ] Promocje: chipy + szczegóły
-- [x] **Ustawienia → ustawienia.jsx** — konto, wyloguj, motyw (systemowy/jasny/ciemny z AsyncStorage). Brakuje:
-  - [ ] Rodzina (członkowie, zaproszenia)
-  - [ ] Konfiguracja slotów
-- [ ] **KonfiguracjaSlotow → sloty.jsx**
-  - Drag & drop reorder: `react-native-draggable-flatlist`
+- [x] **Ustawienia → ustawienia.jsx** — konto, wyloguj, motyw (systemowy/jasny/ciemny z AsyncStorage), nawigacja do Rodzina i Sloty
+- [x] **Rodzina → rodzina.jsx** — lista członków, zaproszenia, akceptuj/odrzuć, zaproś nowego, opuść rodzinę
+- [x] **KonfiguracjaSlotow → sloty.jsx** — lista slotów per dzień, dodawanie nowych, usuwanie z dnia, dodawanie istniejących, kopiowanie dnia. Brakuje:
+  - [ ] Drag & drop reorder: `react-native-draggable-flatlist`
 
 ---
 
 ## Faza 3 — Natywne funkcje
 
 - [ ] **Push notifications** — `expo-notifications` + Supabase Edge Function
-- [ ] **Haptics** — `expo-haptics` (drag & drop, swipe, wymiana dania)
-- [ ] **Camera** — `expo-image-picker` (zdjęcia dań)
+- [x] **Haptics** — `expo-haptics` (wymiana dania, usuwanie, zakupy, konfiguracja slotów)
+- [x] **Camera** — `expo-image-picker` (zdjęcia dań w dodaj.jsx)
 - [ ] **Share** — `expo-sharing` (lista zakupów → WhatsApp/SMS)
 - [ ] **Offline** — `@react-native-async-storage/async-storage` + cache planu/listy
 - [ ] **Widgets** — (później) Android widget "Co dziś na obiad?"
