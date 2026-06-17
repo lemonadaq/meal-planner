@@ -1,7 +1,8 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { View, Text, FlatList, Image, TextInput, Pressable, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
+import { Ionicons } from '@expo/vector-icons'
 import { supabase } from '../../shared/supabase'
 import { t, fonts, useThemeVersion } from '../../shared/theme'
 import { useAuth } from '../../hooks/useAuth'
@@ -26,11 +27,14 @@ function getKolor(nazwa) {
   return kolory[Math.abs(hash) % kolory.length]
 }
 
+const RODZAJE = ['śniadanie', 'obiad', 'kolacja', 'zupa', 'deser']
+
 export default function PrzepisyScreen() {
   const _v = useThemeVersion()
   const { user } = useAuth()
   const [dania, setDania] = useState([])
   const [filtr, setFiltr] = useState('')
+  const [aktywneRodzaje, setAktywneRodzaje] = useState(new Set())
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -45,9 +49,21 @@ export default function PrzepisyScreen() {
       })
   }, [])
 
-  const filtrowane = filtr
-    ? dania.filter(d => d.Danie.toLowerCase().includes(filtr.toLowerCase()))
-    : dania
+  const toggleRodzaj = (r) => {
+    setAktywneRodzaje(prev => {
+      const nowy = new Set(prev)
+      if (nowy.has(r)) nowy.delete(r)
+      else nowy.add(r)
+      return nowy
+    })
+  }
+
+  const filtrowane = useMemo(() => {
+    let wynik = dania
+    if (filtr) wynik = wynik.filter(d => d.Danie.toLowerCase().includes(filtr.toLowerCase()))
+    if (aktywneRodzaje.size > 0) wynik = wynik.filter(d => aktywneRodzaje.has(d.rodzaj))
+    return wynik
+  }, [dania, filtr, aktywneRodzaje])
 
   const s = makeS()
 
@@ -82,6 +98,18 @@ export default function PrzepisyScreen() {
           </Pressable>
         )}
       </View>
+      <View style={s.chipRow}>
+        {RODZAJE.map(r => {
+          const aktywny = aktywneRodzaje.has(r)
+          return (
+            <Pressable key={r} style={[s.chipF, aktywny && s.chipFAktywny]} onPress={() => toggleRodzaj(r)}>
+              <Text style={[s.chipFTxt, aktywny && s.chipFTxtAktywny]}>
+                {r.charAt(0).toUpperCase() + r.slice(1)}
+              </Text>
+            </Pressable>
+          )
+        })}
+      </View>
       <FlatList
         data={filtrowane}
         keyExtractor={item => item.Danie}
@@ -90,6 +118,9 @@ export default function PrzepisyScreen() {
         renderItem={renderItem}
         contentContainerStyle={s.listContent}
       />
+      <Pressable style={s.fab} onPress={() => router.push('/dodaj')}>
+        <Ionicons name="add" size={28} color="#fff" />
+      </Pressable>
     </SafeAreaView>
   )
 }
@@ -113,6 +144,19 @@ function makeS() {
       position: 'absolute', right: 12, top: 12,
     },
     clearTxt: { fontSize: 16, color: t.mute },
+    chipRow: {
+      flexDirection: 'row', flexWrap: 'wrap', gap: 6,
+      paddingHorizontal: 16, marginBottom: 12,
+    },
+    chipF: {
+      backgroundColor: t.surfaceAlt, borderRadius: 8,
+      paddingHorizontal: 12, paddingVertical: 6,
+    },
+    chipFAktywny: { backgroundColor: t.accent },
+    chipFTxt: {
+      fontFamily: fonts.sans, fontSize: 12, fontWeight: '600', color: t.mute,
+    },
+    chipFTxtAktywny: { color: '#fff' },
     listContent: { paddingHorizontal: 12, paddingBottom: 40 },
     gridRow: { gap: 8, marginBottom: 8 },
     card: {
@@ -133,6 +177,13 @@ function makeS() {
     cardRodzaj: {
       fontFamily: fonts.sans, fontSize: 10, fontWeight: '600', color: t.mute,
       paddingHorizontal: 8, paddingBottom: 8, textTransform: 'uppercase', letterSpacing: 0.8,
+    },
+    fab: {
+      position: 'absolute', right: 20, bottom: 20,
+      width: 56, height: 56, borderRadius: 28,
+      backgroundColor: t.accent, justifyContent: 'center', alignItems: 'center',
+      shadowColor: '#000', shadowOpacity: 0.2, shadowRadius: 8, shadowOffset: { width: 0, height: 4 },
+      elevation: 4,
     },
   })
 }

@@ -33,26 +33,18 @@ Każdy ekran = nowy komponent RN używający tych samych hooków co web.
 
 - [x] **Nawigacja** — Tab bar (Home, Planer, Przepisy, Zakupy, Więcej) z Ionicons
 - [x] **Home → index.jsx** — powitanie, plan dzisiaj/jutro, CTA planer, pull-to-refresh
-- [~] **Kalendarz → planer.jsx** — widok tygodnia (kompaktowe wiersze), strip dni, nawigacja tygodniowa, usuwanie z Alert. Brakuje:
+- [~] **Kalendarz → planer.jsx** — widok tygodnia (kompaktowe wiersze), strip dni, nawigacja tygodniowa, usuwanie z Alert, generator planu, 🔄 wymień danie. Brakuje:
   - [ ] Widok dnia + galeria dań do wyboru
   - [ ] Drag & drop: `react-native-reanimated` + `react-native-gesture-handler`
-  - [ ] Przycisk generatora planu
-  - [ ] Przycisk 🔄 wymień danie
-- [x] **Dania → przepisy.jsx** — FlatList grid 2 kolumny, wyszukiwarka z ✕. Brakuje:
-  - [ ] Nawigacja do DanieDetail
-  - [ ] Chipsy filtrów (rodzaj)
-- [ ] **DanieDetail → przepis/[nazwa].jsx**
-  - Składniki, kroki, edycja — formularze w `<ScrollView>`
-  - Zdjęcie: `expo-image-picker` (natywny picker kamery/galerii)
-- [ ] **DodajDanie → dodaj.jsx**
-  - Formularz + upload zdjęcia
-- [x] **ListaZakupow → zakupy.jsx** — SectionList z kategoriami, checkbox z haptic. Brakuje:
+- [x] **Dania → przepisy.jsx** — FlatList grid 2 kolumny, wyszukiwarka z ✕, chipsy filtrów (rodzaj), nawigacja do detail, FAB dodaj danie
+- [x] **DanieDetail → przepis/[nazwa].jsx** — hero image/emoji, chipki (rodzaj, TYP, czas), lista składników
+  - [ ] Edycja inline (nazwa, rodzaj, składniki)
+- [x] **DodajDanie → dodaj.jsx** — formularz z nazwą, rodzaj, typ, czas, składniki, przepis, zdjęcie (aparat/galeria via expo-image-picker), upload do Supabase Storage
+- [x] **ListaZakupow → zakupy.jsx** — SectionList z kategoriami, checkbox z haptic, AsyncStorage persistencja kupionych, "Wyczyść ✓". Brakuje:
   - [ ] Promocje: chipy + szczegóły
-  - [ ] Persistencja odznaczonych (AsyncStorage)
-- [x] **Ustawienia → ustawienia.jsx** — konto, wyloguj. Brakuje:
+- [x] **Ustawienia → ustawienia.jsx** — konto, wyloguj, motyw (systemowy/jasny/ciemny z AsyncStorage). Brakuje:
   - [ ] Rodzina (członkowie, zaproszenia)
   - [ ] Konfiguracja slotów
-  - [ ] Motyw (przełącznik jasny/ciemny/system)
 - [ ] **KonfiguracjaSlotow → sloty.jsx**
   - Drag & drop reorder: `react-native-draggable-flatlist`
 

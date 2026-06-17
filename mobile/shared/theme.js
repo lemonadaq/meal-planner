@@ -77,6 +77,12 @@ export function useThemeVersion() {
   return v
 }
 
-// Inicjalizacja motywu — czytaj z systemu
+// Inicjalizacja motywu — czytaj z AsyncStorage, fallback na system
 const systemScheme = Appearance.getColorScheme()
 if (systemScheme === 'dark') applyTheme('dark')
+
+AsyncStorage.getItem('motyw').then(saved => {
+  if (saved === 'dark') applyTheme('dark')
+  else if (saved === 'light') applyTheme('light')
+  // 'system' or null → keep current (already set from Appearance)
+})

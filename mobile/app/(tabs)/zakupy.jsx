@@ -2,10 +2,13 @@ import { useState, useEffect, useCallback, useMemo } from 'react'
 import { View, Text, SectionList, Pressable, StyleSheet, RefreshControl } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import * as Haptics from 'expo-haptics'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { supabase } from '../../shared/supabase'
 import { t, fonts, useThemeVersion } from '../../shared/theme'
 import { formatDataLocal as formatData } from '../../shared/dataHelpers'
 import { useAuth } from '../../hooks/useAuth'
+
+const KUPIONE_KEY = 'zakupy_kupione'
 
 function poniedzialekTygodnia() {
   const d = new Date()
@@ -24,6 +27,12 @@ export default function ZakupyScreen() {
   const [kupione, setKupione] = useState(new Set())
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
+
+  useEffect(() => {
+    AsyncStorage.getItem(KUPIONE_KEY).then(json => {
+      if (json) setKupione(new Set(JSON.parse(json)))
+    })
+  }, [])
 
   useEffect(() => {
     if (!user) return
@@ -85,6 +94,7 @@ export default function ZakupyScreen() {
       const nowy = new Set(prev)
       if (nowy.has(klucz)) nowy.delete(klucz)
       else nowy.add(klucz)
+      AsyncStorage.setItem(KUPIONE_KEY, JSON.stringify([...nowy]))
       return nowy
     })
   }
@@ -107,7 +117,14 @@ export default function ZakupyScreen() {
   return (
     <SafeAreaView style={s.safe}>
       <View style={s.header}>
-        <Text style={s.tytul}>Lista zakupów</Text>
+        <View style={s.headerRow}>
+          <Text style={s.tytul}>Lista zakupów</Text>
+          {kupione.size > 0 && (
+            <Pressable onPress={() => { setKupione(new Set()); AsyncStorage.removeItem(KUPIONE_KEY) }}>
+              <Text style={s.resetTxt}>Wyczyść ✓</Text>
+            </Pressable>
+          )}
+        </View>
         <Text style={s.sub}>{doKupienia} {doKupienia === 1 ? 'pozycja' : 'pozycji'} do kupienia</Text>
       </View>
       <SectionList
@@ -145,7 +162,9 @@ function makeS() {
   return StyleSheet.create({
     safe: { flex: 1, backgroundColor: t.bg },
     header: { paddingHorizontal: 20, paddingTop: 12, paddingBottom: 8 },
+    headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' },
     tytul: { fontFamily: fonts.serif, fontSize: 30, color: t.text },
+    resetTxt: { fontFamily: fonts.sans, fontSize: 13, fontWeight: '600', color: t.accent },
     sub: { fontFamily: fonts.sans, fontSize: 13, color: t.mute, marginTop: 4 },
     listContent: { paddingHorizontal: 16, paddingBottom: 40 },
     sekcja: {
