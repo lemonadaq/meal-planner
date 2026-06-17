@@ -1,0 +1,38 @@
+{
+  "expo": {
+    "name": "Smakuje",
+    "slug": "smakuje",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "smakuje",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FAF6F0"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "pl.smakuje.app",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Zrób zdjęcie dania",
+        "NSPhotoLibraryUsageDescription": "Wybierz zdjęcie dania z galerii"
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FAF6F0"
+      },
+      "package": "pl.smakuje.app"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      "expo-image-picker",
+      "expo-haptics"
+    ]
+  }
+}
