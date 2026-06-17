@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { View, Text, Pressable, ScrollView, StyleSheet, Alert, Appearance } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
+import { router } from 'expo-router'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { supabase } from '../../shared/supabase'
 import { t, fonts, useThemeVersion, applyTheme, currentTheme } from '../../shared/theme'
@@ -58,7 +59,7 @@ export default function UstawieniaScreen() {
         </View>
 
         <View style={s.card}>
-          <Pressable style={s.row} onPress={() => {}}>
+          <Pressable style={s.row} onPress={() => router.push('/rodzina')}>
             <Ionicons name="people-outline" size={20} color={t.text} />
             <Text style={s.rowLabel}>Rodzina</Text>
             <Ionicons name="chevron-forward" size={16} color={t.mute} />
@@ -66,7 +67,7 @@ export default function UstawieniaScreen() {
 
           <View style={s.sep} />
 
-          <Pressable style={s.row} onPress={() => {}}>
+          <Pressable style={s.row} onPress={() => router.push('/sloty')}>
             <Ionicons name="restaurant-outline" size={20} color={t.text} />
             <Text style={s.rowLabel}>Sloty posiłków</Text>
             <Ionicons name="chevron-forward" size={16} color={t.mute} />

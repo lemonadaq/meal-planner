@@ -5,7 +5,7 @@ import { router } from 'expo-router'
 import { supabase } from '../../shared/supabase'
 import { t, fonts, useThemeVersion } from '../../shared/theme'
 import { formatDataLocal as formatData } from '../../shared/dataHelpers'
-import { useSloty, slotyWDniu, kluczDnia, sanityzuj } from '../../shared/useSloty'
+import { useSloty, sanityzuj } from '../../shared/useSloty'
 import { useAuth } from '../../hooks/useAuth'
 
 function getPowitanie() {
@@ -61,6 +61,12 @@ export default function HomeScreen() {
   }, [user])
 
   const { config: slotyConfig } = useSloty(householdId)
+  const cfg = sanityzuj(slotyConfig)
+
+  const nazwaSlotu = useCallback((id) => {
+    const slot = (cfg.sloty || []).find(s => s.id === id)
+    return slot?.nazwa || id
+  }, [cfg])
 
   const pobierzPlan = useCallback(async () => {
     if (!householdId) return
@@ -103,8 +109,8 @@ export default function HomeScreen() {
           <Text style={s.name}>{imie}!</Text>
         </View>
 
-        <PlanSekcja tytul="Dzisiaj" wpisy={planDzis} puste="Nic nie zaplanowano" />
-        <PlanSekcja tytul="Jutro" wpisy={planJutro} puste="Nic nie zaplanowano" />
+        <PlanSekcja tytul="Dzisiaj" wpisy={planDzis} puste="Nic nie zaplanowano" nazwaSlotu={nazwaSlotu} />
+        <PlanSekcja tytul="Jutro" wpisy={planJutro} puste="Nic nie zaplanowano" nazwaSlotu={nazwaSlotu} />
 
         <Pressable style={s.ctaBtn} onPress={() => router.push('/(tabs)/planer')}>
           <Text style={s.ctaTxt}>📅  Otwórz planer</Text>
@@ -114,7 +120,7 @@ export default function HomeScreen() {
   )
 }
 
-function PlanSekcja({ tytul, wpisy, puste }) {
+function PlanSekcja({ tytul, wpisy, puste, nazwaSlotu }) {
   const s = makeS()
   return (
     <View style={s.sekcja}>
@@ -123,15 +129,15 @@ function PlanSekcja({ tytul, wpisy, puste }) {
         <Text style={s.pusteLabel}>{puste}</Text>
       ) : (
         wpisy.map(w => (
-          <View key={w.id} style={s.posilekRow}>
+          <Pressable key={w.id} style={s.posilekRow} onPress={() => router.push(`/przepis/${encodeURIComponent(w.danie)}`)}>
             <View style={[s.posilekThumb, { backgroundColor: getKolor(w.danie) }]}>
               <Text style={s.posilekEmoji}>{getEmoji(w.danie)}</Text>
             </View>
             <View style={s.posilekInfo}>
-              <Text style={s.posilekSlot}>{(w.posilek || '').toUpperCase()}</Text>
+              <Text style={s.posilekSlot}>{(nazwaSlotu?.(w.posilek) || w.posilek || '').toUpperCase()}</Text>
               <Text style={s.posilekNazwa} numberOfLines={2}>{w.danie}</Text>
             </View>
-          </View>
+          </Pressable>
         ))
       )}
     </View>
