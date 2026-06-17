@@ -11,4 +11,4 @@ web-build/
 .env
 ios/
 android/
-mobile/package-lock.json
+package-lock.json
