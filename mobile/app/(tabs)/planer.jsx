@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
-import { View, Text, ScrollView, FlatList, Image, Pressable, StyleSheet, RefreshControl, Alert } from 'react-native'
+import { View, Text, ScrollView, FlatList, Image, TextInput, Pressable, Modal, StyleSheet, RefreshControl, Alert, Dimensions } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { Ionicons } from '@expo/vector-icons'
 import * as Haptics from 'expo-haptics'
 import { supabase } from '../../shared/supabase'
 import { t, fonts, useThemeVersion } from '../../shared/theme'
@@ -10,6 +11,7 @@ import { useGenerator } from '../../shared/useGenerator'
 import { useAuth } from '../../hooks/useAuth'
 
 const DNI = ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Nd']
+const SCREEN_H = Dimensions.get('window').height
 
 function poniedzialekTygodnia(offset = 0) {
   const d = new Date()
@@ -54,6 +56,15 @@ function isDzis(d) {
   return d.getFullYear() === n.getFullYear() && d.getMonth() === n.getMonth() && d.getDate() === n.getDate()
 }
 
+const RODZAJ_MAP = {
+  śniadanie: 'śniadanie',
+  sniadanie: 'śniadanie',
+  obiad: 'obiad',
+  kolacja: 'kolacja',
+  zupa: 'zupa',
+  deser: 'deser',
+}
+
 export default function PlanerScreen() {
   const _v = useThemeVersion()
   const { user } = useAuth()
@@ -62,6 +73,10 @@ export default function PlanerScreen() {
   const [plan, setPlan] = useState({})
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
+
+  const [picker, setPicker] = useState(null)
+  const [dania, setDania] = useState([])
+  const [pickerFiltr, setPickerFiltr] = useState('')
 
   useEffect(() => {
     if (!user) return
@@ -79,14 +94,18 @@ export default function PlanerScreen() {
   const dni = useMemo(() => dniTygodnia(pon), [pon])
 
   const slotyDlaDnia = useCallback((dzien) => {
-    const d = typeof dzien === 'string' ? dzien : dzien
-    const kd = kluczDnia(d)
+    const kd = kluczDnia(dzien)
     return cfg.dni?.[kd] || []
   }, [cfg])
 
   const nazwaSlotu = useCallback((id) => {
     const slot = (cfg.sloty || []).find(s => s.id === id)
     return slot?.nazwa || id
+  }, [cfg])
+
+  const rodzajSlotu = useCallback((id) => {
+    const slot = (cfg.sloty || []).find(s => s.id === id)
+    return slot?.rodzaj || null
   }, [cfg])
 
   const pobierzPlan = useCallback(async () => {
@@ -104,6 +123,17 @@ export default function PlanerScreen() {
   }, [householdId, pon, dni])
 
   useEffect(() => { pobierzPlan() }, [pobierzPlan])
+
+  useEffect(() => {
+    supabase.from('dania').select('"Danie", rodzaj, "TYP", zdjecie')
+      .then(({ data }) => {
+        const mapa = new Map()
+        for (const w of data || []) {
+          if (w.Danie && !mapa.has(w.Danie)) mapa.set(w.Danie, w)
+        }
+        setDania([...mapa.values()].sort((a, b) => a.Danie.localeCompare(b.Danie, 'pl')))
+      })
+  }, [])
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true)
@@ -155,6 +185,50 @@ export default function PlanerScreen() {
     setPlan(p => ({ ...p, [klucz]: { ...wpis, danie: nowaNazwa, dodatki: [], podmiany: {} } }))
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
   }, [wymienDanie, nazwaSlotu])
+
+  const otworzPicker = (dataStr, posilek) => {
+    setPickerFiltr('')
+    setPicker({ dataStr, posilek })
+  }
+
+  const wybierzDanie = useCallback(async (nazwaDania) => {
+    if (!picker || !householdId) return
+    const { dataStr, posilek } = picker
+    const klucz = `${dataStr}_${posilek}`
+    const istn = plan[klucz]
+
+    if (istn?.id) {
+      await supabase.from('kalendarz').update({ danie: nazwaDania, dodatki: [], podmiany: {} }).eq('id', istn.id)
+      setPlan(p => ({ ...p, [klucz]: { ...istn, danie: nazwaDania, dodatki: [], podmiany: {} } }))
+    } else {
+      const { data: nowy } = await supabase.from('kalendarz').insert({
+        household_id: householdId,
+        data: dataStr,
+        posilek,
+        danie: nazwaDania,
+        dodatki: [],
+        podmiany: {},
+      }).select().single()
+      if (nowy) setPlan(p => ({ ...p, [klucz]: nowy }))
+    }
+
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+    setPicker(null)
+  }, [picker, plan, householdId])
+
+  const pickerDania = useMemo(() => {
+    if (!picker) return []
+    const rodzaj = rodzajSlotu(picker.posilek)
+    let wynik = dania
+    if (rodzaj && RODZAJ_MAP[rodzaj]) {
+      wynik = wynik.filter(d => d.rodzaj === RODZAJ_MAP[rodzaj])
+    }
+    if (pickerFiltr) {
+      const f = pickerFiltr.toLowerCase()
+      wynik = wynik.filter(d => d.Danie.toLowerCase().includes(f))
+    }
+    return wynik
+  }, [picker, dania, pickerFiltr, rodzajSlotu])
 
   const formatMiesiac = (d) => {
     const mies = ['Styczeń','Luty','Marzec','Kwiecień','Maj','Czerwiec','Lipiec','Sierpień','Wrzesień','Październik','Listopad','Grudzień']
@@ -240,6 +314,7 @@ export default function PlanerScreen() {
                         { text: 'Usuń', style: 'destructive', onPress: () => usunPosilek(dataStr, posilek) },
                       ])
                     }}
+                    onDodaj={() => otworzPicker(dataStr, posilek)}
                   />
                 )
               })}
@@ -247,17 +322,69 @@ export default function PlanerScreen() {
           )
         })}
       </ScrollView>
+
+      <Modal visible={!!picker} animationType="slide" transparent>
+        <Pressable style={s.modalOverlay} onPress={() => setPicker(null)}>
+          <Pressable style={s.modalSheet} onPress={e => e.stopPropagation()}>
+            <View style={s.modalHandle} />
+            <View style={s.modalHeader}>
+              <Text style={s.modalTytul}>
+                Wybierz na: {picker ? nazwaSlotu(picker.posilek) : ''}
+              </Text>
+              <Pressable onPress={() => setPicker(null)} hitSlop={12}>
+                <Ionicons name="close" size={22} color={t.mute} />
+              </Pressable>
+            </View>
+            <View style={s.modalSearch}>
+              <TextInput
+                style={s.modalInput}
+                placeholder="Szukaj dania..."
+                placeholderTextColor={t.mute}
+                value={pickerFiltr}
+                onChangeText={setPickerFiltr}
+                autoFocus
+              />
+              {pickerFiltr.length > 0 && (
+                <Pressable style={s.modalClear} onPress={() => setPickerFiltr('')}>
+                  <Text style={{ fontSize: 14, color: t.mute }}>✕</Text>
+                </Pressable>
+              )}
+            </View>
+            <FlatList
+              data={pickerDania}
+              keyExtractor={item => item.Danie}
+              renderItem={({ item }) => (
+                <Pressable style={s.pickerRow} onPress={() => wybierzDanie(item.Danie)}>
+                  <View style={[s.pickerThumb, { backgroundColor: getKolor(item.Danie) }]}>
+                    {item.zdjecie ? (
+                      <Image source={{ uri: item.zdjecie }} style={s.pickerImg} />
+                    ) : (
+                      <Text style={{ fontSize: 18 }}>{getEmoji(item.Danie)}</Text>
+                    )}
+                  </View>
+                  <View style={{ flex: 1, gap: 2 }}>
+                    <Text style={s.pickerNazwa} numberOfLines={1}>{item.Danie}</Text>
+                    <Text style={s.pickerRodzaj}>{item.rodzaj}</Text>
+                  </View>
+                </Pressable>
+              )}
+              contentContainerStyle={s.pickerList}
+              ListEmptyComponent={<Text style={s.pickerEmpty}>Brak pasujących dań</Text>}
+            />
+          </Pressable>
+        </Pressable>
+      </Modal>
     </SafeAreaView>
   )
 }
 
-function PosilekRow({ wpis, slotLabel, onWymien, onUsun }) {
+function PosilekRow({ wpis, slotLabel, onWymien, onUsun, onDodaj }) {
   const s = makeS()
   const masDanie = !!wpis?.danie
 
   if (!masDanie) {
     return (
-      <Pressable style={s.rowPuste}>
+      <Pressable style={s.rowPuste} onPress={onDodaj}>
         <Text style={s.rowPusteSlot}>{slotLabel}</Text>
         <Text style={s.rowPustePlus}>+</Text>
       </Pressable>
@@ -365,5 +492,46 @@ function makeS() {
     },
     rowPusteSlot: { fontFamily: fonts.sans, fontSize: 12, fontWeight: '600', color: t.mute },
     rowPustePlus: { fontSize: 20, color: t.mute },
+
+    modalOverlay: {
+      flex: 1, backgroundColor: 'rgba(0,0,0,0.4)',
+      justifyContent: 'flex-end',
+    },
+    modalSheet: {
+      backgroundColor: t.bg, borderTopLeftRadius: 20, borderTopRightRadius: 20,
+      maxHeight: SCREEN_H * 0.75, paddingBottom: 20,
+    },
+    modalHandle: {
+      width: 36, height: 4, borderRadius: 2,
+      backgroundColor: t.border, alignSelf: 'center', marginTop: 10, marginBottom: 6,
+    },
+    modalHeader: {
+      flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+      paddingHorizontal: 20, paddingVertical: 10,
+    },
+    modalTytul: { fontFamily: fonts.serif, fontSize: 18, color: t.text },
+    modalSearch: {
+      marginHorizontal: 16, marginBottom: 8, position: 'relative',
+    },
+    modalInput: {
+      backgroundColor: t.surface, borderRadius: 10, padding: 10,
+      fontFamily: fonts.sans, fontSize: 14, color: t.text,
+      borderWidth: 1, borderColor: t.border,
+    },
+    modalClear: { position: 'absolute', right: 10, top: 10 },
+    pickerList: { paddingHorizontal: 16 },
+    pickerRow: {
+      flexDirection: 'row', alignItems: 'center', gap: 10,
+      paddingVertical: 8,
+      borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: t.border,
+    },
+    pickerThumb: {
+      width: 44, height: 44, borderRadius: 10,
+      justifyContent: 'center', alignItems: 'center', overflow: 'hidden',
+    },
+    pickerImg: { width: 44, height: 44, resizeMode: 'cover' },
+    pickerNazwa: { fontFamily: fonts.sans, fontSize: 15, fontWeight: '600', color: t.text },
+    pickerRodzaj: { fontFamily: fonts.sans, fontSize: 11, color: t.mute, textTransform: 'uppercase', letterSpacing: 0.8 },
+    pickerEmpty: { fontFamily: fonts.sans, fontSize: 14, color: t.mute, textAlign: 'center', marginTop: 40 },
   })
 }
