@@ -237,11 +237,11 @@ zapamiętany między sesjami; nagłówek dnia widoczny podczas scrolla.
 4. **D** — największy refaktor UI, zrób na końcu, gdy reszta stabilna.
 
 ## Status
-- [ ] E1  [ ] E3
-- [ ] A1  [ ] A2  [ ] A3
-- [ ] B1  [ ] B2  [ ] B3
+- [x] E1  [x] E3
+- [x] A1  [x] A2  [x] A3
+- [x] B1  [x] B2  [x] B3
 - [ ] C1  [ ] C2  [ ] C3
-- [ ] D1  [ ] D2  [ ] D3
+- [x] D1  [x] D2  [x] D3
 
 ## Notatki / odkrycia z analizy kodu
 - **„Nie da się wybrać surówek" = user-select, nie dane.** Nagranie pokazało, że tap w chip

@@ -133,8 +133,16 @@ Do wykorzystania później: `src/hooks/useUndo.js` (generyczny undo) — wrzucon
 
 ---
 
+## GRUPA N — Promocje: fałszywe dopasowania ✅ ZROBIONE (2026-06)
+**Pliki:** promocjeMatch.js
+
+- [x] Składnik "cebula" dopasowywał się do promo "cebula prażona" — dodano listę `TRANSFORM_WORDS` (prażona, wędzona, suszona, kiszona, mielona itp.); jeśli promo zawiera transform-słowo nieobecne w składniku → blokada dopasowania.
+
+---
+
 ## Notatka
 
-- ✅ Zrobione: A, B, C, E, F (krzyżyk + białe kółka), G, H, I, J (minione dni), K (filtry).
-- ❌ Pozostało: D (kopiowanie tygodnia + bug fantomowych dań), F (krzyżyk w wyszukiwarce + białe kółka), G (scalanie składników), J (pomijaj dzień, gotuj raz), L (tymczasowy slot), M (stare ceny).
+- ✅ Zrobione: A, B, C, E, F (krzyżyk + białe kółka), G, H, I, J (minione dni + pomijaj dzień + gotuj raz), K (filtry), N (promo fałszywe dopasowania).
+- ✅ UX nagranie: A1, A2, A3, E1, E3, B1-B3, D1-D3 (kompaktowy widok + sticky nagłówki).
+- ❌ Pozostało: D (kopiowanie tygodnia + bug fantomowych dań), F (krzyżyk w wyszukiwarce + białe kółka), G (scalanie składników), L (tymczasowy slot), M (stare ceny).
 - D + bug fantomowy mają prawdopodobnie wspólną przyczynę (rozjazd kalendarz ↔ lista zakupów) — diagnozować razem.

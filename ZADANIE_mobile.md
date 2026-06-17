@@ -5,25 +5,25 @@ Logika biznesowa (hooki, Supabase, helpery) współdzielona przez monorepo.
 
 ---
 
-## Faza 0 — Struktura monorepo
+## Faza 0 — Struktura ✅ ZROBIONE
 
-- [ ] Wynieść czystą logikę do `packages/shared/` — pliki bez JSX ani CSS:
-  - `supabase.js`, `dataHelpers.js`, `useSloty.js`, `useHousehold.js`,
-    `useGenerator.js`, `generatorPlanu.js`, `promocjeMatch.js`,
-    `mapaPodobienstwa.js`, `wagiPreferencji.js`, `useUstawienia.js`
-- [ ] `packages/web/` — obecna apka Vite (importuje z `@smakuje/shared`)
-- [ ] `packages/mobile/` — nowy projekt Expo
-- [ ] Narzędzie: npm workspaces
+- [x] Shared logic w `mobile/shared/` — skopiowane pliki bez JSX:
+  `supabase.js` (SecureStore), `dataHelpers.js`, `useSloty.js`, `useHousehold.js`,
+  `useGenerator.js`, `generatorPlanu.js`, `promocjeMatch.js`,
+  `mapaPodobienstwa.js`, `wagiPreferencji.js`, `theme.js` (RN Appearance API)
+- [x] Web app zostaje w root (bez zmian)
+- [x] `mobile/` — nowy katalog Expo
 
 ---
 
-## Faza 1 — Nowy projekt Expo
+## Faza 1 — Projekt Expo ✅ ZROBIONE
 
-- [ ] `npx create-expo-app packages/mobile`
-- [ ] Podpiąć Supabase: `@supabase/supabase-js` (ten sam klient, bez zmian)
-- [ ] Autentykacja: `expo-secure-store` do przechowywania tokena sesji (zamiast localStorage)
-- [ ] Nawigacja: `expo-router` (file-based routing, analogicznie do ekranów w web)
-- [ ] Motyw: przepisać `theme.js` na RN `StyleSheet` — te same tokeny kolorów
+- [x] Expo 56 + React Native 0.85 zainstalowane w `mobile/`
+- [x] Supabase z `expo-secure-store` (zamiast localStorage)
+- [x] `expo-router` file-based routing z tab navigation
+- [x] Theme z RN `Appearance` API (auto dark/light)
+- [x] Auth guard (`hooks/useAuth.jsx`) z redirect do login/tabs
+- [x] Ekran logowania (`app/login.jsx`)
 
 ---
 
@@ -31,32 +31,29 @@ Logika biznesowa (hooki, Supabase, helpery) współdzielona przez monorepo.
 
 Każdy ekran = nowy komponent RN używający tych samych hooków co web.
 
-- [ ] **Nawigacja** — Tab bar (`expo-router` Tabs): Home, Planer, Przepisy, Zakupy, Ustawienia
-- [ ] **Home → HomeScreen**
-  - `<ScrollView>`, `<Text>`, sugestie dnia, "Inne danie" — te same hooki
-- [ ] **Kalendarz → PlanerScreen** (największy ekran)
-  - Widok tygodnia: `<FlatList>` z sekcjami per dzień
-  - Widok dnia: `<ScrollView>` + kafelki dań
-  - Galeria dań: `<FlatList numColumns={3}>`
-  - Drag & drop: `react-native-reanimated` + `react-native-gesture-handler`
-  - Kompaktowy/komfortowy toggle
-- [ ] **Dania → PrzepisyScreen**
-  - Lista przepisów: `<FlatList>` z `<Image>`
-  - Filtrowanie/wyszukiwanie: `<TextInput>` + chipsy
-- [ ] **DanieDetail → PrzepisDetailScreen**
+- [x] **Nawigacja** — Tab bar (Home, Planer, Przepisy, Zakupy, Więcej) z Ionicons
+- [x] **Home → index.jsx** — powitanie, plan dzisiaj/jutro, CTA planer, pull-to-refresh
+- [~] **Kalendarz → planer.jsx** — widok tygodnia (kompaktowe wiersze), strip dni, nawigacja tygodniowa, usuwanie z Alert. Brakuje:
+  - [ ] Widok dnia + galeria dań do wyboru
+  - [ ] Drag & drop: `react-native-reanimated` + `react-native-gesture-handler`
+  - [ ] Przycisk generatora planu
+  - [ ] Przycisk 🔄 wymień danie
+- [x] **Dania → przepisy.jsx** — FlatList grid 2 kolumny, wyszukiwarka z ✕. Brakuje:
+  - [ ] Nawigacja do DanieDetail
+  - [ ] Chipsy filtrów (rodzaj)
+- [ ] **DanieDetail → przepis/[nazwa].jsx**
   - Składniki, kroki, edycja — formularze w `<ScrollView>`
   - Zdjęcie: `expo-image-picker` (natywny picker kamery/galerii)
-- [ ] **DodajDanie → DodajDanieScreen**
+- [ ] **DodajDanie → dodaj.jsx**
   - Formularz + upload zdjęcia
-- [ ] **ListaZakupow → ZakupyScreen**
-  - `<SectionList>` z kategoriami
-  - Odznaczanie checkboxem — `<Pressable>` + stan
-  - Promocje: `promocjeMatch` bez zmian
-- [ ] **Rodzina → RodzinaScreen**
-  - Członkowie, zaproszenia
-- [ ] **Ustawienia → UstawieniaScreen**
-  - Motyw, domyślne porcje, wylogowanie
-- [ ] **KonfiguracjaSlotow → SlotyScreen**
+- [x] **ListaZakupow → zakupy.jsx** — SectionList z kategoriami, checkbox z haptic. Brakuje:
+  - [ ] Promocje: chipy + szczegóły
+  - [ ] Persistencja odznaczonych (AsyncStorage)
+- [x] **Ustawienia → ustawienia.jsx** — konto, wyloguj. Brakuje:
+  - [ ] Rodzina (członkowie, zaproszenia)
+  - [ ] Konfiguracja slotów
+  - [ ] Motyw (przełącznik jasny/ciemny/system)
+- [ ] **KonfiguracjaSlotow → sloty.jsx**
   - Drag & drop reorder: `react-native-draggable-flatlist`
 
 ---
