@@ -61,9 +61,29 @@ Każdy ekran = nowy komponent RN używający tych samych hooków co web.
 
 ## Faza 4 — Build i publikacja
 
-- [ ] Konto Expo (darmowe do 30 buildów/mies.)
-- [ ] `eas build --platform android` → AAB → Google Play
-- [ ] `eas build --platform ios` → IPA → App Store Connect (bez Maca!)
+### Jak zbudować APK (krok po kroku):
+```bash
+cd mobile
+
+# 1. Załóż konto Expo (darmowe) na expo.dev
+npx eas login
+
+# 2. Build APK (preview) — buduje w chmurze, ściągasz plik
+eas build --platform android --profile preview
+
+# 3. (Opcjonalnie) Build AAB dla Google Play
+eas build --platform android --profile production
+
+# 4. iOS build (wymaga Apple Developer $99/rok)
+eas build --platform ios --profile production
+```
+
+- [x] eas.json — skonfigurowany (development APK, preview APK, production AAB)
+- [x] app.json — bundleIdentifier, permissions, splash
+- [x] Placeholder assets (zastąpić właściwymi ikonami przed publikacją)
+- [ ] Konto Expo (darmowe do 30 buildów/mies.) — **Filip musi założyć i zalogować się**
+- [ ] Właściwe ikony: icon.png (1024×1024), adaptive-icon.png (1024×1024), splash.png (1284×2778)
+- [ ] `eas build --platform android --profile preview` → APK na telefon
 - [ ] Konto Google Play Developer ($25 jednorazowo)
 - [ ] Konto Apple Developer ($99/rok)
 - [ ] Screenshoty, opis, polityka prywatności
