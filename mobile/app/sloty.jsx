@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
 import * as Haptics from 'expo-haptics'
+import DraggableFlatList, { ScaleDecorator } from 'react-native-draggable-flatlist'
 import { supabase } from '../shared/supabase'
 import { t, fonts, useThemeVersion } from '../shared/theme'
 import { useSloty, sanityzuj } from '../shared/useSloty'
@@ -84,93 +85,118 @@ export default function SlotyScreen() {
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
   }
 
+  const onDragEnd = ({ data: nowaKolejnosc }) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+    const noweDni = { ...cfg.dni }
+    noweDni[wybranyDzien] = nowaKolejnosc.map(s => s.id)
+    zapisz({ ...cfg, dni: noweDni })
+  }
+
   const niedodane = (cfg.sloty || []).filter(s => !(cfg.dni?.[wybranyDzien] || []).includes(s.id))
 
   const s = makeS()
 
+  const renderSlot = ({ item: slot, drag, isActive }) => (
+    <ScaleDecorator>
+      <Pressable
+        style={[s.slotRow, isActive && s.slotRowActive]}
+        onLongPress={drag}
+        delayLongPress={150}
+      >
+        <Ionicons name="reorder-three" size={18} color={t.mute} style={{ marginRight: 4 }} />
+        <View style={[s.slotKolor, { backgroundColor: slot.kolor }]} />
+        <Text style={s.slotNazwa}>{slot.nazwa}</Text>
+        <Pressable onPress={() => usunSlotZDnia(slot.id)} hitSlop={8}>
+          <Ionicons name="close-circle" size={20} color={t.mute} />
+        </Pressable>
+      </Pressable>
+    </ScaleDecorator>
+  )
+
   return (
     <SafeAreaView style={s.safe}>
-      <ScrollView contentContainerStyle={s.content}>
-        <View style={s.headerRow}>
-          <Pressable onPress={() => router.back()} hitSlop={12}>
-            <Ionicons name="arrow-back" size={24} color={t.text} />
+      <View style={s.headerRow}>
+        <Pressable onPress={() => router.back()} hitSlop={12}>
+          <Ionicons name="arrow-back" size={24} color={t.text} />
+        </Pressable>
+        <Text style={s.tytul}>Sloty posiłków</Text>
+        <View style={{ width: 24 }} />
+      </View>
+
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={s.dniStrip} contentContainerStyle={s.dniStripContent}>
+        {DNI_LABELS.map(d => (
+          <Pressable
+            key={d.id}
+            style={[s.dzienPill, wybranyDzien === d.id && s.dzienPillAktywny]}
+            onPress={() => setWybranyDzien(d.id)}
+          >
+            <Text style={[s.dzienTxt, wybranyDzien === d.id && s.dzienTxtAktywny]}>
+              {d.label.slice(0, 3)}
+            </Text>
           </Pressable>
-          <Text style={s.tytul}>Sloty posiłków</Text>
-          <View style={{ width: 24 }} />
-        </View>
-
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={s.dniStrip} contentContainerStyle={s.dniStripContent}>
-          {DNI_LABELS.map(d => (
-            <Pressable
-              key={d.id}
-              style={[s.dzienPill, wybranyDzien === d.id && s.dzienPillAktywny]}
-              onPress={() => setWybranyDzien(d.id)}
-            >
-              <Text style={[s.dzienTxt, wybranyDzien === d.id && s.dzienTxtAktywny]}>
-                {d.label.slice(0, 3)}
-              </Text>
-            </Pressable>
-          ))}
-        </ScrollView>
-
-        <Text style={s.label}>Sloty na {DNI_LABELS.find(d => d.id === wybranyDzien)?.label}</Text>
-
-        {slotyDnia.map((slot, i) => (
-          <View key={slot.id} style={s.slotRow}>
-            <View style={[s.slotKolor, { backgroundColor: slot.kolor }]} />
-            <Text style={s.slotNazwa}>{slot.nazwa}</Text>
-            <Pressable onPress={() => usunSlotZDnia(slot.id)} hitSlop={8}>
-              <Ionicons name="close-circle" size={20} color={t.mute} />
-            </Pressable>
-          </View>
         ))}
+      </ScrollView>
 
-        {slotyDnia.length === 0 && (
+      <DraggableFlatList
+        data={slotyDnia}
+        keyExtractor={item => item.id}
+        renderItem={renderSlot}
+        onDragEnd={onDragEnd}
+        onDragBegin={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)}
+        containerStyle={{ flex: 1 }}
+        contentContainerStyle={s.listContent}
+        ListHeaderComponent={
+          <Text style={s.label}>Sloty na {DNI_LABELS.find(d => d.id === wybranyDzien)?.label}</Text>
+        }
+        ListEmptyComponent={
           <Text style={s.pusteLabel}>Brak slotów na ten dzień</Text>
-        )}
+        }
+        ListFooterComponent={
+          <View>
+            {niedodane.length > 0 && (
+              <View style={s.sekcja}>
+                <Text style={s.subLabel}>Dodaj istniejący slot</Text>
+                <View style={s.chipRow}>
+                  {niedodane.map(slot => (
+                    <Pressable key={slot.id} style={s.chipSlot} onPress={() => dodajIstniejacy(slot.id)}>
+                      <View style={[s.chipDot, { backgroundColor: slot.kolor }]} />
+                      <Text style={s.chipSlotTxt}>{slot.nazwa}</Text>
+                      <Ionicons name="add" size={14} color={t.accent} />
+                    </Pressable>
+                  ))}
+                </View>
+              </View>
+            )}
 
-        {niedodane.length > 0 && (
-          <View style={s.sekcja}>
-            <Text style={s.subLabel}>Dodaj istniejący slot</Text>
-            <View style={s.chipRow}>
-              {niedodane.map(slot => (
-                <Pressable key={slot.id} style={s.chipSlot} onPress={() => dodajIstniejacy(slot.id)}>
-                  <View style={[s.chipDot, { backgroundColor: slot.kolor }]} />
-                  <Text style={s.chipSlotTxt}>{slot.nazwa}</Text>
-                  <Ionicons name="add" size={14} color={t.accent} />
+            <View style={s.sekcja}>
+              <Text style={s.subLabel}>Nowy slot</Text>
+              <View style={s.nowyRow}>
+                <TextInput
+                  style={s.nowyInput}
+                  value={nowySlotNazwa}
+                  onChangeText={setNowySlotNazwa}
+                  placeholder="np. Podwieczorek"
+                  placeholderTextColor={t.mute}
+                />
+                <Pressable style={s.nowyBtn} onPress={dodajSlot}>
+                  <Ionicons name="add" size={20} color="#fff" />
                 </Pressable>
-              ))}
+              </View>
+            </View>
+
+            <View style={s.sekcja}>
+              <Text style={s.subLabel}>Kopiuj z innego dnia</Text>
+              <View style={s.chipRow}>
+                {DNI_LABELS.filter(d => d.id !== wybranyDzien).map(d => (
+                  <Pressable key={d.id} style={s.chipKopia} onPress={() => kopiujDzien(d.id)}>
+                    <Text style={s.chipKopiaTxt}>{d.label.slice(0, 3)}</Text>
+                  </Pressable>
+                ))}
+              </View>
             </View>
           </View>
-        )}
-
-        <View style={s.sekcja}>
-          <Text style={s.subLabel}>Nowy slot</Text>
-          <View style={s.nowyRow}>
-            <TextInput
-              style={s.nowyInput}
-              value={nowySlotNazwa}
-              onChangeText={setNowySlotNazwa}
-              placeholder="np. Podwieczorek"
-              placeholderTextColor={t.mute}
-            />
-            <Pressable style={s.nowyBtn} onPress={dodajSlot}>
-              <Ionicons name="add" size={20} color="#fff" />
-            </Pressable>
-          </View>
-        </View>
-
-        <View style={s.sekcja}>
-          <Text style={s.subLabel}>Kopiuj z innego dnia</Text>
-          <View style={s.chipRow}>
-            {DNI_LABELS.filter(d => d.id !== wybranyDzien).map(d => (
-              <Pressable key={d.id} style={s.chipKopia} onPress={() => kopiujDzien(d.id)}>
-                <Text style={s.chipKopiaTxt}>{d.label.slice(0, 3)}</Text>
-              </Pressable>
-            ))}
-          </View>
-        </View>
-      </ScrollView>
+        }
+      />
     </SafeAreaView>
   )
 }
@@ -178,13 +204,13 @@ export default function SlotyScreen() {
 function makeS() {
   return StyleSheet.create({
     safe: { flex: 1, backgroundColor: t.bg },
-    content: { padding: 16, paddingBottom: 40 },
+    listContent: { padding: 16, paddingBottom: 40 },
     headerRow: {
       flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-      marginBottom: 16,
+      paddingHorizontal: 16, paddingTop: 12, paddingBottom: 8,
     },
     tytul: { fontFamily: fonts.serif, fontSize: 22, color: t.text },
-    dniStrip: { marginBottom: 16 },
+    dniStrip: { marginBottom: 8, paddingHorizontal: 16 },
     dniStripContent: { gap: 6 },
     dzienPill: {
       paddingHorizontal: 14, paddingVertical: 8, borderRadius: 10,
@@ -202,6 +228,10 @@ function makeS() {
       backgroundColor: t.surface, borderRadius: 12, padding: 14, marginBottom: 6,
       shadowColor: '#000', shadowOpacity: 0.03, shadowRadius: 4, shadowOffset: { width: 0, height: 1 },
       elevation: 1,
+    },
+    slotRowActive: {
+      shadowOpacity: 0.15, shadowRadius: 12, elevation: 6,
+      transform: [{ scale: 1.03 }],
     },
     slotKolor: { width: 10, height: 10, borderRadius: 5 },
     slotNazwa: { fontFamily: fonts.sans, fontSize: 15, fontWeight: '600', color: t.text, flex: 1 },
