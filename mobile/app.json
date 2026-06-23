@@ -26,13 +26,22 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FAF6F0"
       },
-      "package": "pl.smakuje.app"
+      "package": "pl.smakuje.app",
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "plugins": [
       "expo-router",
       "expo-secure-store",
-      "expo-image-picker",
-      "expo-haptics"
-    ]
+      "expo-image-picker"
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "a2225528-6686-4d41-8816-cb2404a0aa57"
+      }
+    },
+    "owner": "lemonadaqs-team"
   }
 }
