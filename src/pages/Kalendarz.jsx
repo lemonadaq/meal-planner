@@ -2206,9 +2206,12 @@ function SlotDuzy({
 
   return (
     <div style={{ position: 'relative', ...style }}>
-      <button
+      <div
         ref={setRef}
+        role="button"
+        tabIndex={0}
         onClick={onClick}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick?.() } }}
         style={{
           ...s.slotDuzy,
           ...(masDanie ? {} : s.slotDuzyPusty),
@@ -2227,6 +2230,28 @@ function SlotDuzy({
             <span style={{ ...s.kafelekLabel, background: kolor }}>
               {label}
             </span>
+            {onWymien && (
+              <button
+                type="button"
+                style={{ ...s.kafelekDelete, right: 37 }}
+                onPointerDown={(e) => e.stopPropagation()}
+                onTouchStart={(e) => e.stopPropagation()}
+                onClick={(e) => { e.stopPropagation(); onWymien() }}
+                title="Inne danie"
+              >
+                🔄
+              </button>
+            )}
+            <button
+              type="button"
+              style={s.kafelekDelete}
+              onPointerDown={(e) => e.stopPropagation()}
+              onTouchStart={(e) => e.stopPropagation()}
+              onClick={(e) => { e.stopPropagation(); onUsun() }}
+              title="Usuń posiłek"
+            >
+              ✕
+            </button>
             <div style={s.kafelekNazwa}>
               <span style={s.kafelekNazwaTxt}>{wpis.danie}</span>
             </div>
@@ -2237,7 +2262,7 @@ function SlotDuzy({
             <span style={s.kafelekPustyPlus}>+</span>
           </div>
         )}
-      </button>
+      </div>
 
       {masDanie && (
         <div style={s.slotKontrolki}>
@@ -2249,10 +2274,6 @@ function SlotDuzy({
           <button style={s.malyBtn} onClick={(e) => { e.stopPropagation(); onPodmien() }} title="Podmień składniki">
             ↻{liczbaPodmian > 0 ? ` ${liczbaPodmian}` : ''}
           </button>
-          {onWymien && (
-            <button style={s.malyBtn} onClick={(e) => { e.stopPropagation(); onWymien() }} title="Inne danie">🔄</button>
-          )}
-          <button style={s.malyBtn} onClick={(e) => { e.stopPropagation(); onUsun() }} title="Usuń posiłek">✕</button>
         </div>
       )}
 
