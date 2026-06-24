@@ -9,6 +9,7 @@ import { useGenerator } from '../useGenerator'
 import { logujSygnal } from '../logujSygnaly'
 
 const DNI_KROTKO = ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Nd']
+const DNI_PELNE = ['Niedziela', 'Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota']
 
 // Konwersja hex koloru na rgba dla overlayu labeli na kafelkach
 function hexNaRgba(hex, alpha = 0.92) {
@@ -763,14 +764,14 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
                 <button type="button" style={s.monthBtn} onClick={otworzWyborDaty}>
                   {formatMiesiacRok(dni[3]).toUpperCase()} ▾
                 </button>
-                <h1 style={s.title}><em style={s.italic}>Twój</em> tydzień</h1>
+                <h1 style={s.titleCompact}><em style={s.italic}>Twój</em> tydzień</h1>
               </div>
               <div style={s.headerActions}>
-                <button style={s.navBtn} onClick={toggleKompakt} title={kompakt ? 'Widok komfortowy' : 'Widok kompaktowy'}>
+                <button style={s.navBtnCompact} onClick={toggleKompakt} title={kompakt ? 'Widok komfortowy' : 'Widok kompaktowy'}>
                   {kompakt ? '⊞' : '≡'}
                 </button>
-                <button style={s.navBtn} onClick={() => setTydzien(t => t - 1)}>‹</button>
-                <button style={s.navBtn} onClick={() => setTydzien(t => t + 1)}>›</button>
+                <button style={s.navBtnCompact} onClick={() => setTydzien(t => t - 1)}>‹</button>
+                <button style={s.navBtnCompact} onClick={() => setTydzien(t => t + 1)}>›</button>
               </div>
             </header>
 
@@ -1844,14 +1845,8 @@ function WidokDnia({
 
   // Sloty dnia z konfiguracji household
   const slotyTegoDnia = useMemo(() => slotyDlaDnia(dzien), [slotyDlaDnia, dzien])
-  // Liczba kolumn dopasowana do liczby slotów — żeby ładnie wyglądało
-  const kolumnGrida = useMemo(() => {
-    const n = slotyTegoDnia.length
-    if (n <= 3) return 3
-    if (n === 4) return 4
-    if (n <= 6) return 3
-    return 4
-  }, [slotyTegoDnia.length])
+
+  const wypelnioneSloty = slotyTegoDnia.filter(p => plan[`${dataStr}_${p}`]?.danie).length
 
   return (
     <div style={{ position: 'relative' }}>
@@ -1871,15 +1866,35 @@ function WidokDnia({
             </button>
           </div>
         )}
-        <div style={s.slotyDuze}>
+        <div style={s.stickyAkcjeRow}>
+          <span style={s.stickyDzienInfo}>
+            {DNI_PELNE[dzien.getDay()]} · {wypelnioneSloty} z {slotyTegoDnia.length}
+          </span>
+          <button
+            style={s.stickyLosujBtn}
+            onClick={() => {
+              slotyTegoDnia.forEach(posilek => {
+                const wpis = plan[`${dataStr}_${posilek}`]
+                if (wpis?.danie) onWymienPosilek(wpis)
+                else {
+                  const losowe = dania[Math.floor(Math.random() * dania.length)]
+                  if (losowe) onUstawDanie(dataStr, posilek, losowe.Danie)
+                }
+              })
+            }}
+            title="Wylosuj cały dzień"
+          >
+            🎲 Wylosuj dzień
+          </button>
+        </div>
+        <div style={s.slotyHorizontal}>
           {slotyTegoDnia.map(posilek => {
             const wpis = plan[`${dataStr}_${posilek}`]
             const dragTyp = dragState?.podniesiony ? dragState.typ : null
-            const slotItemWidth = kolumnGrida === 4 ? 'calc(25% - 6px)' : 'calc(33.333% - 6px)'
             return (
               <SlotDuzy
                 key={posilek}
-                style={{ flex: `0 0 ${slotItemWidth}`, maxWidth: slotItemWidth }}
+                style={s.slotKarta}
                 setRef={(el) => { slotRefs.current[posilek] = el }}
                 setSideRef={(idx, el) => { slotRefs.current[`${posilek}_side_${idx}`] = el }}
                 posilek={posilek}
@@ -1900,6 +1915,10 @@ function WidokDnia({
                 onWymien={wpis?.danie ? () => onWymienPosilek(wpis) : null}
                 onWybierzSide={(slotIdx) => {
                   onSetSubTryb({ dataStr, posilek, typ: 'dodatek', slotIdx })
+                }}
+                onLosuj={() => {
+                  const losowe = dania[Math.floor(Math.random() * dania.length)]
+                  if (losowe) onUstawDanie(dataStr, posilek, losowe.Danie)
                 }}
               />
             )
@@ -2177,14 +2196,12 @@ function SlotDuzy({
   domyslnePorcje, podswietlony, podswietlSide,
   onClick, onUsun, onUsunSide,
   onZmienPorcje, onPodmien, onWymien,
-  onWybierzSide, style,
+  onWybierzSide, onLosuj, style,
 }) {
   const s = makeS()
   const masDanie = !!wpis?.danie
-  const typDania = daniaMeta?.TYP
   const porcje = wpis?.porcje != null ? wpis.porcje : domyslnePorcje
   const porcjeRozne = wpis?.porcje != null && wpis.porcje !== domyslnePorcje
-  const liczbaPodmian = wpis?.podmiany ? Object.keys(wpis.podmiany).filter(k => wpis.podmiany[k]).length : 0
   const label = (posilekLabel || posilek || '').toUpperCase()
   const kolor = posilekKolor || 'rgba(120,100,70,.92)'
 
@@ -2194,103 +2211,91 @@ function SlotDuzy({
     onZmienPorcje(nowe === domyslnePorcje ? null : nowe)
   }
 
-  // Side-sloty: 2 niezależne sloty, każdy może być dodatkiem lub surówką
-  // (lub być pusty). Tablica wpis.dodatki = [{nazwa, typ}, ...]
-  const dodatkiTab = Array.isArray(wpis?.dodatki) ? wpis.dodatki : []
-  const sideSloty = [0, 1].map(idx => {
-    const slot = dodatkiTab[idx] || null
-    if (!slot) return { idx, nazwa: null, typ: null, meta: null }
-    const meta = slot.typ === 'dodatek' ? dodatkiMap[slot.nazwa] : surowkiMap[slot.nazwa]
-    return { idx, nazwa: slot.nazwa, typ: slot.typ, meta }
-  })
-
   return (
-    <div style={{ position: 'relative', ...style }}>
-      <div
-        ref={setRef}
-        role="button"
-        tabIndex={0}
-        onClick={onClick}
-        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick?.() } }}
-        style={{
-          ...s.slotDuzy,
-          ...(masDanie ? {} : s.slotDuzyPusty),
-          ...(podswietlony ? s.slotDuzyPodswietlony : {}),
-        }}
+    <div style={{ ...s.slotKartaWrap, ...style }}>
+      <button
+        type="button"
+        style={s.slotKartaX}
+        onPointerDown={(e) => e.stopPropagation()}
+        onTouchStart={(e) => e.stopPropagation()}
+        onClick={(e) => { e.stopPropagation(); onUsun() }}
+        title="Usuń posiłek"
       >
-        {masDanie ? (
-          <>
+        ✕
+      </button>
+
+      {masDanie ? (
+        <>
+          <div
+            ref={setRef}
+            role="button"
+            tabIndex={0}
+            onClick={onClick}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick?.() } }}
+            style={{
+              ...s.slotKartaTile,
+              ...(podswietlony ? s.slotDuzyPodswietlony : {}),
+            }}
+          >
             {daniaMeta?.zdjecie ? (
-              <img src={daniaMeta.zdjecie} alt={wpis.danie} style={s.kafelekImg} />
+              <img src={daniaMeta.zdjecie} alt={wpis.danie} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
             ) : (
-              <div style={{ ...s.kafelekImg, background: kolorDania(wpis.danie), display: 'grid', placeItems: 'center' }}>
-                <span style={{ fontSize: 48 }}>{emojiDania(wpis.danie)}</span>
+              <div style={{ width: '100%', height: '100%', background: kolorDania(wpis.danie), display: 'grid', placeItems: 'center' }}>
+                <span style={{ fontSize: 32 }}>{emojiDania(wpis.danie)}</span>
               </div>
             )}
-            <span style={{ ...s.kafelekLabel, background: kolor }}>
-              {label}
-            </span>
-            {onWymien && (
-              <button
-                type="button"
-                style={{ ...s.kafelekDelete, right: 37 }}
-                onPointerDown={(e) => e.stopPropagation()}
-                onTouchStart={(e) => e.stopPropagation()}
-                onClick={(e) => { e.stopPropagation(); onWymien() }}
-                title="Inne danie"
-              >
-                🔄
-              </button>
-            )}
+            <span style={{ ...s.slotKartaBadge, background: kolor }}>{label}</span>
+          </div>
+
+          <div style={s.slotKartaInfo}>
+            <span style={s.slotKartaNazwa}>{wpis.danie}</span>
+            <div style={s.slotKartaAkcje}>
+              <div style={s.porcjeWidget}>
+                <button style={s.porcjeMiniK} onClick={(e) => navPorcje(-0.5, e)}>−</button>
+                <span style={{ ...s.porcjeWartK, color: porcjeRozne ? t.warm : t.text }}>{porcje}</span>
+                <button style={s.porcjeMiniK} onClick={(e) => navPorcje(0.5, e)}>+</button>
+              </div>
+              {onWymien && (
+                <button
+                  type="button"
+                  style={s.slotKartaDice}
+                  onPointerDown={(e) => e.stopPropagation()}
+                  onTouchStart={(e) => e.stopPropagation()}
+                  onClick={(e) => { e.stopPropagation(); onWymien() }}
+                  title="Inne danie"
+                >
+                  🎲
+                </button>
+              )}
+            </div>
+          </div>
+        </>
+      ) : (
+        <div
+          ref={setRef}
+          role="button"
+          tabIndex={0}
+          onClick={onClick}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick?.() } }}
+          style={{
+            ...s.slotKartaPusty,
+            ...(podswietlony ? { borderColor: t.warm, background: t.warmSoft } : {}),
+          }}
+        >
+          <span style={s.slotKartaPustyLabel}>{label}</span>
+          <span style={s.slotKartaPustyPlus}>+</span>
+          <span style={s.slotKartaPustyHint}>Dotknij / upuść</span>
+          {onLosuj && (
             <button
               type="button"
-              style={s.kafelekDelete}
+              style={s.slotKartaLosujBtn}
               onPointerDown={(e) => e.stopPropagation()}
               onTouchStart={(e) => e.stopPropagation()}
-              onClick={(e) => { e.stopPropagation(); onUsun() }}
-              title="Usuń posiłek"
+              onClick={(e) => { e.stopPropagation(); onLosuj() }}
             >
-              ✕
+              🎲 Losuj
             </button>
-            <div style={s.kafelekNazwa}>
-              <span style={s.kafelekNazwaTxt}>{wpis.danie}</span>
-            </div>
-          </>
-        ) : (
-          <div style={s.kafelekPustyInner}>
-            <span style={s.kafelekPustyLabel}>{label}</span>
-            <span style={s.kafelekPustyPlus}>+</span>
-          </div>
-        )}
-      </div>
-
-      {masDanie && (
-        <div style={s.slotKontrolki}>
-          <div style={s.porcjeWidget}>
-            <button style={s.porcjeMini} onClick={(e) => navPorcje(-0.5, e)}>−</button>
-            <span style={{ ...s.porcjeWart, color: porcjeRozne ? t.warm : t.text }}>{porcje}</span>
-            <button style={s.porcjeMini} onClick={(e) => navPorcje(0.5, e)}>+</button>
-          </div>
-          <button style={s.malyBtn} onClick={(e) => { e.stopPropagation(); onPodmien() }} title="Podmień składniki">
-            ↻{liczbaPodmian > 0 ? ` ${liczbaPodmian}` : ''}
-          </button>
-        </div>
-      )}
-
-      {masDanie && typDania === 'z_dodatkiem' && (
-        <div style={s.miniSloty}>
-          {sideSloty.map(slot => (
-            <MiniSlot
-              key={slot.idx}
-              setRef={(el) => setSideRef(slot.idx, el)}
-              nazwa={slot.nazwa}
-              typ={slot.typ}
-              meta={slot.meta}
-              podswietlony={podswietlSide && !slot.nazwa}
-              onClickPelny={() => onUsunSide(slot.idx)}
-              onClickPusty={() => onWybierzSide(slot.idx)}
-            />
-          ))}
+          )}
         </div>
       )}
     </div>
@@ -2659,7 +2664,7 @@ function makeS() {
   outer: { background: t.bg, minHeight: '100vh', fontFamily: fonts.sans },
   container: { padding: '20px 18px 32px', maxWidth: 460, margin: '0 auto', boxSizing: 'border-box' },
   back: { ...ui.btnText, padding: '0 0 10px', display: 'block' },
-  header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, marginBottom: 14 },
+  header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, marginBottom: 8 },
   eyebrow: { ...ui.eyebrow, fontSize: 10.5, marginBottom: 6, color: t.warm },
   monthBtn: {
     ...ui.eyebrow,
@@ -2673,23 +2678,30 @@ function makeS() {
     textAlign: 'left',
   },
   title: { ...ui.h1, fontSize: 36, lineHeight: 0.95 },
+  titleCompact: { ...ui.h1, fontSize: 24, lineHeight: 1, marginTop: 2 },
   italic: { fontStyle: 'italic', color: t.text, fontFamily: fonts.serif },
-  headerActions: { display: 'flex', gap: 8 },
+  headerActions: { display: 'flex', gap: 6 },
   navBtn: {
     width: 36, height: 36, borderRadius: 999,
     border: `1px solid ${t.border}`, background: t.surface,
     fontFamily: fonts.serif, fontSize: 20, color: t.text,
     cursor: 'pointer', display: 'grid', placeItems: 'center',
   },
-  dayStrip: { display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 4, marginBottom: 18 },
+  navBtnCompact: {
+    width: 34, height: 34, borderRadius: 999,
+    border: `1px solid ${t.border}`, background: t.surface,
+    fontFamily: fonts.serif, fontSize: 18, color: t.text,
+    cursor: 'pointer', display: 'grid', placeItems: 'center',
+  },
+  dayStrip: { display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 4, marginBottom: 10 },
   dayPill: {
-    padding: '8px 0 7px', borderRadius: 14, cursor: 'pointer',
-    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2,
+    padding: '6px 0 5px', borderRadius: 12, cursor: 'pointer',
+    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1,
     fontFamily: fonts.sans, transition: 'background .15s',
     background: 'transparent', border: '1px solid transparent',
   },
-  dayPillDow: { fontSize: 10.5, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase' },
-  dayPillDate: { fontFamily: fonts.serif, fontSize: 20, lineHeight: 1, letterSpacing: -0.3 },
+  dayPillDow: { fontSize: 10, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase' },
+  dayPillDate: { fontFamily: fonts.serif, fontSize: 18, lineHeight: 1, letterSpacing: -0.3 },
   dayPillDots: { display: 'flex', gap: 2.5, marginTop: 3 },
   dot: { width: 4, height: 4, borderRadius: 999 },
   wrocTydzienBtn: { ...ui.btnText, padding: '0 0 12px', display: 'inline-block', color: t.accent, fontSize: 13, fontWeight: 600 },
@@ -2816,8 +2828,88 @@ function makeS() {
     position: 'sticky', top: 0, zIndex: 50,
     background: t.bg,
     paddingTop: 4, paddingBottom: 8,
-    // Lekka linia na dole gdy sticky się "przykleja" - subtelnie
-    boxShadow: '0 4px 12px -8px rgba(74,55,40,.15)',
+    boxShadow: '0 10px 16px -10px rgba(0,0,0,.15)',
+  },
+  stickyAkcjeRow: {
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+    padding: '0 4px', marginBottom: 8,
+  },
+  stickyDzienInfo: {
+    fontFamily: fonts.sans, fontSize: 12, fontWeight: 600, color: t.mute,
+  },
+  stickyLosujBtn: {
+    background: t.warmSoft, border: 'none', borderRadius: 999,
+    padding: '5px 12px', fontFamily: fonts.sans, fontSize: 11, fontWeight: 700,
+    color: t.warm, cursor: 'pointer',
+  },
+  slotyHorizontal: {
+    display: 'flex', gap: 9, overflowX: 'auto', overflowY: 'hidden',
+    paddingBottom: 4, WebkitOverflowScrolling: 'touch',
+    scrollbarWidth: 'none', msOverflowStyle: 'none',
+  },
+  slotKarta: {
+    width: 150, minWidth: 150, height: 164, flexShrink: 0,
+  },
+  slotKartaWrap: {
+    position: 'relative', width: 150, minWidth: 150, height: 164, flexShrink: 0,
+    borderRadius: 14, overflow: 'hidden',
+    background: t.surface,
+    boxShadow: '0 1px 2px rgba(74,55,40,.06), 0 4px 12px rgba(74,55,40,.06)',
+  },
+  slotKartaX: {
+    position: 'absolute', top: 5, right: 5, zIndex: 4,
+    width: 22, height: 22, borderRadius: 999,
+    border: 'none', background: 'rgba(0,0,0,.5)', color: '#fff',
+    fontSize: 11, fontWeight: 800, cursor: 'pointer',
+    display: 'grid', placeItems: 'center',
+    boxShadow: '0 2px 6px rgba(0,0,0,.2)',
+  },
+  slotKartaTile: {
+    width: '100%', height: 82, overflow: 'hidden', cursor: 'pointer',
+    position: 'relative', border: 'none', padding: 0,
+  },
+  slotKartaBadge: {
+    position: 'absolute', top: 5, left: 5,
+    color: '#fff', fontSize: 7, fontWeight: 800, letterSpacing: 1,
+    padding: '2px 6px', borderRadius: 4,
+  },
+  slotKartaInfo: {
+    padding: '6px 8px 6px', display: 'flex', flexDirection: 'column', gap: 4,
+    height: 82, boxSizing: 'border-box',
+  },
+  slotKartaNazwa: {
+    fontFamily: fonts.sans, fontSize: 12, fontWeight: 600, color: t.text,
+    lineHeight: 1.2, overflow: 'hidden', display: '-webkit-box',
+    WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
+  },
+  slotKartaAkcje: {
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+    marginTop: 'auto',
+  },
+  slotKartaDice: {
+    width: 28, height: 28, borderRadius: 999,
+    border: 'none', background: t.warmSoft, color: t.warm,
+    fontSize: 14, cursor: 'pointer',
+    display: 'grid', placeItems: 'center',
+  },
+  slotKartaPusty: {
+    width: '100%', height: '100%', boxSizing: 'border-box',
+    border: `1.5px dashed ${t.borderStrong}`, borderRadius: 14,
+    background: t.surfaceAlt, cursor: 'pointer',
+    display: 'flex', flexDirection: 'column', alignItems: 'center',
+    justifyContent: 'center', gap: 4, padding: 8,
+  },
+  slotKartaPustyLabel: {
+    fontFamily: fonts.sans, fontSize: 9, fontWeight: 700, letterSpacing: 1,
+    color: t.mute, textTransform: 'uppercase',
+  },
+  slotKartaPustyPlus: { fontFamily: fonts.serif, fontSize: 24, color: t.muteLight, lineHeight: 1 },
+  slotKartaPustyHint: { fontFamily: fonts.sans, fontSize: 9, color: t.muteLight },
+  slotKartaLosujBtn: {
+    width: '100%', marginTop: 4,
+    background: t.warmSoft, border: 'none', borderRadius: 999,
+    padding: '4px 0', fontFamily: fonts.sans, fontSize: 10, fontWeight: 700,
+    color: t.warm, cursor: 'pointer',
   },
   slotyDuze: { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 8 },
   slotDuzy: {
@@ -2847,6 +2939,15 @@ function makeS() {
   porcjeWart: {
     fontFamily: fonts.sans, fontSize: 10.5, fontWeight: 700,
     minWidth: 18, textAlign: 'center', fontVariantNumeric: 'tabular-nums',
+  },
+  porcjeMiniK: {
+    background: 'none', border: 'none', cursor: 'pointer',
+    color: t.text, width: 18, height: 20, fontSize: 12,
+    fontFamily: fonts.serif, lineHeight: 1, display: 'grid', placeItems: 'center',
+  },
+  porcjeWartK: {
+    fontFamily: fonts.sans, fontSize: 10, fontWeight: 700,
+    minWidth: 16, textAlign: 'center', fontVariantNumeric: 'tabular-nums',
   },
   malyBtn: {
     background: t.surfaceAlt, border: 'none', borderRadius: 999,
