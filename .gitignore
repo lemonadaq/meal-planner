@@ -26,6 +26,10 @@ scripts/
 *.sln
 *.sw?
 
+# Playwright
+test-results/
+playwright-report/
+
 dogeneruj-brakujace.mjs
 generuj-obrazy.mjs
 generuj-przepisy.mjs
