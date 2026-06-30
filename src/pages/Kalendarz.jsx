@@ -1,7 +1,7 @@
 import { useState, useEffect, useLayoutEffect, useMemo, useRef, useCallback } from 'react'
 import { supabase } from '../supabase'
 import { t, fonts, ui } from '../theme'
-import { formatDataLocal as formatData, isDzis } from '../dataHelpers'
+import { formatDataLocal as formatData, isDzis, decyzjaAktywnyDzien } from '../dataHelpers'
 import { useSloty, slotyWDniu, kluczDnia, sanityzuj } from '../useSloty'
 import GeneratorPlanu from '../components/GeneratorPlanu'
 import Toast from '../components/Toast'
@@ -102,6 +102,9 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
   const [wieloDniModal, setWieloDniModal] = useState(null) // { danie, posilek, dataStr } | null
   const [kompakt, setKompakt] = useState(() => localStorage.getItem('widok_gestosc') === 'kompakt')
   const recznyWyborDniaRef = useRef(false)
+  // Pierwszy mount (m.in. powrót z widoku dania) — wtedy NIE resetujemy aktywnego dnia,
+  // tylko zostawiamy ten przywrócony z sessionStorage.
+  const pierwszyMountRef = useRef(true)
 
   function toggleKompakt() {
     setKompakt(k => {
@@ -203,16 +206,14 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
   }, [cel])
 
   useEffect(() => {
-    if (recznyWyborDniaRef.current) {
-      recznyWyborDniaRef.current = false
-      return
-    }
-    if (tydzien === 0) {
-      const today = (new Date().getDay() || 7) - 1
-      setAktywnyDzien(today)
-    } else {
-      setAktywnyDzien(0)
-    }
+    const decyzja = decyzjaAktywnyDzien({
+      pierwszyMount: pierwszyMountRef.current,
+      recznyWybor: recznyWyborDniaRef.current,
+      tydzien,
+    })
+    pierwszyMountRef.current = false
+    if (decyzja.powod === 'reczny') recznyWyborDniaRef.current = false
+    if (!decyzja.zachowaj) setAktywnyDzien(decyzja.dzien)
   }, [tydzien])
 
   useEffect(() => {

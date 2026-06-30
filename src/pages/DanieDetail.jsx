@@ -75,6 +75,18 @@ const TYPY = [
 const DNI = ['Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota', 'Niedziela']
 const DNI_KROTKO = ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Nd']
 
+// Chipsy meta pokazywane pod tytułem dania w widoku przepisu.
+// UWAGA: pole TYP (np. "z dodatkiem" / "samodzielne") służy WYŁĄCZNIE do logiki
+// dodawania dodatków przy planowaniu — NIE pokazujemy go użytkownikowi.
+export function metaChipyDania(skladnik, rodzaje = RODZAJE) {
+  if (!skladnik) return []
+  const chipy = []
+  const rodzajLabel = rodzaje.find(x => x.id === skladnik.rodzaj)?.label
+  if (rodzajLabel) chipy.push(rodzajLabel)
+  if (skladnik.czas_minuty) chipy.push(`${skladnik.czas_minuty} min`)
+  return chipy
+}
+
 function getPoniedzialek(offset = 0) {
   const d = new Date()
   const day = d.getDay() || 7
@@ -142,6 +154,10 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
     d.setDate(d.getDate() + i)
     return d
   })
+
+  // Wejście w danie zawsze od góry (zdjęcie + składniki), nie od kroków przepisu —
+  // bez tego strona dziedziczy pozycję scrolla z planera i otwiera się na dole.
+  useEffect(() => { window.scrollTo(0, 0) }, [nazwaProp])
 
   useEffect(() => { pobierz() }, [nazwaProp])
   useEffect(() => {
@@ -457,16 +473,11 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
               <>
                 <h1 style={s.heroTytul}>{nazwa}</h1>
                 {(() => {
-                  const r = skladniki[0]
-                  const rodzajLabel = RODZAJE.find(x => x.id === r?.rodzaj)?.label
-                  const czas = r?.czas_minuty
-                  const typ = r?.TYP
-                  if (!rodzajLabel && !czas && !typ) return null
+                  const chipy = metaChipyDania(skladniki[0])
+                  if (chipy.length === 0) return null
                   return (
                     <div style={s.metaRow}>
-                      {rodzajLabel && <span style={s.metaChip}>{rodzajLabel}</span>}
-                      {czas && <span style={s.metaChip}>{czas} min</span>}
-                      {typ && <span style={s.metaChip}>{typ}</span>}
+                      {chipy.map((c, i) => <span key={i} style={s.metaChip}>{c}</span>)}
                     </div>
                   )
                 })()}

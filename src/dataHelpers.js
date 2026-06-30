@@ -18,3 +18,21 @@ export function dzisLocal() {
 export function isDzis(d) {
   return formatDataLocal(d) === dzisLocal()
 }
+
+// Domyślny aktywny dzień dla danego tygodnia (index 0=Pon … 6=Nd):
+// bieżący tydzień (offset 0) → dzisiejszy dzień, inne tygodnie → poniedziałek.
+export function domyslnyDzienTygodnia(tydzien, dzis = new Date()) {
+  if (tydzien === 0) return (dzis.getDay() || 7) - 1
+  return 0
+}
+
+// Decyzja efektu zmiany tygodnia w planerze: jaki ma być aktywny dzień.
+// Kluczowe: przy pierwszym mountcie (powrót z widoku dania) ORAZ przy ręcznym
+// wyborze daty NIE resetujemy dnia — zostaje ten zapamiętany. Dopiero realna
+// zmiana tygodnia (strzałki ‹ ›) ustawia dzień domyślny.
+// Zwraca { zachowaj: true, powod } gdy zostawić bez zmian, albo { dzien } do ustawienia.
+export function decyzjaAktywnyDzien({ pierwszyMount, recznyWybor, tydzien, dzis = new Date() }) {
+  if (pierwszyMount) return { zachowaj: true, powod: 'mount' }
+  if (recznyWybor) return { zachowaj: true, powod: 'reczny' }
+  return { dzien: domyslnyDzienTygodnia(tydzien, dzis) }
+}
