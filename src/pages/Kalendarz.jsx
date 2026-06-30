@@ -1283,6 +1283,7 @@ function WidokDnia({
   const [filtr, setFiltr] = useState('')
   const [dragState, setDragState] = useState(null)
   const [hoverPosilek, setHoverPosilek] = useState(null)
+  const [wpiszSlot, setWpiszSlot] = useState(null) // ID slotu, gdy user wpisuje własną nazwę dania
 
   // Refy do slotów (dla wykrywania drop): zarówno głównych jak i side-slotów
   // Klucz: `${posilek}` dla dania, `${posilek}_side_${i}` dla side-slotów
@@ -1920,6 +1921,7 @@ function WidokDnia({
                   const losowe = dania[Math.floor(Math.random() * dania.length)]
                   if (losowe) onUstawDanie(dataStr, posilek, losowe.Danie)
                 }}
+                onWpisz={() => setWpiszSlot(posilek)}
               />
             )
           })}
@@ -2051,6 +2053,55 @@ function WidokDnia({
           }}
         />
       )}
+
+      {wpiszSlot && (
+        <WpiszDanieModal
+          posilekLabel={nazwaSlotu(wpiszSlot)}
+          onClose={() => setWpiszSlot(null)}
+          onZapisz={(nazwa) => { onUstawDanie(dataStr, wpiszSlot, nazwa); setWpiszSlot(null) }}
+        />
+      )}
+    </div>
+  )
+}
+
+// ════════════════════════════════════════════════════════════
+// Modal: wpisanie własnej nazwy dania w slot (bez przepisu)
+function WpiszDanieModal({ posilekLabel, onClose, onZapisz }) {
+  const [nazwa, setNazwa] = useState('')
+  const inputRef = useRef(null)
+  useEffect(() => { inputRef.current?.focus() }, [])
+
+  function zapisz() {
+    const v = nazwa.trim()
+    if (!v) return
+    onZapisz(v)
+  }
+
+  return (
+    <div style={modS.overlay} onClick={onClose}>
+      <div style={modS.modal} onClick={e => e.stopPropagation()}>
+        <div style={modS.header}>
+          <div>
+            <div style={modS.eyebrow}>{(posilekLabel || '').toUpperCase()}</div>
+            <div style={modS.title}>Wpisz danie</div>
+            <div style={modS.sub}>Bez dodawania przepisu — sama nazwa</div>
+          </div>
+          <button style={modS.close} onClick={onClose}>✕</button>
+        </div>
+        <input
+          ref={inputRef}
+          type="text"
+          value={nazwa}
+          onChange={e => setNazwa(e.target.value)}
+          onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); zapisz() } }}
+          placeholder="np. ziemniaki z kefirem"
+          style={{ ...ui.input, marginBottom: 16, fontSize: 16 }}
+        />
+        <button style={{ ...modS.btnKopiuj, opacity: nazwa.trim() ? 1 : 0.5 }} onClick={zapisz} disabled={!nazwa.trim()}>
+          Zapisz w planie
+        </button>
+      </div>
     </div>
   )
 }
@@ -2196,7 +2247,7 @@ function SlotDuzy({
   domyslnePorcje, podswietlony, podswietlSide,
   onClick, onUsun, onUsunSide,
   onZmienPorcje, onPodmien, onWymien,
-  onWybierzSide, onLosuj, style,
+  onWybierzSide, onLosuj, onWpisz, style,
 }) {
   const s = makeS()
   const masDanie = !!wpis?.danie
@@ -2275,8 +2326,8 @@ function SlotDuzy({
           ref={setRef}
           role="button"
           tabIndex={0}
-          onClick={onClick}
-          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick?.() } }}
+          onClick={onWpisz || onClick}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); (onWpisz || onClick)?.() } }}
           style={{
             ...s.slotKartaPusty,
             ...(podswietlony ? { borderColor: t.warm, background: t.warmSoft } : {}),
@@ -2284,7 +2335,7 @@ function SlotDuzy({
         >
           <span style={s.slotKartaPustyLabel}>{label}</span>
           <span style={s.slotKartaPustyPlus}>+</span>
-          <span style={s.slotKartaPustyHint}>Dotknij / upuść</span>
+          <span style={s.slotKartaPustyHint}>Wpisz lub upuść</span>
           {onLosuj && (
             <button
               type="button"
