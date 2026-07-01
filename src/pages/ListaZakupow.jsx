@@ -79,6 +79,25 @@ function tekstIlosciZItemu(item) {
   return ''
 }
 
+// Normalizuje item z widoku listy do jednolitego obiektu edycji/usuwania.
+// Trzy źródła: 'wlasne' i 'cykliczne' mają swój rekord z bazy (id do DELETE),
+// a pozycja z 'plan' idzie przez korektę (bazaKlucz + nazwa/ilość/kategoria).
+// Dzięki temu edycja (✎) i bezpośrednie usuwanie (✕) używają tej samej ścieżki.
+export function zbudujObiektEdycji(item) {
+  if (!item) return null
+  if (item.zrodlo === 'wlasne') return { ...item.wlasnyData, __zrodlo: 'wlasne', cykliczny: false }
+  if (item.zrodlo === 'cykliczne') return { ...item.cyklicneData, __zrodlo: 'cykliczne', cykliczny: true }
+  return {
+    __zrodlo: 'plan',
+    bazaKlucz: item.bazaKlucz || item.klucz,
+    klucz: item.klucz,
+    nazwa: item.skladnik,
+    ilosc: tekstIlosciZItemu(item),
+    kategoria: item.kategoria || '8_Inne',
+    cykliczny: false,
+  }
+}
+
 function zastosujKorekteZakupu(item, korekta) {
   if (!item) return null
   const bazaKlucz = item.bazaKlucz || item.klucz
@@ -1390,22 +1409,16 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
 
   function rozpocznijEdycjeItemu(item) {
     if (!item) return
-    if (item.zrodlo === 'wlasne') {
-      setEdycjaWlasnego({ ...item.wlasnyData, __zrodlo: 'wlasne', cykliczny: false })
-    } else if (item.zrodlo === 'cykliczne') {
-      setEdycjaWlasnego({ ...item.cyklicneData, __zrodlo: 'cykliczne', cykliczny: true })
-    } else {
-      setEdycjaWlasnego({
-        __zrodlo: 'plan',
-        bazaKlucz: item.bazaKlucz || item.klucz,
-        klucz: item.klucz,
-        nazwa: item.skladnik,
-        ilosc: tekstIlosciZItemu(item),
-        kategoria: item.kategoria || '8_Inne',
-        cykliczny: false,
-      })
-    }
+    setEdycjaWlasnego(zbudujObiektEdycji(item))
     setPokazDodaj(true)
+  }
+
+  // Bezpośrednie usunięcie pozycji z listy (przycisk ✕ na wierszu). Działa
+  // jednolicie: własne/cykliczne kasujemy z bazy, pozycje z planu chowamy przez
+  // korektę „usuniety”. W obu wypadkach jest Cofnij w toaście.
+  function usunItemZListy(item) {
+    if (!item) return
+    return usunEdytowanyProdukt(zbudujObiektEdycji(item))
   }
 
   async function usunEdytowanyProdukt(item) {
@@ -1829,6 +1842,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
                         onToggle={() => toggleAny(item)}
                         onLongPress={() => rozpocznijEdycjeItemu(item)}
                         onEdit={() => rozpocznijEdycjeItemu(item)}
+                        onDelete={() => usunItemZListy(item)}
                         onHome={item.zrodlo === 'plan' ? () => dodajDoMamWDomu(item.skladnik) : null}
                         promoOpen={openPromoKlucz === item.klucz}
                         onPromoToggle={() => setOpenPromoKlucz(k => k === item.klucz ? null : item.klucz)}
@@ -1861,6 +1875,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
                       kupione={true}
                       onToggle={() => toggleAny(item)}
                       onEdit={() => rozpocznijEdycjeItemu(item)}
+                      onDelete={() => usunItemZListy(item)}
                       onHome={item.zrodlo === 'plan' ? () => dodajDoMamWDomu(item.skladnik) : null}
                     />
                   ))}
@@ -2152,7 +2167,7 @@ function SzybkieDodawanie({ value, onChange, onDodaj }) {
 // Pojedynczy wiersz listy — z long-pressem dla edycji.
 // Odhaczanie „kupione" TYLKO checkboxem (decyzja Filipa, Zadanie-promocje.md A4).
 // Tap w resztę wiersza: gdy item.promo → toggluje szczegół promocji; bez promo → nic.
-function ItemRow({ item, kupione, onToggle, onLongPress, onEdit, onHome, promoOpen, onPromoToggle }) {
+function ItemRow({ item, kupione, onToggle, onLongPress, onEdit, onDelete, onHome, promoOpen, onPromoToggle }) {
   const s = makeS()
   const longPressTimer = useRef(null)
   const startPos = useRef(null)
@@ -2288,9 +2303,21 @@ function ItemRow({ item, kupione, onToggle, onLongPress, onEdit, onHome, promoOp
           onPointerUp={e => e.stopPropagation()}
           onClick={e => { e.stopPropagation(); onEdit() }}
           aria-label={`Edytuj ${item.skladnik}`}
-          title="Edytuj nazwę / ilość / usuń"
+          title="Edytuj nazwę / ilość"
         >
           ✎
+        </button>
+      )}
+      {onDelete && (
+        <button
+          style={s.itemDeleteBtn}
+          onPointerDown={e => e.stopPropagation()}
+          onPointerUp={e => e.stopPropagation()}
+          onClick={e => { e.stopPropagation(); onDelete() }}
+          aria-label={`Usuń ${item.skladnik}`}
+          title="Usuń z listy"
+        >
+          ✕
         </button>
       )}
     </div>
@@ -2875,6 +2902,16 @@ function makeS() {
     color: t.mute,
     display: 'grid', placeItems: 'center',
     fontFamily: fonts.sans, fontSize: 13, fontWeight: 700,
+    cursor: 'pointer', flexShrink: 0,
+    marginRight: 0,
+  },
+  itemDeleteBtn: {
+    width: 30, height: 30, borderRadius: 999,
+    border: `1px solid ${t.border}`,
+    background: t.surfaceAlt,
+    color: t.danger,
+    display: 'grid', placeItems: 'center',
+    fontFamily: fonts.sans, fontSize: 14, fontWeight: 700,
     cursor: 'pointer', flexShrink: 0,
     marginRight: 0,
   },
