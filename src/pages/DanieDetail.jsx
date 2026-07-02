@@ -84,6 +84,7 @@ export function metaChipyDania(skladnik, rodzaje = RODZAJE) {
   const rodzajLabel = rodzaje.find(x => x.id === skladnik.rodzaj)?.label
   if (rodzajLabel) chipy.push(rodzajLabel)
   if (skladnik.czas_minuty) chipy.push(`${skladnik.czas_minuty} min`)
+  if (skladnik.kcal) chipy.push(`${skladnik.kcal} kcal`)
   return chipy
 }
 
@@ -114,6 +115,7 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
   const [edZdjeciePreview, setEdZdjeciePreview] = useState(null)
   const [edRodzaj, setEdRodzaj] = useState('')
   const [edCzas, setEdCzas] = useState('')
+  const [edKcal, setEdKcal] = useState('')
   const [edTyp, setEdTyp] = useState('')
 
   const [pokazKalendarz, setPokazKalendarz] = useState(false)
@@ -206,6 +208,7 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
     setEdPrzepisRaw(przepis.join('\n'))
     setEdRodzaj(skladniki[0]?.rodzaj || '')
     setEdCzas(skladniki[0]?.czas_minuty != null ? String(skladniki[0].czas_minuty) : '')
+    setEdKcal(skladniki[0]?.kcal != null ? String(skladniki[0].kcal) : '')
     setEdTyp(skladniki[0]?.TYP || '')
     setEdycja(true)
   }
@@ -248,6 +251,7 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
         'zdjecie': noweZdjecieUrl,
         'rodzaj': edRodzaj || null,
         'czas_minuty': edCzas !== '' ? Number(edCzas) : null,
+        'kcal': edKcal !== '' ? Number(edKcal) : null,
         'TYP': edTyp || null,
       }).eq('Danie', aktualnaNazwa)
     )
@@ -275,6 +279,9 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
         'Przepis': przepisTekst,
         'TYP': wzor['TYP'] || null,
         'zdjecie': noweZdjecieUrl,
+        'rodzaj': edRodzaj || null,
+        'czas_minuty': edCzas !== '' ? Number(edCzas) : null,
+        'kcal': edKcal !== '' ? Number(edKcal) : null,
       }))
       operacje.push(supabase.from('dania').insert(wiersze))
     }
@@ -459,6 +466,8 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
                   </select>
                   <input style={s.edInputMeta} type="number" min="1" max="480" placeholder="czas (min)"
                     value={edCzas} onChange={e => setEdCzas(e.target.value)} />
+                  <input style={s.edInputMeta} type="number" min="1" max="5000" placeholder="kcal/porcję"
+                    value={edKcal} onChange={e => setEdKcal(e.target.value)} />
                   <select style={s.edInputMeta} value={edTyp} onChange={e => setEdTyp(e.target.value)}>
                     {TYPY.map(x => <option key={x.id} value={x.id}>{x.label}</option>)}
                   </select>

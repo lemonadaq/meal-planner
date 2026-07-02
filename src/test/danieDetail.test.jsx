@@ -7,7 +7,7 @@ import DanieDetail, { metaChipyDania } from '../pages/DanieDetail'
 vi.mock('../supabase', () => {
   const ROW = {
     id: 1, Danie: 'Test Danie', 'Składnik': 'Mleko', 'Kategoria': '3_Nabiał',
-    rodzaj: 'obiad', czas_minuty: 30, TYP: 'z dodatkiem', 'Przepis': '1. Wymieszaj',
+    rodzaj: 'obiad', czas_minuty: 30, kcal: 450, TYP: 'z dodatkiem', 'Przepis': '1. Wymieszaj',
   }
   function makeQuery() {
     const q = {}
@@ -45,6 +45,15 @@ describe('metaChipyDania', () => {
     expect(metaChipyDania({ rodzaj: 'zupa' })).toEqual(['Zupa'])
   })
 
+  it('pokazuje kalorie na porcję gdy są', () => {
+    expect(metaChipyDania({ rodzaj: 'obiad', kcal: 450 })).toEqual(['Obiad', '450 kcal'])
+  })
+
+  it('pomija kcal gdy null/0', () => {
+    expect(metaChipyDania({ rodzaj: 'obiad', kcal: null })).toEqual(['Obiad'])
+    expect(metaChipyDania({ rodzaj: 'obiad', kcal: 0 })).toEqual(['Obiad'])
+  })
+
   it('zwraca pustą tablicę dla braku danych', () => {
     expect(metaChipyDania(null)).toEqual([])
     expect(metaChipyDania({})).toEqual([])
@@ -62,11 +71,12 @@ describe('DanieDetail (widok przepisu)', () => {
     expect(window.scrollTo).toHaveBeenCalledWith(0, 0)
   })
 
-  it('NIE pokazuje kafelka TYP "z dodatkiem", ale pokazuje rodzaj i czas', async () => {
+  it('NIE pokazuje kafelka TYP "z dodatkiem", ale pokazuje rodzaj, czas i kcal', async () => {
     render(<DanieDetail nazwa="Test Danie" onBack={() => {}} user={{ id: 'u1' }} householdId="h1" sledz={() => {}} />)
     // czekamy aż dane się załadują (pojawi się chip rodzaju)
     await waitFor(() => expect(screen.getByText('Obiad')).toBeInTheDocument())
     expect(screen.getByText('30 min')).toBeInTheDocument()
+    expect(screen.getByText('450 kcal')).toBeInTheDocument()
     expect(screen.queryByText('z dodatkiem')).not.toBeInTheDocument()
   })
 })

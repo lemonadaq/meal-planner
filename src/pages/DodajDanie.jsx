@@ -58,6 +58,7 @@ export default function DodajDanie({ onBack, onZapisano }) {
   const [nazwa, setNazwa] = useState('')
   const [typ, setTyp] = useState('samodzielne')
   const [czasMinuty, setCzasMinuty] = useState('')
+  const [kcal, setKcal] = useState('')
   const [porcjeBazowe, setPorcjeBazowe] = useState('4')
   const [notatki, setNotatki] = useState('')
 
@@ -186,6 +187,7 @@ export default function DodajDanie({ onBack, onZapisano }) {
       'Przepis': przepisTekst,
       'rodzaj': rodzaj,
       'czas_minuty': czasMinuty ? parseInt(czasMinuty, 10) || null : null,
+      'kcal': kcal ? parseInt(kcal, 10) || null : null,
       'porcje_bazowe': porcjeBazowe ? parseInt(porcjeBazowe, 10) || 4 : 4,
       'notatki': notatki.trim() || null,
       'zdjecie': zdjecieUrl,
@@ -267,6 +269,17 @@ export default function DodajDanie({ onBack, onZapisano }) {
             <div style={{ flex: 1 }}>
               <input
                 style={s.input}
+                placeholder="kcal/porcję"
+                type="number"
+                inputMode="numeric"
+                min="1"
+                value={kcal}
+                onChange={e => setKcal(e.target.value)}
+              />
+            </div>
+            <div style={{ flex: 1 }}>
+              <input
+                style={s.input}
                 placeholder="Porcje"
                 type="number"
                 inputMode="numeric"
@@ -277,7 +290,7 @@ export default function DodajDanie({ onBack, onZapisano }) {
             </div>
           </div>
           <div style={s.hint}>
-            Czas przyrządzania to opcja — dla filtra „do 30 minut". Porcje określają, ile osób wykarmi ten przepis bazowo.
+            Czas i kalorie to opcja — dla filtra „do 30 minut" i chipa 🔥. Porcje określają, ile osób wykarmi ten przepis bazowo.
           </div>
         </section>
 

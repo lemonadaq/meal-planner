@@ -124,7 +124,7 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
     while (true) {
       const { data, error } = await supabase
         .from('dania')
-        .select('"Danie", "TYP", rodzaj, czas_minuty, porcje_bazowe, ulubione, zdjecie')
+        .select('"Danie", "TYP", rodzaj, czas_minuty, kcal, porcje_bazowe, ulubione, zdjecie')
         .order('"Danie"')
         .range(od, od + STRONA - 1)
       if (error || !data?.length) break
@@ -393,8 +393,12 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
                     {RODZAJ_LABEL[featured.rodzaj] || 'WPIS'} · POLECANE
                   </div>
                   <h2 style={s.featuredTitle}>{featured['Danie']}</h2>
-                  {featured.czas_minuty > 0 && (
-                    <div style={s.featuredMeta}>⏱ {featured.czas_minuty} min</div>
+                  {(featured.czas_minuty > 0 || featured.kcal > 0) && (
+                    <div style={s.featuredMeta}>
+                      {featured.czas_minuty > 0 && <>⏱ {featured.czas_minuty} min</>}
+                      {featured.czas_minuty > 0 && featured.kcal > 0 && ' · '}
+                      {featured.kcal > 0 && <>🔥 {featured.kcal} kcal</>}
+                    </div>
                   )}
                 </div>
                 <button
@@ -431,6 +435,9 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
                       {d.czas_minuty > 0 && (
                         <span style={s.cardCzas}>⏱ {d.czas_minuty} min</span>
                       )}
+                      {d.kcal > 0 && (
+                        <span style={s.cardCzas}>🔥 {d.kcal} kcal</span>
+                      )}
                     </div>
                   </div>
                 </article>
@@ -457,6 +464,7 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
                     <div style={s.listMeta}>
                       <span style={s.cardBadge}>{RODZAJ_LABEL[d.rodzaj]}</span>
                       {d.czas_minuty > 0 && <span style={s.cardCzas}>⏱ {d.czas_minuty} min</span>}
+                      {d.kcal > 0 && <span style={s.cardCzas}>🔥 {d.kcal} kcal</span>}
                     </div>
                   </div>
                 </div>
