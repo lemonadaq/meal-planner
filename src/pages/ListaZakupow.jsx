@@ -6,6 +6,10 @@ import { formatDataLocal, dzisLocal } from '../dataHelpers'
 import { PromoBanner, PromoChip, PromoDetail, StoreDot } from '../components/Promocje'
 import { dopasujPromocje, pobierzAktualnePromocje } from '../promocjeMatch'
 import { useSloty, kluczDnia } from '../useSloty'
+import {
+  normalizujNazweMeta, LYZKI_ML, WAGA_DO_G, OBJ_DO_ML,
+  kanonJednostka, naGramy, wagaSztukiZMeta, dopasujMeta,
+} from '../jednostki'
 
 // ── Promocje: mock do testów UI (domyślnie wyłączony) ──
 // Włącz MOCK_PROMO = true żeby zobaczyć chipy/banner bez danych w tabeli `promocje`.
@@ -253,18 +257,6 @@ function rozbijSzybkieLinie(tekst = '') {
 // SKLADNIKI_META — normalizacja, konwersja jednostek, opakowania
 // ════════════════════════════════════════════════════════════
 
-// Normalizacja MUSI być identyczna z SQL:
-// trim(regexp_replace(lower(translate(nazwa, polskie→ascii)), '[^a-z0-9]+', ' ', 'g'))
-function normalizujNazweMeta(nazwa = '') {
-  return nazwa
-    .toString()
-    .toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-    .replace(/ł/g, 'l')
-    .replace(/[^a-z0-9]+/g, ' ')
-    .trim()
-}
-
 // Konwersja między jednostkami zgodnymi (g↔kg, ml↔l).
 // Zwraca: { ilosc, jednostka } w jednostce docelowej, albo null jeśli nie da się.
 function przeliczDoBazowej(ilosc, jednostkaZ, jednostkaDo) {
@@ -294,52 +286,6 @@ function przeliczDoBazowej(ilosc, jednostkaZ, jednostkaDo) {
   if (mnoznik == null) return null
 
   return { ilosc: ilosc * mnoznik, jednostka: jednostkaDo }
-}
-
-// ── Uniwersalne przeliczniki (stałe, te same dla wszystkich; trzymane w kodzie) ──
-// Sprowadzamy każdą jednostkę do „rodziny": waga (g), objętość (ml), łyżki (ml),
-// sztuki (szt). Łyżka/łyżeczka/szczypta to przybliżenia — wystarczające dla zakupów.
-const LYZKI_ML = { lyzka: 15, lyzeczka: 5, szczypta: 0.5 }
-const WAGA_DO_G = { g: 1, kg: 1000, dag: 10 }
-const OBJ_DO_ML = { ml: 1, l: 1000 }
-const INNE_DO_G = { peczek: 30, garsc: 30 }
-
-// Kanoniczna postać jednostki do przeliczeń (ł→l, bez ogonków, bez końcowej kropki,
-// liczba pojedyncza/mnoga sprowadzona do jednego klucza).
-function kanonJednostka(raw = '') {
-  const x = raw.toString().toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-    .replace(/[łl]/g, 'l')
-    .replace(/\.+$/, '').trim()
-  if (!x) return ''
-  if (['g', 'gram', 'gramy', 'gramow'].includes(x)) return 'g'
-  if (['kg', 'kilogram', 'kilogramy'].includes(x)) return 'kg'
-  if (['dag', 'dkg', 'dekagram', 'dekagramy'].includes(x)) return 'dag'
-  if (['ml', 'mililitr', 'mililitry'].includes(x)) return 'ml'
-  if (['l', 'litr', 'litry'].includes(x)) return 'l'
-  if (['lyzka', 'lyzki', 'lyzke', 'lyzek'].includes(x)) return 'lyzka'
-  if (['lyzeczka', 'lyzeczki', 'lyzeczke', 'lyzeczek'].includes(x)) return 'lyzeczka'
-  if (['szczypta', 'szczypty', 'szczypte', 'szczypt'].includes(x)) return 'szczypta'
-  // Ząbek (czosnku) i kromka (chleba) traktujemy jak sztukę — waga „sztuki" dla
-  // tych produktów to ząbek/kromka (ustawiane w skladniki_meta.waga_sztuki_g),
-  // więc „4 szt czosnku" = 4 ząbki, „2 szt chleba" = 2 kromki.
-  if (['zabek', 'zabki', 'zabka', 'zabkow', 'zabkach', 'zabkami', 'zabeczek'].includes(x)) return 'szt'
-  if (['kromka', 'kromki', 'kromke', 'kromek'].includes(x)) return 'szt'
-  if (['szt', 'sztuka', 'sztuki', 'sztuk'].includes(x)) return 'szt'
-  if (['peczek', 'peczki'].includes(x)) return 'peczek'
-  if (['garsc', 'garsci'].includes(x)) return 'garsc'
-  return x
-}
-
-// Ile gramów „waży" dana ilość w danej jednostce (gęstość ~1 dla płynów/łyżek).
-// szt liczymy tylko jeśli znamy wagę sztuki. Zwraca null gdy się nie da.
-function naGramy(ilosc, jKanon, wagaSztuki) {
-  if (jKanon in WAGA_DO_G) return ilosc * WAGA_DO_G[jKanon]
-  if (jKanon in OBJ_DO_ML) return ilosc * OBJ_DO_ML[jKanon]
-  if (jKanon in LYZKI_ML) return ilosc * LYZKI_ML[jKanon]
-  if (jKanon in INNE_DO_G) return ilosc * INNE_DO_G[jKanon]
-  if (jKanon === 'szt' && wagaSztuki) return ilosc * wagaSztuki
-  return null
 }
 
 // Przelicz dowolną ilość na jednostkę bazową składnika.
@@ -385,26 +331,6 @@ function ustalJednostkeBazowa(meta, jednostka) {
   if (j in OBJ_DO_ML) return 'ml'
   if (j === 'szt') return 'szt.'
   return jednostka || ''
-}
-
-// Waga jednej „sztuki" (g/ml). Dla produktu z bazą g/ml „1 szt" w przepisie =
-// jedno opakowanie/sztuka = `rozmiar_opakowania` (cebula 150 g, puszka 400 g,
-// karton 1000 ml…). Wyjątek: produkty sprzedawane na kg (opak.='kg'), gdzie
-// rozmiar to wielkość paczki, a nie waga sztuki — wtedy bierzemy jawną
-// `waga_sztuki_g` (np. pierś z kurczaka), inaczej nie zgadujemy.
-function wagaSztukiZMeta(meta) {
-  if (!meta) return null
-  if (meta.waga_sztuki_g) {
-    const w = parseFloat(meta.waga_sztuki_g)
-    if (Number.isFinite(w) && w > 0) return w
-  }
-  const opak = kanonJednostka(meta.jednostka_opakowania)
-  const baza = kanonJednostka(meta.jednostka_bazowa)
-  if (opak !== 'kg' && (baza === 'g' || baza === 'ml')) {
-    const r = parseFloat(meta.rozmiar_opakowania)
-    if (Number.isFinite(r) && r > 0) return r
-  }
-  return null
 }
 
 // Składniki kupowane na WAGĘ (choć pojedyncze sztuki dałoby się policzyć) —
@@ -472,22 +398,6 @@ function domyslnieWDomu(item) {
   if (ZAWSZE_W_DOMU.some(p => n === p || n.startsWith(p + ' '))) return true
   if (item.kategoria === '7_Przyprawy') return !n.startsWith('wino')
   return false
-}
-
-// Znajdź wpis skladniki_meta dla danej nazwy składnika.
-// Strategia: normalizacja → exact match po nazwa_norm → match po aliasach.
-function dopasujMeta(nazwaSkladnika, wszystkieMeta) {
-  if (!nazwaSkladnika || !wszystkieMeta?.length) return null
-  const norm = normalizujNazweMeta(nazwaSkladnika)
-  if (!norm) return null
-
-  // Najpierw exact match po nazwa_norm
-  const byName = wszystkieMeta.find(m => m.nazwa_norm === norm)
-  if (byName) return byName
-
-  // Potem aliasy
-  const byAlias = wszystkieMeta.find(m => Array.isArray(m.aliasy) && m.aliasy.includes(norm))
-  return byAlias || null
 }
 
 // Policz ile opakowań kupić.

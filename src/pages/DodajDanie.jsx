@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { supabase } from '../supabase'
 import { t, fonts, ui } from '../theme'
+import { kcalZeSkladnikow, etykietaKcal } from '../kcalZeSkladnikow'
 
 async function kompresujObraz(plik, maxSzerokosc = 1200, jakosc = 0.82) {
   return new Promise(resolve => {
@@ -64,6 +65,7 @@ export default function DodajDanie({ onBack, onZapisano }) {
 
   const [skladniki, setSkladniki] = useState([])
   const [istniejaceSkladniki, setIstniejaceSkladniki] = useState([])
+  const [metaSkladnikow, setMetaSkladnikow] = useState([])
   const [nowyS, setNowyS] = useState({ nazwa: '', ilosc: '', jednostka: 'g', kategoria: '1_Warzywa i owoce' })
   const [podpowiedzi, setPodpowiedzi] = useState([])
   const [wybrano, setWybrano] = useState(false)
@@ -105,7 +107,20 @@ export default function DodajDanie({ onBack, onZapisano }) {
       }
     }
     pobierzSkladniki()
+
+    // Meta składników (kcal_100g, wagi sztuk) — do podpowiedzi kalorii
+    async function pobierzMeta() {
+      const { data } = await supabase.from('skladniki_meta').select('*')
+      if (data) setMetaSkladnikow(data)
+    }
+    pobierzMeta()
   }, [])
+
+  // Podpowiedź kcal na 1 porcję liczona ze składników (ilości w formularzu są per porcja)
+  const sugestiaKcal = useMemo(
+    () => kcalZeSkladnikow(skladniki, metaSkladnikow),
+    [skladniki, metaSkladnikow]
+  )
 
   function szukajPodpowiedzi(val) {
     setWybrano(false)
@@ -292,6 +307,20 @@ export default function DodajDanie({ onBack, onZapisano }) {
           <div style={s.hint}>
             Czas i kalorie to opcja — dla filtra „do 30 minut" i chipa 🔥. Porcje określają, ile osób wykarmi ten przepis bazowo.
           </div>
+          {etykietaKcal(sugestiaKcal) && (
+            <div style={{ ...s.hint, display: 'flex', alignItems: 'center', gap: 8, marginTop: 6 }}>
+              <span>🔥 {etykietaKcal(sugestiaKcal)}</span>
+              {String(sugestiaKcal.kcal) !== kcal && (
+                <button
+                  type="button"
+                  style={{ ...ui.btnGhost, padding: '4px 10px', fontSize: 12 }}
+                  onClick={() => setKcal(String(sugestiaKcal.kcal))}
+                >
+                  Użyj
+                </button>
+              )}
+            </div>
+          )}
         </section>
 
         {/* Typ dania (tylko dla głównych rodzajów) */}

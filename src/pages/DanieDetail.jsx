@@ -3,6 +3,7 @@ import { supabase } from '../supabase'
 import { t, fonts, ui } from '../theme'
 import { formatDataLocal as formatData } from '../dataHelpers'
 import { useSloty, slotyWDniu, kluczDnia } from '../useSloty'
+import { kcalZeSkladnikow, etykietaKcal } from '../kcalZeSkladnikow'
 
 async function kompresujObraz(plik, maxSzerokosc = 1200, jakosc = 0.82) {
   return new Promise(resolve => {
@@ -117,6 +118,7 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
   const [edCzas, setEdCzas] = useState('')
   const [edKcal, setEdKcal] = useState('')
   const [edTyp, setEdTyp] = useState('')
+  const [metaSkladnikow, setMetaSkladnikow] = useState(null) // skladniki_meta do podpowiedzi kcal
 
   const [pokazKalendarz, setPokazKalendarz] = useState(false)
   const [tydzien, setTydzien] = useState(0)
@@ -160,6 +162,25 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
   // Wejście w danie zawsze od góry (zdjęcie + składniki), nie od kroków przepisu —
   // bez tego strona dziedziczy pozycję scrolla z planera i otwiera się na dole.
   useEffect(() => { window.scrollTo(0, 0) }, [nazwaProp])
+
+  // Meta składników pobieramy dopiero przy wejściu w edycję (podpowiedź kcal)
+  useEffect(() => {
+    if (!edycja || metaSkladnikow !== null) return
+    let anulowane = false
+    supabase.from('skladniki_meta').select('*').then(({ data }) => {
+      if (!anulowane) setMetaSkladnikow(data || [])
+    })
+    return () => { anulowane = true }
+  }, [edycja, metaSkladnikow])
+
+  // Podpowiedź kcal z aktualnie edytowanych składników (ilości są per porcja)
+  const sugestiaKcal = useMemo(() => {
+    if (!edycja || !metaSkladnikow) return null
+    return kcalZeSkladnikow(
+      edSkladniki.map(sk => ({ nazwa: sk.Skladnik, ilosc: sk.Ilosc, jednostka: sk.Jednostka })),
+      metaSkladnikow
+    )
+  }, [edycja, edSkladniki, metaSkladnikow])
 
   useEffect(() => { pobierz() }, [nazwaProp])
   useEffect(() => {
@@ -472,6 +493,20 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
                     {TYPY.map(x => <option key={x.id} value={x.id}>{x.label}</option>)}
                   </select>
                 </div>
+                {etykietaKcal(sugestiaKcal) && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 8, fontFamily: fonts.sans, fontSize: 12, color: t.mute }}>
+                    <span>🔥 {etykietaKcal(sugestiaKcal)}</span>
+                    {String(sugestiaKcal.kcal) !== edKcal && (
+                      <button
+                        type="button"
+                        style={{ ...ui.btnGhost, padding: '4px 10px', fontSize: 12 }}
+                        onClick={() => setEdKcal(String(sugestiaKcal.kcal))}
+                      >
+                        Użyj
+                      </button>
+                    )}
+                  </div>
+                )}
                 {(edZdjecie || edZdjeciePreview) && (
                   <button style={s.btnUsunZdj} onClick={() => { setEdZdjecie(null); setEdZdjeciePlik(null); setEdZdjeciePreview(null) }}>
                     Usuń zdjęcie

@@ -237,7 +237,7 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
         return all
       }
       const [wszystko, skl, planRes] = await Promise.all([
-        pobierzWszystko('"Danie", "TYP", rodzaj, zdjecie'),
+        pobierzWszystko('"Danie", "TYP", rodzaj, zdjecie, kcal'),
         pobierzWszystko('"Danie", "Składnik"'),
         supabase.from('kalendarz').select('*')
           .eq('household_id', householdId)
@@ -262,10 +262,10 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
       // Mapuję na strukturę zgodną z resztą kodu (klucz Dodatek/Surówka jak wcześniej)
       const unikalDodatki = unikalneWszystko
         .filter(d => d.rodzaj === 'dodatek')
-        .map(d => ({ Dodatek: d.Danie, zdjecie: d.zdjecie }))
+        .map(d => ({ Dodatek: d.Danie, zdjecie: d.zdjecie, kcal: d.kcal }))
       const unikalSurowki = unikalneWszystko
         .filter(d => d.rodzaj === 'surowka')
-        .map(d => ({ 'Surówka': d.Danie, zdjecie: d.zdjecie }))
+        .map(d => ({ 'Surówka': d.Danie, zdjecie: d.zdjecie, kcal: d.kcal }))
 
       // Mapa: nazwa dania -> Set jego składników (do search)
       const sklMapa = {}
@@ -1848,6 +1848,23 @@ function WidokDnia({
   // Sloty dnia z konfiguracji household
   const slotyTegoDnia = useMemo(() => slotyDlaDnia(dzien), [slotyDlaDnia, dzien])
 
+  // Suma kcal zaplanowanych posiłków dnia (na 1 osobę — kcal w bazie jest per porcja).
+  // Liczymy danie główne + dodatki/surówki ze side-slotów, o ile mają dane.
+  const kcalDnia = useMemo(() => {
+    let suma = 0
+    for (const posilek of slotyTegoDnia) {
+      const wpis = plan[`${dataStr}_${posilek}`]
+      if (!wpis?.danie) continue
+      suma += daniaMap[wpis.danie]?.kcal || 0
+      const dodatkiTab = Array.isArray(wpis.dodatki) ? wpis.dodatki : []
+      for (const slot of dodatkiTab) {
+        if (!slot?.nazwa) continue
+        suma += dodatkiMap[slot.nazwa]?.kcal || surowkiMap[slot.nazwa]?.kcal || 0
+      }
+    }
+    return suma
+  }, [slotyTegoDnia, plan, dataStr, daniaMap, dodatkiMap, surowkiMap])
+
   const wypelnioneSloty = slotyTegoDnia.filter(p => plan[`${dataStr}_${p}`]?.danie).length
 
   return (
@@ -1871,6 +1888,7 @@ function WidokDnia({
         <div style={s.stickyAkcjeRow}>
           <span style={s.stickyDzienInfo}>
             {DNI_PELNE[dzien.getDay()]} · {wypelnioneSloty} z {slotyTegoDnia.length}
+            {kcalDnia > 0 && <> · 🔥 ~{kcalDnia} kcal</>}
           </span>
           <button
             style={s.stickyLosujBtn}
