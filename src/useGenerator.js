@@ -9,6 +9,7 @@ import { slotyWDniu, kluczDnia, sanityzuj } from './useSloty'
 import { formatDataLocal } from './dataHelpers'
 import { budujMapeSkladnikow } from './mapaPodobienstwa'
 import { budujWagiUczenia } from './wagiPreferencji'
+import { pobierzWszystkieWiersze } from './pobierzWszystko'
 
 // Mapowanie rodzaju dania na słowa-klucze slotów (spójne z Home.jsx)
 const RODZAJ_KEYWORDS = {
@@ -38,9 +39,12 @@ export function useGenerator({ user, householdId, slotyConfig }) {
     if (!householdId) return { error: 'Brak household' }
 
     // 1. Pobierz wszystkie wiersze dań (Składnik/Kategoria potrzebne do mapy podobieństwa)
-    const { data: wiersze, error } = await supabase
-      .from('dania')
-      .select('"Danie", rodzaj, "TYP", zdjecie, ulubione, "Składnik", "Kategoria"')
+    // Paginacja obowiązkowa — bez niej Supabase ucina do 1000 wierszy i generator
+    // widzi tylko kawałek bazy dań.
+    const { data: wiersze, error } = await pobierzWszystkieWiersze(() =>
+      supabase.from('dania')
+        .select('"Danie", rodzaj, "TYP", zdjecie, ulubione, "Składnik", "Kategoria"')
+        .order('"Danie"'))
     if (error) return { error }
 
     // Deduplikacja po nazwie (tabela ma wiele wierszy/składników na danie)
@@ -162,9 +166,11 @@ export function useGenerator({ user, householdId, slotyConfig }) {
   const wymienDanie = useCallback(async ({ dataStr, slotId, nazwaSlotu, wpisId, unikaj = [], opcje = {} }) => {
     if (!householdId) return { error: 'Brak household' }
 
-    const { data: wiersze } = await supabase
-      .from('dania')
-      .select('"Danie", rodzaj, "TYP", "Składnik", "Kategoria"')
+    // Paginacja obowiązkowa — bez niej reroll losował z ~2 dań (patrz pobierzWszystko.js)
+    const { data: wiersze } = await pobierzWszystkieWiersze(() =>
+      supabase.from('dania')
+        .select('"Danie", rodzaj, "TYP", "Składnik", "Kategoria"')
+        .order('"Danie"'))
     const mapaDan = new Map()
     for (const w of wiersze || []) {
       if (w.Danie && w.rodzaj && !mapaDan.has(w.Danie)) mapaDan.set(w.Danie, w)

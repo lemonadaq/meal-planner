@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { supabase } from '../supabase'
 import { t, fonts, ui } from '../theme'
 import { kcalZeSkladnikow, etykietaKcal } from '../kcalZeSkladnikow'
+import { pobierzWszystkieWiersze } from '../pobierzWszystko'
 
 async function kompresujObraz(plik, maxSzerokosc = 1200, jakosc = 0.82) {
   return new Promise(resolve => {
@@ -83,7 +84,9 @@ export default function DodajDanie({ onBack, onZapisano }) {
 
   useEffect(() => {
     async function pobierzSkladniki() {
-      const { data } = await supabase.from('dania').select('"Składnik", "Jednostka", "Kategoria"').limit(10000)
+      // .limit(10000) nie działa — serwer i tak ucina do 1000; trzeba stronami
+      const { data } = await pobierzWszystkieWiersze(() =>
+        supabase.from('dania').select('"Składnik", "Jednostka", "Kategoria"').order('"Składnik"'))
       if (data) {
         // Dedup: klucz ignoruje "świeży/świeże/świeża" i jest niezależny od kolejności słów
         // → "świeży koperek" = "koperek świeży" = "koperek"

@@ -4,6 +4,7 @@ import { t, fonts, ui, avatarBg } from '../theme'
 import Toast from '../components/Toast'
 import { formatDataLocal as formatData } from '../dataHelpers'
 import { useSloty, slotyWDniu, kluczDnia, sanityzuj } from '../useSloty'
+import { pobierzWszystkieWiersze } from '../pobierzWszystko'
 
 function getPowitanie() {
   const h = new Date().getHours()
@@ -185,12 +186,13 @@ export default function Home({ user, householdId, onTabChange, onPlanujSlot, onU
     }
 
     async function pobierzSugestie() {
-      // 1) Wszystkie unikalne dania z bazy
-      const { data: daniaRaw } = await supabase
-        .from('dania')
-        .select('"Danie", zdjecie, "TYP", rodzaj')
+      // 1) Wszystkie unikalne dania z bazy (paginacja — tabela ma >1000 wierszy)
+      const { data: daniaRaw } = await pobierzWszystkieWiersze(() =>
+        supabase.from('dania')
+          .select('"Danie", zdjecie, "TYP", rodzaj')
+          .order('"Danie"'))
 
-      if (anulowane || !daniaRaw) return
+      if (anulowane || !daniaRaw?.length) return
 
       const unikalne = [...new Map(
         daniaRaw
