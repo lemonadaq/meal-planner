@@ -95,15 +95,31 @@ export function dopasujMeta(nazwaSkladnika, wszystkieMeta) {
   return byAlias || null
 }
 
-// Ilość z przepisu na liczbę: obsługuje „1/2", „0,5", „1.5", „2". Null gdy nie liczba.
+// Ilość z przepisu na liczbę. Obsługuje: „2", „0,5", „1.5", ułamki zwykłe
+// „1/2" i mieszane „1 1/2" oraz znaki unicode „½", „1½". Null gdy nie liczba.
+// UWAGA: parseFloat("1/4") zwraca 1 (ucina po cyfrze) — dlatego ułamki MUSZĄ
+// iść przez tę funkcję, inaczej lista zakupów liczy 1 szt. zamiast 0,25.
+const UNICODE_ULAMKI = { '¼': 0.25, '½': 0.5, '¾': 0.75, '⅓': 1 / 3, '⅔': 2 / 3, '⅛': 0.125 }
+
 export function parsujIlosc(raw) {
   if (raw == null) return null
   const s = raw.toString().replace(',', '.').trim()
-  const ulamek = s.match(/^(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)$/)
-  if (ulamek) {
-    const licznik = parseFloat(ulamek[1]), mianownik = parseFloat(ulamek[2])
-    return mianownik > 0 ? licznik / mianownik : null
+
+  // „½", „1½", „1 ½"
+  const uni = s.match(/^(\d+(?:\.\d+)?)?\s*([¼½¾⅓⅔⅛])$/)
+  if (uni) {
+    const calosc = uni[1] ? parseFloat(uni[1]) : 0
+    return calosc + UNICODE_ULAMKI[uni[2]]
   }
+
+  // „1/4", „3/4", „1 1/2"
+  const ulamek = s.match(/^(?:(\d+(?:\.\d+)?)\s+)?(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)$/)
+  if (ulamek) {
+    const calosc = ulamek[1] ? parseFloat(ulamek[1]) : 0
+    const licznik = parseFloat(ulamek[2]), mianownik = parseFloat(ulamek[3])
+    return mianownik > 0 ? calosc + licznik / mianownik : null
+  }
+
   const n = parseFloat(s)
   return Number.isFinite(n) ? n : null
 }

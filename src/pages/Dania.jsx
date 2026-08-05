@@ -87,19 +87,21 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
   useEffect(() => { sessionStorage.setItem('dania_widok', widok) }, [widok])
   useEffect(() => { sessionStorage.setItem('dania_ulubione', String(ulubioneNaGorze)) }, [ulubioneNaGorze])
 
-  // Zapamiętuj pozycję scrolla
+  // Scroll: snapshot robimy przy wyjściu do przepisu (otworzPrzepis), przywracamy
+  // TYLKO przy powrocie z niego (flaga dania_powrot). Świeże wejście = od góry.
   useEffect(() => {
-    function onScroll() {
-      sessionStorage.setItem('dania_scroll', String(window.scrollY))
+    if (sessionStorage.getItem('dania_powrot') === '1') {
+      sessionStorage.removeItem('dania_powrot')
+      pendingScrollRef.current = parseInt(sessionStorage.getItem('dania_scroll') || '0', 10)
     }
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  // Pobierz zapisaną pozycję scrolla przy montowaniu
-  useEffect(() => {
-    pendingScrollRef.current = parseInt(sessionStorage.getItem('dania_scroll') || '0', 10)
-  }, [])
+  function otworzPrzepis(nazwa) {
+    if (!nazwa) return
+    sessionStorage.setItem('dania_scroll', String(window.scrollY))
+    sessionStorage.setItem('dania_powrot', '1')
+    onSelect(nazwa)
+  }
 
   // Po załadowaniu danych przywróć scroll — useLayoutEffect gwarantuje że DOM jest już gotowy
   useLayoutEffect(() => {
@@ -385,10 +387,10 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
           <>
             {showFeatured && featured && (
               <article style={s.featured}>
-                <div style={s.featuredImg} onClick={() => onSelect(featured['Danie'])}>
+                <div style={s.featuredImg} onClick={() => otworzPrzepis(featured["Danie"])}>
                   {renderImg(featured)}
                 </div>
-                <div style={s.featuredOverlay} onClick={() => onSelect(featured['Danie'])}>
+                <div style={s.featuredOverlay} onClick={() => otworzPrzepis(featured["Danie"])}>
                   <div style={s.featuredEyebrow}>
                     {RODZAJ_LABEL[featured.rodzaj] || 'WPIS'} · POLECANE
                   </div>
@@ -416,7 +418,7 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
             <div style={s.grid}>
               {tabela.map(d => (
                 <article key={d['Danie']} style={s.card}>
-                  <div style={s.cardImgWrap} onClick={() => onSelect(d['Danie'])}>
+                  <div style={s.cardImgWrap} onClick={() => otworzPrzepis(d["Danie"])}>
                     {renderImg(d)}
                     <button
                       style={s.cardStar}
@@ -428,7 +430,7 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
                       <DotsIcon />
                     </button>
                   </div>
-                  <div style={s.cardBody} onClick={() => onSelect(d['Danie'])}>
+                  <div style={s.cardBody} onClick={() => otworzPrzepis(d["Danie"])}>
                     <h3 style={s.cardTitle}>{d['Danie']}</h3>
                     <div style={s.cardMeta}>
                       <span style={s.cardBadge}>{RODZAJ_LABEL[d.rodzaj]}</span>
@@ -449,7 +451,7 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
           <div style={s.listView}>
             {filtrowane.map(d => (
               <div key={d['Danie']} style={s.listItem}>
-                <div style={s.listClick} onClick={() => onSelect(d['Danie'])}>
+                <div style={s.listClick} onClick={() => otworzPrzepis(d["Danie"])}>
                   <div style={s.listImg}>
                     {renderImg(d)}
                     <button
@@ -494,7 +496,7 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
               <span>{menuDla.ulubione ? 'Usuń z ulubionych' : 'Dodaj do ulubionych'}</span>
             </button>
 
-            <button style={s.sheetBtn} onClick={() => { onSelect(menuDla['Danie']); setMenuDla(null) }}>
+            <button style={s.sheetBtn} onClick={() => { otworzPrzepis(menuDla["Danie"]); setMenuDla(null) }}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={t.text} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M4 20h4l10-10-4-4L4 16v4z"/><path d="M14 6l4 4"/></svg>
               <span>Otwórz i edytuj</span>
             </button>

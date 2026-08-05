@@ -72,12 +72,24 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
   // Synchronizuj tydzien z propem (gdy wraca z DanieDetail)
   useEffect(() => { _setTydzien(tydzienProp) }, [tydzienProp])
 
-  // Zapamiętuj pozycję scrolla
+  // Scroll: pozycję zapisujemy TYLKO w momencie wyjścia do przepisu (otworzDanie),
+  // a przywracamy TYLKO przy powrocie z niego (flaga planer_powrot). Ciągły listener
+  // nadpisywał zapis zerem podczas ładowania (krótka strona → clamp scrolla do 0),
+  // przez co powrót lądował na górze. Świeże wejście w zakładkę = od góry.
+  const scrollDoPrzywroceniaRef = useRef(0)
   useEffect(() => {
-    function onScroll() { sessionStorage.setItem('planer_scroll', String(window.scrollY)) }
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    if (sessionStorage.getItem('planer_powrot') === '1') {
+      sessionStorage.removeItem('planer_powrot')
+      scrollDoPrzywroceniaRef.current = parseInt(sessionStorage.getItem('planer_scroll') || '0', 10)
+    }
   }, [])
+
+  const otworzDanie = useCallback((nazwa) => {
+    if (!nazwa) return
+    sessionStorage.setItem('planer_scroll', String(window.scrollY))
+    sessionStorage.setItem('planer_powrot', '1')
+    onSelectDanie?.(nazwa)
+  }, [onSelectDanie])
 
 
   function setTydzien(val) {
@@ -283,8 +295,9 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
       ;(planRes.data || []).forEach(p => { nowyPlan[`${p.data}_${p.posilek}`] = p })
       setPlan(nowyPlan)
       setLoading(false)
-      // Przywróć pozycję scrolla po załadowaniu danych
-      const savedScroll = parseInt(sessionStorage.getItem('planer_scroll') || '0', 10)
+      // Przywróć pozycję scrolla po załadowaniu danych — tylko raz, po powrocie z przepisu
+      const savedScroll = scrollDoPrzywroceniaRef.current
+      scrollDoPrzywroceniaRef.current = 0
       if (savedScroll > 0) {
         // Kilka prób — czekamy aż strona osiągnie wystarczającą wysokość
         const tryScroll = (attemptsLeft) => {
@@ -838,7 +851,7 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
             dni={dni}
             plan={plan}
             daniaMap={daniaMap}
-            onSelectDanie={onSelectDanie}
+            onSelectDanie={otworzDanie}
             onClickPusty={otworzDzien}
             onClickDzien={otworzDzien}
             onUsunPosilek={usunPosilek}
@@ -869,7 +882,7 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
             domyslnePorcje={domyslnePorcje}
             subTryb={subTryb}
             onSetSubTryb={setSubTryb}
-            onSelectDanie={onSelectDanie}
+            onSelectDanie={otworzDanie}
             onUstawDanie={ustawDanie}
             onUstawSide={ustawSide}
             onUsunPosilek={usunPosilek}
@@ -2126,6 +2139,25 @@ function WpiszDanieModal({ posilekLabel, onClose, onZapisz }) {
 }
 
 // ════════════════════════════════════════════════════════════
+// Ikona przelosowania — rysowana strzałka ↻ zamiast kolorowego emoji,
+// żeby na zdjęciach wyglądała jak natywne kontrolki (monochromatyczna).
+function IkonaLosuj({ size = 13 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M21 12a9 9 0 1 1-2.64-6.36" />
+      <polyline points="21 3 21 9 15 9" />
+    </svg>
+  )
+}
+
+// „~540 kcal" (zaokrąglone do 10) albo null — wtedy nic nie renderujemy.
+function formatKcal(kcal) {
+  const n = parseFloat(kcal)
+  if (!Number.isFinite(n) || n <= 0) return null
+  return `~${Math.round(n / 10) * 10} kcal`
+}
+
 function KafelekPosilek({ posilek, posilekLabel, posilekKolor, wpis, daniaMeta, onClick, onDelete, onWymien, setRef, onPointerDownDrag, onTouchStartDrag, podswietlony, przeciagany, kompakt, style }) {
   const s = makeS()
   const masDanie = !!wpis?.danie
@@ -2173,11 +2205,14 @@ function KafelekPosilek({ posilek, posilekLabel, posilekKolor, wpis, daniaMeta, 
         <div style={s.kafelekKompaktInfo}>
           <span style={{ ...s.kafelekKompaktLabel, background: kolor }}>{label}</span>
           <span style={s.kafelekKompaktNazwa}>{masDanie ? wpis.danie : 'Dodaj posiłek'}</span>
+          {masDanie && formatKcal(daniaMeta?.kcal) && (
+            <span style={s.kafelekKompaktKcal}>{formatKcal(daniaMeta.kcal)}</span>
+          )}
         </div>
         {masDanie && (
           <div style={s.kafelekKompaktAkcje}>
             {onWymien && (
-              <button style={s.kafelekKompaktBtn} onPointerDown={e => e.stopPropagation()} onTouchStart={e => e.stopPropagation()} onClick={e => { e.stopPropagation(); onWymien() }} title="Inne danie">🔄</button>
+              <button style={s.kafelekKompaktBtn} onPointerDown={e => e.stopPropagation()} onTouchStart={e => e.stopPropagation()} onClick={e => { e.stopPropagation(); onWymien() }} title="Inne danie"><IkonaLosuj size={15} /></button>
             )}
             {onDelete && (
               <button style={s.kafelekKompaktBtn} onPointerDown={e => e.stopPropagation()} onTouchStart={e => e.stopPropagation()} onClick={e => { e.stopPropagation(); onDelete() }} title="Usuń">✕</button>
@@ -2227,7 +2262,7 @@ function KafelekPosilek({ posilek, posilekLabel, posilekKolor, wpis, daniaMeta, 
               aria-label={`Inne danie`}
               title="Inne danie"
             >
-              🔄
+              <IkonaLosuj />
             </button>
           )}
           {onDelete && (
@@ -2248,6 +2283,9 @@ function KafelekPosilek({ posilek, posilekLabel, posilekKolor, wpis, daniaMeta, 
           )}
           <div style={s.kafelekNazwa}>
             <span style={s.kafelekNazwaTxt}>{wpis.danie}</span>
+            {formatKcal(daniaMeta?.kcal) && (
+              <span style={s.kafelekKcal}>{formatKcal(daniaMeta.kcal)}</span>
+            )}
           </div>
         </>
       ) : (
@@ -2319,6 +2357,9 @@ function SlotDuzy({
 
           <div style={s.slotKartaInfo}>
             <span style={s.slotKartaNazwa}>{wpis.danie}</span>
+            {formatKcal(daniaMeta?.kcal) && (
+              <span style={s.slotKartaKcal}>{formatKcal(daniaMeta.kcal)}</span>
+            )}
             <div style={s.slotKartaAkcje}>
               <div style={s.porcjeWidget}>
                 <button style={s.porcjeMiniK} onClick={(e) => navPorcje(-0.5, e)}>−</button>
@@ -2870,6 +2911,9 @@ function makeS() {
   kafelekKompaktAkcje: {
     display: 'flex', gap: 4, flexShrink: 0,
   },
+  kafelekKompaktKcal: {
+    fontFamily: fonts.sans, fontSize: 10, color: t.mute, lineHeight: 1,
+  },
   kafelekKompaktBtn: {
     background: 'transparent', border: 'none', cursor: 'pointer',
     fontSize: 16, padding: '4px 2px', color: t.mute, lineHeight: 1,
@@ -2882,6 +2926,10 @@ function makeS() {
   kafelekNazwaTxt: {
     fontFamily: fonts.sans, fontSize: 11.5, fontWeight: 600, lineHeight: 1.2,
     display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+  },
+  kafelekKcal: {
+    display: 'block', fontFamily: fonts.sans, fontSize: 9, fontWeight: 600,
+    color: 'rgba(255,255,255,.82)', marginTop: 2, letterSpacing: 0.2,
   },
   kafelekPusty: { background: t.surfaceAlt, border: `1.5px dashed ${t.borderStrong}`, boxShadow: 'none' },
   kafelekPustyInner: {
@@ -2951,6 +2999,9 @@ function makeS() {
     fontFamily: fonts.sans, fontSize: 12, fontWeight: 600, color: t.text,
     lineHeight: 1.2, overflow: 'hidden', display: '-webkit-box',
     WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
+  },
+  slotKartaKcal: {
+    fontFamily: fonts.sans, fontSize: 9.5, color: t.mute, lineHeight: 1,
   },
   slotKartaAkcje: {
     display: 'flex', alignItems: 'center', justifyContent: 'space-between',

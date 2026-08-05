@@ -8,7 +8,7 @@ import { dopasujPromocje, pobierzAktualnePromocje } from '../promocjeMatch'
 import { useSloty, kluczDnia } from '../useSloty'
 import {
   normalizujNazweMeta, LYZKI_ML, WAGA_DO_G, OBJ_DO_ML,
-  kanonJednostka, naGramy, wagaSztukiZMeta, dopasujMeta,
+  kanonJednostka, naGramy, wagaSztukiZMeta, dopasujMeta, parsujIlosc,
 } from '../jednostki'
 
 // ── Promocje: mock do testów UI (domyślnie wyłączony) ──
@@ -852,7 +852,9 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
       const mapaKlucz = normalizujDlaScalania(normalizujNazweMeta(kanon))
       if (!mapaKlucz) return
 
-      const iloscNum = parseFloat(ilosc?.toString().replace(',', '.'))
+      // parsujIlosc, nie parseFloat — "1/4 szt." musi dać 0,25, nie 1
+      // (2 dania × 1/4 cebuli = 1/2 szt. → 1 na liście, nie 2)
+      const iloscNum = parsujIlosc(ilosc)
       let wpis = skladnikiMap[mapaKlucz]
 
       // Pierwsze wystąpienie tej nazwy — załóż pozycję

@@ -19,10 +19,54 @@ describe('parsujIlosc', () => {
     expect(parsujIlosc('2')).toBe(2)
   })
 
+  // Regresja listy zakupów: parseFloat("1/4") = 1 → 2 dania × 1/4 cebuli
+  // dawały "2 szt. (potrzeba 300 g)" zamiast 1 szt.
+  it('ułamek NIE jest ucinany do pierwszej cyfry (bug parseFloat)', () => {
+    expect(parsujIlosc('1/4')).toBe(0.25)
+    expect(parsujIlosc('3/4')).toBe(0.75)
+  })
+
+  it('ułamki mieszane: "1 1/2" = 1.5', () => {
+    expect(parsujIlosc('1 1/2')).toBe(1.5)
+    expect(parsujIlosc('2 3/4')).toBe(2.75)
+  })
+
+  it('znaki unicode: ¼ ½ ¾, także z całością ("1½")', () => {
+    expect(parsujIlosc('¼')).toBe(0.25)
+    expect(parsujIlosc('½')).toBe(0.5)
+    expect(parsujIlosc('¾')).toBe(0.75)
+    expect(parsujIlosc('1½')).toBe(1.5)
+    expect(parsujIlosc('1 ½')).toBe(1.5)
+  })
+
   it('zwraca null dla nie-liczb ("- do smaku", pusty)', () => {
     expect(parsujIlosc('- do smaku')).toBe(null)
     expect(parsujIlosc('')).toBe(null)
     expect(parsujIlosc(null)).toBe(null)
+  })
+})
+
+describe('scenariusz listy zakupów: suma w bazie → jedno zaokrąglenie', () => {
+  // Pipeline jak w ListaZakupow.dodaj(): parsujIlosc → naGramy(szt→g przez wagę
+  // sztuki 150 g) → suma → ceil(suma/rozmiar_opakowania) dopiero na końcu.
+  const WAGA_SZTUKI = 150, ROZMIAR_OPAK = 150
+
+  function policzSztuki(iloscTeksty) {
+    const sumaG = iloscTeksty.reduce(
+      (acc, txt) => acc + naGramy(parsujIlosc(txt), 'szt', WAGA_SZTUKI), 0)
+    return { sumaG, sztuk: Math.ceil(sumaG / ROZMIAR_OPAK) }
+  }
+
+  it('2 dania × 1/4 cebuli → 1 szt (potrzeba 75 g), nie 2', () => {
+    const { sumaG, sztuk } = policzSztuki(['1/4', '1/4'])
+    expect(sumaG).toBe(75)
+    expect(sztuk).toBe(1)
+  })
+
+  it('3 dania × 1/2 → 2 szt (ceil(1.5) po sumie, poprawnie)', () => {
+    const { sumaG, sztuk } = policzSztuki(['1/2', '1/2', '1/2'])
+    expect(sumaG).toBe(225)
+    expect(sztuk).toBe(2)
   })
 })
 

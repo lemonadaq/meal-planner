@@ -289,6 +289,10 @@ function App() {
       <NavBar
         aktywny={tab}
         onChange={(nowyTab) => {
+          // Wyjście z przepisu nawigacją do INNEJ zakładki = to nie jest „powrót":
+          // gaś flagi przywracania scrolla, żeby świeże wejście zaczynało od góry.
+          if (nowyTab !== 'planer') sessionStorage.removeItem('planer_powrot')
+          if (nowyTab !== 'przepisy') sessionStorage.removeItem('dania_powrot')
           setWybraneD(null)
           setHomeRefresh(k => k + 1)
           setTab(nowyTab)
