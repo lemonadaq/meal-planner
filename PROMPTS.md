@@ -1,5 +1,10 @@
 # PROMPTS.md — "Tydzień" simplification, step by step
 
+> **STATUS (2026-08-09): ALL 10 STEPS DONE** ✅ — implemented on branch
+> `claude/planner-app-simplification-qwfg35`. The only manual step left:
+> run `migracja_plan_tygodnia.sql` in the Supabase dashboard (SQL Editor)
+> if it hasn't been run yet — without it the Tydzień screen can't save.
+
 Goal: add a radically simpler planning mode. Instead of assigning dishes to
 specific days and meal slots, the user just picks a set of dishes for the week
 ("weekly pool") and the shopping list is generated from that pool. The old
