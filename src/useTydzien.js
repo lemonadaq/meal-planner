@@ -49,6 +49,18 @@ export function filtrujDania(dania, { filtry = [], szukaj = '' } = {}) {
   })
 }
 
+// Nazwa własnego dania do dodania z szukajki (danie "bez przepisu" — sama
+// nazwa, żadnych składników). Zwraca przyciętą frazę, o ile niepusta i żaden
+// istniejący przepis nie nazywa się dokładnie tak samo (bez wielkości liter) —
+// wtedy user powinien po prostu tapnąć istniejący wiersz.
+export function wlasneDanieZSzukajki(dania, szukaj) {
+  const nazwa = (szukaj || '').trim()
+  if (!nazwa) return null
+  const q = nazwa.toLowerCase()
+  if ((dania || []).some(d => (d.Danie || '').toLowerCase() === q)) return null
+  return nazwa
+}
+
 // Pula dań na tydzień wskazany offsetem (0 = bieżący). Wszystkie akcje robią
 // optimistic update na stanie lokalnym i rollback gdy zapis do bazy padnie.
 export function useTydzien(householdId, user, offset = 0) {
