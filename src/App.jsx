@@ -12,6 +12,7 @@ import ListaZakupow from './pages/ListaZakupow'
 import DodajDanie from './pages/DodajDanie'
 import NavBar from './components/NavBar'
 import Home from './pages/Home'
+import Tydzien from './pages/Tydzien'
 import Ustawienia from './pages/Ustawienia'
 import Admin from './pages/Admin'
 import Rodzina from './pages/Rodzina'
@@ -86,7 +87,7 @@ function App() {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [resetHasla, setResetHasla] = useState(false)
-  const [tab, setTab] = useState('home')
+  const [tab, setTab] = useState('tydzien')
   const [wybraneD, setWybraneD] = useState(null)
   const [dodajDanie, setDodajDanie] = useState(false)
   const [ekran, setEkran] = useState(null) // 'ustawienia' | 'admin' | 'rodzina' | 'sloty' | null
@@ -129,8 +130,8 @@ function App() {
       return true
     }
 
-    if (st.tab !== 'home') {
-      setTab('home')
+    if (st.tab !== 'tydzien') {
+      setTab('tydzien')
       setHomeRefresh(k => k + 1)
       return true
     }
@@ -207,7 +208,8 @@ function App() {
   }
 
   function zmienTab(nowyTab) {
-    if (nowyTab === 'home' && tab !== 'home') {
+    // Powrót na ekran bazowy (Tydzień lub stary Home) odświeża jego dane
+    if ((nowyTab === 'tydzien' || nowyTab === 'home') && nowyTab !== tab) {
       setHomeRefresh(k => k + 1)
     }
     if (nowyTab !== tab) {
@@ -317,6 +319,17 @@ function App() {
 
   return (
     <div style={{ paddingBottom: 80, minHeight: '100vh', background: t.bg }}>
+      {tab === 'tydzien' && (
+        <Tydzien
+          user={user}
+          householdId={householdId}
+          onSelectDanie={setWybraneD}
+          sledz={sledzAkcje}
+          refreshKey={homeRefresh}
+          onZakupy={() => zmienTab('zakupy')}
+          onUstawienia={() => setEkran('ustawienia')}
+        />
+      )}
       {tab === 'home' && (
         <Home
           user={user}
