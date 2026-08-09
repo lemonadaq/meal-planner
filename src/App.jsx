@@ -101,6 +101,8 @@ function App() {
 
   const navStateRef = useRef({ tab, ekran, wybraneD, dodajDanie })
   const cofnijWApceRef = useRef(null)
+  // Skąd otwarto stary Kalendarz (overlay): z Ustawień albo ze starego Home
+  const powrotZKalendarzaRef = useRef('ustawienia')
 
   useEffect(() => {
     navStateRef.current = { tab, ekran, wybraneD, dodajDanie }
@@ -115,8 +117,13 @@ function App() {
       return true
     }
 
+    if (st.ekran === 'kalendarz-stary') {
+      setEkran(powrotZKalendarzaRef.current)
+      return true
+    }
+
     if (st.ekran === 'admin' || st.ekran === 'rodzina' || st.ekran === 'sloty'
-      || st.ekran === 'kalendarz-stary' || st.ekran === 'home-stary') {
+      || st.ekran === 'home-stary') {
       setEkran('ustawienia')
       return true
     }
@@ -255,7 +262,10 @@ function App() {
           onAdmin={() => setEkran('admin')}
           onRodzina={() => setEkran('rodzina')}
           onSloty={() => setEkran('sloty')}
-          onKalendarz={() => setEkran('kalendarz-stary')}
+          onKalendarz={() => {
+            powrotZKalendarzaRef.current = 'ustawienia'
+            setEkran('kalendarz-stary')
+          }}
           onHome={() => setEkran('home-stary')}
           jestAdmin={jestAdmin}
         />
@@ -292,7 +302,7 @@ function App() {
       <Kalendarz
         user={user}
         householdId={householdId}
-        onBack={() => setEkran('ustawienia')}
+        onBack={() => setEkran(powrotZKalendarzaRef.current)}
         domyslnePorcje={ustawienia?.domyslne_porcje ?? 1}
         sledz={sledzAkcje}
         onSelectDanie={setWybraneD}
@@ -314,6 +324,7 @@ function App() {
         }}
         onPlanujSlot={(dataStr, slotId) => {
           setCelPlanowania({ dataStr, slotId })
+          powrotZKalendarzaRef.current = 'home-stary'
           setEkran('kalendarz-stary')
         }}
         onUstawienia={() => setEkran('ustawienia')}
@@ -396,7 +407,7 @@ function App() {
         <Kalendarz
           user={user}
           householdId={householdId}
-          onBack={() => zmienTab('home')}
+          onBack={() => zmienTab('tydzien')}
           domyslnePorcje={ustawienia?.domyslne_porcje ?? 1}
           sledz={sledzAkcje}
           onSelectDanie={setWybraneD}
@@ -412,7 +423,7 @@ function App() {
           user={user}
           householdId={householdId}
           onDodaj={() => setDodajDanie(true)}
-          onBack={() => zmienTab('home')}
+          onBack={() => zmienTab('tydzien')}
           refreshKey={daniasRefresh}
         />
       )}
@@ -420,7 +431,7 @@ function App() {
         <ListaZakupow
           user={user}
           householdId={householdId}
-          onBack={() => zmienTab('home')}
+          onBack={() => zmienTab('tydzien')}
           domyslnePorcje={ustawienia?.domyslne_porcje ?? 1}
           sledz={sledzAkcje}
           tydzienKalendarza={tydzienKalendarza}
