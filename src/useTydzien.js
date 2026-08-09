@@ -33,6 +33,22 @@ export function zakresTygodniaLabel(offset = 0, teraz = new Date()) {
   return `${pelna(start)} – ${pelna(koniec)}`
 }
 
+// Czyste filtrowanie listy dań na ekranie Tydzień: chipy rodzajów
+// (multi-select, OR w obrębie rodzajów), 'ulubione' jako dodatkowy warunek
+// AND, szukajka po nazwie (bez wielkości liter).
+export function filtrujDania(dania, { filtry = [], szukaj = '' } = {}) {
+  const aktywneRodzaje = filtry.filter(f => f !== 'ulubione')
+  const tylkoUlubione = filtry.includes('ulubione')
+  const q = szukaj.trim().toLowerCase()
+
+  return dania.filter(d => {
+    if (tylkoUlubione && !d.ulubione) return false
+    if (aktywneRodzaje.length > 0 && !aktywneRodzaje.includes(d.rodzaj)) return false
+    if (q && !d.Danie.toLowerCase().includes(q)) return false
+    return true
+  })
+}
+
 // Pula dań na tydzień wskazany offsetem (0 = bieżący). Wszystkie akcje robią
 // optimistic update na stanie lokalnym i rollback gdy zapis do bazy padnie.
 export function useTydzien(householdId, user, offset = 0) {

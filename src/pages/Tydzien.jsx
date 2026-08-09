@@ -8,7 +8,7 @@ import { t, fonts, ui } from '../theme'
 import Toast from '../components/Toast'
 import { formatDataLocal } from '../dataHelpers'
 import { pobierzWszystkieWiersze } from '../pobierzWszystko'
-import { useTydzien, zakresTygodniaLabel, poniedzialekTygodnia } from '../useTydzien'
+import { useTydzien, zakresTygodniaLabel, poniedzialekTygodnia, filtrujDania } from '../useTydzien'
 
 // Chipy filtrów — 'wszystko' i 'ulubione' specjalne, reszta to wartości `rodzaj`
 const FILTRY = [
@@ -56,6 +56,7 @@ function getEmoji(nazwa) {
 function formatPorcje(p) {
   return String(Number(p) || 1).replace('.', ',')
 }
+
 
 export default function Tydzien({ user, householdId, onSelectDanie, sledz, refreshKey, onZakupy, onUstawienia }) {
   const [offset, setOffset] = useState(0)
@@ -176,15 +177,7 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
   }
 
   // ── Filtrowanie ────────────────────────────────────────────
-  const aktywneRodzaje = filtry.filter(f => f !== 'ulubione')
-  const tylkoUlubione = filtry.includes('ulubione')
-
-  const filtrowane = dania.filter(d => {
-    if (tylkoUlubione && !d.ulubione) return false
-    if (aktywneRodzaje.length > 0 && !aktywneRodzaje.includes(d.rodzaj)) return false
-    if (szukaj && !d.Danie.toLowerCase().includes(szukaj.toLowerCase())) return false
-    return true
-  })
+  const filtrowane = filtrujDania(dania, { filtry, szukaj })
 
   const s = makeS()
 
