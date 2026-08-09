@@ -5,8 +5,10 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../supabase'
 import { t, fonts, ui } from '../theme'
+import Toast from '../components/Toast'
+import { formatDataLocal } from '../dataHelpers'
 import { pobierzWszystkieWiersze } from '../pobierzWszystko'
-import { useTydzien, zakresTygodniaLabel } from '../useTydzien'
+import { useTydzien, zakresTygodniaLabel, poniedzialekTygodnia } from '../useTydzien'
 
 // Chipy filtrów — 'wszystko' i 'ulubione' specjalne, reszta to wartości `rodzaj`
 const FILTRY = [
@@ -63,6 +65,8 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
   const [loadingDania, setLoadingDania] = useState(true)
   const [szukaj, setSzukaj] = useState('')
   const [filtry, setFiltry] = useState([])
+  const [toast, setToast] = useState(null)
+  const [losowanie, setLosowanie] = useState(false)
 
   useEffect(() => {
     let anulowane = false
@@ -113,6 +117,51 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
   async function usunZPuli(nazwa) {
     await usun(nazwa)
     sledz?.('tydzien_usun', { danie: nazwa })
+  }
+
+  // ── Losowanie dania do puli ────────────────────────────────
+  // Preferuje dania NIE gotowane ostatnio (kalendarz z 14 dni + pula
+  // poprzedniego tygodnia); jak nic nie zostaje — losuje z całej puli.
+  async function wylosujDanie() {
+    if (losowanie) return
+    const GLOWNE = ['sniadanie', 'obiad', 'kolacja', 'zupa', 'deser']
+    const kandydaci = dania.filter(d => GLOWNE.includes(d.rodzaj) && !wPuli.has(d.Danie))
+    if (kandydaci.length === 0) {
+      setToast({ id: Date.now(), label: 'Brak dań do wylosowania' })
+      return
+    }
+
+    setLosowanie(true)
+    try {
+      const dwaTygodnie = new Date()
+      dwaTygodnie.setDate(dwaTygodnie.getDate() - 14)
+      const [{ data: historia }, { data: poprzedniaPula }] = await Promise.all([
+        supabase.from('kalendarz').select('danie')
+          .eq('household_id', householdId)
+          .gte('data', formatDataLocal(dwaTygodnie))
+          .not('danie', 'is', null),
+        supabase.from('plan_tygodnia').select('danie')
+          .eq('household_id', householdId)
+          .eq('tydzien', poniedzialekTygodnia(offset - 1)),
+      ])
+
+      const ostatnio = new Set([
+        ...(historia || []).map(h => h.danie),
+        ...(poprzedniaPula || []).map(p => p.danie),
+      ])
+      const swiezi = kandydaci.filter(d => !ostatnio.has(d.Danie))
+      const pulaLosowania = swiezi.length > 0 ? swiezi : kandydaci
+      const wybor = pulaLosowania[Math.floor(Math.random() * pulaLosowania.length)]
+
+      await dodaj(wybor.Danie)
+      sledz?.('tydzien_losuj', { danie: wybor.Danie })
+      setToast({ id: Date.now(), label: `Dodano: ${wybor.Danie}` })
+    } catch (err) {
+      console.error('Błąd losowania dania:', err)
+      setToast({ id: Date.now(), label: 'Nie udało się wylosować' })
+    } finally {
+      setLosowanie(false)
+    }
   }
 
   function toggleFiltr(id) {
@@ -175,7 +224,17 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
 
       {/* Panel wybranych dań tygodnia */}
       <section style={s.pulaSekcja}>
-        <h2 style={s.h2}>W tym tygodniu ({pula.length})</h2>
+        <div style={s.pulaHeader}>
+          <h2 style={{ ...s.h2, marginBottom: 0 }}>W tym tygodniu ({pula.length})</h2>
+          <button
+            style={s.losujBtn}
+            onClick={wylosujDanie}
+            disabled={losowanie || loadingDania}
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4"/></svg>
+            {losowanie ? 'Losuję…' : 'Wylosuj danie'}
+          </button>
+        </div>
         {pula.length === 0 ? (
           <div style={s.pulaPusta}>
             Wybierz z listy poniżej co chcesz jeść w tym tygodniu.
@@ -263,7 +322,14 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
 
       {/* Lista dań — tap dodaje/wyjmuje z puli tygodnia */}
       {loadingDania ? (
-        <div style={s.loading}>Ładowanie dań…</div>
+        <div style={s.lista}>
+          {[0, 1, 2, 3].map(i => <div key={i} style={s.skeleton} />)}
+        </div>
+      ) : dania.length === 0 ? (
+        <div style={s.empty}>
+          Nie masz jeszcze żadnych przepisów.
+          Dodaj pierwsze danie w zakładce <strong>Przepisy</strong>.
+        </div>
       ) : filtrowane.length === 0 ? (
         <div style={s.empty}>
           {szukaj ? `Brak wyników dla „${szukaj}"` : 'Brak dań dla wybranych filtrów.'}
@@ -297,6 +363,12 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
           })}
         </div>
       )}
+
+      <Toast
+        toast={toast}
+        duration={2400}
+        onDismiss={() => setToast(null)}
+      />
     </div>
   )
 }
@@ -337,6 +409,17 @@ function makeS() {
 
     pulaSekcja: { marginBottom: 18 },
     h2: { ...ui.h2, marginBottom: 10 },
+    pulaHeader: {
+      display: 'flex', justifyContent: 'space-between',
+      alignItems: 'baseline', gap: 8, marginBottom: 10,
+    },
+    losujBtn: {
+      background: t.accentSoft, color: t.accentDark,
+      border: 'none', borderRadius: 999, padding: '8px 13px',
+      fontSize: 12.5, fontWeight: 600, cursor: 'pointer',
+      display: 'inline-flex', alignItems: 'center', gap: 5,
+      fontFamily: fonts.sans, flexShrink: 0,
+    },
     pulaPusta: {
       padding: '14px 16px',
       background: t.surfaceAlt, borderRadius: 14,
@@ -473,9 +556,9 @@ function makeS() {
       background: t.accent, borderColor: t.accent,
     },
 
-    loading: {
-      textAlign: 'center', padding: '40px 20px',
-      fontFamily: fonts.sans, fontSize: 14, color: t.mute,
+    skeleton: {
+      height: 72, borderRadius: 16,
+      background: t.surfaceAlt, opacity: 0.6,
     },
     empty: {
       ...ui.card, padding: '40px 20px', textAlign: 'center',
