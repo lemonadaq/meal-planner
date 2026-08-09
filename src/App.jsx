@@ -412,7 +412,7 @@ function App() {
           user={user}
           householdId={householdId}
           onDodaj={() => setDodajDanie(true)}
-          onBack={() => zmienTab('home')}
+          onBack={() => zmienTab('tydzien')}
           refreshKey={daniasRefresh}
         />
       )}
@@ -420,7 +420,7 @@ function App() {
         <ListaZakupow
           user={user}
           householdId={householdId}
-          onBack={() => zmienTab('home')}
+          onBack={() => zmienTab('tydzien')}
           domyslnePorcje={ustawienia?.domyslne_porcje ?? 1}
           sledz={sledzAkcje}
           tydzienKalendarza={tydzienKalendarza}
