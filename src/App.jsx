@@ -12,6 +12,7 @@ import ListaZakupow from './pages/ListaZakupow'
 import DodajDanie from './pages/DodajDanie'
 import NavBar from './components/NavBar'
 import Home from './pages/Home'
+import Tydzien from './pages/Tydzien'
 import Ustawienia from './pages/Ustawienia'
 import Admin from './pages/Admin'
 import Rodzina from './pages/Rodzina'
@@ -86,7 +87,7 @@ function App() {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [resetHasla, setResetHasla] = useState(false)
-  const [tab, setTab] = useState('home')
+  const [tab, setTab] = useState('tydzien')
   const [wybraneD, setWybraneD] = useState(null)
   const [dodajDanie, setDodajDanie] = useState(false)
   const [ekran, setEkran] = useState(null) // 'ustawienia' | 'admin' | 'rodzina' | 'sloty' | null
@@ -108,7 +109,14 @@ function App() {
   cofnijWApceRef.current = () => {
     const st = navStateRef.current
 
-    if (st.ekran === 'admin' || st.ekran === 'rodzina' || st.ekran === 'sloty') {
+    // Przepis otwarty NAD overlayem starego planera/Home — najpierw zamknij przepis
+    if (st.wybraneD && (st.ekran === 'kalendarz-stary' || st.ekran === 'home-stary')) {
+      setWybraneD(null)
+      return true
+    }
+
+    if (st.ekran === 'admin' || st.ekran === 'rodzina' || st.ekran === 'sloty'
+      || st.ekran === 'kalendarz-stary' || st.ekran === 'home-stary') {
       setEkran('ustawienia')
       return true
     }
@@ -129,8 +137,8 @@ function App() {
       return true
     }
 
-    if (st.tab !== 'home') {
-      setTab('home')
+    if (st.tab !== 'tydzien') {
+      setTab('tydzien')
       setHomeRefresh(k => k + 1)
       return true
     }
@@ -207,7 +215,8 @@ function App() {
   }
 
   function zmienTab(nowyTab) {
-    if (nowyTab === 'home' && tab !== 'home') {
+    // Powrót na ekran bazowy (Tydzień lub stary Home) odświeża jego dane
+    if ((nowyTab === 'tydzien' || nowyTab === 'home') && nowyTab !== tab) {
       setHomeRefresh(k => k + 1)
     }
     if (nowyTab !== tab) {
@@ -246,6 +255,8 @@ function App() {
           onAdmin={() => setEkran('admin')}
           onRodzina={() => setEkran('rodzina')}
           onSloty={() => setEkran('sloty')}
+          onKalendarz={() => setEkran('kalendarz-stary')}
+          onHome={() => setEkran('home-stary')}
           jestAdmin={jestAdmin}
         />
         <ZaproszenieModal user={user} onZaakceptowano={poZaakceptowaniu} />
@@ -274,6 +285,44 @@ function App() {
     )
   }
 
+  // Stary planer i stary Home — overlaye otwierane z Ustawień. Przepis otwarty
+  // z ich poziomu (wybraneD) przykrywa overlay, a powrót z przepisu tu wraca.
+  if (!wybraneD && ekran === 'kalendarz-stary') {
+    return (
+      <Kalendarz
+        user={user}
+        householdId={householdId}
+        onBack={() => setEkran('ustawienia')}
+        domyslnePorcje={ustawienia?.domyslne_porcje ?? 1}
+        sledz={sledzAkcje}
+        onSelectDanie={setWybraneD}
+        tydzien={tydzienKalendarza}
+        onTydzienChange={setTydzienKalendarza}
+        cel={celPlanowania}
+        onCelObsluzony={() => setCelPlanowania(null)}
+      />
+    )
+  }
+  if (!wybraneD && ekran === 'home-stary') {
+    return (
+      <Home
+        user={user}
+        householdId={householdId}
+        onTabChange={(nowyTab) => {
+          setEkran(null)
+          zmienTab(nowyTab)
+        }}
+        onPlanujSlot={(dataStr, slotId) => {
+          setCelPlanowania({ dataStr, slotId })
+          setEkran('kalendarz-stary')
+        }}
+        onUstawienia={() => setEkran('ustawienia')}
+        onSelectDanie={setWybraneD}
+        refreshKey={homeRefresh}
+      />
+    )
+  }
+
   if (wybraneD) return (
     <>
       <DanieDetail
@@ -294,6 +343,7 @@ function App() {
           if (nowyTab !== 'planer') sessionStorage.removeItem('planer_powrot')
           if (nowyTab !== 'przepisy') sessionStorage.removeItem('dania_powrot')
           setWybraneD(null)
+          setEkran(null) // przepis mógł być otwarty nad overlayem starego planera
           setHomeRefresh(k => k + 1)
           setTab(nowyTab)
         }}
@@ -317,6 +367,17 @@ function App() {
 
   return (
     <div style={{ paddingBottom: 80, minHeight: '100vh', background: t.bg }}>
+      {tab === 'tydzien' && (
+        <Tydzien
+          user={user}
+          householdId={householdId}
+          onSelectDanie={setWybraneD}
+          sledz={sledzAkcje}
+          refreshKey={homeRefresh}
+          onZakupy={() => zmienTab('zakupy')}
+          onUstawienia={() => setEkran('ustawienia')}
+        />
+      )}
       {tab === 'home' && (
         <Home
           user={user}

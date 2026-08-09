@@ -1,9 +1,9 @@
 import { t, fonts } from '../theme'
 
 export default function NavBar({ aktywny, onChange }) {
+  // Home i stary Planer zostały w kodzie, ale nie w pasku — dostęp z Ustawień
   const tabs = [
-    { id: 'home',     label: 'Home',     Icon: HomeIcon },
-    { id: 'planer',   label: 'Planer',   Icon: CalIcon  },
+    { id: 'tydzien',  label: 'Tydzień',  Icon: CalIcon  },
     { id: 'przepisy', label: 'Przepisy', Icon: BookIcon },
     { id: 'zakupy',   label: 'Zakupy',   Icon: CartIcon },
   ]
@@ -78,13 +78,6 @@ function makeS() {
 }
 
 // ─── ikony SVG ─────────────────────────────────────────────────────────────
-const HomeIcon = ({ active }) => (
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" strokeWidth={active ? 2 : 1.6}
-    strokeLinecap="round" strokeLinejoin="round">
-    <path d="M3 11l9-7 9 7v9a2 2 0 0 1-2 2h-3v-7H10v7H6a2 2 0 0 1-2-2v-8z"/>
-  </svg>
-)
 const CalIcon = ({ active }) => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
     stroke="currentColor" strokeWidth={active ? 2 : 1.6}

@@ -474,6 +474,19 @@ function parsujSzybkiProdukt(linia) {
   }
 }
 
+// Dosypuje porcje z tygodniowej puli dań (tabela plan_tygodnia) do mapy
+// { danie: porcje } zbudowanej z kalendarza. Pula nie ma dni ani slotów,
+// więc nie podlega filtrowi minionych dni. Eksport dla testów.
+export function dosypPuleTygodnia(porcjeWszystkich, pulaRows) {
+  ;(pulaRows || []).forEach(r => {
+    if (!r?.danie) return
+    const porcje = Number(r.porcje)
+    if (!Number.isFinite(porcje) || porcje <= 0) return
+    porcjeWszystkich[r.danie] = (porcjeWszystkich[r.danie] || 0) + porcje
+  })
+  return porcjeWszystkich
+}
+
 export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje = 1, sledz, tydzienKalendarza = 0 }) {
   const [lista, setLista] = useState([])
   const [wlasne, setWlasne] = useState([]) // z tabeli zakupy_wlasne
@@ -796,7 +809,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     const dzis = dzisLocal()
     const dataOd = efektywnyOffset === 0 && dzis > poniedzialek ? dzis : poniedzialek
 
-    const [{ data: planData }, { data: wlasneData }, { data: historiaData }, { data: cykliczneData }, { data: metaData }] = await Promise.all([
+    const [{ data: planData }, { data: wlasneData }, { data: historiaData }, { data: cykliczneData }, { data: metaData }, { data: pulaData }] = await Promise.all([
       supabase.from('kalendarz').select('*')
         .eq('household_id', householdId)
         .gte('data', dataOd)
@@ -814,6 +827,11 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
         .order('created_at'),
       // skladniki_meta — globalna, do liczenia opakowań
       supabase.from('skladniki_meta').select('*'),
+      // Tygodniowa pula dań (tryb „Tydzień") — klucz to poniedziałek,
+      // CELOWO bez filtra minionych dni (pula nie ma przypisanych dni)
+      supabase.from('plan_tygodnia').select('danie, porcje')
+        .eq('household_id', householdId)
+        .eq('tydzien', poniedzialek),
     ])
 
     setWlasne(wlasneData || [])
@@ -838,6 +856,9 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
       const pod = p.podmiany || {}
       Object.entries(pod).forEach(([k, v]) => { if (v) globalnePodmiany[k] = v })
     })
+
+    // Dania z tygodniowej puli (bez dodatków/podmian — pula ich nie ma)
+    dosypPuleTygodnia(porcjeWszystkich, pulaData)
 
     // Klucz mapy = sama nazwa kanoniczna (po meta), żeby warianty tej samej rzeczy
     // i różne jednostki trafiały do JEDNEJ pozycji. Jednostkę bazową ustalamy raz,

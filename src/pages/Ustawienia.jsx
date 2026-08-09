@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../supabase'
 import { t, fonts, ui, avatarBg } from '../theme'
 
-export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin, onRodzina, onSloty, jestAdmin }) {
+export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin, onRodzina, onSloty, onKalendarz, onHome, jestAdmin }) {
   const pelneImie = user?.user_metadata?.full_name || ''
   const imie = pelneImie.split(' ')[0] || user?.email?.split('@')[0] || ''
   const [porcje, setPorcje] = useState(ustawienia?.domyslne_porcje ?? 1)
@@ -142,6 +142,20 @@ export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin
           </p>
           <button style={s.btnRodzina} onClick={onSloty}>
             🍽 Edytuj posiłki dnia
+          </button>
+        </section>
+
+        <section style={s.section}>
+          <h2 style={s.sectionTitle}>Planowanie po dniach</h2>
+          <p style={s.sectionSub}>
+            Klasyczny planer z kalendarzem i slotami posiłków. Apka domyślnie
+            używa prostszego trybu „Tydzień" — tu wracasz do starego widoku.
+          </p>
+          <button style={s.btnRodzina} onClick={onKalendarz}>
+            🗓 Planer kalendarza
+          </button>
+          <button style={{ ...s.btnRodzina, marginTop: 8 }} onClick={onHome}>
+            🏠 Stary ekran startowy
           </button>
         </section>
 

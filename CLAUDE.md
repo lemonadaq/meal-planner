@@ -22,9 +22,13 @@
 
 \- `App.jsx` — root, routing, sesja użytkownika
 
-\- `Home.jsx` — ekran startowy, sugestie dań na dzisiaj
+\- `Tydzien.jsx` + `useTydzien.js` — EKRAN STARTOWY: tygodniowa pula dań (tryb "Tydzień") — wybierasz dania na tydzień bez przypisywania do dni, lista zakupów liczy się z puli
 
-\- `Kalendarz.jsx` — planowanie tygodnia, galeria dań do przeciągania w sloty
+\- `Home.jsx` — stary ekran startowy (sugestie dań na dzisiaj) — ukryty, dostęp z Ustawień
+
+\- `Kalendarz.jsx` — stary planer po dniach/slotach, galeria drag&drop — ukryty, dostęp z Ustawień
+
+\- `NavBar` — 3 zakładki: Tydzień / Przepisy / Zakupy
 
 \- `Dania.jsx` — lista wszystkich przepisów, filtry, dodawanie nowego
 
@@ -32,7 +36,7 @@
 
 \- `DodajDanie.jsx` — formularz dodawania
 
-\- `ListaZakupow.jsx` — generowana z `kalendarz` + ręczne pozycje
+\- `ListaZakupow.jsx` — generowana z `kalendarz` + `plan\_tygodnia` (pula tygodnia) + ręczne pozycje
 
 \- `Rodzina.jsx` — household, zaproszenia, członkowie
 
@@ -52,7 +56,9 @@
 
 Główne tabele: `dania`, `kalendarz`, `households`, `household\_members`, `household\_invites`, 
 
-`produkty\_w\_domu`, `skladniki\_meta`, `ustawienia`, `zakupy\_historia`, `zakupy\_wlasne`, `analytics`.
+`produkty\_w\_domu`, `skladniki\_meta`, `ustawienia`, `zakupy\_historia`, `zakupy\_wlasne`, `analytics`,
+
+`plan\_tygodnia` — tygodniowa pula dań (tryb "Tydzień"): household\_id + tydzien (poniedziałek) + danie + porcje.
 
 
 
@@ -124,6 +130,8 @@ Helpery SQL: `moj\_household\_id()`, `moj\_email()` — używają JWT pytająceg
 
 \## Co ZOSTAŁO ZROBIONE niedawno (nie ruszaj)
 
+\- ✅ \*\*Wielkie uproszczenie: tryb "Tydzień"\*\* — nowy ekran startowy `Tydzien.jsx` (pula dań na tydzień bez dni/slotów, tap = dodaj, stepper porcji, wylosuj danie), tabela `plan\_tygodnia`, lista zakupów sumuje pulę z kalendarzem (`dosypPuleTygodnia`), NavBar zredukowany do 3 zakładek; stary Kalendarz i Home ZOSTAJĄ w kodzie jako overlaye z Ustawień ("Planowanie po dniach"). Migracja: `migracja\_plan\_tygodnia.sql` (musi być wykonana w Supabase!). Plan całości: `PROMPTS.md`.
+
 \- ✅ Wyśrodkowanie slotów posiłków w widoku tygodnia i dnia — `kafelkiRzad` i `slotyDuze` na flex+center; n≤4 → jeden rząd (4 kafelki mniejsze), n≥5 → 3+reszta wyśrodkowana (`Kalendarz.jsx`)
 
 \- ✅ Drag & drop reorderowania slotów w Ustawieniach — ghost śledzi palec, inne dni rozmyte za szybą (`KonfiguracjaSlotow.jsx`)
@@ -160,9 +168,9 @@ Helpery SQL: `moj\_household\_id()`, `moj\_email()` — używają JWT pytająceg
 
 \## Pierwsze co zrób w sesji
 
-Otwórz `Kalendarz.jsx`, znajdź galerię dań (te przeciągane do slotów), pokaż Filipowi 
+Sprawdź `PROMPTS.md` — tam jest plan uproszczenia apki do trybu "Tydzień" 
 
-fragment kodu odpowiedzialny za layout siatki kafelków. Zaproponuj jak naprawić 
+i status kroków (branch `claude/planner-app-simplification-qwfg35`). Jeśli Filip 
 
-wyśrodkowanie ostatniego niepełnego rzędu. Czekaj na akceptację zanim cokolwiek zmienisz.
+odpala kolejny prompt z tego pliku — wykonaj go. Jeśli nie — zapytaj co robimy.
 
