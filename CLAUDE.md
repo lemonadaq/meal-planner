@@ -52,7 +52,9 @@
 
 Główne tabele: `dania`, `kalendarz`, `households`, `household\_members`, `household\_invites`, 
 
-`produkty\_w\_domu`, `skladniki\_meta`, `ustawienia`, `zakupy\_historia`, `zakupy\_wlasne`, `analytics`.
+`produkty\_w\_domu`, `skladniki\_meta`, `ustawienia`, `zakupy\_historia`, `zakupy\_wlasne`, `analytics`,
+
+`plan\_tygodnia` — tygodniowa pula dań (tryb "Tydzień"): household\_id + tydzien (poniedziałek) + danie + porcje.
 
 
 
