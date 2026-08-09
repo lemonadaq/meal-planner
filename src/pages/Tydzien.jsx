@@ -50,17 +50,19 @@ function getEmoji(nazwa) {
   return '🍽️'
 }
 
-export default function Tydzien({ user, householdId, onSelectDanie, sledz, refreshKey }) {
+// Porcje z kropką → przecinek (1.5 → "1,5"), całkowite bez ogona
+function formatPorcje(p) {
+  return String(Number(p) || 1).replace('.', ',')
+}
+
+export default function Tydzien({ user, householdId, onSelectDanie, sledz, refreshKey, onZakupy }) {
   const [offset, setOffset] = useState(0)
-  const { pula, dodaj, usun } = useTydzien(householdId, user, offset)
+  const { pula, dodaj, usun, zmienPorcje } = useTydzien(householdId, user, offset)
 
   const [dania, setDania] = useState([])
   const [loadingDania, setLoadingDania] = useState(true)
   const [szukaj, setSzukaj] = useState('')
   const [filtry, setFiltry] = useState([])
-
-  // onSelectDanie wejdzie do gry w v2 (panel wybranych dań → przepis)
-  void onSelectDanie
 
   useEffect(() => {
     let anulowane = false
@@ -96,15 +98,21 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
   }, [refreshKey])
 
   const wPuli = new Set(pula.map(r => r.danie))
+  // Metadane (zdjęcie/emoji) dla miniatur w panelu wybranych
+  const metaDan = new Map(dania.map(d => [d.Danie, d]))
 
   async function przelaczDanie(nazwa) {
     if (wPuli.has(nazwa)) {
-      await usun(nazwa)
-      sledz?.('tydzien_usun', { danie: nazwa })
+      await usunZPuli(nazwa)
     } else {
       await dodaj(nazwa)
       sledz?.('tydzien_dodaj', { danie: nazwa })
     }
+  }
+
+  async function usunZPuli(nazwa) {
+    await usun(nazwa)
+    sledz?.('tydzien_usun', { danie: nazwa })
   }
 
   function toggleFiltr(id) {
@@ -152,6 +160,57 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
           <span style={{ color: t.warm }}>?</span>
         </h1>
       </header>
+
+      {/* Panel wybranych dań tygodnia */}
+      <section style={s.pulaSekcja}>
+        <h2 style={s.h2}>W tym tygodniu ({pula.length})</h2>
+        {pula.length === 0 ? (
+          <div style={s.pulaPusta}>
+            Wybierz z listy poniżej co chcesz jeść w tym tygodniu.
+          </div>
+        ) : (
+          <>
+            <div style={s.pulaLista}>
+              {pula.map(r => {
+                const meta = metaDan.get(r.danie)
+                return (
+                  <div key={r.danie} style={s.pulaWiersz}>
+                    <button style={s.pulaDanieBtn} onClick={() => onSelectDanie?.(r.danie)}>
+                      <div style={{ ...s.pulaThumb, background: meta?.zdjecie ? 'transparent' : getKolor(r.danie) }}>
+                        {meta?.zdjecie
+                          ? <img src={meta.zdjecie} alt="" style={s.thumbImg} loading="lazy" />
+                          : <span style={s.pulaThumbEmoji}>{getEmoji(r.danie)}</span>}
+                      </div>
+                      <div style={s.pulaNazwa}>{r.danie}</div>
+                    </button>
+                    <div style={s.stepper}>
+                      <button
+                        style={s.stepperBtn}
+                        onClick={() => zmienPorcje(r.danie, -0.5)}
+                        aria-label="Mniej porcji"
+                      >−</button>
+                      <span style={s.stepperVal}>{formatPorcje(r.porcje)}</span>
+                      <button
+                        style={s.stepperBtn}
+                        onClick={() => zmienPorcje(r.danie, 0.5)}
+                        aria-label="Więcej porcji"
+                      >+</button>
+                    </div>
+                    <button
+                      style={s.pulaUsun}
+                      onClick={() => usunZPuli(r.danie)}
+                      aria-label={`Usuń ${r.danie}`}
+                    >✕</button>
+                  </div>
+                )
+              })}
+            </div>
+            <button style={s.zakupyBtn} onClick={onZakupy}>
+              Lista zakupów →
+            </button>
+          </>
+        )}
+      </section>
 
       {/* Sticky licznik puli */}
       <div style={s.licznikWrap}>
@@ -256,6 +315,66 @@ function makeS() {
     },
     tytul: { ...ui.h1, fontSize: 30, lineHeight: 1.08, fontWeight: 400 },
     italic: { fontStyle: 'italic', color: t.accent, fontFamily: fonts.serif },
+
+    pulaSekcja: { marginBottom: 18 },
+    h2: { ...ui.h2, marginBottom: 10 },
+    pulaPusta: {
+      padding: '14px 16px',
+      background: t.surfaceAlt, borderRadius: 14,
+      fontFamily: fonts.sans, fontSize: 12.5, color: t.mute,
+      lineHeight: 1.5, textAlign: 'center',
+    },
+    pulaLista: { display: 'flex', flexDirection: 'column', gap: 6 },
+    pulaWiersz: {
+      ...ui.card, padding: '8px 10px',
+      display: 'flex', alignItems: 'center', gap: 8,
+      boxSizing: 'border-box',
+    },
+    pulaDanieBtn: {
+      display: 'flex', alignItems: 'center', gap: 10,
+      flex: 1, minWidth: 0,
+      background: 'none', border: 'none', padding: 0,
+      cursor: 'pointer', textAlign: 'left', fontFamily: fonts.sans,
+    },
+    pulaThumb: {
+      width: 42, height: 42, borderRadius: 11,
+      display: 'grid', placeItems: 'center', overflow: 'hidden', flexShrink: 0,
+    },
+    pulaThumbEmoji: { fontSize: 21 },
+    pulaNazwa: {
+      fontFamily: fonts.serif, fontSize: 15.5, color: t.text,
+      letterSpacing: -0.1, lineHeight: 1.15, minWidth: 0,
+      overflow: 'hidden', textOverflow: 'ellipsis',
+      display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
+    },
+    stepper: {
+      display: 'flex', alignItems: 'center', gap: 2,
+      background: t.surfaceAlt, borderRadius: 999, padding: 2,
+      flexShrink: 0,
+    },
+    stepperBtn: {
+      width: 26, height: 26, borderRadius: '50%',
+      background: t.surface, border: `0.5px solid ${t.border}`,
+      color: t.accent, fontFamily: fonts.sans, fontSize: 15, fontWeight: 600,
+      cursor: 'pointer', display: 'grid', placeItems: 'center', lineHeight: 1,
+      padding: 0,
+    },
+    stepperVal: {
+      minWidth: 26, textAlign: 'center',
+      fontFamily: fonts.sans, fontSize: 13, fontWeight: 700, color: t.text,
+      fontVariantNumeric: 'tabular-nums',
+    },
+    pulaUsun: {
+      width: 28, height: 28, borderRadius: '50%',
+      background: 'none', border: 'none',
+      color: t.muteLight, fontSize: 13, cursor: 'pointer',
+      display: 'grid', placeItems: 'center', flexShrink: 0,
+      padding: 0,
+    },
+    zakupyBtn: {
+      ...ui.btnPrimary, width: '100%', marginTop: 10,
+      fontSize: 14.5, borderRadius: 13, boxSizing: 'border-box',
+    },
 
     licznikWrap: {
       position: 'sticky', top: 8, zIndex: 20,
