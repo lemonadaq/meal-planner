@@ -8,7 +8,7 @@ import { t, fonts, ui } from '../theme'
 import Toast from '../components/Toast'
 import { formatDataLocal } from '../dataHelpers'
 import { pobierzWszystkieWiersze } from '../pobierzWszystko'
-import { useTydzien, zakresTygodniaLabel, poniedzialekTygodnia, filtrujDania } from '../useTydzien'
+import { useTydzien, zakresTygodniaLabel, poniedzialekTygodnia, filtrujDania, wlasneDanieZSzukajki } from '../useTydzien'
 
 // Chipy filtrów — 'wszystko' i 'ulubione' specjalne, reszta to wartości `rodzaj`
 const FILTRY = [
@@ -179,6 +179,23 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
   // ── Filtrowanie ────────────────────────────────────────────
   const filtrowane = filtrujDania(dania, { filtry, szukaj })
 
+  // Własne danie z szukajki — sama nazwa, bez przepisu i składników.
+  // Pokazujemy przycisk tylko gdy fraza nie pokrywa się 1:1 z istniejącym daniem.
+  const wlasneDoDodania = !loadingDania ? wlasneDanieZSzukajki(dania, szukaj) : null
+
+  async function dodajWlasne() {
+    const nazwa = wlasneDoDodania
+    if (!nazwa) return
+    if (wPuli.has(nazwa)) {
+      setToast({ id: Date.now(), label: 'Już jest w tym tygodniu' })
+      return
+    }
+    await dodaj(nazwa)
+    sledz?.('tydzien_dodaj_wlasne', { danie: nazwa })
+    setSzukaj('')
+    setToast({ id: Date.now(), label: `Dodano: ${nazwa}` })
+  }
+
   const s = makeS()
 
   return (
@@ -237,15 +254,21 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
             <div style={s.pulaLista}>
               {pula.map(r => {
                 const meta = metaDan.get(r.danie)
+                // Danie spoza przepisów (wpisane ręcznie) — nie otwieramy
+                // szczegółów, bo nie ma czego pokazać
+                const wlasne = !loadingDania && !meta
                 return (
                   <div key={r.danie} style={s.pulaWiersz}>
-                    <button style={s.pulaDanieBtn} onClick={() => onSelectDanie?.(r.danie)}>
+                    <button style={s.pulaDanieBtn} onClick={() => { if (!wlasne) onSelectDanie?.(r.danie) }}>
                       <div style={{ ...s.pulaThumb, background: meta?.zdjecie ? 'transparent' : getKolor(r.danie) }}>
                         {meta?.zdjecie
                           ? <img src={meta.zdjecie} alt="" style={s.thumbImg} loading="lazy" />
-                          : <span style={s.pulaThumbEmoji}>{getEmoji(r.danie)}</span>}
+                          : <span style={s.pulaThumbEmoji}>{wlasne ? '✏️' : getEmoji(r.danie)}</span>}
                       </div>
-                      <div style={s.pulaNazwa}>{r.danie}</div>
+                      <div style={{ minWidth: 0 }}>
+                        <div style={s.pulaNazwa}>{r.danie}</div>
+                        {wlasne && <div style={s.pulaWlasneLabel}>własne · bez przepisu</div>}
+                      </div>
                     </button>
                     <div style={s.stepper}>
                       <button
@@ -313,6 +336,18 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
         </div>
       </div>
 
+      {/* Własne danie z szukajki — zapisuje samą nazwę, bez przepisu */}
+      {wlasneDoDodania && (
+        <button style={s.wlasneBtn} onClick={dodajWlasne}>
+          <div style={s.wlasneIkona}>✏️</div>
+          <div style={s.wlasneInfo}>
+            <div style={s.wlasneNazwa}>Dodaj własne: „{wlasneDoDodania}"</div>
+            <div style={s.wlasneSub}>Sama nazwa, bez przepisu i składników</div>
+          </div>
+          <div style={s.wlasnePlus}>+</div>
+        </button>
+      )}
+
       {/* Lista dań — tap dodaje/wyjmuje z puli tygodnia */}
       {loadingDania ? (
         <div style={s.lista}>
@@ -325,7 +360,9 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
         </div>
       ) : filtrowane.length === 0 ? (
         <div style={s.empty}>
-          {szukaj ? `Brak wyników dla „${szukaj}"` : 'Brak dań dla wybranych filtrów.'}
+          {wlasneDoDodania
+            ? <>Brak przepisu „{szukaj.trim()}" — możesz dodać go przyciskiem powyżej jako własne danie.</>
+            : szukaj ? `Brak wyników dla „${szukaj}"` : 'Brak dań dla wybranych filtrów.'}
         </div>
       ) : (
         <div style={s.lista}>
@@ -510,6 +547,39 @@ function makeS() {
     chipOn: {
       background: t.accent, borderColor: t.accent, color: '#fff', fontWeight: 600,
       boxShadow: '0 2px 8px rgba(77,124,77,.25)',
+    },
+
+    pulaWlasneLabel: {
+      fontFamily: fonts.sans, fontSize: 10.5, color: t.mute, marginTop: 2,
+      textTransform: 'uppercase', letterSpacing: 0.7, fontWeight: 600,
+    },
+
+    wlasneBtn: {
+      ...ui.card, padding: '10px 12px', marginBottom: 8,
+      display: 'flex', alignItems: 'center', gap: 12,
+      width: '100%', cursor: 'pointer', textAlign: 'left',
+      fontFamily: fonts.sans, boxSizing: 'border-box',
+      border: `1.5px dashed ${t.borderStrong}`, background: t.surfaceAlt,
+    },
+    wlasneIkona: {
+      width: 52, height: 52, borderRadius: 13, flexShrink: 0,
+      display: 'grid', placeItems: 'center', fontSize: 24,
+      background: t.surface,
+    },
+    wlasneInfo: { flex: 1, minWidth: 0 },
+    wlasneNazwa: {
+      fontFamily: fonts.serif, fontSize: 16, color: t.text,
+      letterSpacing: -0.1, lineHeight: 1.2,
+      overflow: 'hidden', textOverflow: 'ellipsis',
+      display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
+    },
+    wlasneSub: {
+      fontFamily: fonts.sans, fontSize: 11, color: t.mute, marginTop: 3,
+    },
+    wlasnePlus: {
+      width: 24, height: 24, borderRadius: '50%', flexShrink: 0,
+      border: `1.5px solid ${t.borderStrong}`, color: t.mute,
+      display: 'grid', placeItems: 'center', fontSize: 15, lineHeight: 1,
     },
 
     lista: { display: 'flex', flexDirection: 'column', gap: 8 },
