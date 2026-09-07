@@ -514,7 +514,12 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
   const [wlasne, setWlasne] = useState([]) // z tabeli zakupy_wlasne
   const [cykliczne, setCykliczne] = useState([]) // z tabeli zakupy_cykliczne
   const [odznaczone, setOdznaczone] = useState(new Set())
+  // `loading` = pełnoekranowe „Generuję listę…”, TYLKO przy pierwszym wejściu.
+  // Każde kolejne odświeżenie leci w tle (`odswiezanie`) i zostawia listę na
+  // ekranie — znikająca zawartość wyglądała jak przeładowanie całej strony.
   const [loading, setLoading] = useState(true)
+  const [odswiezanie, setOdswiezanie] = useState(false)
+  const bylJuzRender = useRef(false)
   const [historiaIds, setHistoriaIds] = useState({})
 
   // Lokalny offset tygodnia (przyciski "‹ ›" w nagłówku) sumuje się z tydzienKalendarza
@@ -848,7 +853,8 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
 
   // ── Generowanie listy z planu + ładowanie własnych + cyklicznych ──
   const generuj = useCallback(async () => {
-    setLoading(true)
+    if (bylJuzRender.current) setOdswiezanie(true)
+    else setLoading(true)
 
     // Tydzień z planera lub lokalny offset (z przycisków w nagłówku listy).
     const efektywnyOffset = tydzienKalendarza + offsetLokalny
@@ -1076,7 +1082,9 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     setLista(posortowane)
     setOdznaczone(odtworzone)
     setHistoriaIds(mapaHistoriaId)
+    bylJuzRender.current = true
     setLoading(false)
+    setOdswiezanie(false)
   }, [householdId, domyslnePorcje, tydzienKalendarza, offsetLokalny, slotyConfig])
 
   useEffect(() => { generuj() }, [generuj])
@@ -1806,6 +1814,11 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
             {kupione.length} z {wszystkieItemy.length} produktów w koszyku
           </div>
         </header>
+
+        {/* Odświeżanie w tle — lista zostaje, leci tylko cienki pasek */}
+        <div style={s.paskWrap} aria-hidden="true">
+          {odswiezanie && <div className="pasek-odswiezania" style={s.pasek} />}
+        </div>
 
         {/* Nawigacja tygodni — wyraźny pasek pod nagłówkiem */}
         <div style={s.tydzienPasek}>
@@ -2970,6 +2983,18 @@ function makeS() {
     textAlign: 'center', padding: 80,
     fontFamily: fonts.sans, fontSize: 15, color: t.mute,
     background: t.bg, minHeight: '100vh',
+  },
+
+  // Pasek odświeżania — stała wysokość, żeby lista nie skakała przy pojawieniu
+  paskWrap: {
+    height: 2, marginTop: 8, marginBottom: 2,
+    borderRadius: 999, overflow: 'hidden',
+    background: 'transparent',
+  },
+  pasek: {
+    height: '100%', width: '25%',
+    borderRadius: 999, background: t.accent,
+    animation: 'paskOdswiezania 1s ease-in-out infinite',
   },
   }
 }
