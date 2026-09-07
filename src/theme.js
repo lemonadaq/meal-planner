@@ -144,6 +144,9 @@ function makeUi(isDark) {
 export const ui = makeUi(false)
 
 // ─── applyTheme ────────────────────────────────────────────────────────────
+// Motyw dla kogoś, kto nigdy nic nie wybrał w Ustawieniach.
+export const DOMYSLNY_MOTYW = 'dark'
+
 export let currentTheme = 'light'
 
 // Proste pub/sub — komponenty mogą subskrybować zmiany motywu
@@ -197,10 +200,13 @@ export function avatarBg(seed = '') {
 // 'system' przez matchMedia — dzięki temu pierwszy render jest już w dobrym
 // motywie i nie ma migotania jasny→ciemny.
 try {
-  const zapisany = localStorage.getItem('motyw') || 'system'
+  const zapisany = localStorage.getItem('motyw') || DOMYSLNY_MOTYW
   const ciemny =
     zapisany === 'dark' ||
     (zapisany !== 'light' &&
       window.matchMedia('(prefers-color-scheme: dark)').matches)
   if (ciemny) applyTheme('dark')
-} catch (e) { /* brak localStorage / SSR — zostaje light */ }
+} catch {
+  // brak localStorage / SSR — trzymamy się domyślnego motywu
+  if (DOMYSLNY_MOTYW === 'dark') applyTheme('dark')
+}

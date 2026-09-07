@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../supabase'
-import { t, fonts, ui, avatarBg } from '../theme'
+import { t, fonts, ui, avatarBg, DOMYSLNY_MOTYW } from '../theme'
 
 export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin, onRodzina, onSloty, onKalendarz, onHome, jestAdmin }) {
   const pelneImie = user?.user_metadata?.full_name || ''
@@ -9,7 +9,7 @@ export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin
   const [zapisano, setZapisano] = useState(false)
   const [imieEdyt, setImieEdyt] = useState(pelneImie)
   const [imieStan, setImieStan] = useState('idle') // 'idle' | 'saving' | 'done'
-  const motyw = ustawienia?.motyw ?? 'system'
+  const motyw = ustawienia?.motyw ?? DOMYSLNY_MOTYW
 
   useEffect(() => {
     setPorcje(ustawienia?.domyslne_porcje ?? 1)

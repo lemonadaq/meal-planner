@@ -537,6 +537,10 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
   const [produktyWDomuRows, setProduktyWDomuRows] = useState([])
   // Korekty pozycji wygenerowanych z planu — z tabeli korekty_zakupow (per-household, realtime).
   // Mapa: baza_klucz -> {id, nazwa, ilosc, kategoria, usuniety}
+  // Korekty pobiera i ustawia generuj(). NIE mogą być zależnością generuj —
+  // wcześniej każde usunięcie/edycja pozycji z planu zmieniało jego tożsamość
+  // i przeładowywało całą listę z bazy (7 zapytań), stąd sekundy oczekiwania
+  // na skasowanie jednego produktu. Widok nakłada korekty w listaPoKorektach.
   const [korektyZakupow, setKorektyZakupow] = useState({})
 
   const { config: slotyConfig } = useSloty(householdId)
@@ -573,32 +577,9 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     return () => { anulowane = true }
   }, [householdId, aktualnyPoniedzialek])
 
-  // ── Korekty zakupów — ładowanie z bazy (filtrowane do bieżącego tygodnia) ──
-  useEffect(() => {
-    if (!householdId) return
-    let anulowane = false
-    async function pobierz() {
-      const { data } = await supabase.from('korekty_zakupow')
-        .select('*')
-        .eq('household_id', householdId)
-        .eq('tydzien', aktualnyPoniedzialek)
-      if (!anulowane) {
-        const mapa = {}
-        ;(data || []).forEach(r => {
-          mapa[r.baza_klucz] = {
-            id: r.id,
-            nazwa: r.nazwa,
-            ilosc: r.ilosc,
-            kategoria: r.kategoria,
-            usuniety: !!r.usuniety,
-          }
-        })
-        setKorektyZakupow(mapa)
-      }
-    }
-    pobierz()
-    return () => { anulowane = true }
-  }, [householdId, aktualnyPoniedzialek])
+  // Korekty pobiera generuj() razem z resztą listy — jednym zapytaniem mniej
+  // i bez wyścigu (odtworzenie „kupione” dla zmienionych pozycji potrzebuje
+  // korekt dokładnie z tego samego przebiegu).
 
   // ── Promocje — ładowanie z bazy (globalne, raz na mount) ──
   useEffect(() => {
@@ -622,6 +603,30 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     ]),
     [produktyWDomuRows]
   )
+
+  // Wiersze „mam w domu” są kluczowane tygodniem, ale unikalność w bazie idzie
+  // po samej nazwie — więc odhaczenie tego samego produktu w kolejnym tygodniu
+  // wpadało w konflikt (23505) i kończyło się toastem „Już w domu”, podczas gdy
+  // produkt dalej wisiał na liście. Zamiast się poddać, przypinamy istniejący
+  // wiersz do oglądanego tygodnia.
+  async function przypnijProduktDomowy(norm) {
+    const { data } = await supabase.from('produkty_w_domu')
+      .select('*')
+      .eq('household_id', householdId)
+      .eq('nazwa_norm', norm)
+      .limit(1)
+
+    const rekord = data?.[0]
+    if (!rekord) return null
+    if (rekord.tydzien === aktualnyPoniedzialek) return rekord
+
+    const { data: zaktualizowany } = await supabase.from('produkty_w_domu')
+      .update({ tydzien: aktualnyPoniedzialek })
+      .eq('id', rekord.id)
+      .select().single()
+
+    return zaktualizowany || { ...rekord, tydzien: aktualnyPoniedzialek }
+  }
 
   // Dodaj jeden produkt do „mam w domu” (z karty produktu w liście).
   async function dodajDoMamWDomu(nazwa) {
@@ -647,21 +652,27 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
       .insert(rekord)
       .select().single()
 
+    let wiersz = data
+
     if (error) {
       if (error.code === '23505') {
-        pokazToast(`Już w domu: ${ladna}`)
+        wiersz = await przypnijProduktDomowy(norm)
+        if (!wiersz) {
+          pokazToast(`Już w domu: ${ladna}`)
+          return
+        }
+      } else {
+        console.error('Błąd dodawania produktu w domu:', error, rekord)
+        pokazToast('Nie udało się dodać do „Mam w domu”')
         return
       }
-      console.error('Błąd dodawania produktu w domu:', error, rekord)
-      pokazToast('Nie udało się dodać do „Mam w domu”')
-      return
     }
 
-    if (data) {
-      setProduktyWDomuRows(prev => prev.some(r => r.id === data.id) ? prev : [...prev, data])
+    if (wiersz) {
+      setProduktyWDomuRows(prev => prev.some(r => r.id === wiersz.id) ? prev : [...prev, wiersz])
       pokazToast(`Mam w domu: ${ladna}`, async () => {
-        await supabase.from('produkty_w_domu').delete().eq('id', data.id)
-        setProduktyWDomuRows(prev => prev.filter(r => r.id !== data.id))
+        await supabase.from('produkty_w_domu').delete().eq('id', wiersz.id)
+        setProduktyWDomuRows(prev => prev.filter(r => r.id !== wiersz.id))
         setToast(null)
       })
     }
@@ -699,15 +710,35 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
       const { data, error } = await supabase.from('produkty_w_domu')
         .insert(doDodania)
         .select()
+
+      let dodane = data || []
+
+      // Jeden konflikt wywala cały batch, a produkt bywa w bazie pod poprzednim
+      // tygodniem — więc powtarzamy pojedynczo i konflikty przypinamy do tego tygodnia.
       if (error) {
-        if (error.code !== '23505') {
+        if (error.code === '23505') {
+          dodane = []
+          for (const rekord of doDodania) {
+            const { data: jeden, error: bladJednego } = await supabase.from('produkty_w_domu')
+              .insert(rekord).select().single()
+            if (jeden) { dodane.push(jeden); continue }
+            if (bladJednego?.code === '23505') {
+              const przypiety = await przypnijProduktDomowy(rekord.nazwa_norm)
+              if (przypiety) dodane.push(przypiety)
+            } else if (bladJednego) {
+              console.error('Błąd zapisu produktu w domu:', bladJednego, rekord)
+            }
+          }
+        } else {
           console.error('Błąd zapisu produktów w domu:', error, doDodania)
           pokazToast('Część produktów się nie zapisała — odśwież')
         }
-      } else if (data) {
+      }
+
+      if (dodane.length > 0) {
         setProduktyWDomuRows(prev => {
           const ids = new Set(prev.map(r => r.id))
-          return [...prev, ...data.filter(r => !ids.has(r.id))]
+          return [...prev, ...dodane.filter(r => !ids.has(r.id))]
         })
       }
     }
@@ -830,7 +861,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     const dzis = dzisLocal()
     const dataOd = efektywnyOffset === 0 && dzis > poniedzialek ? dzis : poniedzialek
 
-    const [{ data: planData }, { data: wlasneData }, { data: historiaData }, { data: cykliczneData }, { data: metaData }, { data: pulaData }] = await Promise.all([
+    const [{ data: planData }, { data: wlasneData }, { data: historiaData }, { data: cykliczneData }, { data: metaData }, { data: pulaData }, { data: korektyData }] = await Promise.all([
       supabase.from('kalendarz').select('*')
         .eq('household_id', householdId)
         .gte('data', dataOd)
@@ -857,7 +888,20 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
       supabase.from('plan_tygodnia').select('danie, porcje')
         .eq('household_id', householdId)
         .eq('tydzien', poniedzialek),
+      // Korekty pozycji z planu — ten sam tydzień co reszta listy
+      supabase.from('korekty_zakupow').select('*')
+        .eq('household_id', householdId)
+        .eq('tydzien', poniedzialek),
     ])
+
+    const korekty = {}
+    ;(korektyData || []).forEach(r => {
+      korekty[r.baza_klucz] = {
+        id: r.id, nazwa: r.nazwa, ilosc: r.ilosc,
+        kategoria: r.kategoria, usuniety: !!r.usuniety,
+      }
+    })
+    setKorektyZakupow(korekty)
 
     setWlasne(wybierzWlasneNaTydzien(wlasneData, poniedzialek))
     setCykliczne(cykliczneData || [])
@@ -1005,7 +1049,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     const aktualneKlucze = new Set()
     posortowane.forEach(i => {
       aktualneKlucze.add(i.klucz)
-      const poKorekcie = zastosujKorekteZakupu(i, korektyZakupow[i.klucz])
+      const poKorekcie = zastosujKorekteZakupu(i, korekty[i.klucz])
       if (poKorekcie?.klucz) aktualneKlucze.add(poKorekcie.klucz)
     })
     // Cykliczne — odhaczanie też idzie do zakupy_historia (klucz `${nazwa}||`).
@@ -1033,7 +1077,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     setOdznaczone(odtworzone)
     setHistoriaIds(mapaHistoriaId)
     setLoading(false)
-  }, [householdId, domyslnePorcje, korektyZakupow, tydzienKalendarza, offsetLokalny, slotyConfig])
+  }, [householdId, domyslnePorcje, tydzienKalendarza, offsetLokalny, slotyConfig])
 
   useEffect(() => { generuj() }, [generuj])
 
@@ -1548,9 +1592,26 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     const cykliczny = item.__zrodlo === 'cykliczne'
     const tabela = cykliczny ? 'zakupy_cykliczne' : 'zakupy_wlasne'
 
-    await supabase.from(tabela).delete().eq('id', item.id)
+    // Najpierw znika z ekranu, dopiero potem leci DELETE — czekanie na rundę
+    // do bazy przed schowaniem wiersza było głównym „zacięciem” przy usuwaniu.
     if (cykliczny) setCykliczne(prev => prev.filter(c => c.id !== item.id))
     else setWlasne(prev => prev.filter(w => w.id !== item.id))
+    setEdycjaWlasnego(null)
+    setPokazDodaj(false)
+
+    const { error } = await supabase.from(tabela).delete().eq('id', item.id)
+
+    if (error) {
+      // Baza odmówiła — wróć wierszem na listę, żeby ekran nie kłamał.
+      console.error(`Błąd usuwania produktu (${tabela}):`, error, item)
+      const wiersz = { ...item }
+      delete wiersz.__zrodlo
+      delete wiersz.cykliczny
+      if (cykliczny) setCykliczne(prev => prev.some(c => c.id === wiersz.id) ? prev : [...prev, wiersz])
+      else setWlasne(prev => prev.some(w => w.id === wiersz.id) ? prev : [...prev, wiersz])
+      pokazToast('Nie udało się usunąć produktu')
+      return
+    }
 
     pokazToast(`Usunięto: ${item.nazwa}`, async () => {
       const { id, created_at, __zrodlo, cykliczny: _c, ...rest } = item
@@ -1561,8 +1622,6 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
       }
       setToast(null)
     })
-    setEdycjaWlasnego(null)
-    setPokazDodaj(false)
   }
 
   async function zacznijOdNowa() {
