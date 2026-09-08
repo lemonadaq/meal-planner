@@ -611,9 +611,12 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
 
   // Wiersze „mam w domu” są kluczowane tygodniem, ale unikalność w bazie idzie
   // po samej nazwie — więc odhaczenie tego samego produktu w kolejnym tygodniu
-  // wpadało w konflikt (23505) i kończyło się toastem „Już w domu”, podczas gdy
-  // produkt dalej wisiał na liście. Zamiast się poddać, przypinamy istniejący
-  // wiersz do oglądanego tygodnia.
+  // wpada w konflikt (23505). Przenosimy wtedy istniejący wiersz na oglądany
+  // tydzień.
+  //
+  // Zwracamy WYŁĄCZNIE wiersz potwierdzony przez bazę. Poprzednia wersja przy
+  // nieudanym UPDATE dorabiała obiekt „na wiarę” — produkt znikał z ekranu,
+  // a po odświeżeniu wracał, bo w bazie nadal wisiał pod starym tygodniem.
   async function przypnijProduktDomowy(norm) {
     const { data } = await supabase.from('produkty_w_domu')
       .select('*')
@@ -625,12 +628,43 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     if (!rekord) return null
     if (rekord.tydzien === aktualnyPoniedzialek) return rekord
 
-    const { data: zaktualizowany } = await supabase.from('produkty_w_domu')
+    // 1) Najtaniej: przestaw tydzień w istniejącym wierszu.
+    const { data: zaktualizowany, error: bladUpdate } = await supabase.from('produkty_w_domu')
       .update({ tydzien: aktualnyPoniedzialek })
       .eq('id', rekord.id)
+      .select().maybeSingle()
+
+    if (zaktualizowany) return zaktualizowany
+    console.error('Nie udało się przestawić tygodnia „mam w domu”:', bladUpdate, rekord)
+
+    // 2) UPDATE nie przeszedł (np. tabela nie ma polityki RLS na update) —
+    //    kasujemy stary wiersz i wstawiamy nowy. Insert i delete apka robi na tej
+    //    tabeli w innych miejscach, więc te dwie operacje na pewno są dozwolone.
+    //    Gdyby insert padł po udanym delete, wpis znika z bazy — ale wtedy kolejne
+    //    kliknięcie 🏠 przejdzie już zwykłą ścieżką, więc samo się naprawia.
+    const { error: bladDelete } = await supabase.from('produkty_w_domu')
+      .delete().eq('id', rekord.id)
+
+    if (bladDelete) {
+      console.error('Nie udało się skasować starego wpisu „mam w domu”:', bladDelete, rekord)
+      return null
+    }
+
+    const { data: nowy, error: bladInsert } = await supabase.from('produkty_w_domu')
+      .insert({
+        household_id: householdId,
+        nazwa: rekord.nazwa,
+        nazwa_norm: norm,
+        created_by: user.id,
+        tydzien: aktualnyPoniedzialek,
+      })
       .select().single()
 
-    return zaktualizowany || { ...rekord, tydzien: aktualnyPoniedzialek }
+    if (bladInsert) {
+      console.error('Nie udało się przenieść „mam w domu” na ten tydzień:', bladInsert, rekord)
+      return null
+    }
+    return nowy || null
   }
 
   // Dodaj jeden produkt do „mam w domu” (z karty produktu w liście).
@@ -663,8 +697,16 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
       if (error.code === '23505') {
         wiersz = await przypnijProduktDomowy(norm)
         if (!wiersz) {
-          pokazToast(`Już w domu: ${ladna}`)
-          return
+          // Wiersz mógł zniknąć między insertem a odczytem (skasował go ktoś
+          // z rodziny) — wtedy zwykły insert po prostu przejdzie.
+          const ponowny = await supabase.from('produkty_w_domu')
+            .insert(rekord).select().single()
+          wiersz = ponowny.data
+          if (!wiersz) {
+            console.error('Nie udało się schować produktu:', ponowny.error, rekord)
+            pokazToast(`Nie udało się schować: ${ladna}`)
+            return
+          }
         }
       } else {
         console.error('Błąd dodawania produktu w domu:', error, rekord)
@@ -745,6 +787,12 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
           const ids = new Set(prev.map(r => r.id))
           return [...prev, ...dodane.filter(r => !ids.has(r.id))]
         })
+      }
+
+      // Powiedz wprost, jeśli część nie weszła — inaczej produkt znika z ekranu
+      // i wraca przy odświeżeniu, a wygląda to na błąd apki.
+      if (dodane.length < doDodania.length) {
+        pokazToast(`Nie zapisało się ${doDodania.length - dodane.length} z ${doDodania.length} produktów`)
       }
     }
   }
