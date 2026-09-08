@@ -209,9 +209,31 @@ function tydzienZakupowZOffsetem(offset = 0) {
   return formatDataLocal(d)
 }
 
-// Fallback bez argumentu — używany w miejscach gdzie nie mamy dostępu do propa
-function aktualnyTydzienZakupow() {
-  return tydzienZakupowZOffsetem(0)
+// UWAGA: zapisy (własne produkty, korekty) MUSZĄ używać tygodnia widocznego na
+// ekranie (`aktualnyPoniedzialek`), nie bieżącego. Wcześniej dopisany produkt
+// lądował w innym tygodniu niż lista, która go czytała — i po restarcie znikał.
+
+// Poniedziałek przesunięty o `oTygodni` (może być ujemne), jako 'YYYY-MM-DD'.
+export function przesunPoniedzialek(poniedzialek, oTygodni) {
+  const d = new Date(poniedzialek + 'T12:00:00')
+  d.setDate(d.getDate() + oTygodni * 7)
+  return formatDataLocal(d)
+}
+
+// Ile tygodni wstecz zbieramy niekupione własne produkty.
+const TYGODNIE_PRZENOSZENIA = 4
+
+// Czy własny produkt ma się pokazać na liście danego tygodnia?
+// Wszystko z tego tygodnia + niekupione resztki z poprzednich tygodni.
+// Bez tego produkt dopisany w niedzielę znikał w poniedziałek razem z całą listą.
+function wlasnyNaTydzien(row, poniedzialek) {
+  if (!row) return false
+  if (!row.tydzien || row.tydzien === poniedzialek) return true
+  return row.tydzien < poniedzialek && !row.odznaczone
+}
+
+export function wybierzWlasneNaTydzien(rows, poniedzialek) {
+  return (rows || []).filter(r => wlasnyNaTydzien(r, poniedzialek))
 }
 
 function czyZakupyNaNastepnyTydzien(tydzienKalendarza = 0) {
@@ -492,7 +514,12 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
   const [wlasne, setWlasne] = useState([]) // z tabeli zakupy_wlasne
   const [cykliczne, setCykliczne] = useState([]) // z tabeli zakupy_cykliczne
   const [odznaczone, setOdznaczone] = useState(new Set())
+  // `loading` = pełnoekranowe „Generuję listę…”, TYLKO przy pierwszym wejściu.
+  // Każde kolejne odświeżenie leci w tle (`odswiezanie`) i zostawia listę na
+  // ekranie — znikająca zawartość wyglądała jak przeładowanie całej strony.
   const [loading, setLoading] = useState(true)
+  const [odswiezanie, setOdswiezanie] = useState(false)
+  const bylJuzRender = useRef(false)
   const [historiaIds, setHistoriaIds] = useState({})
 
   // Lokalny offset tygodnia (przyciski "‹ ›" w nagłówku) sumuje się z tydzienKalendarza
@@ -515,6 +542,10 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
   const [produktyWDomuRows, setProduktyWDomuRows] = useState([])
   // Korekty pozycji wygenerowanych z planu — z tabeli korekty_zakupow (per-household, realtime).
   // Mapa: baza_klucz -> {id, nazwa, ilosc, kategoria, usuniety}
+  // Korekty pobiera i ustawia generuj(). NIE mogą być zależnością generuj —
+  // wcześniej każde usunięcie/edycja pozycji z planu zmieniało jego tożsamość
+  // i przeładowywało całą listę z bazy (7 zapytań), stąd sekundy oczekiwania
+  // na skasowanie jednego produktu. Widok nakłada korekty w listaPoKorektach.
   const [korektyZakupow, setKorektyZakupow] = useState({})
 
   const { config: slotyConfig } = useSloty(householdId)
@@ -551,33 +582,9 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     return () => { anulowane = true }
   }, [householdId, aktualnyPoniedzialek])
 
-  // ── Korekty zakupów — ładowanie z bazy (filtrowane do bieżącego tygodnia) ──
-  useEffect(() => {
-    if (!householdId) return
-    let anulowane = false
-    async function pobierz() {
-      const tydzien = aktualnyTydzienZakupow()
-      const { data } = await supabase.from('korekty_zakupow')
-        .select('*')
-        .eq('household_id', householdId)
-        .eq('tydzien', tydzien)
-      if (!anulowane) {
-        const mapa = {}
-        ;(data || []).forEach(r => {
-          mapa[r.baza_klucz] = {
-            id: r.id,
-            nazwa: r.nazwa,
-            ilosc: r.ilosc,
-            kategoria: r.kategoria,
-            usuniety: !!r.usuniety,
-          }
-        })
-        setKorektyZakupow(mapa)
-      }
-    }
-    pobierz()
-    return () => { anulowane = true }
-  }, [householdId])
+  // Korekty pobiera generuj() razem z resztą listy — jednym zapytaniem mniej
+  // i bez wyścigu (odtworzenie „kupione” dla zmienionych pozycji potrzebuje
+  // korekt dokładnie z tego samego przebiegu).
 
   // ── Promocje — ładowanie z bazy (globalne, raz na mount) ──
   useEffect(() => {
@@ -601,6 +608,30 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     ]),
     [produktyWDomuRows]
   )
+
+  // Wiersze „mam w domu” są kluczowane tygodniem, ale unikalność w bazie idzie
+  // po samej nazwie — więc odhaczenie tego samego produktu w kolejnym tygodniu
+  // wpadało w konflikt (23505) i kończyło się toastem „Już w domu”, podczas gdy
+  // produkt dalej wisiał na liście. Zamiast się poddać, przypinamy istniejący
+  // wiersz do oglądanego tygodnia.
+  async function przypnijProduktDomowy(norm) {
+    const { data } = await supabase.from('produkty_w_domu')
+      .select('*')
+      .eq('household_id', householdId)
+      .eq('nazwa_norm', norm)
+      .limit(1)
+
+    const rekord = data?.[0]
+    if (!rekord) return null
+    if (rekord.tydzien === aktualnyPoniedzialek) return rekord
+
+    const { data: zaktualizowany } = await supabase.from('produkty_w_domu')
+      .update({ tydzien: aktualnyPoniedzialek })
+      .eq('id', rekord.id)
+      .select().single()
+
+    return zaktualizowany || { ...rekord, tydzien: aktualnyPoniedzialek }
+  }
 
   // Dodaj jeden produkt do „mam w domu” (z karty produktu w liście).
   async function dodajDoMamWDomu(nazwa) {
@@ -626,21 +657,27 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
       .insert(rekord)
       .select().single()
 
+    let wiersz = data
+
     if (error) {
       if (error.code === '23505') {
-        pokazToast(`Już w domu: ${ladna}`)
+        wiersz = await przypnijProduktDomowy(norm)
+        if (!wiersz) {
+          pokazToast(`Już w domu: ${ladna}`)
+          return
+        }
+      } else {
+        console.error('Błąd dodawania produktu w domu:', error, rekord)
+        pokazToast('Nie udało się dodać do „Mam w domu”')
         return
       }
-      console.error('Błąd dodawania produktu w domu:', error, rekord)
-      pokazToast('Nie udało się dodać do „Mam w domu”')
-      return
     }
 
-    if (data) {
-      setProduktyWDomuRows(prev => prev.some(r => r.id === data.id) ? prev : [...prev, data])
+    if (wiersz) {
+      setProduktyWDomuRows(prev => prev.some(r => r.id === wiersz.id) ? prev : [...prev, wiersz])
       pokazToast(`Mam w domu: ${ladna}`, async () => {
-        await supabase.from('produkty_w_domu').delete().eq('id', data.id)
-        setProduktyWDomuRows(prev => prev.filter(r => r.id !== data.id))
+        await supabase.from('produkty_w_domu').delete().eq('id', wiersz.id)
+        setProduktyWDomuRows(prev => prev.filter(r => r.id !== wiersz.id))
         setToast(null)
       })
     }
@@ -678,15 +715,35 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
       const { data, error } = await supabase.from('produkty_w_domu')
         .insert(doDodania)
         .select()
+
+      let dodane = data || []
+
+      // Jeden konflikt wywala cały batch, a produkt bywa w bazie pod poprzednim
+      // tygodniem — więc powtarzamy pojedynczo i konflikty przypinamy do tego tygodnia.
       if (error) {
-        if (error.code !== '23505') {
+        if (error.code === '23505') {
+          dodane = []
+          for (const rekord of doDodania) {
+            const { data: jeden, error: bladJednego } = await supabase.from('produkty_w_domu')
+              .insert(rekord).select().single()
+            if (jeden) { dodane.push(jeden); continue }
+            if (bladJednego?.code === '23505') {
+              const przypiety = await przypnijProduktDomowy(rekord.nazwa_norm)
+              if (przypiety) dodane.push(przypiety)
+            } else if (bladJednego) {
+              console.error('Błąd zapisu produktu w domu:', bladJednego, rekord)
+            }
+          }
+        } else {
           console.error('Błąd zapisu produktów w domu:', error, doDodania)
           pokazToast('Część produktów się nie zapisała — odśwież')
         }
-      } else if (data) {
+      }
+
+      if (dodane.length > 0) {
         setProduktyWDomuRows(prev => {
           const ids = new Set(prev.map(r => r.id))
-          return [...prev, ...data.filter(r => !ids.has(r.id))]
+          return [...prev, ...dodane.filter(r => !ids.has(r.id))]
         })
       }
     }
@@ -696,7 +753,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
   // korekta: {nazwa, ilosc, kategoria, usuniety}
   async function zapiszKorekteZakupu(bazaKlucz, korekta) {
     if (!bazaKlucz) return
-    const tydzien = aktualnyTydzienZakupow()
+    const tydzien = aktualnyPoniedzialek
     const istniejaca = korektyZakupow[bazaKlucz]
     const rekord = {
       household_id: householdId,
@@ -796,7 +853,8 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
 
   // ── Generowanie listy z planu + ładowanie własnych + cyklicznych ──
   const generuj = useCallback(async () => {
-    setLoading(true)
+    if (bylJuzRender.current) setOdswiezanie(true)
+    else setLoading(true)
 
     // Tydzień z planera lub lokalny offset (z przycisków w nagłówku listy).
     const efektywnyOffset = tydzienKalendarza + offsetLokalny
@@ -809,14 +867,18 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     const dzis = dzisLocal()
     const dataOd = efektywnyOffset === 0 && dzis > poniedzialek ? dzis : poniedzialek
 
-    const [{ data: planData }, { data: wlasneData }, { data: historiaData }, { data: cykliczneData }, { data: metaData }, { data: pulaData }] = await Promise.all([
+    const [{ data: planData }, { data: wlasneData }, { data: historiaData }, { data: cykliczneData }, { data: metaData }, { data: pulaData }, { data: korektyData }] = await Promise.all([
       supabase.from('kalendarz').select('*')
         .eq('household_id', householdId)
         .gte('data', dataOd)
         .lte('data', niedzielaStr),
+      // Własne produkty: ten tydzień + kilka poprzednich. Z poprzednich zostawiamy
+      // (w wybierzWlasneNaTydzien) tylko niekupione — inaczej dopisana lista
+      // znikała przy zmianie tygodnia zamiast czekać na odhaczenie.
       supabase.from('zakupy_wlasne').select('*')
         .eq('household_id', householdId)
-        .eq('tydzien', poniedzialek)
+        .gte('tydzien', przesunPoniedzialek(poniedzialek, -TYGODNIE_PRZENOSZENIA))
+        .lte('tydzien', poniedzialek)
         .order('created_at'),
       // Historia ograniczona do bieżącego tygodnia — żeby cykliczne się resetowały co poniedziałek.
       supabase.from('zakupy_historia').select('*')
@@ -832,9 +894,22 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
       supabase.from('plan_tygodnia').select('danie, porcje')
         .eq('household_id', householdId)
         .eq('tydzien', poniedzialek),
+      // Korekty pozycji z planu — ten sam tydzień co reszta listy
+      supabase.from('korekty_zakupow').select('*')
+        .eq('household_id', householdId)
+        .eq('tydzien', poniedzialek),
     ])
 
-    setWlasne(wlasneData || [])
+    const korekty = {}
+    ;(korektyData || []).forEach(r => {
+      korekty[r.baza_klucz] = {
+        id: r.id, nazwa: r.nazwa, ilosc: r.ilosc,
+        kategoria: r.kategoria, usuniety: !!r.usuniety,
+      }
+    })
+    setKorektyZakupow(korekty)
+
+    setWlasne(wybierzWlasneNaTydzien(wlasneData, poniedzialek))
     setCykliczne(cykliczneData || [])
     const wszystkieMeta = metaData || []
 
@@ -980,7 +1055,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     const aktualneKlucze = new Set()
     posortowane.forEach(i => {
       aktualneKlucze.add(i.klucz)
-      const poKorekcie = zastosujKorekteZakupu(i, korektyZakupow[i.klucz])
+      const poKorekcie = zastosujKorekteZakupu(i, korekty[i.klucz])
       if (poKorekcie?.klucz) aktualneKlucze.add(poKorekcie.klucz)
     })
     // Cykliczne — odhaczanie też idzie do zakupy_historia (klucz `${nazwa}||`).
@@ -1007,8 +1082,10 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     setLista(posortowane)
     setOdznaczone(odtworzone)
     setHistoriaIds(mapaHistoriaId)
+    bylJuzRender.current = true
     setLoading(false)
-  }, [householdId, domyslnePorcje, korektyZakupow, tydzienKalendarza, offsetLokalny, slotyConfig])
+    setOdswiezanie(false)
+  }, [householdId, domyslnePorcje, tydzienKalendarza, offsetLokalny, slotyConfig])
 
   useEffect(() => { generuj() }, [generuj])
 
@@ -1047,16 +1124,21 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
         'postgres_changes',
         { event: '*', schema: 'public', table: 'zakupy_wlasne', filter: `household_id=eq.${householdId}` },
         (payload) => {
-          const row = payload.new || payload.old
-          if (row?.tydzien && row.tydzien !== aktualnyTydzienZakupow()) return
-
           if (payload.eventType === 'DELETE') {
             setWlasne(prev => prev.filter(w => w.id !== payload.old?.id))
-          } else if (payload.eventType === 'INSERT') {
-            setWlasne(prev => prev.some(w => w.id === payload.new.id) ? prev : [...prev, payload.new])
-          } else if (payload.eventType === 'UPDATE') {
-            setWlasne(prev => prev.map(w => w.id === payload.new.id ? payload.new : w))
+            return
           }
+          const row = payload.new
+          if (!row) return
+          setWlasne(prev => {
+            // Produkt już na liście — aktualizuj w miejscu (odhaczenie przez
+            // partnera nie może go zdjąć z ekranu w trakcie zakupów).
+            if (prev.some(w => w.id === row.id)) {
+              return prev.map(w => w.id === row.id ? row : w)
+            }
+            if (!wlasnyNaTydzien(row, aktualnyPoniedzialekRef.current)) return prev
+            return [...prev, row]
+          })
         }
       )
       .on(
@@ -1092,7 +1174,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
         { event: '*', schema: 'public', table: 'korekty_zakupow', filter: `household_id=eq.${householdId}` },
         (payload) => {
           const row = payload.new || payload.old
-          if (row?.tydzien && row.tydzien !== aktualnyTydzienZakupow()) return
+          if (row?.tydzien && row.tydzien !== aktualnyPoniedzialekRef.current) return
 
           if (payload.eventType === 'DELETE') {
             const bazaKlucz = payload.old?.baza_klucz
@@ -1175,8 +1257,15 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
   // ── Toggle własnego produktu (bezpośrednio w zakupy_wlasne) ──
   async function toggleWlasny(item) {
     const noweOdznaczone = !item.odznaczone
+    // Kupując produkt przeniesiony z poprzedniego tygodnia przypinamy go do
+    // tygodnia, w którym faktycznie trafił do koszyka. Inaczej po odświeżeniu
+    // wypadłby z listy (kupiony + stary tydzień) i nie dałoby się go odznaczyć.
+    const zmiany = noweOdznaczone
+      ? { odznaczone: true, tydzien: aktualnyPoniedzialek }
+      : { odznaczone: false }
+
     const { data, error } = await supabase.from('zakupy_wlasne')
-      .update({ odznaczone: noweOdznaczone })
+      .update(zmiany)
       .eq('id', item.id).select().single()
 
     if (error) {
@@ -1279,7 +1368,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
             ...daneDoZapisu,
             household_id: householdId,
             user_id: user.id,
-            tydzien: aktualnyTydzienZakupow(),
+            tydzien: aktualnyPoniedzialek,
             odznaczone: false,
           }
           const { data, error } = await supabase.from('zakupy_wlasne')
@@ -1319,7 +1408,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
           ...daneDoZapisu,
           household_id: householdId,
           user_id: user.id,
-          tydzien: aktualnyTydzienZakupow(),
+          tydzien: aktualnyPoniedzialek,
           odznaczone: false,
         }
 
@@ -1452,7 +1541,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
         kategoria: bezpiecznaKategoria(dane.kategoria),
         household_id: householdId,
         user_id: user.id,
-        tydzien: aktualnyTydzienZakupow(),
+        tydzien: aktualnyPoniedzialek,
         odznaczone: false,
       }))
       .filter(rekord => rekord.nazwa)
@@ -1511,9 +1600,26 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     const cykliczny = item.__zrodlo === 'cykliczne'
     const tabela = cykliczny ? 'zakupy_cykliczne' : 'zakupy_wlasne'
 
-    await supabase.from(tabela).delete().eq('id', item.id)
+    // Najpierw znika z ekranu, dopiero potem leci DELETE — czekanie na rundę
+    // do bazy przed schowaniem wiersza było głównym „zacięciem” przy usuwaniu.
     if (cykliczny) setCykliczne(prev => prev.filter(c => c.id !== item.id))
     else setWlasne(prev => prev.filter(w => w.id !== item.id))
+    setEdycjaWlasnego(null)
+    setPokazDodaj(false)
+
+    const { error } = await supabase.from(tabela).delete().eq('id', item.id)
+
+    if (error) {
+      // Baza odmówiła — wróć wierszem na listę, żeby ekran nie kłamał.
+      console.error(`Błąd usuwania produktu (${tabela}):`, error, item)
+      const wiersz = { ...item }
+      delete wiersz.__zrodlo
+      delete wiersz.cykliczny
+      if (cykliczny) setCykliczne(prev => prev.some(c => c.id === wiersz.id) ? prev : [...prev, wiersz])
+      else setWlasne(prev => prev.some(w => w.id === wiersz.id) ? prev : [...prev, wiersz])
+      pokazToast('Nie udało się usunąć produktu')
+      return
+    }
 
     pokazToast(`Usunięto: ${item.nazwa}`, async () => {
       const { id, created_at, __zrodlo, cykliczny: _c, ...rest } = item
@@ -1524,8 +1630,6 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
       }
       setToast(null)
     })
-    setEdycjaWlasnego(null)
-    setPokazDodaj(false)
   }
 
   async function zacznijOdNowa() {
@@ -1710,6 +1814,11 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
             {kupione.length} z {wszystkieItemy.length} produktów w koszyku
           </div>
         </header>
+
+        {/* Odświeżanie w tle — lista zostaje, leci tylko cienki pasek */}
+        <div style={s.paskWrap} aria-hidden="true">
+          {odswiezanie && <div className="pasek-odswiezania" style={s.pasek} />}
+        </div>
 
         {/* Nawigacja tygodni — wyraźny pasek pod nagłówkiem */}
         <div style={s.tydzienPasek}>
@@ -2874,6 +2983,18 @@ function makeS() {
     textAlign: 'center', padding: 80,
     fontFamily: fonts.sans, fontSize: 15, color: t.mute,
     background: t.bg, minHeight: '100vh',
+  },
+
+  // Pasek odświeżania — stała wysokość, żeby lista nie skakała przy pojawieniu
+  paskWrap: {
+    height: 2, marginTop: 8, marginBottom: 2,
+    borderRadius: 999, overflow: 'hidden',
+    background: 'transparent',
+  },
+  pasek: {
+    height: '100%', width: '25%',
+    borderRadius: 999, background: t.accent,
+    animation: 'paskOdswiezania 1s ease-in-out infinite',
   },
   }
 }
