@@ -65,7 +65,9 @@ export const STYLE = [
 // ── Naczynie zależne od rodzaju dania ──
 // Brak wpisu (obiad, kolacja) → naczynie domyślne dla stylu.
 const NACZYNIE = {
-  zupa: 'served in a deep bowl with a spoon resting against the rim',
+  // Bez łyżki opartej o rant — model rysował z tego pół łyżki leżące
+  // na środku talerza, ucięte w powietrzu.
+  zupa: 'served in a deep bowl filled to a normal level, nothing balanced on the rim',
   deser: 'served on a small dessert plate or in a glass, portion sized for one',
   przekaska: 'served on a wooden board, finger-food portion',
   dodatek: 'served in a small side dish, clearly a side portion not a main course',
@@ -82,28 +84,38 @@ const NACZYNIE = {
 // Nie ma tu "one bite already taken" — jako jedyna niedoskonałość zmieniała samo
 // jedzenie, a nie otoczenie, i wychodziła z tego nadgryziona parówka na zdjęciu
 // w katalogu przepisów. Reszta rusza tylko talerza i blatu.
-const NIEDOSKONALOSCI_UNIWERSALNE = [
+const NIEDOSKONALOSCI_BAZOWE = [
   'a few crumbs scattered on the surface next to the plate',
-  'a small drip of sauce running down the side of the plate',
   'the portion slightly off-centre on the plate, plated by hand not by a stylist',
   'a light smudge wiped across the rim',
   'the portion piled a little unevenly, not levelled or smoothed',
 ]
 
+// Zaciek sosu — TYLKO tam, gdzie sos ma prawo spływać po talerzu. Przy zupie
+// wygląda jak rozlana zupa, przy dodatku nie ma czemu kapać. Jest jeden na
+// pięć wpisów w puli, więc wypada mniej więcej co piąte zdjęcie, a nie co drugie.
+const ZACIEK = 'a small drip of sauce running down the side of the plate'
+const ZACIEK_PASUJE = new Set(['deser', 'obiad', 'kolacja'])
+
 // Tylko dla dań podawanych na ciepło.
 const NIEDOSKONALOSCI_CIEPLE = [
   'faint steam still rising from the food',
-  'a little sauce pooling and running to one side of the plate',
   'the surface slightly broken where a spoon has already been in',
 ]
 
-// Rodzaje, które jemy na zimno — bez pary i bez „gorących" niedoskonałości.
 const NA_ZIMNO = new Set(['deser', 'surowka', 'przekaska'])
 
 // ── Stałe: co ma być ZAWSZE i czego ma NIE BYĆ ──
 const ZAWSZE =
   'realistic home-cooked Polish food, photographed as documentary food photography, ' +
   'authentic imperfect portion sizes, natural food colours'
+
+// Składniki, które model notorycznie renderuje źle niezależnie od dania.
+// Doklejane do każdego promptu.
+const ZASADY_SKLADNIKOW =
+  'Any melted cheese looks like real melted grated or sliced cheese — it stretches, browns ' +
+  'in patches, has visible strands and torn edges and you can still tell it was cheese; ' +
+  'it is never a smooth poured cheese sauce and never an even orange glaze'
 
 // Modele obrazu ignorują "negative prompt" jako osobne pole, więc zakazy
 // wpisujemy w treść — to działa lepiej niż lista słów po przecinku.
@@ -129,9 +141,9 @@ export function wybierzStyl(nazwaDania) {
 // Niedoskonałość losowana z INNEGO przesunięcia hasha, żeby dania o tym samym
 // stylu nie dostawały automatycznie tej samej niedoskonałości.
 function wybierzNiedoskonalosc(nazwaDania, rodzaj) {
-  const pula = NA_ZIMNO.has(rodzaj)
-    ? NIEDOSKONALOSCI_UNIWERSALNE
-    : [...NIEDOSKONALOSCI_UNIWERSALNE, ...NIEDOSKONALOSCI_CIEPLE]
+  const pula = [...NIEDOSKONALOSCI_BAZOWE]
+  if (ZACIEK_PASUJE.has(rodzaj)) pula.push(ZACIEK)
+  if (!NA_ZIMNO.has(rodzaj)) pula.push(...NIEDOSKONALOSCI_CIEPLE)
   return pula[hash(nazwaDania + '#') % pula.length]
 }
 
@@ -158,6 +170,7 @@ export function zbudujPromptObrazu(nazwa, rodzaj, opisWizualny) {
     opis.replace(/\.\s*$/, ''),
     naczynie,
     ZAWSZE,
+    ZASADY_SKLADNIKOW,
     styl.prompt,
     niedoskonalosc,
     NIGDY,

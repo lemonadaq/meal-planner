@@ -63,6 +63,76 @@ export const OPISY_RECZNE = {
     'chives. Soft, thick and evenly mixed, served as a mound in a bowl or spread on bread. ' +
     'No halved eggs, no sliced egg and no separate chunks of avocado — it is all one paste.',
 
+  // ── Krokiety: naleśnik zwinięty z farszem, nie kotlecik z ciasta ──
+  // Wspólny kształt dla wszystkich trzech, różni je tylko farsz.
+  'Krokiety z kapustą kiszoną i grzybami':
+    'Golden breadcrumbed croquettes made from thin pancakes: each is a crêpe rolled around ' +
+    'the filling, so a cut across one shows alternating layers of thin pale pancake and ' +
+    'filling of sauerkraut and mushrooms. The outside is crisp, deep golden and evenly ' +
+    'breaded, the shape a flattened cylinder. One is cut open so the rolled pancake layers ' +
+    'and the filling between them are clearly visible. Never a ball or patty of dough with ' +
+    'filling buried inside, never a potato croquette.',
+
+  'Krokiety z pieczarkami':
+    'Golden breadcrumbed croquettes made from thin pancakes: each is a crêpe rolled around ' +
+    'the filling, so a cut across one shows alternating layers of thin pale pancake and ' +
+    'a filling of chopped fried mushrooms and onion. The outside is crisp, deep golden and ' +
+    'evenly breaded, the shape a flattened cylinder. One is cut open so the rolled pancake ' +
+    'layers and the filling between them are clearly visible. Never a ball or patty of ' +
+    'dough with filling buried inside, never a potato croquette.',
+
+  'Krokiety z mięsem':
+    'Golden breadcrumbed croquettes made from thin pancakes: each is a crêpe rolled around ' +
+    'the filling, so a cut across one shows alternating layers of thin pale pancake and ' +
+    'a filling of seasoned minced meat. The outside is crisp, deep golden and evenly ' +
+    'breaded, the shape a flattened cylinder. One is cut open so the rolled pancake layers ' +
+    'and the filling between them are clearly visible. Never a ball or patty of dough with ' +
+    'filling buried inside, never a potato croquette.',
+
+  'Jajecznica z boczkiem i szczypiorkiem':
+    'Soft scrambled eggs with crisp pieces of bacon cooked right into them — the bacon is ' +
+    'coated in egg and folded through the curds, browned and crisp at the edges but partly ' +
+    'buried in the egg rather than sitting on the surface. Chopped chives are scattered ' +
+    'over the top. The bacon was fried in the pan and the eggs poured onto it; it is never ' +
+    'sprinkled over finished eggs like separate crunchy bits on top.',
+
+  'Ryż smażony z jajkiem, kurczakiem i warzywami':
+    'Stir-fried rice where beaten egg was poured straight into the hot pan and tossed ' +
+    'through, so the grains are coated in a thin film of set egg and the whole dish is pale ' +
+    'yellow throughout, with only small ragged shreds of egg here and there. Pieces of ' +
+    'chicken and diced vegetables are mixed evenly into the rice. There is no separate ' +
+    'omelette, no scrambled egg sitting on top and no fried egg laid over the rice.',
+
+  'Racuchy z jabłkami':
+    'Thick Polish yeast fritters fried in a deep layer of oil: irregular rounds with uneven, ' +
+    'ragged golden-brown edges, puffed and slightly misshapen, no two alike. Pieces of apple ' +
+    'show through the batter and at the torn edges. Dusted with icing sugar and piled loosely ' +
+    'on a plate. These are racuchy — never neat flat even American pancakes and never a tidy ' +
+    'stack of identical discs.',
+
+  'Racuchy jabłkowe mini':
+    'Small thick Polish yeast fritters fried in a deep layer of oil: irregular little rounds ' +
+    'with uneven ragged golden-brown edges, puffed and slightly misshapen, no two alike. ' +
+    'Pieces of apple show through the batter. Dusted with icing sugar and piled loosely. ' +
+    'These are racuchy — never neat flat even American pancakes, never uniform discs.',
+
+  'Spring rolls (sajgonki)':
+    'Fresh rice-paper rolls cut in half and standing cut-side up. In each roll the pink ' +
+    'prawns lie in a neat row pressed flat against the translucent rice paper on the outer ' +
+    'curve, so they show clearly through the wrapper from the outside, with noodles, herbs ' +
+    'and shredded vegetables rolled up behind them. The prawns face outward against the ' +
+    'wrapper — never buried in the middle of the roll and never turned away from the ' +
+    'visible side.',
+
+  'Wrap z falafelem i hummusem':
+    'A large flour tortilla wrapped tightly around the filling exactly like a döner kebab: ' +
+    'rolled into a dense cylinder, folded closed at the bottom, held in a paper wrapper and ' +
+    'cut across so the packed filling shows at the cut face. Inside are whole browned ' +
+    'falafel balls, shredded cabbage and lettuce, tomato, red onion and drizzles of hummus ' +
+    'and garlic sauce, pressed tight together. It is a kebab with falafel instead of meat — ' +
+    'never a flat open wrap, never a salad loosely laid on a tortilla, never an unrolled ' +
+    'burrito.',
+
   'Pasta z makreli wędzonej':
     'A soft beige-pink spread of smoked mackerel flaked fine and mashed until it holds ' +
     'together, bound with a little mayonnaise and flecked with chives. The texture is even ' +
