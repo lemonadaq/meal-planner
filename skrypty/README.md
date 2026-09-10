@@ -58,6 +58,7 @@ Filtry dla `lista` (łączą się przez ORAZ):
 RODZAJ=sniadanie ULUBIONE=1 npm run lista   # ulubione śniadania
 BEZ_ZDJECIA=1 npm run lista                 # dania bez zdjęcia
 ZAPISZ_LISTE=1 npm run lista                # odśwież LISTA_DAN.md
+npm run duble                               # szukaj dubli (offline, z LISTA_DAN.md)
 ```
 
 `ZAPISZ_LISTE` zapisuje **całą** bazę, niezależnie od filtrów — plik ma opisywać
@@ -82,6 +83,16 @@ Skrypty są wznawialne — po błędzie odpal ponownie, dokończą tylko to, cze
 
 Jeśli przepis się zapisał, a zdjęcie padło — przepis zostaje, kolejny przebieg
 dorobi samo zdjęcie.
+
+## Duble
+
+`npm run duble` porównuje nazwy dań i wypisuje pary, które mogą być tym samym
+daniem — osobno te **między kategoriami**, bo tam najłatwiej je przeoczyć
+(to samo raz jako przekąska, raz jako kolacja). Czyta `LISTA_DAN.md`, więc nie
+potrzebuje kluczy i nic nie kosztuje; odśwież najpierw listę, jeśli baza się
+zmieniła. Próg czułości: `PROG=0.5 npm run duble`.
+
+Warto puścić przed dorzuceniem nowej paczki dań.
 
 ## Gdy model uparcie pudłuje
 
