@@ -1,10 +1,10 @@
 # Lista dań — Menu Planer
 
-Stan bazy `dania` na 2026-09-10 (451 dań) — nazwa, rodzaj, czas
+Stan bazy `dania` na 2026-09-10 (439 dań) — nazwa, rodzaj, czas
 przyrządzania, kcal na 1 porcję. Do przeglądu przy wymyślaniu nowych dań
 (unikanie dubli) i jako punkt odniesienia.
 
-Rozkład: obiad 103, kolacja 79, przekaska 78, deser 62, sniadanie 53, zupa 45, surowka 31.
+Rozkład: obiad 103, przekaska 75, kolacja 74, deser 60, sniadanie 53, zupa 45, surowka 29.
 
 Odświeżenie listy: **Actions → „Generuj dania" → tryb `lista`, zaznacz
 `zapisz_liste`**. Workflow przepisze ten plik i zacommituje zmianę.
@@ -60,7 +60,6 @@ order by "Danie";
 | Chipsy z jarmużu                                      | przekaska | 25       | 150  |
 | Chipsy z tortilli z dipem jogurtowym                  | przekaska | 20       | 600  |
 | Chleb w jajku                                         | sniadanie | 10       | 350  |
-| Chleb w jajku z serem                                 | kolacja   | 15       | 430  |
 | Chłodnik litewski                                     | zupa      | 20       | 370  |
 | Chłodnik ogórkowy z koperkiem                         | zupa      | 15       | 180  |
 | Chrupiąca ciecierzyca z piekarnika                    | przekaska | 40       | 240  |
@@ -119,7 +118,6 @@ order by "Danie";
 | Jabłecznik z kruszonką                                | deser     | 90       | 380  |
 | Jabłka pieczone z cynamonem                           | deser     | 40       | 290  |
 | Jabłka w cieście                                      | przekaska | 30       | 700  |
-| Jabłka w cieście naleśnikowym                         | deser     | 25       | 540  |
 | Jaglanka z jabłkiem i cynamonem                       | sniadanie | 25       | 420  |
 | Jajecznica                                            | sniadanie | 10       | 340  |
 | Jajecznica z boczkiem i szczypiorkiem                 | kolacja   | 15       | 530  |
@@ -270,7 +268,6 @@ order by "Danie";
 | Parówki                                               | sniadanie | 8        | 420  |
 | Parówki w cieście francuskim                          | przekaska | 25       | 660  |
 | Pasta jajeczna                                        | sniadanie | 15       | 340  |
-| Pasta jajeczna na krakersach                          | przekaska | 15       | 330  |
 | Pasta z awokado i jajka                               | sniadanie | 10       | 310  |
 | Pasta z makreli wędzonej                              | sniadanie | 10       | 530  |
 | Pasta z pieczonego bakłażana                          | przekaska | 50       | 210  |
@@ -314,9 +311,7 @@ order by "Danie";
 | Pyzy/kluski śląskie                                   | obiad     | 90       | 560  |
 | Quesadilla z serem i fasolą                           | kolacja   | 15       | 900  |
 | Quesadilla z serem i kurczakiem                       | przekaska | 20       | 750  |
-| Quesadilla z serem, kurczakiem i papryką              | kolacja   | 20       | 790  |
 | Quesadilla z szarpaną wieprzowiną                     | obiad     | 180      | 710  |
-| Racuchy jabłkowe mini                                 | przekaska | 25       | 570  |
 | Racuchy z jabłkami                                    | deser     | 30       | 650  |
 | Risotto z grzybami leśnymi                            | obiad     | 40       | 540  |
 | Risotto z warzywami                                   | obiad     | 40       | 350  |
@@ -336,7 +331,6 @@ order by "Danie";
 | Ryż z warzywami stir-fry                              | kolacja   | 25       | 520  |
 | Ryż z warzywami w sosie curry                         | kolacja   | 30       | 520  |
 | Sałatka caprese                                       | kolacja   | 10       | 530  |
-| Sałatka caprese w kubeczku                            | przekaska | 15       | 280  |
 | Sałatka cezar z kurczakiem                            | kolacja   | 25       | 620  |
 | Sałatka grecka z fetą                                 | kolacja   | 15       | 510  |
 | Sałatka gyros                                         | przekaska | 30       | 500  |
@@ -370,7 +364,6 @@ order by "Danie";
 | Ser halloumi z patelni                                | przekaska | 10       | 430  |
 | Serek waniliowy z owocami i granolą                   | deser     | 10       | 480  |
 | Serek wiejski z pomidorem i bazylią                   | sniadanie | 7        | 230  |
-| Serniczek na zimno w pucharku                         | deser     | 20       | 600  |
 | Sernik na zimno                                       | deser     | 30       | 550  |
 | Sernik pieczony z rodzynkami                          | deser     | 90       | 420  |
 | Shakshuka z jajkami i pomidorami                      | kolacja   | 25       | 470  |
@@ -396,9 +389,7 @@ order by "Danie";
 | Surówka z jarmużu i jabłka                            | surowka   | 15       | 180  |
 | Surówka z kalafiora na surowo                         | surowka   | 15       | 150  |
 | Surówka z kalarepy                                    | surowka   | 15       | 140  |
-| Surówka z kapusty                                     | surowka   | 15       | 30   |
 | Surówka z kiszonej kapusty                            | surowka   | 15       | 60   |
-| Surówka z marchewki                                   | surowka   | 10       | 40   |
 | Surówka z ogórka kiszonego i cebuli                   | surowka   | 10       | 95   |
 | Surówka z pora i jabłka                               | surowka   | 15       | 180  |
 | Surówka z rzepy i marchewki                           | surowka   | 15       | 120  |
@@ -422,16 +413,13 @@ order by "Danie";
 | Tofu w sosie teriyaki                                 | obiad     | 30       | 520  |
 | Tom kha z kurczakiem                                  | zupa      | 35       | 480  |
 | Tortilla kebab                                        | obiad     | 30       | 600  |
-| Tortilla pizza z serem, salami i pieczarkami          | kolacja   | 20       | 560  |
 | Tortilla śniadaniowa z jajecznicą                     | sniadanie | 15       | 520  |
 | Tortilla z kurczakiem, warzywami i sosem czosnkowym   | kolacja   | 25       | 660  |
 | Tortilla z serem, jajkiem i szynką                    | kolacja   | 10       | 390  |
 | Tortilla zapiekana z tuńczykiem                       | kolacja   | 25       | 540  |
 | Tosty francuskie na słodko                            | deser     | 15       | 460  |
 | Tosty francuskie na słono                             | przekaska | 15       | 470  |
-| Tosty francuskie na słono z serem i szynką            | kolacja   | 15       | 500  |
 | Tosty z serem i szynką                                | sniadanie | 10       | 530  |
-| Tosty z serem, szynką i ogórkiem kiszonym             | kolacja   | 15       | 380  |
 | Twarożek z rzodkiewką i szczypiorkiem                 | sniadanie | 10       | 290  |
 | Wątróbka drobiowa z cebulą                            | obiad     | 30       | 420  |
 | Wrap z falafelem i hummusem                           | kolacja   | 25       | 610  |
