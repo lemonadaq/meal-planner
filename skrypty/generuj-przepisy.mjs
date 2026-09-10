@@ -10,7 +10,7 @@
 import { readFileSync, existsSync } from 'fs'
 import {
   sprawdzKlucze, supabase, pauza, wczytajDania, zbudujWiersze,
-  generujPrzepis, MODEL_TEKST,
+  generujPrzepis, utworzStraznika, MODEL_TEKST,
 } from './wspolne.js'
 
 sprawdzKlucze(['SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'ANTHROPIC_KEY'])
@@ -35,6 +35,7 @@ async function main() {
   console.log(`Dania: ${dania.length} | model: ${MODEL_TEKST}\n`)
 
   let ok = 0, pominiete = 0, bledy = 0
+  const straznik = utworzStraznika()
 
   for (const { nazwa, rodzaj } of dania) {
     try {
@@ -59,6 +60,7 @@ async function main() {
     } catch (e) {
       bledy++
       console.log(`✗ ${nazwa}: ${e.message}`)
+      straznik(e.message)
     }
   }
 

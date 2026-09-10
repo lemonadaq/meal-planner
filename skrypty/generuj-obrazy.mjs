@@ -16,7 +16,7 @@
 
 import {
   sprawdzKlucze, supabase, pauza, pobierzWszystkieWiersze,
-  generujOpisWizualny, wgrajZdjecie, MODEL_OBRAZ,
+  generujOpisWizualny, wgrajZdjecie, utworzStraznika, MODEL_OBRAZ,
 } from './wspolne.js'
 import { zbudujPromptObrazu, wybierzStyl } from './style-zdjec.js'
 
@@ -86,6 +86,7 @@ async function main() {
   console.log('')
 
   let ok = 0, bledy = 0
+  const straznik = utworzStraznika()
 
   for (const d of doZrobienia) {
     try {
@@ -101,6 +102,7 @@ async function main() {
     } catch (e) {
       bledy++
       console.log(`\n✗ ${d.nazwa}: ${e.message}`)
+      straznik(e.message)
     }
   }
 

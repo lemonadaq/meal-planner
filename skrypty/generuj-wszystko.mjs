@@ -26,7 +26,8 @@
 import { readFileSync, existsSync } from 'fs'
 import {
   sprawdzKlucze, supabase, pauza, wczytajDania, zbudujWiersze,
-  generujPrzepis, generujOpisWizualny, wgrajZdjecie, MODEL_TEKST, MODEL_OBRAZ,
+  generujPrzepis, generujOpisWizualny, wgrajZdjecie, utworzStraznika,
+  MODEL_TEKST, MODEL_OBRAZ,
 } from './wspolne.js'
 import { zbudujPromptObrazu, wybierzStyl } from './style-zdjec.js'
 
@@ -54,6 +55,7 @@ async function main() {
   console.log(`Dania: ${dania.length} | tekst: ${MODEL_TEKST} | obraz: ${MODEL_OBRAZ}\n`)
 
   let nowe = 0, tylkoZdjecie = 0, pominiete = 0, bledy = 0
+  const straznik = utworzStraznika()
 
   for (const { nazwa, rodzaj } of dania) {
     try {
@@ -115,6 +117,7 @@ async function main() {
     } catch (e) {
       bledy++
       console.log(`\n✗ ${nazwa}: ${e.message}`)
+      straznik(e.message)
     }
   }
 

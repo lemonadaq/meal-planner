@@ -97,6 +97,31 @@ async function ponow(nazwaOperacji, fn, proby = 4) {
   }
 }
 
+// ── Strażnik: przerwij, gdy ten sam błąd leci w kółko ─────────────
+// Pętla łapie błąd per danie i leci dalej, żeby jedno złe danie nie kładło
+// całego przebiegu. Ale gdy usterka jest systemowa (zły schemat, martwy klucz,
+// padnięte API), to samo powtórzy się 100 razy i przebieg „kończy się
+// sukcesem" z zerem wyników. Wtedy lepiej stanąć od razu.
+export function utworzStraznika(prog = 5) {
+  let ostatni = null
+  let ile = 0
+
+  // request_id jest inny przy każdej próbie, więc porównujemy bez niego
+  const znormalizuj = k => k.replace(/"request_id":"[^"]*"/g, '').slice(0, 300)
+
+  return function zglos(komunikat) {
+    const klucz = znormalizuj(komunikat)
+    if (klucz === ostatni) ile++
+    else { ostatni = klucz; ile = 1 }
+    if (ile >= prog) {
+      throw new Error(
+        `Przerywam po ${ile} takich samych błędach pod rząd — to usterka, nie pech.\n` +
+        `Ostatni błąd: ${komunikat}`,
+      )
+    }
+  }
+}
+
 // ── Supabase: paginowany odczyt ───────────────────────────────────
 // PostgREST tnie odpowiedź do 1000 wierszy, a `dania` to wiersz na składnik
 // (~2500+). Bez tego skrypt widzi arbitralny kawałek bazy — dokładnie ten sam
@@ -118,6 +143,11 @@ export async function pobierzWszystkieWiersze(budujZapytanie, strona = 1000) {
 // ── Claude: przepis + opis wizualny ───────────────────────────────
 // output_config.format wymusza schemat po stronie API — nie ma już czyszczenia
 // ```json ani JSON.parse, który wybucha raz na dwadzieścia dań.
+//
+// UWAGA na kształt schematu: structured outputs NIE obsługuje `minItems`
+// innego niż 0/1 ani `maxItems` — schemat z `minItems: 4` leci 400 i odbija
+// KAŻDE zapytanie. Liczebność opisujemy więc w `description` i w promptcie,
+// gdzie jest wskazówką dla modelu, a nie regułą walidacji.
 const SCHEMAT_PRZEPISU = {
   type: 'object',
   properties: {
@@ -136,15 +166,12 @@ const SCHEMAT_PRZEPISU = {
         required: ['nazwa', 'ilosc', 'jednostka', 'kategoria'],
         additionalProperties: false,
       },
-      minItems: 4,
-      maxItems: 12,
+      description: 'Od 4 do 12 składników',
     },
     kroki: {
       type: 'array',
       items: { type: 'string' },
-      minItems: 3,
-      maxItems: 8,
-      description: 'Krótkie konkretne kroki po polsku, BEZ numeracji w treści',
+      description: 'Od 3 do 8 krótkich, konkretnych kroków po polsku, BEZ numeracji w treści',
     },
     opis_wizualny: {
       type: 'string',
@@ -175,15 +202,22 @@ async function pytajClaude(tresc, schemat) {
 }
 
 export async function generujPrzepis(nazwa, rodzaj) {
-  return pytajClaude(
+  const przepis = await pytajClaude(
     `Jesteś polskim kucharzem. Wygeneruj przepis na danie: "${nazwa}" (rodzaj: ${rodzaj}).\n\n` +
       'Zasady:\n' +
       '- Ilości podaj NA 1 PORCJĘ, nie na całość.\n' +
-      '- Kroki krótkie i konkretne, po polsku.\n' +
+      '- Od 4 do 12 składników.\n' +
+      '- Od 3 do 8 kroków, krótkich i konkretnych, po polsku.\n' +
       '- kcal to kalorie na jedną porcję.\n' +
       '- Przepis ma być realistyczny dla domowej kuchni, bez restauracyjnych udziwnień.',
     SCHEMAT_PRZEPISU,
   )
+
+  // Liczebności nie da się wymusić schematem (patrz komentarz wyżej), więc
+  // sprawdzamy je tutaj — lepiej pominąć jedno danie niż wstawić puste.
+  if (!przepis.skladniki?.length) throw new Error('brak składników w odpowiedzi')
+  if (!przepis.kroki?.length) throw new Error('brak kroków w odpowiedzi')
+  return przepis
 }
 
 // Dla dania, które JUŻ MA przepis w bazie — dogenerowujemy sam opis wizualny,
