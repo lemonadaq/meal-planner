@@ -5,7 +5,7 @@
 
 import { createClient } from '@supabase/supabase-js'
 import Anthropic from '@anthropic-ai/sdk'
-import { opisReczny } from './opisy-reczne.js'
+import { opisReczny, wskazowkaPrzepisu } from './opisy-reczne.js'
 
 // ── Klucze ────────────────────────────────────────────────────────
 // Główne nazwy = te, które są w GitHub Secrets. Standardowe nazwy SDK
@@ -221,8 +221,13 @@ const ZASADY_WYGLADU =
   '- Nie opisuj stylu zdjęcia, światła, tła ani naczynia — to jest ustawiane osobno.'
 
 export async function generujPrzepis(nazwa, rodzaj) {
+  // Wskazówka z opisy-reczne.js idzie PRZED zasadami ogólnymi i mówi wprost,
+  // czym to danie ma być — inaczej model robi swoją wersję zamiast tej z domu.
+  const wskazowka = wskazowkaPrzepisu(nazwa)
+
   const przepis = await pytajClaude(
     `Jesteś polskim kucharzem. Wygeneruj przepis na danie: "${nazwa}" (rodzaj: ${rodzaj}).\n\n` +
+      (wskazowka ? `NAJWAŻNIEJSZE — tak ma wyglądać to danie:\n${wskazowka}\n\n` : '') +
       'Zasady:\n' +
       '- Ilości podaj NA 1 PORCJĘ, nie na całość.\n' +
       '- Od 4 do 12 składników.\n' +

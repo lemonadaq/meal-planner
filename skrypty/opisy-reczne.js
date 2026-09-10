@@ -38,11 +38,12 @@ export const OPISY_RECZNE = {
     'pieces of bread with clear edges all the way round.',
 
   'Naleśniki z boczkiem':
-    'Thin crêpe-style pancakes rolled into tight cylinders and laid side by side, three or ' +
-    'four on a plate. Raspberry jam shows at the open ends of the rolls and a little is ' +
-    'spooned over the top. Around them lie pieces of fried bacon glazed in maple syrup, ' +
-    'dark and glossy. The pancakes are thin, pliable and pale golden — French-style crêpes, ' +
-    'never thick fluffy American pancakes, and always rolled, never folded flat.',
+    'Exactly two thin crêpes, each rolled into a tight cylinder, lying side by side on a ' +
+    'plate. Bright red raspberry jam is visible at the open ends of both rolls. Lying ON TOP ' +
+    'of the rolled crêpes are strips of crisp fried bacon, drizzled with maple syrup that ' +
+    'runs down onto the pancakes. The crêpes are thin, smooth and pale golden — French-style ' +
+    'crêpes, never thick fluffy American pancakes, always rolled, never folded flat, and the ' +
+    'bacon sits on top of them rather than scattered around the plate.',
 
   'Parówki':
     'Plain pale pink boiled hot dog sausages, smooth and matte, lying on a plate beside ' +
@@ -71,4 +72,25 @@ export const OPISY_RECZNE = {
 
 export function opisReczny(nazwa) {
   return OPISY_RECZNE[nazwa] || null
+}
+
+// ── Wskazówki do PRZEPISU ─────────────────────────────────────────
+// Doklejane do promptu generującego przepis. Używane tylko wtedy, gdy
+// przepis jest (prze)generowany — czyli przy nowym daniu albo przy
+// NADPISZ=1. Tu piszemy po polsku, bo to trafia do polskiego promptu.
+export const WSKAZOWKI_PRZEPISU = {
+  'Naleśniki z boczkiem':
+    'To danie na słodko-słono: DWA cienkie naleśniki (nie pankejki, nie placki) ' +
+    'zwinięte w rulony z dżemem malinowym w środku, a na wierzchu podsmażony na ' +
+    'chrupko boczek polany syropem klonowym. Dżem malinowy i syrop klonowy MUSZĄ ' +
+    'być na liście składników. Bez szczypiorku i bez ziół.',
+
+  'Parówki':
+    'Najprostsze możliwe śniadanie: parówki gotowane w wodzie, podane z pieczywem, ' +
+    'ketchupem i musztardą. Bez szczypiorku, bez ziół, bez grillowania i bez ' +
+    'dodatkowych udziwnień — tak, jak robi się to w domu w pięć minut.',
+}
+
+export function wskazowkaPrzepisu(nazwa) {
+  return WSKAZOWKI_PRZEPISU[nazwa] || null
 }

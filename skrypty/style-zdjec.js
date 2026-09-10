@@ -78,11 +78,14 @@ const NACZYNIE = {
 // nigdy nie jest ułożone idealnie symetrycznie i zawsze coś kapnie.
 //
 // Podział na dwie pule, bo para nad sernikiem albo nad surówką wygląda głupio.
+//
+// Nie ma tu "one bite already taken" — jako jedyna niedoskonałość zmieniała samo
+// jedzenie, a nie otoczenie, i wychodziła z tego nadgryziona parówka na zdjęciu
+// w katalogu przepisów. Reszta rusza tylko talerza i blatu.
 const NIEDOSKONALOSCI_UNIWERSALNE = [
   'a few crumbs scattered on the surface next to the plate',
   'a small drip of sauce running down the side of the plate',
   'the portion slightly off-centre on the plate, plated by hand not by a stylist',
-  'one bite already taken and used cutlery lying beside the dish',
   'a light smudge wiped across the rim',
   'the portion piled a little unevenly, not levelled or smoothed',
 ]

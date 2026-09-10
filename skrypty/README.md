@@ -28,7 +28,9 @@ Lokalnie działają też standardowe nazwy SDK (`ANTHROPIC_API_KEY`,
 - **dania** — `Bigos|obiad; Żurek|zupa` (po średniku, bo pole jest jednolinijkowe).
   W trybie `obrazy` puste = wszystkie dania bez zdjęcia.
 - **limit** — bezpiecznik na koszty, `0` = bez limitu
-- **overwrite** — w trybie `obrazy` regeneruje też te, które mają już zdjęcie
+- **overwrite** — nadpisuje istniejące: w trybie `obrazy` regeneruje zdjęcia,
+  w trybie `przepisy` regeneruje przepisy dań, które są już w bazie
+  (`ulubione` i `zdjecie` są przenoszone na nowe wiersze)
 - **model_obrazu** — puste = `black-forest-labs/flux-2-pro`
 
 > Workflow pokazuje się w zakładce Actions dopiero wtedy, gdy plik
@@ -73,6 +75,21 @@ Skrypty są wznawialne — po błędzie odpal ponownie, dokończą tylko to, cze
 
 Jeśli przepis się zapisał, a zdjęcie padło — przepis zostaje, kolejny przebieg
 dorobi samo zdjęcie.
+
+## Gdy model uparcie pudłuje
+
+`opisy-reczne.js` trzyma dwie mapy per danie, obie nadpisują to, co wymyśli model:
+
+- **`OPISY_RECZNE`** — opis wyglądu po angielsku, wchodzi do promptu zdjęcia
+  zamiast opisu wygenerowanego. Pisz też, czego ma NIE być („no grill marks",
+  „no halved eggs") — modele obrazu reagują na zakaz mocniej niż na opis wersji
+  poprawnej. Potem: tryb `obrazy` + `overwrite`.
+- **`WSKAZOWKI_PRZEPISU`** — po polsku, doklejane na początek promptu przepisu.
+  Używane tylko wtedy, gdy przepis jest generowany, czyli przy nowym daniu albo
+  przy `overwrite` w trybie `przepisy`.
+
+Zmiana przepisu zwykle oznacza, że zdjęcie też trzeba przegenerować — skrypt
+przypomina o tym w podsumowaniu.
 
 ## Style zdjęć
 

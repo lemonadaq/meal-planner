@@ -28,7 +28,7 @@ on:
         required: false
         default: "0"
       overwrite:
-        description: "Tryb 'obrazy': nadpisz też dania, które mają już zdjęcie"
+        description: "Nadpisz istniejące: w trybie 'obrazy' zdjęcia, w trybie 'przepisy' przepisy (gwiazdka i zdjęcie zostają)"
         type: boolean
         required: false
         default: false
