@@ -32,6 +32,9 @@ Lokalnie działają też standardowe nazwy SDK (`ANTHROPIC_API_KEY`,
   w trybie `przepisy` regeneruje przepisy dań, które są już w bazie
   (`ulubione` i `zdjecie` są przenoszone na nowe wiersze)
 - **model_obrazu** — puste = `black-forest-labs/flux-2-pro`
+- **rodzaj**, **tylko_ulubione** — filtry dla trybu `lista`
+- **zapisz_liste** — tryb `lista`: przepisuje `LISTA_DAN.md` aktualnym stanem bazy
+  i commituje zmianę do repo
 
 > Workflow pokazuje się w zakładce Actions dopiero wtedy, gdy plik
 > `.github/workflows/generuj-dania.yml` jest na gałęzi domyślnej (`main`).
@@ -54,7 +57,11 @@ Filtry dla `lista` (łączą się przez ORAZ):
 ```bash
 RODZAJ=sniadanie ULUBIONE=1 npm run lista   # ulubione śniadania
 BEZ_ZDJECIA=1 npm run lista                 # dania bez zdjęcia
+ZAPISZ_LISTE=1 npm run lista                # odśwież LISTA_DAN.md
 ```
+
+`ZAPISZ_LISTE` zapisuje **całą** bazę, niezależnie od filtrów — plik ma opisywać
+stan wszystkiego, a nie wycinek.
 
 Na końcu `lista` wypisuje gotową linijkę do wklejenia w pole **dania**
 w akcji — czyli można nią wybrać zestaw i od razu puścić na niego `obrazy`.

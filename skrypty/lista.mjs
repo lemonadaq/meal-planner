@@ -6,6 +6,10 @@
 // śniadania" ani „które dania nie mają zdjęcia". Tu wychodzi to jedną komendą,
 // a na końcu dostajesz gotową linijkę do wklejenia w pole `dania` w akcji.
 //
+// ZAPISZ_LISTE=1 — dodatkowo przepisuje LISTA_DAN.md pełnym, aktualnym stanem
+// bazy (filtry tego nie dotyczą — plik zawsze opisuje całość). Na GitHubie
+// workflow commituje zmieniony plik z powrotem do repo.
+//
 // FILTRY (zmienne środowiskowe, wszystkie opcjonalne, łączą się przez ORAZ):
 //   RODZAJ=sniadanie    — tylko ten rodzaj
 //   ULUBIONE=1          — tylko oznaczone jako ulubione
@@ -15,7 +19,7 @@
 //   SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... \
 //     RODZAJ=sniadanie ULUBIONE=1 node skrypty/lista.mjs
 
-import { appendFileSync } from 'fs'
+import { appendFileSync, writeFileSync } from 'fs'
 import { sprawdzKlucze, supabase, pobierzWszystkieWiersze, RODZAJE } from './wspolne.js'
 
 sprawdzKlucze(['SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY'])
@@ -23,6 +27,8 @@ sprawdzKlucze(['SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY'])
 const RODZAJ = process.env.RODZAJ?.trim().toLowerCase() || ''
 const ULUBIONE = process.env.ULUBIONE === '1' || process.env.ULUBIONE === 'true'
 const BEZ_ZDJECIA = process.env.BEZ_ZDJECIA === '1' || process.env.BEZ_ZDJECIA === 'true'
+const ZAPISZ_LISTE = process.env.ZAPISZ_LISTE === '1' || process.env.ZAPISZ_LISTE === 'true'
+const PLIK_LISTY = 'LISTA_DAN.md'
 
 if (RODZAJ && !RODZAJE.includes(RODZAJ)) {
   console.error(`Nieznany rodzaj "${RODZAJ}". Dozwolone: ${RODZAJE.join(', ')}`)
@@ -34,6 +40,54 @@ if (RODZAJ && !RODZAJE.includes(RODZAJ)) {
 function doPodsumowania(tekst) {
   const plik = process.env.GITHUB_STEP_SUMMARY
   if (plik) appendFileSync(plik, tekst + '\n')
+}
+
+// Przepisuje LISTA_DAN.md — ten sam układ kolumn co dotąd, żeby plik dało się
+// dalej czytać i porównywać. Bierze CAŁĄ bazę, nie przefiltrowany wynik.
+function zapiszListeDan(wszystkie) {
+  const dzis = new Date().toISOString().slice(0, 10)
+  const szerNazwa = Math.max(5, ...wszystkie.map(d => d.nazwa.length))
+  const szerRodzaj = Math.max(6, ...wszystkie.map(d => (d.rodzaj || '').length))
+
+  const wiersz = (a, b, c, d) =>
+    `| ${String(a).padEnd(szerNazwa)} | ${String(b).padEnd(szerRodzaj)} | ${String(c).padEnd(8)} | ${String(d).padEnd(4)} |`
+
+  const perRodzaj = {}
+  wszystkie.forEach(d => { perRodzaj[d.rodzaj || '?'] = (perRodzaj[d.rodzaj || '?'] || 0) + 1 })
+  const rozklad = Object.entries(perRodzaj).sort((a, b) => b[1] - a[1])
+    .map(([r, n]) => `${r} ${n}`).join(', ')
+
+  const tresc = [
+    '# Lista dań — Menu Planer',
+    '',
+    `Stan bazy \`dania\` na ${dzis} (${wszystkie.length} dań) — nazwa, rodzaj, czas`,
+    'przyrządzania, kcal na 1 porcję. Do przeglądu przy wymyślaniu nowych dań',
+    '(unikanie dubli) i jako punkt odniesienia.',
+    '',
+    `Rozkład: ${rozklad}.`,
+    '',
+    'Odświeżenie listy: **Actions → „Generuj dania" → tryb `lista`, zaznacz',
+    '`zapisz_liste`**. Workflow przepisze ten plik i zacommituje zmianę.',
+    'Lokalnie: `ZAPISZ_LISTE=1 npm run lista`.',
+    '',
+    'Ręcznie (Supabase SQL Editor):',
+    '',
+    '```sql',
+    'select "Danie" as danie, max(rodzaj) as rodzaj, max(czas_minuty) as czas_min, max(kcal) as kcal',
+    'from dania',
+    'group by "Danie"',
+    'order by "Danie";',
+    '```',
+    '',
+    wiersz('danie', 'rodzaj', 'czas_min', 'kcal'),
+    `| ${'-'.repeat(szerNazwa)} | ${'-'.repeat(szerRodzaj)} | -------- | ---- |`,
+    ...wszystkie.map(d => wiersz(d.nazwa, d.rodzaj || '?', d.czas ?? '-', d.kcal ?? '-')),
+    '',
+  ].join('\n')
+
+  writeFileSync(PLIK_LISTY, tresc)
+  console.log(`\nZapisano ${PLIK_LISTY} — ${wszystkie.length} dań.`)
+  doPodsumowania(`\n_Zapisano \`${PLIK_LISTY}\` — ${wszystkie.length} dań._`)
 }
 
 async function main() {
@@ -81,6 +135,8 @@ async function main() {
   console.log(`Dań w bazie: ${wszystkie.length} | filtry: ${filtry} | pasuje: ${wynik.length}\n`)
   doPodsumowania(`## Lista dań\n`)
   doPodsumowania(`Dań w bazie: **${wszystkie.length}** · filtry: _${filtry}_ · pasuje: **${wynik.length}**\n`)
+
+  if (ZAPISZ_LISTE) zapiszListeDan(wszystkie)
 
   if (!wynik.length) {
     console.log('Nic nie pasuje do filtrów.')
