@@ -1,0 +1,91 @@
+name: Generuj dania
+
+# Odpalane ręcznie: Actions → "Generuj dania" → Run workflow.
+# Klucze siedzą w Settings → Secrets and variables → Actions:
+#   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY  (już są — używa ich promo-daily)
+#   ANTHROPIC_API_KEY, REPLICATE_API_TOKEN   (do dodania)
+
+on:
+  workflow_dispatch:
+    inputs:
+      tryb:
+        description: "Co zrobić"
+        type: choice
+        required: true
+        default: wszystko
+        options:
+          - wszystko   # przepis + zdjęcie dla dań z listy
+          - przepisy   # same przepisy, bez zdjęć (bez kosztów Replicate)
+          - obrazy     # zdjęcia dla dań, które są już w bazie bez zdjęcia
+      dania:
+        description: "Lista dań, po średniku: Bigos|obiad; Żurek|zupa (tryb 'obrazy' — puste = wszystkie bez zdjęcia)"
+        type: string
+        required: false
+        default: ""
+      limit:
+        description: "Maks. dań w jednym przebiegu (0 = bez limitu)"
+        type: string
+        required: false
+        default: "0"
+      overwrite:
+        description: "Tryb 'obrazy': nadpisz też dania, które mają już zdjęcie"
+        type: boolean
+        required: false
+        default: false
+      model_obrazu:
+        description: "Model na Replicate (puste = black-forest-labs/flux-2-pro)"
+        type: string
+        required: false
+        default: ""
+
+# Dwa przebiegi naraz wchodziłyby sobie w drogę przy tych samych daniach.
+concurrency:
+  group: generuj-dania
+  cancel-in-progress: false
+
+jobs:
+  generuj:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      REPLICATE_API_TOKEN: ${{ secrets.REPLICATE_API_TOKEN }}
+      DANIA: ${{ inputs.dania }}
+      LIMIT: ${{ inputs.limit }}
+      OVERWRITE: ${{ inputs.overwrite && '1' || '0' }}
+      REPLICATE_MODEL: ${{ inputs.model_obrazu }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Sprawdź sekrety
+        run: |
+          brakuje=0
+          for zmienna in SUPABASE_URL SUPABASE_SERVICE_ROLE_KEY ANTHROPIC_API_KEY; do
+            if [ -z "${!zmienna}" ]; then echo "::error::brak sekretu $zmienna"; brakuje=1; fi
+          done
+          if [ "${{ inputs.tryb }}" != "przepisy" ] && [ -z "$REPLICATE_API_TOKEN" ]; then
+            echo "::error::brak sekretu REPLICATE_API_TOKEN"; brakuje=1
+          fi
+          exit $brakuje
+
+      - name: Generuj
+        run: |
+          case "${{ inputs.tryb }}" in
+            wszystko) node skrypty/generuj-wszystko.mjs ;;
+            przepisy) node skrypty/generuj-przepisy.mjs ;;
+            obrazy)   node skrypty/generuj-obrazy.mjs ;;
+          esac

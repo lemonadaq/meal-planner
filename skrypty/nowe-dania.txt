@@ -1,0 +1,20 @@
+# Lista dań do wygenerowania — jedna linia na danie:
+#
+#     Nazwa dania|rodzaj
+#
+# Rodzaj musi być jednym z: sniadanie, obiad, kolacja, zupa, przekaska,
+# deser, dodatek, surowka. Literówka w rodzaju = skrypt się zatrzyma i powie,
+# w której linii (danie z lewym rodzajem zniknęłoby z filtrów w apce).
+#
+# Puste linie i linie zaczynające się od # są pomijane, więc ten plik
+# w obecnej postaci nic nie wygeneruje. Odkomentuj albo dopisz swoje.
+#
+# Zanim dopiszesz nowe danie — zerknij do LISTA_DAN.md, żeby nie robić dubla.
+# Dania, które już są w bazie, i tak zostaną pominięte.
+#
+# Przykłady:
+# Owsianka z bananem i masłem orzechowym|sniadanie
+# Krem z pieczonej papryki|zupa
+# Placki ziemniaczane z gulaszem|obiad
+# Hummus z marchewką|przekaska
+# Sernik na zimno z malinami|deser
