@@ -9,121 +9,120 @@
 # Puste linie i linie zaczynające się od # są pomijane.
 # Dania, które już są w bazie, zostaną pominięte przy generowaniu.
 #
-# ── 100 nowych dań, dobranych pod luki w bazie (stan: 275 dań, LISTA_DAN.md) ──
-# Najwięcej dosypane tam, gdzie było najciężej: surówki (było 7) i zupy (17).
-# Bez dodatków — Filip ich nie używa, kategoria zostaje w apce, ale nic tu
-# nie generujemy.
+# ── PACZKA 2: kolejne 100 dań (stan bazy przed nią: 375) ──
+# Sprawdzone pod duble zarówno z LISTA_DAN.md (275 starych), jak i ze setką
+# z paczki 1. Bez dodatków — kategoria zostaje w apce, ale nic tu nie robimy.
 
 # ── ŚNIADANIA (14) ──
-Jaglanka z jabłkiem i cynamonem|sniadanie
-Kanapki z pastą z tuńczyka|sniadanie
-Omlet ze szpinakiem i fetą|sniadanie
-Placki owsiane z jogurtem|sniadanie
-Twarożek z rzodkiewką i szczypiorkiem|sniadanie
-Jajka w koszulce na grzance|sniadanie
-Kasza manna na mleku|sniadanie
-Serek wiejski z pomidorem i bazylią|sniadanie
-Musli z jogurtem i owocami|sniadanie
-Smoothie zielone ze szpinakiem i bananem|sniadanie
-Frittata z ziemniakami i cebulą|sniadanie
-Grzanki z serem żółtym i pomidorem|sniadanie
-Chałka z masłem i miodem|sniadanie
-Kanapki z pastą z pieczonej papryki|sniadanie
+Owsianka z jabłkiem i orzechami|sniadanie
+Jajka zapiekane w awokado|sniadanie
+Gofry na słono z serem i szynką|sniadanie
+Pancakes amerykańskie z syropem klonowym|sniadanie
+Jajka po benedyktyńsku|sniadanie
+Omlet biszkoptowy z dżemem|sniadanie
+Kaszka kukurydziana z owocami|sniadanie
+Naleśniki gryczane z twarogiem|sniadanie
+Bajgle z serkiem i ogórkiem|sniadanie
+Omlet z pieczarkami i cebulą|sniadanie
+Kanapki z pasztetem i ogórkiem kiszonym|sniadanie
+Kluski lane na mleku|sniadanie
+Zupa mleczna z makaronem|sniadanie
+Tortilla śniadaniowa z jajecznicą|sniadanie
 
-# ── ZUPY (15) ──
-Zupa fasolowa|zupa
-Zupa koperkowa|zupa
-Szczawiowa z jajkiem|zupa
-Botwinka z jajkiem|zupa
-Zupa dyniowa z imbirem|zupa
-Barszcz biały z białą kiełbasą|zupa
-Zupa porowa z ziemniakami|zupa
-Zupa z soczewicy czerwonej|zupa
-Minestrone|zupa
-Zupa ramen z kurczakiem|zupa
-Zupa selerowa z grzankami|zupa
-Zupa cukiniowa z serkiem topionym|zupa
-Zupa owocowa z makaronem|zupa
-Zalewajka|zupa
-Krem z zielonego groszku z miętą|zupa
+# ── ZUPY (14) ──
+Rosół z indyka|zupa
+Zupa grzybowa|zupa
+Zupa ziemniaczana z boczkiem|zupa
+Zupa kalarepowa|zupa
+Zupa marchewkowo-imbirowa|zupa
+Krem z kalafiora z migdałami|zupa
+Zupa z ciecierzycy i pomidorów|zupa
+Tom kha z kurczakiem|zupa
+Barszcz ukraiński|zupa
+Kwaśnica|zupa
+Zupa rybna|zupa
+Zupa neapolitańska|zupa
+Zupa cytrynowa|zupa
+Chłodnik ogórkowy z koperkiem|zupa
 
-# ── OBIADY (24) ──
-Gołąbki w sosie pomidorowym|obiad
-Zrazy wołowe zawijane|obiad
-Karkówka pieczona w piekarniku|obiad
-Schab ze śliwką|obiad
-Kurczak w sosie słodko-kwaśnym|obiad
-Naleśniki z mięsem zapiekane|obiad
-Pierogi z kapustą i grzybami|obiad
-Makaron zapiekany z czterema serami|obiad
-Klopsiki w sosie pomidorowym|obiad
-Łosoś pieczony z koperkiem|obiad
-Curry z ciecierzycy i szpinaku|obiad
-Zapiekanka ziemniaczana z mięsem mielonym|obiad
-Wątróbka drobiowa z cebulą|obiad
-Kurczak pieczony w całości|obiad
-Gulasz z indyka z papryką|obiad
-Placek po węgiersku|obiad
-Szaszłyki z kurczaka i warzyw|obiad
-Risotto z grzybami leśnymi|obiad
-Pad thai z kurczakiem|obiad
-Kotlet de volaille|obiad
-Kotlety z kaszy gryczanej|obiad
-Duszona wołowina z warzywami korzeniowymi|obiad
-Makaron z łososiem i szpinakiem|obiad
-Pieczeń rzymska|obiad
+# ── OBIADY (26) ──
+Sznycel wiedeński|obiad
+Roladki drobiowe ze szpinakiem|obiad
+Filet z indyka w sosie grzybowym|obiad
+Boeuf Strogonow|obiad
+Podudzia w marynacie ziołowej|obiad
+Ryba w sosie musztardowym|obiad
+Dorsz w sosie cytrynowym|obiad
+Krewetki w sosie czosnkowym z makaronem|obiad
+Makaron z tuńczykiem i kaparami|obiad
+Lasagne warzywna|obiad
+Cannelloni ze szpinakiem i ricottą|obiad
+Zapiekanka makaronowa z kurczakiem|obiad
+Gulasz wieprzowy z kluskami|obiad
+Golonka pieczona w piwie|obiad
+Kaczka pieczona z jabłkami|obiad
+Indyk pieczony z warzywami|obiad
+Kotlety z ciecierzycy|obiad
+Burgery z soczewicy|obiad
+Tofu w sosie teriyaki|obiad
+Kurczak tikka masala|obiad
+Bibimbap z wołowiną|obiad
+Ryż smażony z krewetkami|obiad
+Moussaka z bakłażanem|obiad
+Pierogi leniwe|obiad
+Krokiety z mięsem|obiad
+Klopsiki szwedzkie w sosie śmietanowym|obiad
 
-# ── KOLACJE (15) ──
-Zapiekanka z bakłażana z serem|kolacja
-Sałatka z komosą ryżową i warzywami|kolacja
-Placki z cukinii z sosem jogurtowym|kolacja
-Sałatka z burakiem, kozim serem i orzechami|kolacja
-Gnocchi z sosem pomidorowym i mozzarellą|kolacja
-Zapiekane jajka z warzywami|kolacja
-Kanapki z pastą z ciecierzycy|kolacja
-Sałatka z kaszą gryczaną i pieczonymi warzywami|kolacja
-Naleśniki ze szpinakiem i fetą|kolacja
-Ryż z warzywami w sosie curry|kolacja
-Sałatka z arbuzem i fetą|kolacja
-Tortilla zapiekana z tuńczykiem|kolacja
-Sałatka z tortellini i pesto|kolacja
-Krokiety z pieczarkami|kolacja
-Sałatka z pieczonym kurczakiem i awokado|kolacja
+# ── KOLACJE (16) ──
+Sałatka nicejska|kolacja
+Sałatka z fasolą i tuńczykiem|kolacja
+Zapiekanka z kalafiora|kolacja
+Placki z kaszy jaglanej|kolacja
+Sałatka z pieczoną dynią i fetą|kolacja
+Kanapki zapiekane z pieczarkami|kolacja
+Wrap z falafelem i hummusem|kolacja
+Falafel z sosem tahini|kolacja
+Sałatka z soczewicą i pieczonym batatem|kolacja
+Sałatka jarzynowa|kolacja
+Zapiekane ziemniaki z serem pleśniowym|kolacja
+Naleśniki z pieczarkami i serem|kolacja
+Makaron z brokułami i czosnkiem|kolacja
+Sałatka z kurczakiem curry|kolacja
+Bruschetta z mozzarellą i rukolą|kolacja
+Zapiekanka z brokułami i kurczakiem|kolacja
 
-# ── PRZEKĄSKI (10) ──
-Hummus z pieczonym burakiem|przekaska
-Faszerowane papryczki serkiem|przekaska
-Śliwki w boczku|przekaska
-Tartinki z serkiem i łososiem|przekaska
-Chipsy z buraka|przekaska
-Prażone pestki dyni z solą|przekaska
-Roladki z bakłażana z ricottą|przekaska
-Grissini z szynką parmeńską|przekaska
-Bruschetta z pieczarkami|przekaska
-Krewetki smażone z czosnkiem|przekaska
+# ── SURÓWKI (12) ──
+Surówka z buraka i chrzanu|surowka
+Sałatka z kapusty pekińskiej i kukurydzy|surowka
+Surówka z cukinii i marchewki|surowka
+Sałatka z ogórka i pomidora ze śmietaną|surowka
+Surówka z fenkuła i pomarańczy|surowka
+Sałatka z awokado i pomidorkami|surowka
+Surówka z jarmużu i jabłka|surowka
+Surówka z rzepy i marchewki|surowka
+Sałatka z papryki i cebuli marynowanej|surowka
+Sałatka z selera naciowego i orzechów włoskich|surowka
+Sałatka z roszponki i gruszki|surowka
+Surówka z kalafiora na surowo|surowka
 
-# ── DESERY (10) ──
-Pierniki miodowe|deser
-Ciasto drożdżowe z kruszonką|deser
-Rogaliki z marmoladą|deser
-Crème brûlée|deser
-Ptasie mleczko domowe|deser
-Ciasto ucierane z owocami|deser
-Faworki|deser
-Pączki domowe|deser
-Placek z rabarbarem i bezą|deser
-Babka piaskowa|deser
+# ── PRZEKĄSKI (9) ──
+Paluszki serowe z sezamem|przekaska
+Tapenada z oliwek|przekaska
+Pasta z pieczonego bakłażana|przekaska
+Jajka przepiórcze w panierce|przekaska
+Szaszłyki caprese na patyczkach|przekaska
+Pieczone bataty z dipem|przekaska
+Krążki kalmarów smażone|przekaska
+Nachos z guacamole i salsą|przekaska
+Roladki z tortilli ze szpinakiem|przekaska
 
-# ── SURÓWKI (12) — było ich tylko 7 na całą bazę ──
-Surówka z selera i jabłka|surowka
-Surówka z białej kapusty i ananasa|surowka
-Surówka z pora i jabłka|surowka
-Surówka z czerwonej kapusty|surowka
-Surówka z ogórka kiszonego i cebuli|surowka
-Sałatka z pomidorów i cebuli|surowka
-Surówka z kalarepy|surowka
-Surówka z rzodkiewki i szczypiorku|surowka
-Sałatka z rukoli, pomidorków i parmezanu|surowka
-Surówka z brokułów z rodzynkami|surowka
-Surówka z dyni i jabłka|surowka
-Sałatka z kukurydzy, papryki i fasoli|surowka
+# ── DESERY (9) ──
+Sernik pieczony z rodzynkami|deser
+Jabłecznik z kruszonką|deser
+Beza Pavlova z owocami|deser
+Kremówka|deser
+Rolada biszkoptowa z dżemem|deser
+Ciasto czekoladowe z wiśniami|deser
+Deser lodowy z gorącymi malinami|deser
+Karpatka|deser
+Mazurek z masą krówkową|deser
