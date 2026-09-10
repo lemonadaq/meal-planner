@@ -139,8 +139,13 @@ export function zbudujPromptObrazu(nazwa, rodzaj, opisWizualny) {
   const naczynie = NACZYNIE[rodzaj] || styl.naczynieDomyslne
   const niedoskonalosc = wybierzNiedoskonalosc(nazwa, rodzaj)
 
+  // Nazwa dania idzie do promptu jako pierwsza. Modele obrazu znają utrwalone
+  // dania (carbonara, gyros, kebab, moussaka) i sama nazwa jest mocniejszą
+  // kotwicą niż jakikolwiek opis — bez niej model składał danie z opisu
+  // składników i wychodziło coś, czego nikt nigdy nie widział na talerzu.
   const czesci = [
-    `Food photograph of ${opisWizualny.replace(/\.\s*$/, '')}`,
+    `Food photograph of ${nazwa}`,
+    opisWizualny.replace(/\.\s*$/, ''),
     naczynie,
     ZAWSZE,
     styl.prompt,

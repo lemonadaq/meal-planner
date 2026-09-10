@@ -176,8 +176,9 @@ const SCHEMAT_PRZEPISU = {
     opis_wizualny: {
       type: 'string',
       description:
-        'Po ANGIELSKU, 1-2 zdania: co konkretnie widać na talerzu — kolory, tekstury, ' +
-        'podanie, dodatki. Sam jedzenie, BEZ opisu stylu fotografii, światła i tła.',
+        'Po ANGIELSKU, 2-3 zdania: jak to danie wygląda NAPRAWDĘ na talerzu, tak żeby ktoś ' +
+        'je rozpoznał ze zdjęcia. Kształt i forma, kolor i faktura powierzchni, gdzie jest sos, ' +
+        'typowe dodatki obok. Tylko to, co widać — bez stylu fotografii, światła, tła i naczynia.',
     },
   },
   required: ['czas_minuty', 'kcal', 'skladniki', 'kroki', 'opis_wizualny'],
@@ -201,6 +202,23 @@ async function pytajClaude(tresc, schemat) {
   return JSON.parse(tekst)
 }
 
+// ── Zasady opisu wyglądu — wspólne dla obu ścieżek ────────────────
+// To jest lekarstwo na „ktoś, kto nigdy nie widział tego dania, kazał
+// narysować obrazek". Wcześniej opis powstawał z samej listy składników,
+// więc carbonara wychodziła jako „makaron z serem i boczkiem", a nie jako
+// carbonara. Teraz model ma się oprzeć na tym, jak danie WYGLĄDA naprawdę.
+const ZASADY_WYGLADU =
+  'Zasady opisu wyglądu (opis_wizualny):\n' +
+  '- Danie o utrwalonej postaci (carbonara, gyros, kapsalon, schabowy, pierogi, ' +
+  'zapiekanka, kebab) opisz DOKŁADNIE tak, jak wygląda w rzeczywistości. Nie wymyślaj ' +
+  'własnej wersji, nie „ulepszaj" podania, nie dokładaj rzeczy, których w nim nie ma.\n' +
+  '- Podaj cechy rozpoznawcze: kształt i forma (kotlet? kopiec? zwinięte? w bułce? ' +
+  'kawałki?), kolor i faktura powierzchni (rumiane? panierowane? zapieczone? polane?), ' +
+  'gdzie jest sos (pod spodem, polany po wierzchu, obok), co leży obok na talerzu.\n' +
+  '- Opisz WYŁĄCZNIE to, co widać na gotowym daniu. Pomiń składniki niewidoczne ' +
+  '(przyprawy w farszu, bulion, tłuszcz do smażenia).\n' +
+  '- Nie opisuj stylu zdjęcia, światła, tła ani naczynia — to jest ustawiane osobno.'
+
 export async function generujPrzepis(nazwa, rodzaj) {
   const przepis = await pytajClaude(
     `Jesteś polskim kucharzem. Wygeneruj przepis na danie: "${nazwa}" (rodzaj: ${rodzaj}).\n\n` +
@@ -209,7 +227,8 @@ export async function generujPrzepis(nazwa, rodzaj) {
       '- Od 4 do 12 składników.\n' +
       '- Od 3 do 8 kroków, krótkich i konkretnych, po polsku.\n' +
       '- kcal to kalorie na jedną porcję.\n' +
-      '- Przepis ma być realistyczny dla domowej kuchni, bez restauracyjnych udziwnień.',
+      '- Przepis ma być realistyczny dla domowej kuchni, bez restauracyjnych udziwnień.\n\n' +
+      ZASADY_WYGLADU,
     SCHEMAT_PRZEPISU,
   )
 
@@ -232,10 +251,14 @@ const SCHEMAT_OPISU = {
 export async function generujOpisWizualny(nazwa, skladniki, przepis) {
   const lista = skladniki.map(s => `- ${s.nazwa}: ${s.ilosc} ${s.jednostka}`).join('\n')
   const { opis_wizualny } = await pytajClaude(
-    `Jesteś fotografem jedzenia. Danie "${nazwa}", składniki:\n${lista}\n` +
+    'Jesteś fotografem jedzenia i znasz kuchnię polską.\n\n' +
+      `Danie: "${nazwa}"\n\nSkładniki:\n${lista}\n` +
       (przepis ? `\nPrzepis:\n${przepis}\n` : '') +
-      '\nOpisz po ANGIELSKU w 1-2 zdaniach, co konkretnie widać na talerzu — kolory, tekstury, ' +
-      'podanie, dodatki. Opisz samo jedzenie, BEZ stylu fotografii, światła i tła.',
+      '\nOpisz po ANGIELSKU w 2-3 zdaniach, jak to danie wygląda NAPRAWDĘ, kiedy stoi ' +
+      'na stole — tak, żeby ktoś rozpoznał je na zdjęciu.\n\n' +
+      'Składniki i przepis są kontekstem, nie listą do przepisania: liczy się to, jak ' +
+      'danie o tej nazwie wygląda w rzeczywistości.\n\n' +
+      ZASADY_WYGLADU,
     SCHEMAT_OPISU,
   )
   return opis_wizualny
