@@ -10,10 +10,11 @@
 # Dania, które już są w bazie, zostaną pominięte przy generowaniu.
 #
 # ── 100 nowych dań, dobranych pod luki w bazie (stan: 275 dań, LISTA_DAN.md) ──
-# Najwięcej dosypane tam, gdzie było najciężej: surówki (było 7), zupy (17),
-# dodatki (same bazy typu ryż/makaron, zero warzyw na ciepło).
+# Najwięcej dosypane tam, gdzie było najciężej: surówki (było 7) i zupy (17).
+# Bez dodatków — Filip ich nie używa, kategoria zostaje w apce, ale nic tu
+# nie generujemy.
 
-# ── ŚNIADANIA (12) ──
+# ── ŚNIADANIA (14) ──
 Jaglanka z jabłkiem i cynamonem|sniadanie
 Kanapki z pastą z tuńczyka|sniadanie
 Omlet ze szpinakiem i fetą|sniadanie
@@ -26,8 +27,10 @@ Musli z jogurtem i owocami|sniadanie
 Smoothie zielone ze szpinakiem i bananem|sniadanie
 Frittata z ziemniakami i cebulą|sniadanie
 Grzanki z serem żółtym i pomidorem|sniadanie
+Chałka z masłem i miodem|sniadanie
+Kanapki z pastą z pieczonej papryki|sniadanie
 
-# ── ZUPY (14) ──
+# ── ZUPY (15) ──
 Zupa fasolowa|zupa
 Zupa koperkowa|zupa
 Szczawiowa z jajkiem|zupa
@@ -42,8 +45,9 @@ Zupa selerowa z grzankami|zupa
 Zupa cukiniowa z serkiem topionym|zupa
 Zupa owocowa z makaronem|zupa
 Zalewajka|zupa
+Krem z zielonego groszku z miętą|zupa
 
-# ── OBIADY (20) ──
+# ── OBIADY (24) ──
 Gołąbki w sosie pomidorowym|obiad
 Zrazy wołowe zawijane|obiad
 Karkówka pieczona w piekarniku|obiad
@@ -64,8 +68,12 @@ Szaszłyki z kurczaka i warzyw|obiad
 Risotto z grzybami leśnymi|obiad
 Pad thai z kurczakiem|obiad
 Kotlet de volaille|obiad
+Kotlety z kaszy gryczanej|obiad
+Duszona wołowina z warzywami korzeniowymi|obiad
+Makaron z łososiem i szpinakiem|obiad
+Pieczeń rzymska|obiad
 
-# ── KOLACJE (12) ──
+# ── KOLACJE (15) ──
 Zapiekanka z bakłażana z serem|kolacja
 Sałatka z komosą ryżową i warzywami|kolacja
 Placki z cukinii z sosem jogurtowym|kolacja
@@ -78,6 +86,9 @@ Naleśniki ze szpinakiem i fetą|kolacja
 Ryż z warzywami w sosie curry|kolacja
 Sałatka z arbuzem i fetą|kolacja
 Tortilla zapiekana z tuńczykiem|kolacja
+Sałatka z tortellini i pesto|kolacja
+Krokiety z pieczarkami|kolacja
+Sałatka z pieczonym kurczakiem i awokado|kolacja
 
 # ── PRZEKĄSKI (10) ──
 Hummus z pieczonym burakiem|przekaska
@@ -102,18 +113,6 @@ Faworki|deser
 Pączki domowe|deser
 Placek z rabarbarem i bezą|deser
 Babka piaskowa|deser
-
-# ── DODATKI (10) — brakowało warzyw na ciepło ──
-Kasza pęczak|dodatek
-Fasolka szparagowa z bułką tartą|dodatek
-Brokuły na parze|dodatek
-Kalafior z masłem i bułką tartą|dodatek
-Marchewka z groszkiem|dodatek
-Buraczki zasmażane|dodatek
-Warzywa pieczone w piekarniku|dodatek
-Puree z batatów|dodatek
-Ryż jaśminowy|dodatek
-Kluski kładzione|dodatek
 
 # ── SURÓWKI (12) — było ich tylko 7 na całą bazę ──
 Surówka z selera i jabłka|surowka
