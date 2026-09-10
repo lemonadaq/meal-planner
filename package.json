@@ -19,7 +19,8 @@
     "generuj:przepisy": "node skrypty/generuj-przepisy.mjs",
     "generuj:obrazy": "node skrypty/generuj-obrazy.mjs",
     "lista": "node skrypty/lista.mjs",
-    "duble": "node skrypty/duble.mjs"
+    "duble": "node skrypty/duble.mjs",
+    "usun": "node skrypty/usun.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.124.0",

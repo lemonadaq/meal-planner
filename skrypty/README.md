@@ -24,7 +24,8 @@ Lokalnie działają też standardowe nazwy SDK (`ANTHROPIC_API_KEY`,
 
 - **tryb** — `wszystko` (przepis + zdjęcie), `przepisy` (bez kosztów Replicate),
   `obrazy` (zdjęcia do dań, które są już w bazie bez zdjęcia),
-  `lista` (tylko wypisuje dania z bazy — nic nie zmienia, zero kosztów)
+  `lista` (tylko wypisuje dania z bazy — nic nie zmienia, zero kosztów),
+  `usun` (KASUJE dania podane w polu `dania` — nieodwracalne)
 - **dania** — `Bigos|obiad; Żurek|zupa` (po średniku, bo pole jest jednolinijkowe).
   W trybie `obrazy` puste = wszystkie dania bez zdjęcia.
 - **limit** — bezpiecznik na koszty, `0` = bez limitu
@@ -59,6 +60,7 @@ RODZAJ=sniadanie ULUBIONE=1 npm run lista   # ulubione śniadania
 BEZ_ZDJECIA=1 npm run lista                 # dania bez zdjęcia
 ZAPISZ_LISTE=1 npm run lista                # odśwież LISTA_DAN.md
 npm run duble                               # szukaj dubli (offline, z LISTA_DAN.md)
+DANIA="Nazwa jedna; Nazwa druga" npm run usun   # skasuj dania (NIEODWRACALNE)
 ```
 
 `ZAPISZ_LISTE` zapisuje **całą** bazę, niezależnie od filtrów — plik ma opisywać
@@ -93,6 +95,16 @@ potrzebuje kluczy i nic nie kosztuje; odśwież najpierw listę, jeśli baza si�
 zmieniła. Próg czułości: `PROG=0.5 npm run duble`.
 
 Warto puścić przed dorzuceniem nowej paczki dań.
+
+## Kasowanie
+
+`usun` kasuje dania po nazwie. Supabase nie ma kosza, więc to nieodwracalne.
+Bezpieczniki: kasuje wyłącznie nazwy podane wprost (nigdy nic po wzorcu), nazwa
+musi pasować dokładnie, przed skasowaniem wypisuje **pełną zawartość wierszy
+do logu** — z niego da się danie odtworzyć — i ostrzega, gdy kasowane danie jest
+ulubione.
+
+Po skasowaniu odśwież `LISTA_DAN.md` (tryb `lista` + `zapisz_liste`).
 
 ## Gdy model uparcie pudłuje
 

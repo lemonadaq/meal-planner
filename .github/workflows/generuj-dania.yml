@@ -17,6 +17,7 @@ on:
           - przepisy   # same przepisy, bez zdjęć (bez kosztów Replicate)
           - obrazy     # zdjęcia dla dań, które są już w bazie bez zdjęcia
           - lista      # tylko wypisuje dania z bazy, nic nie zmienia, zero kosztów
+          - usun       # KASUJE dania podane w polu `dania` — nieodwracalne
       dania:
         description: "Lista dań, po średniku: Bigos|obiad; Żurek|zupa (tryb 'obrazy' — puste = wszystkie bez zdjęcia)"
         type: string
@@ -101,7 +102,8 @@ jobs:
             if [ -z "${!zmienna}" ]; then echo "::error::brak sekretu $zmienna"; brakuje=1; fi
           done
           # tryb 'lista' tylko czyta bazę — nie potrzebuje ani Claude'a, ani Replicate
-          if [ "${{ inputs.tryb }}" != "lista" ] && [ -z "$ANTHROPIC_KEY" ]; then
+          case "${{ inputs.tryb }}" in lista|usun) potrzebnyClaude=0 ;; *) potrzebnyClaude=1 ;; esac
+          if [ "$potrzebnyClaude" = 1 ] && [ -z "$ANTHROPIC_KEY" ]; then
             echo "::error::brak sekretu ANTHROPIC_KEY"; brakuje=1
           fi
           case "${{ inputs.tryb }}" in
@@ -117,6 +119,7 @@ jobs:
             przepisy) node skrypty/generuj-przepisy.mjs ;;
             obrazy)   node skrypty/generuj-obrazy.mjs ;;
             lista)    node skrypty/lista.mjs ;;
+            usun)     node skrypty/usun.mjs ;;
           esac
 
       - name: Zacommituj odświeżoną listę dań
