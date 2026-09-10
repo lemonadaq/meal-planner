@@ -5,6 +5,7 @@
 
 import { createClient } from '@supabase/supabase-js'
 import Anthropic from '@anthropic-ai/sdk'
+import { opisReczny } from './opisy-reczne.js'
 
 // ── Klucze ────────────────────────────────────────────────────────
 // Główne nazwy = te, które są w GitHub Secrets. Standardowe nazwy SDK
@@ -249,6 +250,11 @@ const SCHEMAT_OPISU = {
 }
 
 export async function generujOpisWizualny(nazwa, skladniki, przepis) {
+  // Danie z ręcznym opisem nie potrzebuje modelu — oszczędzamy zapytanie.
+  // (zbudujPromptObrazu i tak by go nadpisał, ale po co za nie płacić)
+  const reczny = opisReczny(nazwa)
+  if (reczny) return reczny
+
   const lista = skladniki.map(s => `- ${s.nazwa}: ${s.ilosc} ${s.jednostka}`).join('\n')
   const { opis_wizualny } = await pytajClaude(
     'Jesteś fotografem jedzenia i znasz kuchnię polską.\n\n' +

@@ -82,7 +82,7 @@ const NIEDOSKONALOSCI_UNIWERSALNE = [
   'a few crumbs scattered on the surface next to the plate',
   'a small drip of sauce running down the side of the plate',
   'the portion slightly off-centre on the plate, plated by hand not by a stylist',
-  'one bite already taken and a used spoon lying beside the dish',
+  'one bite already taken and used cutlery lying beside the dish',
   'a light smudge wiped across the rim',
   'the portion piled a little unevenly, not levelled or smoothed',
 ]
@@ -108,6 +108,8 @@ const NIGDY =
   'Not a 3D render, not CGI, not glossy or plastic-looking, no artificial gloss or wet shine, ' +
   'no text, no watermarks, no logos, no packaging labels, no hands or people in frame, ' +
   'no over-styled restaurant tweezer plating, no symmetrical garnish arrangement'
+
+import { opisReczny } from './opisy-reczne.js'
 
 // ── Deterministyczny hash nazwy (ten sam co getKolor w apce) ──
 function hash(tekst) {
@@ -135,6 +137,11 @@ function wybierzNiedoskonalosc(nazwaDania, rodzaj) {
 // rodzaj       — sniadanie/zupa/obiad/... (steruje naczyniem)
 // opisWizualny — 1-2 zdania po angielsku od Claude'a: co widać na talerzu
 export function zbudujPromptObrazu(nazwa, rodzaj, opisWizualny) {
+  // Ręczny opis wygrywa z tym, co wygenerował model. To jedyne miejsce, przez
+  // które przechodzi KAŻDE zdjęcie (i nowe danie, i regeneracja), więc wpięcie
+  // nadpisania tutaj działa w obu ścieżkach naraz.
+  const opis = opisReczny(nazwa) || opisWizualny
+
   const styl = wybierzStyl(nazwa)
   const naczynie = NACZYNIE[rodzaj] || styl.naczynieDomyslne
   const niedoskonalosc = wybierzNiedoskonalosc(nazwa, rodzaj)
@@ -145,7 +152,7 @@ export function zbudujPromptObrazu(nazwa, rodzaj, opisWizualny) {
   // składników i wychodziło coś, czego nikt nigdy nie widział na talerzu.
   const czesci = [
     `Food photograph of ${nazwa}`,
-    opisWizualny.replace(/\.\s*$/, ''),
+    opis.replace(/\.\s*$/, ''),
     naczynie,
     ZAWSZE,
     styl.prompt,
