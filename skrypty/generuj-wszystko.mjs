@@ -16,7 +16,7 @@
 //
 // LOKALNIE:
 //   export SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... \
-//          ANTHROPIC_API_KEY=... REPLICATE_API_TOKEN=...
+//          ANTHROPIC_KEY=... REPLICATE_KEY=...
 //   node skrypty/generuj-wszystko.mjs
 //
 // NA GITHUBIE: Actions → "Generuj dania" → Run workflow
@@ -31,7 +31,7 @@ import {
 import { zbudujPromptObrazu, wybierzStyl } from './style-zdjec.js'
 
 sprawdzKlucze([
-  'SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'ANTHROPIC_API_KEY', 'REPLICATE_API_TOKEN',
+  'SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'ANTHROPIC_KEY', 'REPLICATE_KEY',
 ])
 
 const PLIK_DAN = 'skrypty/nowe-dania.txt'

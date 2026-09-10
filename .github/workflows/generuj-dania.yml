@@ -2,8 +2,7 @@ name: Generuj dania
 
 # Odpalane ręcznie: Actions → "Generuj dania" → Run workflow.
 # Klucze siedzą w Settings → Secrets and variables → Actions:
-#   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY  (już są — używa ich promo-daily)
-#   ANTHROPIC_API_KEY, REPLICATE_API_TOKEN   (do dodania)
+#   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, ANTHROPIC_KEY, REPLICATE_KEY
 
 on:
   workflow_dispatch:
@@ -51,8 +50,8 @@ jobs:
     env:
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-      REPLICATE_API_TOKEN: ${{ secrets.REPLICATE_API_TOKEN }}
+      ANTHROPIC_KEY: ${{ secrets.ANTHROPIC_KEY }}
+      REPLICATE_KEY: ${{ secrets.REPLICATE_KEY }}
       DANIA: ${{ inputs.dania }}
       LIMIT: ${{ inputs.limit }}
       OVERWRITE: ${{ inputs.overwrite && '1' || '0' }}
@@ -74,11 +73,11 @@ jobs:
       - name: Sprawdź sekrety
         run: |
           brakuje=0
-          for zmienna in SUPABASE_URL SUPABASE_SERVICE_ROLE_KEY ANTHROPIC_API_KEY; do
+          for zmienna in SUPABASE_URL SUPABASE_SERVICE_ROLE_KEY ANTHROPIC_KEY; do
             if [ -z "${!zmienna}" ]; then echo "::error::brak sekretu $zmienna"; brakuje=1; fi
           done
-          if [ "${{ inputs.tryb }}" != "przepisy" ] && [ -z "$REPLICATE_API_TOKEN" ]; then
-            echo "::error::brak sekretu REPLICATE_API_TOKEN"; brakuje=1
+          if [ "${{ inputs.tryb }}" != "przepisy" ] && [ -z "$REPLICATE_KEY" ]; then
+            echo "::error::brak sekretu REPLICATE_KEY"; brakuje=1
           fi
           exit $brakuje
 

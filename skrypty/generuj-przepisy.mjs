@@ -13,7 +13,7 @@ import {
   generujPrzepis, MODEL_TEKST,
 } from './wspolne.js'
 
-sprawdzKlucze(['SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'ANTHROPIC_API_KEY'])
+sprawdzKlucze(['SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'ANTHROPIC_KEY'])
 
 const PLIK_DAN = 'skrypty/nowe-dania.txt'
 const LIMIT = parseInt(process.env.LIMIT || '0', 10)

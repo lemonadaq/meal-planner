@@ -11,7 +11,7 @@
 //
 // LOKALNIE:
 //   export SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... \
-//          ANTHROPIC_API_KEY=... REPLICATE_API_TOKEN=...
+//          ANTHROPIC_KEY=... REPLICATE_KEY=...
 //   node skrypty/generuj-obrazy.mjs
 
 import {
@@ -21,7 +21,7 @@ import {
 import { zbudujPromptObrazu, wybierzStyl } from './style-zdjec.js'
 
 sprawdzKlucze([
-  'SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'ANTHROPIC_API_KEY', 'REPLICATE_API_TOKEN',
+  'SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'ANTHROPIC_KEY', 'REPLICATE_KEY',
 ])
 
 const OVERWRITE = process.env.OVERWRITE === '1' || process.env.OVERWRITE === 'true'

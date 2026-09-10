@@ -11,11 +11,12 @@ Wiersze lądują w formacie 1:1 z formularzem `DodajDanie.jsx`.
 | --- | --- | --- |
 | `SUPABASE_URL` | baza | Supabase → Settings → API |
 | `SUPABASE_SERVICE_ROLE_KEY` | baza (omija RLS) | Supabase → Settings → API Keys |
-| `ANTHROPIC_API_KEY` | przepisy | console.anthropic.com → API keys |
-| `REPLICATE_API_TOKEN` | zdjęcia | replicate.com → Settings → API tokens |
+| `ANTHROPIC_KEY` | przepisy | console.anthropic.com → API keys |
+| `REPLICATE_KEY` | zdjęcia | replicate.com → Settings → API tokens |
 
-Na GitHubie: **Settings → Secrets and variables → Actions**. Pierwsze dwa
-już tam są (używa ich `promo-daily`), dorzucić trzeba dwa ostatnie.
+Wszystkie cztery są już w **Settings → Secrets and variables → Actions**.
+Lokalnie działają też standardowe nazwy SDK (`ANTHROPIC_API_KEY`,
+`REPLICATE_API_TOKEN`) — skrypty przyjmują jedno i drugie.
 
 ## Na GitHubie (bez odpalania czegokolwiek u siebie)
 
@@ -37,7 +38,7 @@ już tam są (używa ich `promo-daily`), dorzucić trzeba dwa ostatnie.
 
 ```bash
 export SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... \
-       ANTHROPIC_API_KEY=... REPLICATE_API_TOKEN=...
+       ANTHROPIC_KEY=... REPLICATE_KEY=...
 
 npm run generuj:wszystko    # przepisy + zdjęcia dla dań z listy
 npm run generuj:przepisy    # same przepisy

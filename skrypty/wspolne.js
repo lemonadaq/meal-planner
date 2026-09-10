@@ -7,12 +7,13 @@ import { createClient } from '@supabase/supabase-js'
 import Anthropic from '@anthropic-ai/sdk'
 
 // ── Klucze ────────────────────────────────────────────────────────
-// Nazwy zgodne z workflow promo-daily.yml (SUPABASE_SERVICE_ROLE_KEY),
-// ze starymi nazwami ze skryptów lokalnych jako alias.
+// Główne nazwy = te, które są w GitHub Secrets. Standardowe nazwy SDK
+// (ANTHROPIC_API_KEY, REPLICATE_API_TOKEN) działają jako alias, żeby lokalnie
+// zadziałało jedno i drugie.
 const SUPABASE_URL = process.env.SUPABASE_URL
 const SUPABASE_SERVICE = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE
-const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_KEY
-const REPLICATE_KEY = process.env.REPLICATE_API_TOKEN || process.env.REPLICATE_KEY
+const ANTHROPIC_KEY = process.env.ANTHROPIC_KEY || process.env.ANTHROPIC_API_KEY
+const REPLICATE_KEY = process.env.REPLICATE_KEY || process.env.REPLICATE_API_TOKEN
 
 export const BUCKET = 'dania-zdjecia'
 export const PORCJE_BAZOWE = 4
@@ -40,8 +41,8 @@ export function sprawdzKlucze(potrzebne) {
   const dostepne = {
     SUPABASE_URL,
     SUPABASE_SERVICE_ROLE_KEY: SUPABASE_SERVICE,
-    ANTHROPIC_API_KEY: ANTHROPIC_KEY,
-    REPLICATE_API_TOKEN: REPLICATE_KEY,
+    ANTHROPIC_KEY,
+    REPLICATE_KEY,
   }
   const brakuje = potrzebne.filter(k => !dostepne[k])
   if (brakuje.length) {
