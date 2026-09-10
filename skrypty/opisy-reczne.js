@@ -110,12 +110,6 @@ export const OPISY_RECZNE = {
     'on a plate. These are racuchy — never neat flat even American pancakes and never a tidy ' +
     'stack of identical discs.',
 
-  'Racuchy jabłkowe mini':
-    'Small thick Polish yeast fritters fried in a deep layer of oil: irregular little rounds ' +
-    'with uneven ragged golden-brown edges, puffed and slightly misshapen, no two alike. ' +
-    'Pieces of apple show through the batter. Dusted with icing sugar and piled loosely. ' +
-    'These are racuchy — never neat flat even American pancakes, never uniform discs.',
-
   'Spring rolls (sajgonki)':
     'Fresh rice-paper rolls, a few left whole and one cut straight across its width. The ' +
     'prawns are halved lengthwise and laid end to end ALONG the length of each roll, running ' +
