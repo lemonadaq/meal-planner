@@ -23,7 +23,8 @@ Lokalnie działają też standardowe nazwy SDK (`ANTHROPIC_API_KEY`,
 **Actions → „Generuj dania" → Run workflow.** Pola:
 
 - **tryb** — `wszystko` (przepis + zdjęcie), `przepisy` (bez kosztów Replicate),
-  `obrazy` (zdjęcia do dań, które są już w bazie bez zdjęcia)
+  `obrazy` (zdjęcia do dań, które są już w bazie bez zdjęcia),
+  `lista` (tylko wypisuje dania z bazy — nic nie zmienia, zero kosztów)
 - **dania** — `Bigos|obiad; Żurek|zupa` (po średniku, bo pole jest jednolinijkowe).
   W trybie `obrazy` puste = wszystkie dania bez zdjęcia.
 - **limit** — bezpiecznik na koszty, `0` = bez limitu
@@ -43,7 +44,18 @@ export SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... \
 npm run generuj:wszystko    # przepisy + zdjęcia dla dań z listy
 npm run generuj:przepisy    # same przepisy
 npm run generuj:obrazy      # same zdjęcia, do dań już w bazie
+npm run lista               # wypisz dania z bazy (read-only)
 ```
+
+Filtry dla `lista` (łączą się przez ORAZ):
+
+```bash
+RODZAJ=sniadanie ULUBIONE=1 npm run lista   # ulubione śniadania
+BEZ_ZDJECIA=1 npm run lista                 # dania bez zdjęcia
+```
+
+Na końcu `lista` wypisuje gotową linijkę do wklejenia w pole **dania**
+w akcji — czyli można nią wybrać zestaw i od razu puścić na niego `obrazy`.
 
 Lista dań: zmienna `DANIA` albo plik `skrypty/nowe-dania.txt`
 (format `Nazwa|rodzaj`, `#` to komentarz).

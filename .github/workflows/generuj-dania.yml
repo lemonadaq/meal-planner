@@ -16,6 +16,7 @@ on:
           - wszystko   # przepis + zdjęcie dla dań z listy
           - przepisy   # same przepisy, bez zdjęć (bez kosztów Replicate)
           - obrazy     # zdjęcia dla dań, które są już w bazie bez zdjęcia
+          - lista      # tylko wypisuje dania z bazy, nic nie zmienia, zero kosztów
       dania:
         description: "Lista dań, po średniku: Bigos|obiad; Żurek|zupa (tryb 'obrazy' — puste = wszystkie bez zdjęcia)"
         type: string
@@ -36,6 +37,16 @@ on:
         type: string
         required: false
         default: ""
+      rodzaj:
+        description: "Tryb 'lista': filtruj po rodzaju (sniadanie, obiad, kolacja, zupa, przekaska, deser, dodatek, surowka)"
+        type: string
+        required: false
+        default: ""
+      tylko_ulubione:
+        description: "Tryb 'lista': tylko dania oznaczone jako ulubione"
+        type: boolean
+        required: false
+        default: false
 
 # Dwa przebiegi naraz wchodziłyby sobie w drogę przy tych samych daniach.
 concurrency:
@@ -56,6 +67,8 @@ jobs:
       LIMIT: ${{ inputs.limit }}
       OVERWRITE: ${{ inputs.overwrite && '1' || '0' }}
       REPLICATE_MODEL: ${{ inputs.model_obrazu }}
+      RODZAJ: ${{ inputs.rodzaj }}
+      ULUBIONE: ${{ inputs.tylko_ulubione && '1' || '0' }}
 
     steps:
       - name: Checkout repo
@@ -73,12 +86,17 @@ jobs:
       - name: Sprawdź sekrety
         run: |
           brakuje=0
-          for zmienna in SUPABASE_URL SUPABASE_SERVICE_ROLE_KEY ANTHROPIC_KEY; do
+          for zmienna in SUPABASE_URL SUPABASE_SERVICE_ROLE_KEY; do
             if [ -z "${!zmienna}" ]; then echo "::error::brak sekretu $zmienna"; brakuje=1; fi
           done
-          if [ "${{ inputs.tryb }}" != "przepisy" ] && [ -z "$REPLICATE_KEY" ]; then
-            echo "::error::brak sekretu REPLICATE_KEY"; brakuje=1
+          # tryb 'lista' tylko czyta bazę — nie potrzebuje ani Claude'a, ani Replicate
+          if [ "${{ inputs.tryb }}" != "lista" ] && [ -z "$ANTHROPIC_KEY" ]; then
+            echo "::error::brak sekretu ANTHROPIC_KEY"; brakuje=1
           fi
+          case "${{ inputs.tryb }}" in
+            wszystko|obrazy)
+              if [ -z "$REPLICATE_KEY" ]; then echo "::error::brak sekretu REPLICATE_KEY"; brakuje=1; fi ;;
+          esac
           exit $brakuje
 
       - name: Generuj
@@ -87,4 +105,5 @@ jobs:
             wszystko) node skrypty/generuj-wszystko.mjs ;;
             przepisy) node skrypty/generuj-przepisy.mjs ;;
             obrazy)   node skrypty/generuj-obrazy.mjs ;;
+            lista)    node skrypty/lista.mjs ;;
           esac

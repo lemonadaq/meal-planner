@@ -17,7 +17,8 @@
     "promo:daily": "node promo-daily.mjs",
     "generuj:wszystko": "node skrypty/generuj-wszystko.mjs",
     "generuj:przepisy": "node skrypty/generuj-przepisy.mjs",
-    "generuj:obrazy": "node skrypty/generuj-obrazy.mjs"
+    "generuj:obrazy": "node skrypty/generuj-obrazy.mjs",
+    "lista": "node skrypty/lista.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.124.0",
