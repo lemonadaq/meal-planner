@@ -14,9 +14,13 @@
     "promo:discover": "node blix-multi-discover.mjs --stores biedronka,lidl,kaufland,auchan",
     "promo:scrape": "node blix-scraper.mjs --save-raw --delay 5000",
     "promo:import": "node blix-import-supabase.mjs",
-    "promo:daily": "node promo-daily.mjs"
+    "promo:daily": "node promo-daily.mjs",
+    "generuj:wszystko": "node skrypty/generuj-wszystko.mjs",
+    "generuj:przepisy": "node skrypty/generuj-przepisy.mjs",
+    "generuj:obrazy": "node skrypty/generuj-obrazy.mjs"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.124.0",
     "@capacitor/android": "^8.4.0",
     "@capacitor/app": "^8.1.0",
     "@capacitor/browser": "^8.0.3",

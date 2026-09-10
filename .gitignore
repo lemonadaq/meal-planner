@@ -30,8 +30,13 @@ scripts/
 test-results/
 playwright-report/
 
-dogeneruj-brakujace.mjs
-generuj-obrazy.mjs
-generuj-przepisy.mjs
-nowe-dania.txt
-generuj-wszystko.mjs
+# Stare, lokalne wersje skryptów generujących (mają klucze wpisane na sztywno) —
+# ignorowane TYLKO w katalogu głównym. Wersje w skrypty/ są w repo i biorą
+# klucze z env. Ukośnik z przodu jest tu istotny: bez niego wzorzec pasowałby
+# też do skrypty/generuj-*.mjs i pliki nie trafiłyby do repo.
+/dogeneruj-brakujace.mjs
+/generuj-obrazy.mjs
+/generuj-przepisy.mjs
+/generuj-wszystko.mjs
+/nowe-dania.txt
+/prompty-grafik.json

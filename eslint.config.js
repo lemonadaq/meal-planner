@@ -18,4 +18,16 @@ export default defineConfig([
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
   },
+  // Skrypty generujące chodzą w Node (process, Buffer), nie w przeglądarce.
+  {
+    files: ['skrypty/**/*.{js,mjs}'],
+    extends: [js.configs.recommended],
+    languageOptions: {
+      globals: globals.node,
+      sourceType: 'module',
+    },
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
 ])

@@ -47,6 +47,7 @@
 \- `Admin.jsx` — panel admina (tylko wojownik157@gmail.com)
 
 \- `supabase.js` — klient Supabase
+- `skrypty/` — generowanie przepisów (Claude) i zdjęć (Replicate) prosto do bazy; odpalane ręcznie z GitHub Actions („Generuj dania") albo `npm run generuj:*`. Klucze WYŁĄCZNIE z env/secrets. Style zdjęć i ich rotacja: `skrypty/style-zdjec.js`. Szczegóły: `skrypty/README.md`
 
 \- `useHousehold.js` — hook do pobierania household\_id
 
@@ -96,7 +97,7 @@ Helpery SQL: `moj\_household\_id()`, `moj\_email()` — używają JWT pytająceg
 
 \### 🔥 Priorytet
 
-1\. \*\*Zdjęcia dań\*\* — upload do Supabase Storage. Komponent w `DodajDanie.jsx` (z kompresją po stronie klienta) i tryb edycji w `DanieDetail.jsx` żeby dorzucać do starych. Pole `dania.zdjecie`.
+1\. \*\*Zdjęcia dań\*\* — ZROBIONE (upload ręczny + generowanie AI, patrz `skrypty/`). Upload do Supabase Storage. Komponent w `DodajDanie.jsx` (z kompresją po stronie klienta) i tryb edycji w `DanieDetail.jsx` żeby dorzucać do starych. Pole `dania.zdjecie`.
 
 2\. \*\*Lista zakupów bez minionych dni\*\* — filtrować `kalendarz` po `data >= dziś` przed agregacją do listy.
 
@@ -129,6 +130,7 @@ Helpery SQL: `moj\_household\_id()`, `moj\_email()` — używają JWT pytająceg
 
 
 \## Co ZOSTAŁO ZROBIONE niedawno (nie ruszaj)
+- ✅ \*\*Generowanie przepisów i zdjęć\*\* — `skrypty/generuj-wszystko.mjs` (przepis + zdjęcie), `generuj-przepisy.mjs`, `generuj-obrazy.mjs` + workflow `.github/workflows/generuj-dania.yml` (Actions → „Generuj dania", ręcznie). Przepisy: Claude ze schematem JSON (`output_config.format`), więc nie ma parsowania markdownu. Zdjęcia: Replicate, 4 rotowane style (`style-zdjec.js`) zamiast jednego promptu dla wszystkich dań. Skrypty są wznawialne — po błędzie odpal ponownie. Sekrety w Actions: `ANTHROPIC_KEY`, `REPLICATE_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`. NIE wpisuj kluczy do kodu — stare lokalne `generuj-*.mjs` w katalogu głównym miały je na sztywno i dlatego zostają w `.gitignore`.
 
 \- ✅ \*\*Wielkie uproszczenie: tryb "Tydzień"\*\* — nowy ekran startowy `Tydzien.jsx` (pula dań na tydzień bez dni/slotów, tap = dodaj, stepper porcji, wylosuj danie), tabela `plan\_tygodnia`, lista zakupów sumuje pulę z kalendarzem (`dosypPuleTygodnia`), NavBar zredukowany do 3 zakładek; stary Kalendarz i Home ZOSTAJĄ w kodzie jako overlaye z Ustawień ("Planowanie po dniach"). Migracja: `migracja\_plan\_tygodnia.sql` (musi być wykonana w Supabase!). Plan całości: `PROMPTS.md`.
 
