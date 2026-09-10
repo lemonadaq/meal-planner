@@ -6,15 +6,125 @@
 # deser, dodatek, surowka. Literówka w rodzaju = skrypt się zatrzyma i powie,
 # w której linii (danie z lewym rodzajem zniknęłoby z filtrów w apce).
 #
-# Puste linie i linie zaczynające się od # są pomijane, więc ten plik
-# w obecnej postaci nic nie wygeneruje. Odkomentuj albo dopisz swoje.
+# Puste linie i linie zaczynające się od # są pomijane.
+# Dania, które już są w bazie, zostaną pominięte przy generowaniu.
 #
-# Zanim dopiszesz nowe danie — zerknij do LISTA_DAN.md, żeby nie robić dubla.
-# Dania, które już są w bazie, i tak zostaną pominięte.
-#
-# Przykłady:
-# Owsianka z bananem i masłem orzechowym|sniadanie
-# Krem z pieczonej papryki|zupa
-# Placki ziemniaczane z gulaszem|obiad
-# Hummus z marchewką|przekaska
-# Sernik na zimno z malinami|deser
+# ── 100 nowych dań, dobranych pod luki w bazie (stan: 275 dań, LISTA_DAN.md) ──
+# Najwięcej dosypane tam, gdzie było najciężej: surówki (było 7), zupy (17),
+# dodatki (same bazy typu ryż/makaron, zero warzyw na ciepło).
+
+# ── ŚNIADANIA (12) ──
+Jaglanka z jabłkiem i cynamonem|sniadanie
+Kanapki z pastą z tuńczyka|sniadanie
+Omlet ze szpinakiem i fetą|sniadanie
+Placki owsiane z jogurtem|sniadanie
+Twarożek z rzodkiewką i szczypiorkiem|sniadanie
+Jajka w koszulce na grzance|sniadanie
+Kasza manna na mleku|sniadanie
+Serek wiejski z pomidorem i bazylią|sniadanie
+Musli z jogurtem i owocami|sniadanie
+Smoothie zielone ze szpinakiem i bananem|sniadanie
+Frittata z ziemniakami i cebulą|sniadanie
+Grzanki z serem żółtym i pomidorem|sniadanie
+
+# ── ZUPY (14) ──
+Zupa fasolowa|zupa
+Zupa koperkowa|zupa
+Szczawiowa z jajkiem|zupa
+Botwinka z jajkiem|zupa
+Zupa dyniowa z imbirem|zupa
+Barszcz biały z białą kiełbasą|zupa
+Zupa porowa z ziemniakami|zupa
+Zupa z soczewicy czerwonej|zupa
+Minestrone|zupa
+Zupa ramen z kurczakiem|zupa
+Zupa selerowa z grzankami|zupa
+Zupa cukiniowa z serkiem topionym|zupa
+Zupa owocowa z makaronem|zupa
+Zalewajka|zupa
+
+# ── OBIADY (20) ──
+Gołąbki w sosie pomidorowym|obiad
+Zrazy wołowe zawijane|obiad
+Karkówka pieczona w piekarniku|obiad
+Schab ze śliwką|obiad
+Kurczak w sosie słodko-kwaśnym|obiad
+Naleśniki z mięsem zapiekane|obiad
+Pierogi z kapustą i grzybami|obiad
+Makaron zapiekany z czterema serami|obiad
+Klopsiki w sosie pomidorowym|obiad
+Łosoś pieczony z koperkiem|obiad
+Curry z ciecierzycy i szpinaku|obiad
+Zapiekanka ziemniaczana z mięsem mielonym|obiad
+Wątróbka drobiowa z cebulą|obiad
+Kurczak pieczony w całości|obiad
+Gulasz z indyka z papryką|obiad
+Placek po węgiersku|obiad
+Szaszłyki z kurczaka i warzyw|obiad
+Risotto z grzybami leśnymi|obiad
+Pad thai z kurczakiem|obiad
+Kotlet de volaille|obiad
+
+# ── KOLACJE (12) ──
+Zapiekanka z bakłażana z serem|kolacja
+Sałatka z komosą ryżową i warzywami|kolacja
+Placki z cukinii z sosem jogurtowym|kolacja
+Sałatka z burakiem, kozim serem i orzechami|kolacja
+Gnocchi z sosem pomidorowym i mozzarellą|kolacja
+Zapiekane jajka z warzywami|kolacja
+Kanapki z pastą z ciecierzycy|kolacja
+Sałatka z kaszą gryczaną i pieczonymi warzywami|kolacja
+Naleśniki ze szpinakiem i fetą|kolacja
+Ryż z warzywami w sosie curry|kolacja
+Sałatka z arbuzem i fetą|kolacja
+Tortilla zapiekana z tuńczykiem|kolacja
+
+# ── PRZEKĄSKI (10) ──
+Hummus z pieczonym burakiem|przekaska
+Faszerowane papryczki serkiem|przekaska
+Śliwki w boczku|przekaska
+Tartinki z serkiem i łososiem|przekaska
+Chipsy z buraka|przekaska
+Prażone pestki dyni z solą|przekaska
+Roladki z bakłażana z ricottą|przekaska
+Grissini z szynką parmeńską|przekaska
+Bruschetta z pieczarkami|przekaska
+Krewetki smażone z czosnkiem|przekaska
+
+# ── DESERY (10) ──
+Pierniki miodowe|deser
+Ciasto drożdżowe z kruszonką|deser
+Rogaliki z marmoladą|deser
+Crème brûlée|deser
+Ptasie mleczko domowe|deser
+Ciasto ucierane z owocami|deser
+Faworki|deser
+Pączki domowe|deser
+Placek z rabarbarem i bezą|deser
+Babka piaskowa|deser
+
+# ── DODATKI (10) — brakowało warzyw na ciepło ──
+Kasza pęczak|dodatek
+Fasolka szparagowa z bułką tartą|dodatek
+Brokuły na parze|dodatek
+Kalafior z masłem i bułką tartą|dodatek
+Marchewka z groszkiem|dodatek
+Buraczki zasmażane|dodatek
+Warzywa pieczone w piekarniku|dodatek
+Puree z batatów|dodatek
+Ryż jaśminowy|dodatek
+Kluski kładzione|dodatek
+
+# ── SURÓWKI (12) — było ich tylko 7 na całą bazę ──
+Surówka z selera i jabłka|surowka
+Surówka z białej kapusty i ananasa|surowka
+Surówka z pora i jabłka|surowka
+Surówka z czerwonej kapusty|surowka
+Surówka z ogórka kiszonego i cebuli|surowka
+Sałatka z pomidorów i cebuli|surowka
+Surówka z kalarepy|surowka
+Surówka z rzodkiewki i szczypiorku|surowka
+Sałatka z rukoli, pomidorków i parmezanu|surowka
+Surówka z brokułów z rodzynkami|surowka
+Surówka z dyni i jabłka|surowka
+Sałatka z kukurydzy, papryki i fasoli|surowka
