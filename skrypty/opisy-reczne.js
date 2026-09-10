@@ -117,12 +117,13 @@ export const OPISY_RECZNE = {
     'These are racuchy — never neat flat even American pancakes, never uniform discs.',
 
   'Spring rolls (sajgonki)':
-    'Fresh rice-paper rolls cut in half and standing cut-side up. In each roll the pink ' +
-    'prawns lie in a neat row pressed flat against the translucent rice paper on the outer ' +
-    'curve, so they show clearly through the wrapper from the outside, with noodles, herbs ' +
-    'and shredded vegetables rolled up behind them. The prawns face outward against the ' +
-    'wrapper — never buried in the middle of the roll and never turned away from the ' +
-    'visible side.',
+    'Fresh rice-paper rolls, a few left whole and one cut straight across its width. The ' +
+    'prawns are halved lengthwise and laid end to end ALONG the length of each roll, running ' +
+    'parallel to the roll\'s long axis and pressed against the translucent wrapper, so on the ' +
+    'whole rolls they read as a continuous pink stripe running down the length of the roll. ' +
+    'On the cut roll the cut face shows only a small oval cross-section slice through a ' +
+    'prawn, ringed by noodles, herbs and shredded vegetables. Never a whole curled prawn ' +
+    'shown flat in the cut face, and never prawns laid across the width of the roll.',
 
   'Wrap z falafelem i hummusem':
     'A large flour tortilla wrapped tightly around the filling exactly like a döner kebab: ' +
