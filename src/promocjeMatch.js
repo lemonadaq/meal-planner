@@ -140,26 +140,78 @@ export function dopasujPromocje(items, promocje) {
   })
 }
 
+// ── Cache promocji w localStorage ─────────────────────────────────
+// Scraper (`promo-daily`) odświeża tabelę raz na dobę, więc trzymanie wyniku
+// przez kilka godzin niczego nie psuje, a drugie wejście w listę jest
+// natychmiastowe. Cache leci do kosza razem ze zmianą dnia — inaczej
+// etykiety „do kiedy" pokazywałyby wczorajsze „dziś!".
+const CACHE_KLUCZ = 'promocje_cache'
+const CACHE_WAZNOSC_MS = 6 * 60 * 60 * 1000
+
+function zCache() {
+  try {
+    const surowe = localStorage.getItem(CACHE_KLUCZ)
+    if (!surowe) return null
+    const { zapisano, dzien, promocje } = JSON.parse(surowe)
+    if (dzien !== dzisLocal()) return null
+    if (!zapisano || Date.now() - zapisano > CACHE_WAZNOSC_MS) return null
+    return Array.isArray(promocje) ? promocje : null
+  } catch {
+    return null
+  }
+}
+
+function doCache(promocje) {
+  try {
+    localStorage.setItem(CACHE_KLUCZ, JSON.stringify({
+      zapisano: Date.now(),
+      dzien: dzisLocal(),
+      promocje,
+    }))
+  } catch {
+    // pełny localStorage nie ma prawa wywalić listy zakupów
+  }
+}
+
 // Fetch aktualnych promocji (wazne_do >= dziś). Zwraca [] przy błędzie —
 // promocje to wzmocnienie, nigdy blokada listy (np. tabela jeszcze nie istnieje).
+// Strony lecą równolegle: najpierw licznik (head, bez ściągania wierszy), potem
+// wszystkie zakresy naraz. Przy 4 stronach to jedna runda zamiast czterech.
 export async function pobierzAktualnePromocje() {
+  const zapisane = zCache()
+  if (zapisane) return zapisane
+
   try {
     const teraz = new Date().toISOString()
-    const PAGE = 1000
+    const STRONA = 1000
+
+    const { count, error: bladLicznika } = await supabase
+      .from('promo_offers')
+      .select('product_name', { count: 'exact', head: true })
+      .gte('offer_end_at', teraz)
+    if (bladLicznika || !count) return []
+
+    const strony = Math.ceil(count / STRONA)
+    const wyniki = await Promise.all(
+      Array.from({ length: strony }, (_, i) =>
+        supabase
+          .from('promo_offers')
+          .select('product_name, price, old_price, store_name, offer_end_at')
+          .gte('offer_end_at', teraz)
+          .range(i * STRONA, i * STRONA + STRONA - 1)
+      )
+    )
+
+    // Strona z błędem = niepełny zestaw. Pokazujemy to, co przyszło (brak
+    // promocji przy pozycji jest akceptowalny), ale takiego wyniku nie cache'ujemy.
+    let pelne = true
     const wszystkie = []
-    let od = 0
-    while (true) {
-      const { data, error } = await supabase
-        .from('promo_offers')
-        .select('product_name, price, old_price, store_name, offer_end_at')
-        .gte('offer_end_at', teraz)
-        .range(od, od + PAGE - 1)
-      if (error || !data?.length) break
-      wszystkie.push(...data)
-      if (data.length < PAGE) break
-      od += PAGE
+    for (const { data, error } of wyniki) {
+      if (error) { pelne = false; continue }
+      wszystkie.push(...(data || []))
     }
-    return wszystkie.map(p => ({
+
+    const promocje = wszystkie.map(p => ({
       nazwa_norm: p.product_name,
       nazwa: p.product_name,
       cena_nowa: p.price,
@@ -168,7 +220,10 @@ export async function pobierzAktualnePromocje() {
       wazne_do: p.offer_end_at ? p.offer_end_at.substring(0, 10) : null,
       rabat_label: null,
     }))
-  } catch (e) {
+
+    if (pelne) doCache(promocje)
+    return promocje
+  } catch {
     return []
   }
 }
