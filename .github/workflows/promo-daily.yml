@@ -12,7 +12,7 @@ jobs:
     env:
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-      BLIX_STORES: biedronka,lidl,kaufland,auchan
+      BLIX_STORES: biedronka,lidl,kaufland,auchan,selgros
 
     steps:
       - name: Checkout repo

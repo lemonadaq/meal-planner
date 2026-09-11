@@ -256,6 +256,7 @@ function isBadProductName(value) {
     "biedronka",
     "auchan",
     "lidl",
+    "selgros",
     "newsletter",
     "aplikacja",
     "regulamin",
@@ -470,7 +471,8 @@ function mapStoreName(slug) {
     biedronka: "Biedronka",
     lidl: "Lidl",
     kaufland: "Kaufland",
-    auchan: "Auchan"
+    auchan: "Auchan",
+    selgros: "Selgros"
   };
 
   return map[slug] ?? slug;

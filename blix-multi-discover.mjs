@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { politeFetchText } from "./blix-http.mjs";
 
-const DEFAULT_STORES = ["biedronka", "lidl", "kaufland", "auchan"];
+const DEFAULT_STORES = ["biedronka", "lidl", "kaufland", "auchan", "selgros"];
 const OUT_DIR = "./promo-output/blix";
 
 function getArg(name, fallback = null) {

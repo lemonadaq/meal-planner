@@ -16,7 +16,7 @@ function run(command, args) {
   });
 }
 
-const stores = process.env.BLIX_STORES ?? "biedronka,lidl,kaufland,auchan";
+const stores = process.env.BLIX_STORES ?? "biedronka,lidl,kaufland,auchan,selgros";
 
 try {
   await run("node", [
