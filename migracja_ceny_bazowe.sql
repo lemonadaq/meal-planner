@@ -38,21 +38,19 @@ $$;
 
 comment on function norm_nazwa_promo is 'Normalizacja nazwy produktu — odpowiednik normalizujNazweMeta() z src/jednostki.js';
 
--- Indeks pod samo przeliczanie. Kolejność kolumn odpowiada GROUP BY, a `price`
--- jest w indeksie, żeby `count(distinct price)` nie musiał chodzić po stercie.
--- Poprzedni indeks był na `(store_name, product_name)` i nie dawał się użyć,
--- bo grupujemy po wyniku funkcji, a nie po surowej kolumnie.
+-- ── Indeksy ──
+-- Żadnego indeksu na `norm_nazwa_promo(product_name)` tu nie ma i to jest
+-- świadome. Przeliczanie agreguje praktycznie całą tabelę, więc planer i tak
+-- wybiera seq scan z hash aggregate — indeks wyrażeniowy nie zostałby użyty,
+-- a jego budowa liczy regexp dla każdego wiersza pod blokadą ACCESS EXCLUSIVE.
+-- Wcześniejsza wersja migracji go zakładała i to ona potrafiła mielić
+-- kwadransami. Poniższy DROP sprząta po obu poprzednich podejściach.
 drop index if exists promo_offers_ceny_bazowe_idx;
 
-create index if not exists promo_offers_ceny_bazowe_idx
-  on promo_offers (store_name, norm_nazwa_promo(product_name), price)
-  where price is not null and price > 0;
-
--- Osobno pod okno czasowe: przeliczanie odsiewa po `scraped_at`, więc bez tego
--- indeksu i tak trzeba by przejść całą tabelę, żeby ustalić, co jest świeże.
--- BRIN, bo `scraped_at` rośnie razem z kolejnymi importami — taki indeks jest
--- przy tym układzie danych dużo mniejszy od btree i wystarcza do odcięcia
--- starych bloków.
+-- Zostaje tylko to, co realnie pracuje: odsiew po oknie czasowym.
+-- BRIN, bo `scraped_at` rośnie razem z kolejnymi importami — przy takim
+-- układzie danych jest o rzędy wielkości mniejszy od btree, buduje się
+-- w sekundy i wystarcza do odcięcia starych bloków.
 create index if not exists promo_offers_scraped_at_brin
   on promo_offers using brin (scraped_at);
 
