@@ -9,7 +9,7 @@
 
 import { supabase } from './supabase'
 import { dzisLocal } from './dataHelpers'
-import { normalizujNazwePromo, tokenizuj, zawieraWszystkie } from './promocjeMatch'
+import { normalizujNazwePromo, tokenizuj, zawieraWszystkie, nadmiarTokenow } from './promocjeMatch'
 
 const CACHE_KLUCZ = 'ceny_bazowe_cache'
 const CACHE_WAZNOSC_MS = 6 * 60 * 60 * 1000
@@ -83,8 +83,12 @@ function ileOpakowan(item) {
   return Number.isFinite(n) && n > 0 ? Math.ceil(n) : 1
 }
 
-// Najtańsze dopasowanie ceny bazowej per sklep. Ta sama logika tokenowa co
-// w dopasujPromocje — składnik ⊆ produkt albo produkt ⊆ składnik.
+// Najlepiej pasujący produkt per sklep. Ta sama logika tokenowa co
+// w dopasujPromocje — składnik ⊆ produkt albo produkt ⊆ składnik, po rdzeniach.
+//
+// O wyborze decyduje celność nazwy, nie cena. Przy „najtańszym wygrywa"
+// składnik „masło" łapał „Chipsy ziemniaczane masło z solą" za 0,01 zł
+// i zaniżał cały koszyk.
 function dopasujCeny(skladnik, przygotowane) {
   const norm = normalizujNazwePromo(skladnik)
   if (!norm) return new Map()
@@ -98,8 +102,14 @@ function dopasujCeny(skladnik, przygotowane) {
       zawieraWszystkie(c.tokeny, tokenyItemu)
     if (!pasuje) continue
 
+    const nadmiar = nadmiarTokenow(c.tokeny, tokenyItemu)
     const stara = perSklep.get(c.sklep)
-    if (!stara || c.cena_bazowa < stara.cena_bazowa) perSklep.set(c.sklep, c)
+
+    if (!stara ||
+        nadmiar < stara.nadmiar ||
+        (nadmiar === stara.nadmiar && c.cena_bazowa < stara.cena_bazowa)) {
+      perSklep.set(c.sklep, { ...c, nadmiar })
+    }
   }
 
   return perSklep

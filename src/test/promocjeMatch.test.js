@@ -81,3 +81,62 @@ describe('dopasujPromocje', () => {
     expect(wynik).toEqual(items)
   })
 })
+
+// ── Rdzeniowanie i wybór po celności nazwy ──
+describe('rdzen', () => {
+  it('skleja formy tego samego słowa', async () => {
+    const { rdzen } = await import('../promocjeMatch')
+    expect(rdzen('piersi')).toBe(rdzen('pierś'))
+    expect(rdzen('marchewka')).toBe(rdzen('marchew'))
+    expect(rdzen('cebulka')).toBe(rdzen('cebula'))
+  })
+
+  it('nie skraca poniżej 4 znaków', async () => {
+    const { rdzen } = await import('../promocjeMatch')
+    expect(rdzen('ryż').length).toBeGreaterThanOrEqual(3)
+    expect(rdzen('soli').length).toBeGreaterThanOrEqual(4)
+  })
+
+  it('zdejmuje ogonki', async () => {
+    const { rdzen } = await import('../promocjeMatch')
+    expect(rdzen('żółty')).not.toMatch(/[żółć]/)
+  })
+})
+
+describe('dopasujPromocje — wybór oferty', () => {
+  // Regresja: „najtańsza wygrywa" podstawiało chipsy o smaku cebulki
+  // zamiast cebuli, bo śmieć bywa tańszy od prawdziwego produktu.
+  it('wybiera celniejszą nazwę, nie niższą cenę', () => {
+    const promocje = [
+      { nazwa: 'Chipsy ziemniaczane cebulka Wiejska', cena_nowa: 0.01, cena_stara: null, sklep: 'Biedronka', wazne_do: '2099-12-31' },
+      { nazwa: 'Cebula żółta', cena_nowa: 1.99, cena_stara: null, sklep: 'Biedronka', wazne_do: '2099-12-31' },
+    ]
+    const wynik = dopasujPromocje([{ skladnik: 'cebula', klucz: 'c' }], promocje)
+
+    expect(wynik[0].promo.now).toBe(1.99)
+  })
+
+  it('przy równie celnych nazwach decyduje cena', () => {
+    const promocje = [
+      { nazwa: 'Cebula', cena_nowa: 2.99, cena_stara: null, sklep: 'Lidl', wazne_do: '2099-12-31' },
+      { nazwa: 'Cebula', cena_nowa: 1.49, cena_stara: null, sklep: 'Lidl', wazne_do: '2099-12-31' },
+    ]
+    const wynik = dopasujPromocje([{ skladnik: 'cebula', klucz: 'c' }], promocje)
+
+    expect(wynik[0].promo.now).toBe(1.49)
+  })
+
+  it('odmiana nie blokuje dopasowania', () => {
+    const promocje = [
+      { nazwa: 'Filet z piersi kurczaka', cena_nowa: 15.74, cena_stara: null, sklep: 'Biedronka', wazne_do: '2099-12-31' },
+    ]
+    const wynik = dopasujPromocje([{ skladnik: 'pierś z kurczaka', klucz: 'p' }], promocje)
+
+    expect(wynik[0].promo?.now).toBe(15.74)
+  })
+
+  it('myślnik rozdziela słowa w nazwie z Blixa', async () => {
+    const { tokenizuj } = await import('../promocjeMatch')
+    expect(tokenizuj('marchew-banan-jabłko')).toEqual(['marchew', 'banan', 'jabłko'])
+  })
+})

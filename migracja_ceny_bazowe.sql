@@ -90,10 +90,13 @@ where price is not null
   -- `scraped_at` odświeża się przy każdym imporcie dopóki gazetka żyje,
   -- a zamraża, gdy wygaśnie — czyli znaczy „ostatnio widziane", o to tu chodzi.
   and scraped_at >= now() - interval '90 days'
-group by store_name, norm_nazwa_promo(product_name)
--- Bez dwóch różnych cen nie wiemy, czy widziana cena to półka czy promocja —
--- taki wiersz tylko zaszumiłby wycenę koszyka.
-having count(distinct price) >= 2;
+group by store_name, norm_nazwa_promo(product_name);
+-- Bez progu na `count(distinct price)`. Pierwsza wersja wymagała dwóch różnych
+-- cen, żeby dało się odróżnić półkę od promocji, i wycinała przez to produkty,
+-- które apka dopasowuje poprawnie — imbir, śmietankę, gorzką czekoladę. Do
+-- wyceny koszyka jedna zaobserwowana cena jest znacznie lepsza niż żadna;
+-- kolumna `roznych_cen` została, więc front i tak wie, ile warta jest dana
+-- pozycja, i może to pokazać.
 
 -- Unikalny indeks jest WYMAGANY przez `refresh ... concurrently`.
 create unique index if not exists ceny_bazowe_mv_klucz

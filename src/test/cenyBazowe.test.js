@@ -167,3 +167,27 @@ describe('pobierzCenyBazowe', () => {
     expect(wynik.ceny).toHaveLength(1)
   })
 })
+
+describe('wycenKoszyk — wybór produktu', () => {
+  // Ten sam błąd co w promocjach: przy „najtańszym wygrywa" składnik „masło"
+  // łapał chipsy o smaku masła za grosz i zaniżał cały koszyk.
+  it('bierze celniejszą nazwę, nie najniższą cenę', () => {
+    const wynik = wycenKoszyk(
+      [item('masło')],
+      [
+        cena('Biedronka', 'Chipsy ziemniaczane masło z solą', 0.01),
+        cena('Biedronka', 'Masło ekstra Pilos 82%', 6.99),
+      ]
+    )
+    expect(wynik.sklepy[0].koszt).toBeCloseTo(6.99)
+  })
+
+  it('odmiana nie blokuje wyceny', () => {
+    const wynik = wycenKoszyk(
+      [item('pierś z kurczaka')],
+      [cena('Biedronka', 'Filet z piersi kurczaka', 15.74)]
+    )
+    expect(wynik.sklepy[0].wycenionych).toBe(1)
+    expect(wynik.sklepy[0].koszt).toBeCloseTo(15.74)
+  })
+})

@@ -23,10 +23,49 @@ export function normalizujNazwePromo(nazwa = '') {
   return nazwa.toString().toLowerCase().replace(/\s+/g, ' ').trim()
 }
 
+// Myślnik też rozdziela: Blix pisze „marchew-banan-jabłko" jednym ciągiem,
+// a bez rozbicia to jeden nierozpoznawalny token.
 export function tokenizuj(nazwa) {
   return normalizujNazwePromo(nazwa)
-    .split(/[\s,()\/]+/)
+    .split(/[\s,()/-]+/)
     .filter(tok => tok.length > 1 && !STOP_WORDS.has(tok) && !GRAMATURA_RGX.test(tok))
+}
+
+// Końcówki od najdłuższych — inaczej „owa" zjadłoby się jako „a".
+const KONCOWKI = [
+  'iego', 'ego', 'iej', 'ich', 'ymi', 'imi', 'ami', 'ach', 'owe', 'owa', 'owy',
+  'ka', 'ki', 'ek', 'em', 'om', 'ow', 'ie', 'ia', 'iu',
+  'y', 'a', 'e', 'i', 'u', 'ą', 'ę', 'o',
+]
+
+// Zgrubny rdzeń polskiego słowa: bez ogonków i bez końcówki fleksyjnej.
+// Nie jest to poprawny lematyzator i nie musi być — ma tylko skleić „pierś"
+// z „piersi", „koper" z „koperek" i „marchewka" z „marchew". Rdzeń nigdy nie
+// schodzi poniżej 4 znaków, żeby krótkie słowa nie zlewały się w kaszę.
+export function rdzen(token) {
+  const bezOgonkow = String(token ?? '')
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/ł/g, 'l')
+
+  if (bezOgonkow.length <= 4) return bezOgonkow
+
+  for (const koncowka of KONCOWKI) {
+    const k = koncowka.normalize('NFD').replace(/[̀-ͯ]/g, '')
+    if (bezOgonkow.length - k.length >= 4 && bezOgonkow.endsWith(k)) {
+      return bezOgonkow.slice(0, bezOgonkow.length - k.length)
+    }
+  }
+
+  return bezOgonkow
+}
+
+// Ile słów nazwy produktu nie ma odpowiednika w składniku. Im mniej, tym
+// dopasowanie celniejsze: „Cebula żółta" ma nadmiar 1, a „Chipsy ziemniaczane
+// cebulka Wiejska" — 3. To ta liczba decyduje o wyborze oferty, nie cena;
+// wybieranie najtańszej podstawiało chipsy zamiast masła.
+export function nadmiarTokenow(tokenyProduktu, tokenySkladnika) {
+  const rdzenieSkladnika = new Set(tokenySkladnika.map(rdzen))
+  return tokenyProduktu.filter(t => !rdzenieSkladnika.has(rdzen(t))).length
 }
 
 // Słowa-transformacje: jeśli promo je zawiera a składnik nie → inny produkt.
@@ -51,11 +90,12 @@ function maZakazanaTransformacje(p, zbiorTokenowItemu) {
   return p.tokeny.some(t => TRANSFORM_WORDS.has(t) && !zbiorTokenowItemu.has(t))
 }
 
-// Czy wszystkie tokeny `a` występują w tokenach `b`?
+// Czy wszystkie tokeny `a` występują w tokenach `b`? Porównanie po rdzeniach,
+// więc „pierś z kurczaka" trafia w „Filet z piersi kurczaka".
 export function zawieraWszystkie(a, b) {
   if (!a.length) return false
-  const zbiorB = new Set(b)
-  return a.every(tok => zbiorB.has(tok))
+  const zbiorB = new Set(b.map(rdzen))
+  return a.every(tok => zbiorB.has(rdzen(tok)))
 }
 
 // Human-readable „do kiedy": dziś! / do jutra / do niedzieli / do DD.MM
@@ -124,12 +164,20 @@ export function dopasujPromocje(items, promocje) {
     })
     if (!pasujace.length) return { ...item, promo: null, promos: [] }
 
-    // Najtańsza oferta per sklep
+    // Najlepiej pasująca oferta per sklep — decyduje celność nazwy, dopiero
+    // przy remisie cena. Reguła „najtańsza wygrywa" podstawiała chipsy
+    // o smaku cebulki zamiast cebuli, bo śmieć bywa tańszy od produktu.
     const perSklep = new Map()
     for (const p of pasujace) {
       const sklep = p.rekord.sklep
       const stary = perSklep.get(sklep)
-      if (!stary || +p.rekord.cena_nowa < +stary.rekord.cena_nowa) perSklep.set(sklep, p)
+      const nadmiar = nadmiarTokenow(p.tokeny, tokenyItemu)
+
+      if (!stary ||
+          nadmiar < stary.nadmiar ||
+          (nadmiar === stary.nadmiar && +p.rekord.cena_nowa < +stary.rekord.cena_nowa)) {
+        perSklep.set(sklep, { ...p, nadmiar })
+      }
     }
 
     const promos = [...perSklep.values()]
