@@ -7,8 +7,10 @@
 // liczy `source_hash` z ceną w środku, więc każda nowa cena to nowy wiersz.
 // Historia zbiera się sama od uruchomienia workflow (12.06.2026).
 //
-// Cena bazowa = wysoki percentyl obserwacji (domyślnie 90.), nie maksimum —
-// pojedynczy odczyt z błędem parsowania nie ma wtedy prawa zawyżyć całości.
+// Cena bazowa = najwyższa cena, jaką widzieliśmy dla tego produktu w tym sklepie.
+// To decyzja Filipa: gazetka pokazuje cenę promocyjną, więc najwyższy odczyt jest
+// najbliżej ceny półkowej. Odwrotna strona medalu: jeden błąd parsowania zawyża
+// pozycję na stałe, więc kolumna `roznych_cen` w raporcie jest do oglądania.
 //
 // UWAGA: to nadal cena z gazetki, więc jest DOLNYM oszacowaniem ceny półkowej.
 // Produkt, który nigdy nie trafił do gazetki, nie ma tu żadnego wiersza.
@@ -21,7 +23,6 @@
 
 import fs from "node:fs/promises";
 
-const PERCENTYL_BAZOWEJ = 0.9;
 const DOMYSLNE_MIN_OBSERWACJI = 2;
 
 function getArg(name, fallback = null) {
@@ -135,7 +136,7 @@ function zbudujCeny(obserwacje, minObserwacji) {
   for (const g of grupy.values()) {
     const posortowane = [...g.ceny].sort((a, b) => a - b);
     const unikalne = new Set(posortowane);
-    const bazowa = percentyl(posortowane, PERCENTYL_BAZOWEJ);
+    const bazowa = posortowane[posortowane.length - 1];
     const najnizsza = posortowane[0];
 
     wiersze.push({

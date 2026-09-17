@@ -7,7 +7,7 @@ import { t } from '../theme'
 
 export const zl = (v) => v.toFixed(2).replace('.', ',') + ' zł'
 
-export const STORE_DOT = { Biedronka:'#C9A33B', Lidl:'#4A7FB5', Kaufland:'#B5564A', Auchan:'#8A6B43' }
+export const STORE_DOT = { Biedronka:'#C9A33B', Lidl:'#4A7FB5', Kaufland:'#B5564A', Auchan:'#8A6B43', Selgros:'#5E8C6A' }
 
 export function StoreDot({ store, size = 8 }) {
   return <span style={{ width:size, height:size, borderRadius:'50%',
