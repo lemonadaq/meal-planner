@@ -5,6 +5,8 @@ import Toast from '../components/Toast'
 import { formatDataLocal, dzisLocal } from '../dataHelpers'
 import { PromoBanner, PromoChip, PromoDetail, StoreDot } from '../components/Promocje'
 import { dopasujPromocje, pobierzAktualnePromocje } from '../promocjeMatch'
+import KosztKoszyka from '../components/KosztKoszyka'
+import { pobierzCenyBazowe, wycenKoszyk } from '../cenyBazowe'
 import { useSloty, kluczDnia } from '../useSloty'
 import {
   normalizujNazweMeta, LYZKI_ML, WAGA_DO_G, OBJ_DO_ML,
@@ -555,6 +557,11 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
   // Klucz itemu z rozwiniętym szczegółem promocji (jeden otwarty naraz)
   const [openPromoKlucz, setOpenPromoKlucz] = useState(null)
 
+  // Zakładka Lista / Koszty. Ceny bazowe ciągniemy dopiero przy pierwszym
+  // wejściu w Koszty — lista nie ma na nie czekać.
+  const [zakladka, setZakladka] = useState('lista')
+  const [cenyBazowe, setCenyBazowe] = useState(null)
+
   const [toast, setToast] = useState(null)
   const blokujDodawanieDo = useRef(0)
   const generujRef = useRef(null)
@@ -594,6 +601,16 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     })
     return () => { anulowane = true }
   }, [])
+
+  // ── Ceny bazowe — dopiero przy pierwszym wejściu w Koszty ──
+  useEffect(() => {
+    if (zakladka !== 'koszty' || cenyBazowe !== null) return
+    let anulowane = false
+    pobierzCenyBazowe().then(data => {
+      if (!anulowane) setCenyBazowe(data)
+    })
+    return () => { anulowane = true }
+  }, [zakladka, cenyBazowe])
 
   // Tablica nazw (do UI) wyprodukowana z rows, posortowana i zdedupowana.
   const produktyWDomu = useMemo(
@@ -1801,6 +1818,12 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
   const kupione = wszystkieItemy.filter(i => czyKupione(i))
   const procent = wszystkieItemy.length > 0 ? Math.round(kupione.length / wszystkieItemy.length * 100) : 0
 
+  // Wyceniamy tylko to, co zostało do kupienia — rzeczy w koszyku są już opłacone.
+  const wycena = useMemo(
+    () => (cenyBazowe ? wycenKoszyk(doKupienia, cenyBazowe) : null),
+    [doKupienia, cenyBazowe]
+  )
+
   const kategorie = {}
   doKupienia.forEach(item => {
     const katId = item.kategoria
@@ -1888,6 +1911,25 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
           </button>
         </div>
 
+        {/* Lista / Koszty — ceny bazowe doczytują się przy pierwszym wejściu */}
+        <div style={s.zakladki} role="tablist">
+          {[['lista', '🛒 Lista'], ['koszty', '💰 Koszty']].map(([id, etykieta]) => (
+            <button
+              key={id}
+              role="tab"
+              aria-selected={zakladka === id}
+              style={{ ...s.zakladka, ...(zakladka === id ? s.zakladkaAktywna : null) }}
+              onClick={() => setZakladka(id)}
+            >
+              {etykieta}
+            </button>
+          ))}
+        </div>
+
+        {zakladka === 'koszty' ? (
+          <KosztKoszyka wycena={wycena} ladowanie={cenyBazowe === null} />
+        ) : (
+        <>
         <SzybkieDodawanie
           value={szybkiTekst}
           onChange={setSzybkiTekst}
@@ -1986,6 +2028,8 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
               + Dodaj własny produkt (papier, chemia, lek…)
             </button>
           </>
+        )}
+        </>
         )}
       </div>
 
@@ -2796,6 +2840,21 @@ function makeS() {
     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
     background: t.surface, border: `0.5px solid ${t.border}`, borderRadius: 14,
     padding: '4px 4px', marginBottom: 16,
+  },
+  // Przełącznik Lista / Koszty — ten sam pasek co nawigacja tygodni,
+  // żeby oba paski pod nagłówkiem czytały się jako jedna rodzina.
+  zakladki: {
+    display: 'flex', gap: 4,
+    background: t.surface, border: `0.5px solid ${t.border}`, borderRadius: 14,
+    padding: 4, marginBottom: 16,
+  },
+  zakladka: {
+    flex: 1, background: 'transparent', border: 'none', borderRadius: 10,
+    padding: '9px 10px', fontFamily: fonts.sans, fontSize: 13, fontWeight: 600,
+    color: t.mute, cursor: 'pointer',
+  },
+  zakladkaAktywna: {
+    background: t.accent, color: '#fff',
   },
   tydzienPasekBtn: {
     background: t.surfaceAlt, border: `0.5px solid ${t.border}`,

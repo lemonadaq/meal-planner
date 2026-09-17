@@ -23,7 +23,7 @@ export function normalizujNazwePromo(nazwa = '') {
   return nazwa.toString().toLowerCase().replace(/\s+/g, ' ').trim()
 }
 
-function tokenizuj(nazwa) {
+export function tokenizuj(nazwa) {
   return normalizujNazwePromo(nazwa)
     .split(/[\s,()\/]+/)
     .filter(tok => tok.length > 1 && !STOP_WORDS.has(tok) && !GRAMATURA_RGX.test(tok))
@@ -52,7 +52,7 @@ function maZakazanaTransformacje(p, zbiorTokenowItemu) {
 }
 
 // Czy wszystkie tokeny `a` występują w tokenach `b`?
-function zawieraWszystkie(a, b) {
+export function zawieraWszystkie(a, b) {
   if (!a.length) return false
   const zbiorB = new Set(b)
   return a.every(tok => zbiorB.has(tok))
@@ -173,45 +173,76 @@ function doCache(promocje) {
   }
 }
 
+const STRONA_PROMO = 1000
+const KOLUMNY_PROMO = 'product_name, price, old_price, store_name, offer_end_at'
+
+function stronaPromocji(teraz, numer) {
+  return supabase
+    .from('promo_offers')
+    .select(KOLUMNY_PROMO)
+    .gte('offer_end_at', teraz)
+    .range(numer * STRONA_PROMO, numer * STRONA_PROMO + STRONA_PROMO - 1)
+}
+
+// Ile jest wierszy — tylko po to, żeby wiedzieć ile stron pobrać naraz.
+// Zwraca null, gdy licznik nie zadziałał; wtedy wołający schodzi na pętlę.
+async function policzPromocje(teraz) {
+  const { count, error } = await supabase
+    .from('promo_offers')
+    .select('product_name', { count: 'exact', head: true })
+    .gte('offer_end_at', teraz)
+
+  return error || typeof count !== 'number' ? null : count
+}
+
+// Pętla strona po stronie — wolniejsza, ale nie zależy od licznika.
+async function promocjeSekwencyjnie(teraz) {
+  const wszystkie = []
+
+  for (let i = 0; ; i++) {
+    const { data, error } = await stronaPromocji(teraz, i)
+    if (error || !data?.length) return { wiersze: wszystkie, pelne: !error }
+    wszystkie.push(...data)
+    if (data.length < STRONA_PROMO) return { wiersze: wszystkie, pelne: true }
+  }
+}
+
+// Wszystkie strony naraz — jedna runda zamiast N, gdy znamy liczbę wierszy.
+async function promocjeRownolegle(teraz, count) {
+  const wyniki = await Promise.all(
+    Array.from({ length: Math.ceil(count / STRONA_PROMO) }, (_, i) => stronaPromocji(teraz, i))
+  )
+
+  let pelne = true
+  const wiersze = []
+  for (const { data, error } of wyniki) {
+    if (error) { pelne = false; continue }
+    wiersze.push(...(data || []))
+  }
+
+  return { wiersze, pelne }
+}
+
 // Fetch aktualnych promocji (wazne_do >= dziś). Zwraca [] przy błędzie —
 // promocje to wzmocnienie, nigdy blokada listy (np. tabela jeszcze nie istnieje).
-// Strony lecą równolegle: najpierw licznik (head, bez ściągania wierszy), potem
-// wszystkie zakresy naraz. Przy 4 stronach to jedna runda zamiast czterech.
+//
+// Licznik jest WYŁĄCZNIE podpowiedzią, ile stron pobrać równolegle. Gdy nie
+// odda liczby — HEAD nie zawsze niesie Content-Range przez proxy i cache — lecimy
+// pętlą. Wcześniej brak licznika kończył się pustą listą, czyli znikały wszystkie
+// promocje mimo danych w bazie. Wolne promocje biją brak promocji.
 export async function pobierzAktualnePromocje() {
   const zapisane = zCache()
-  if (zapisane) return zapisane
+  if (zapisane?.length) return zapisane
 
   try {
     const teraz = new Date().toISOString()
-    const STRONA = 1000
+    const count = await policzPromocje(teraz)
 
-    const { count, error: bladLicznika } = await supabase
-      .from('promo_offers')
-      .select('product_name', { count: 'exact', head: true })
-      .gte('offer_end_at', teraz)
-    if (bladLicznika || !count) return []
+    const { wiersze, pelne } = count
+      ? await promocjeRownolegle(teraz, count)
+      : await promocjeSekwencyjnie(teraz)
 
-    const strony = Math.ceil(count / STRONA)
-    const wyniki = await Promise.all(
-      Array.from({ length: strony }, (_, i) =>
-        supabase
-          .from('promo_offers')
-          .select('product_name, price, old_price, store_name, offer_end_at')
-          .gte('offer_end_at', teraz)
-          .range(i * STRONA, i * STRONA + STRONA - 1)
-      )
-    )
-
-    // Strona z błędem = niepełny zestaw. Pokazujemy to, co przyszło (brak
-    // promocji przy pozycji jest akceptowalny), ale takiego wyniku nie cache'ujemy.
-    let pelne = true
-    const wszystkie = []
-    for (const { data, error } of wyniki) {
-      if (error) { pelne = false; continue }
-      wszystkie.push(...(data || []))
-    }
-
-    const promocje = wszystkie.map(p => ({
+    const promocje = wiersze.map(p => ({
       nazwa_norm: p.product_name,
       nazwa: p.product_name,
       cena_nowa: p.price,
@@ -221,7 +252,9 @@ export async function pobierzAktualnePromocje() {
       rabat_label: null,
     }))
 
-    if (pelne) doCache(promocje)
+    // Pustki nie cache'ujemy — inaczej jedna nieudana runda gasi promocje
+    // na kolejne 6 godzin, a to dokładnie ten błąd, który tu naprawiamy.
+    if (pelne && promocje.length) doCache(promocje)
     return promocje
   } catch {
     return []
