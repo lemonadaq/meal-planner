@@ -9,124 +9,108 @@
 # Puste linie i linie zaczynające się od # są pomijane.
 # Dania, które już są w bazie, zostaną pominięte przy generowaniu.
 #
-# ── PACZKA 3: kuchnia włoska, 100 dań (stan bazy przed nią: 439) ──
-# W bazie było już 48 dań z włoskim rodowodem (carbonara, bolognese, lasagne,
-# risotto, gnocchi, tiramisu, panna cotta, minestrone, caprese, bruschetty) —
-# ta lista ich nie powtarza. Sprawdzone `npm run duble` przeciwko całej bazie.
+# ── PACZKA 4: kuchnia koreańska, 54 dania (stan bazy przed nią: 539) ──
 #
-# Śniadań tylko 4, bo włoskie śniadanie to realnie cornetto i kawa — nie ma
-# sensu naciągać kategorii na siłę.
+# Powód: Filip kupił pastę gochujang. Lista dzieli się na dwie części, bo
+# gochujang z definicji piecze — słodko-fermentowana, ale ostra. Dania bez
+# ostrości to osobna grupa i NIE ma w nich ani gochujangu, ani gochugaru,
+# ani kimchi.
+#
+# W bazie było tylko jedno danie koreańskie („Bibimbap z wołowiną"), więc
+# nic się tu nie powtarza. Sprawdzone `npm run duble` przeciwko całej bazie.
+#
+# Nazwy trzymają styl reszty bazy: bez myślników, koreańska nazwa tam, gdzie
+# jest tożsamością dania (tteokbokki, japchae, kimbap), polski opis tam, gdzie
+# sama nazwa nic nie mówi (gyeran jjim → „koreański omlet parowany").
+
+
+# ════════════════════════════════════════════════════════════
+# CZĘŚĆ 1: Z GOCHUJANGIEM (21) — pikantne, po to kupiona pasta
+# ════════════════════════════════════════════════════════════
+
+# ── OBIADY (10) ──
+Tteokbokki z serem|obiad
+Tteokbokki z owocami morza|obiad
+Bibimbap z tofu|obiad
+Wieprzowina w sosie gochujang|obiad
+Kurczak dakgalbi z warzywami|obiad
+Kalmary w sosie gochujang|obiad
+Zimny makaron bibim guksu|obiad
+Smażony ryż z kimchi i gochujangiem|obiad
+Bulgogi wieprzowe w gochujangu|obiad
+Bakłażan duszony w gochujangu|obiad
+
+# ── ZUPY (3) ──
+Sundubu jjigae z miękkim tofu|zupa
+Kimchi jjigae z wieprzowiną|zupa
+Gochujang jjigae z cukinią|zupa
+
+# ── PRZEKĄSKI (3) ──
+Skrzydełka w glazurze gochujang|przekaska
+Tofu smażone w sosie gochujang|przekaska
+Frytki z majonezem gochujang|przekaska
+
+# ── KOLACJE (2) ──
+Makaron ramyeon z gochujangiem|kolacja
+Budae jjigae z parówkami i tofu|kolacja
+
+# ── DODATKI (2) ──
+Sos ssamjang do mięsa|dodatek
+Marynata gochujang do wieprzowiny|dodatek
+
+# ── SURÓWKI (1) ──
+Sałatka z ogórka w sosie gochujang|surowka
+
+
+# ════════════════════════════════════════════════════════════
+# CZĘŚĆ 2: ŁAGODNE (33) — zero ostrości, bez gochujangu i kimchi
+# ════════════════════════════════════════════════════════════
 
 # ── ŚNIADANIA (4) ──
-Cornetto z kremem|sniadanie
-Fette biscottate z dżemem i masłem|sniadanie
-Ricotta z miodem i orzechami na grzance|sniadanie
-Włoski omlet z pomidorami i bazylią|sniadanie
+Koreański omlet parowany|sniadanie
+Rolowany omlet koreański z warzywami|sniadanie
+Ryż z jajkiem i masłem po koreańsku|sniadanie
+Koreańska owsianka ryżowa z kurczakiem|sniadanie
 
-# ── ZUPY (10) ──
-Pasta e fagioli|zupa
-Zuppa toscana z jarmużem i kiełbasą|zupa
-Stracciatella alla romana|zupa
-Ribollita|zupa
-Tortellini w bulionie|zupa
-Krem ze szparagów|zupa
-Passatelli w bulionie|zupa
-Krem z karczochów|zupa
-Krem z cukinii z miętą|zupa
-Zupa z orkiszem i warzywami|zupa
+# ── OBIADY (8) ──
+Japchae z wołowiną|obiad
+Bulgogi wołowe|obiad
+Duszone żeberka wołowe po koreańsku|obiad
+Makaron jajangmyeon w sosie z czarnej fasoli|obiad
+Tofu duszone w sosie sojowym po koreańsku|obiad
+Zimny makaron naengmyeon w bulionie|obiad
+Kurczak w sosie sojowo czosnkowym po koreańsku|obiad
+Koreański gulasz z kurczaka i ziemniaków|obiad
 
-# ── OBIADY (28) ──
-Spaghetti cacio e pepe|obiad
-Spaghetti alla puttanesca|obiad
-Penne all'arrabbiata|obiad
-Pasta alla norma|obiad
-Pasta all'amatriciana|obiad
-Pasta alla gricia|obiad
-Fettuccine Alfredo|obiad
-Farfalle z łososiem i groszkiem|obiad
-Orecchiette z brokułami i anchois|obiad
-Ravioli z ricottą i szpinakiem|obiad
-Pappardelle z ragù wołowym|obiad
-Rigatoni alla genovese|obiad
-Trofie z pesto i ziemniakami|obiad
-Pasta al forno z bakłażanem|obiad
-Gnocchi alla sorrentina|obiad
-Risotto alla milanese|obiad
-Risotto z owocami morza|obiad
-Risotto z dynią i szałwią|obiad
-Ossobuco z gremolatą|obiad
-Saltimbocca alla romana|obiad
-Piccata z kurczaka z cytryną|obiad
-Cotoletta alla milanese|obiad
-Parmigiana z bakłażana|obiad
-Pollo alla cacciatora|obiad
-Involtini cielęce w sosie pomidorowym|obiad
-Scaloppine z pieczarkami|obiad
-Calzone z szynką i ricottą|obiad
-Pizza margherita|obiad
+# ── ZUPY (5) ──
+Koreańska zupa z wodorostów|zupa
+Zupa z kiełków sojowych po koreańsku|zupa
+Zupa tteokguk z plackami ryżowymi|zupa
+Koreańskie kluski sujebi w bulionie|zupa
+Rosół samgyetang z kurczakiem i żeń-szeniem|zupa
 
-# ── KOLACJE (20) ──
-Panini z mozzarellą i pomidorem|kolacja
-Piadina z szynką i rukolą|kolacja
-Focaccia z pomidorkami i oliwkami|kolacja
-Panzanella|kolacja
-Sałatka ryżowa po włosku|kolacja
-Frittata z cukinią i parmezanem|kolacja
-Crostini z wątróbką drobiową|kolacja
-Tramezzini z tuńczykiem|kolacja
-Polenta z gorgonzolą|kolacja
-Carpaccio wołowe z rukolą|kolacja
-Vitello tonnato|kolacja
-Makaron na zimno z pomidorkami i mozzarellą|kolacja
-Tarta ze szpinakiem i ricottą|kolacja
-Crespelle zapiekane z szynką i beszamelem|kolacja
-Sałatka z gruszką, gorgonzolą i orzechami|kolacja
-Zapiekane papryki z ryżem i ziołami|kolacja
-Sałatka z bobem, pecorino i miętą|kolacja
-Farinata z ciecierzycy|kolacja
-Pizza bianca z rozmarynem|kolacja
-Panino z porchettą|kolacja
+# ── PRZEKĄSKI (5) ──
+Kimbap z tuńczykiem|przekaska
+Kimbap warzywny|przekaska
+Pajeon z dymką|przekaska
+Placki z cukinii po koreańsku|przekaska
+Pierożki mandu z warzywami|przekaska
 
-# ── PRZEKĄSKI (15) ──
-Arancini z ryżu|przekaska
-Focaccia z rozmarynem i solą morską|przekaska
-Oliwki nadziewane mięsem w panierce|przekaska
-Placuszki z cukinii po włosku|przekaska
-Caponata z bakłażana|przekaska
-Karczochy smażone|przekaska
-Prosciutto z melonem|przekaska
-Taralli|przekaska
-Panzerotti smażone|przekaska
-Fritto misto z owoców morza|przekaska
-Bocconcini w oliwie z ziołami|przekaska
-Pomidorki faszerowane ricottą|przekaska
-Kulki mozzarelli w szynce parmeńskiej|przekaska
-Parmezan z miodem i orzechami|przekaska
-Piadina roll z mortadelą|przekaska
+# ── KOLACJE (1) ──
+Tosty koreańskie z jajkiem i kapustą|kolacja
 
-# ── DESERY (15) ──
-Cannoli siciliane|deser
-Panettone|deser
-Zabaglione|deser
-Affogato al caffè|deser
-Semifreddo pistacjowe|deser
-Torta della nonna|deser
-Crostata z dżemem morelowym|deser
-Granita cytrynowa|deser
-Gelato pistacjowe|deser
-Ciambellone|deser
-Torta caprese|deser
-Cantuccini z migdałami|deser
-Bomboloni|deser
-Maritozzo|deser
-Amaretti|deser
+# ── SURÓWKI (3) ──
+Szpinak z sezamem po koreańsku|surowka
+Kiełki sojowe z sezamem|surowka
+Marchewka z sezamem po koreańsku|surowka
 
-# ── SURÓWKI (8) ──
-Insalata tricolore|surowka
-Sałatka z radicchio i orzechami|surowka
-Sałatka z karczochami marynowanymi|surowka
-Kalafior marynowany z oliwkami|surowka
-Sałatka z cukinii grillowanej z miętą|surowka
-Marynowane grzyby po włosku|surowka
-Sałatka z pomidorami suszonymi i kaparami|surowka
-Sałatka z kopru włoskiego z oliwą|surowka
+# ── DODATKI (2) ──
+Ziemniaki duszone w sosie sojowym|dodatek
+Marynowana rzodkiew do kimbapu|dodatek
+
+# ── DESERY (5) ──
+Hotteok z cynamonem|deser
+Bungeoppang z pastą z czerwonej fasoli|deser
+Miodowe ciasteczka yakgwa|deser
+Napój ryżowy sikhye|deser
+Patbingsu z kruszonym lodem|deser
