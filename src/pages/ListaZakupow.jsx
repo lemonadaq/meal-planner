@@ -561,6 +561,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
   // wejściu w Koszty — lista nie ma na nie czekać.
   const [zakladka, setZakladka] = useState('lista')
   const [cenyBazowe, setCenyBazowe] = useState(null)
+  const [bladCen, setBladCen] = useState(null)
 
   const [toast, setToast] = useState(null)
   const blokujDodawanieDo = useRef(0)
@@ -606,8 +607,10 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
   useEffect(() => {
     if (zakladka !== 'koszty' || cenyBazowe !== null) return
     let anulowane = false
-    pobierzCenyBazowe().then(data => {
-      if (!anulowane) setCenyBazowe(data)
+    pobierzCenyBazowe().then(({ ceny, blad }) => {
+      if (anulowane) return
+      setCenyBazowe(ceny)
+      setBladCen(blad)
     })
     return () => { anulowane = true }
   }, [zakladka, cenyBazowe])
@@ -1927,7 +1930,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
         </div>
 
         {zakladka === 'koszty' ? (
-          <KosztKoszyka wycena={wycena} ladowanie={cenyBazowe === null} />
+          <KosztKoszyka wycena={wycena} ladowanie={cenyBazowe === null} blad={bladCen} />
         ) : (
         <>
         <SzybkieDodawanie

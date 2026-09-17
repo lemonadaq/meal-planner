@@ -40,11 +40,12 @@ function doCache(ceny) {
   }
 }
 
-// Zwraca [] gdy widoku jeszcze nie ma w bazie — zakładka pokaże wtedy
-// instrukcję zamiast się wysypać.
+// Zwraca { ceny, blad }. Błąd NIE jest połykany — bez niego „brak cen" wygląda
+// identycznie, czy widoku nie ma, czy jest pusty, czy PostgREST go nie wystawia,
+// a to trzy różne problemy z trzema różnymi naprawami.
 export async function pobierzCenyBazowe() {
   const zapisane = zCache()
-  if (zapisane?.length) return zapisane
+  if (zapisane?.length) return { ceny: zapisane, blad: null }
 
   try {
     const wszystkie = []
@@ -55,7 +56,12 @@ export async function pobierzCenyBazowe() {
         .select('sklep, produkt, cena_bazowa, cena_min, obserwacji')
         .range(i * STRONA, i * STRONA + STRONA - 1)
 
-      if (error) return wszystkie
+      if (error) {
+        return {
+          ceny: wszystkie,
+          blad: [error.code, error.message].filter(Boolean).join(': ') || 'nieznany błąd',
+        }
+      }
       if (!data?.length) break
 
       wszystkie.push(...data)
@@ -63,9 +69,9 @@ export async function pobierzCenyBazowe() {
     }
 
     if (wszystkie.length) doCache(wszystkie)
-    return wszystkie
-  } catch {
-    return []
+    return { ceny: wszystkie, blad: null }
+  } catch (e) {
+    return { ceny: [], blad: e?.message || 'wyjątek przy pobieraniu cen' }
   }
 }
 

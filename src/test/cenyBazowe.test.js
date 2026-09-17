@@ -119,3 +119,51 @@ describe('formatujZl', () => {
     expect(formatujZl(NaN)).toBe('—')
   })
 })
+
+// ── pobierzCenyBazowe: błąd musi dojść do UI, nie zniknąć ──
+describe('pobierzCenyBazowe', () => {
+  it('zwraca komunikat błędu zamiast go połykać', async () => {
+    vi.resetModules()
+    vi.doMock('../supabase', () => ({
+      supabase: {
+        from: () => ({
+          select: () => ({
+            range: () => Promise.resolve({
+              data: null,
+              error: { code: '42P01', message: 'relation "ceny_bazowe_view" does not exist' },
+            }),
+          }),
+        }),
+      },
+    }))
+
+    const { pobierzCenyBazowe } = await import('../cenyBazowe')
+    const wynik = await pobierzCenyBazowe()
+
+    expect(wynik.ceny).toEqual([])
+    expect(wynik.blad).toContain('42P01')
+    expect(wynik.blad).toContain('does not exist')
+  })
+
+  it('przy sukcesie oddaje ceny i brak błędu', async () => {
+    vi.resetModules()
+    vi.doMock('../supabase', () => ({
+      supabase: {
+        from: () => ({
+          select: () => ({
+            range: () => Promise.resolve({
+              data: [{ sklep: 'Lidl', produkt: 'Masło', cena_bazowa: 7.49, cena_min: 4.99, obserwacji: 3 }],
+              error: null,
+            }),
+          }),
+        }),
+      },
+    }))
+
+    const { pobierzCenyBazowe } = await import('../cenyBazowe')
+    const wynik = await pobierzCenyBazowe()
+
+    expect(wynik.blad).toBeNull()
+    expect(wynik.ceny).toHaveLength(1)
+  })
+})

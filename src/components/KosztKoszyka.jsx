@@ -15,20 +15,42 @@ const karta = {
   marginBottom: 12,
 }
 
-// Widoku nie ma w bazie albo historia jeszcze nic nie uzbierała.
-function BrakDanych() {
+// Widoku nie ma w bazie, baza go nie wystawia, albo historia nic nie uzbierała.
+// Gdy Supabase zwrócił konkretny błąd, pokazujemy go wprost — inaczej nie da się
+// odróżnić „nie ma widoku" od „widok jest, ale PostgREST go nie widzi".
+function BrakDanych({ blad }) {
   return (
     <div style={{ ...karta, textAlign: 'center' }}>
       <div style={{ fontSize: 30, marginBottom: 8 }}>🧾</div>
       <div style={{ fontSize: 14.5, fontWeight: 600, color: t.text, marginBottom: 6 }}>
         Brak cen bazowych
       </div>
-      <div style={{ fontSize: 13, color: t.mute, lineHeight: 1.5 }}>
-        Odpal <strong>migracja_ceny_bazowe.sql</strong> w Supabase (SQL Editor).
-        Ceny liczą się z historii gazetek — produkt musi być widziany
-        w co najmniej dwóch różnych cenach, żeby dało się odróżnić półkę
-        od promocji.
-      </div>
+
+      {blad ? (
+        <>
+          <div style={{ fontSize: 13, color: t.mute, lineHeight: 1.5, marginBottom: 8 }}>
+            Baza odpowiedziała błędem:
+          </div>
+          <div style={{
+            fontSize: 12, color: t.text, background: t.surfaceAlt ?? t.border,
+            border: `1px solid ${t.border}`, borderRadius: 10,
+            padding: '8px 10px', textAlign: 'left', wordBreak: 'break-word',
+          }}>
+            {blad}
+          </div>
+          <div style={{ fontSize: 12, color: t.muteLight, lineHeight: 1.5, marginTop: 8 }}>
+            Najczęściej brakuje uprawnień do widoku albo PostgREST go jeszcze
+            nie zobaczył — patrz koniec migracja_ceny_bazowe.sql.
+          </div>
+        </>
+      ) : (
+        <div style={{ fontSize: 13, color: t.mute, lineHeight: 1.5 }}>
+          Odpal <strong>migracja_ceny_bazowe.sql</strong> w Supabase (SQL Editor).
+          Ceny liczą się z historii gazetek — produkt musi być widziany
+          w co najmniej dwóch różnych cenach, żeby dało się odróżnić półkę
+          od promocji.
+        </div>
+      )}
     </div>
   )
 }
@@ -87,12 +109,12 @@ function WierszSklepu({ dane, najdrozszy, najtanszy, wspolnych }) {
   )
 }
 
-export default function KosztKoszyka({ wycena, ladowanie }) {
+export default function KosztKoszyka({ wycena, ladowanie, blad }) {
   if (ladowanie) {
     return <div style={{ ...karta, textAlign: 'center', color: t.mute, fontSize: 13 }}>Liczę koszyk…</div>
   }
 
-  if (!wycena?.sklepy?.length) return <BrakDanych />
+  if (!wycena?.sklepy?.length) return <BrakDanych blad={blad} />
 
   const { sklepy, wspolnych, bezCeny, pozycje } = wycena
   const najdrozszy = Math.max(...sklepy.map(s => s.koszt))

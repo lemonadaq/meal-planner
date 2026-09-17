@@ -63,6 +63,23 @@ create index if not exists promo_offers_ceny_bazowe_idx
   on promo_offers (store_name, product_name)
   where price is not null and price > 0;
 
+-- ── Uprawnienia i cache PostgREST ──
+-- Samo `create view` nie wystarcza, żeby apka widok zobaczyła: PostgREST łączy
+-- się jako `anon`/`authenticated` i potrzebuje GRANT-a, a swoją listę tabel
+-- trzyma w cache'u, który po DDL trzeba przeładować. Bez tych trzech linijek
+-- zapytanie z frontu wraca błędem, choć w SQL Editorze (jako `postgres`)
+-- wszystko działa.
+grant usage on schema public to anon, authenticated;
+grant select on ceny_bazowe_view to anon, authenticated;
+grant execute on function norm_nazwa_promo(text) to anon, authenticated;
+
+notify pgrst, 'reload schema';
+
 -- ── Sprawdzenie po uruchomieniu ──
+-- 1. Czy widok liczy:
 -- select sklep, count(*) as produktow, round(avg(100 * (1 - cena_min / cena_bazowa))) as sr_obnizka_proc
 -- from ceny_bazowe_view group by sklep order by produktow desc;
+--
+-- 2. Czy widzi go rola, którą łączy się apka (to pyta o uprawnienia, nie o dane):
+-- select has_table_privilege('authenticated', 'ceny_bazowe_view', 'select') as authenticated_widzi,
+--        has_table_privilege('anon', 'ceny_bazowe_view', 'select')          as anon_widzi;
