@@ -48,11 +48,32 @@ create index if not exists promo_offers_ceny_bazowe_idx
   on promo_offers (store_name, norm_nazwa_promo(product_name), price)
   where price is not null and price > 0;
 
+-- Osobno pod okno czasowe: przeliczanie odsiewa po `scraped_at`, więc bez tego
+-- indeksu i tak trzeba by przejść całą tabelę, żeby ustalić, co jest świeże.
+-- BRIN, bo `scraped_at` rośnie razem z kolejnymi importami — taki indeks jest
+-- przy tym układzie danych dużo mniejszy od btree i wystarcza do odcięcia
+-- starych bloków.
+create index if not exists promo_offers_scraped_at_brin
+  on promo_offers using brin (scraped_at);
+
 -- Stara wersja mogła istnieć jako zwykły widok — nie da się go podmienić
 -- na zmaterializowany przez `create or replace`.
 drop view if exists ceny_bazowe_view;
 drop materialized view if exists ceny_bazowe_mv cascade;
 
+-- OKNO CZASOWE — tu się je zmienia.
+--
+-- Nie chodzi o szybkość odczytu: front czyta gotowe wiersze i nie dotyka
+-- historii. Chodzi o to, że cena bazowa jest MAKSIMUM, a maksimum bez okna
+-- nigdy nie maleje — cena z czerwca zostaje ceną bazową na zawsze, choćby
+-- produkt od tamtej pory staniał. Okno sprawia, że stare odczyty same się
+-- wykruszają, i przy okazji ogranicza koszt nocnego przeliczania, które bez
+-- niego rosłoby z każdym miesiącem historii.
+--
+-- Cena okna: im węższe, tym mniej produktów ma wymagane dwie różne ceny.
+-- Ile dokładnie kosztuje — sprawdza zapytanie „POKRYCIE A OKNO" na końcu pliku.
+-- 90 dni to mniej więcej cała dotychczasowa historia, więc na start nic nie
+-- traci, a ogranicza narastanie na przyszłość.
 create materialized view ceny_bazowe_mv as
 select
   store_name                        as sklep,
@@ -68,6 +89,9 @@ where price is not null
   and price > 0
   and product_name is not null
   and store_name is not null
+  -- `scraped_at` odświeża się przy każdym imporcie dopóki gazetka żyje,
+  -- a zamraża, gdy wygaśnie — czyli znaczy „ostatnio widziane", o to tu chodzi.
+  and scraped_at >= now() - interval '90 days'
 group by store_name, norm_nazwa_promo(product_name)
 -- Bez dwóch różnych cen nie wiemy, czy widziana cena to półka czy promocja —
 -- taki wiersz tylko zaszumiłby wycenę koszyka.
@@ -133,3 +157,18 @@ notify pgrst, 'reload schema';
 --
 -- 3. Ręczne przeliczenie (normalnie robi to nocny workflow):
 -- select odswiez_ceny_bazowe();
+--
+-- 4. POKRYCIE A OKNO — ile produktów przeżywa przy różnych oknach.
+--    Odpowiada na pytanie, czy warto skrócić te 90 dni. Liczy agregat raz na
+--    okno, więc chwilę mieli; odpalać w SQL Editorze, nie z apki.
+-- select o.dni,
+--        (select count(*) from (
+--           select 1 from promo_offers
+--           where price is not null and price > 0
+--             and product_name is not null and store_name is not null
+--             and scraped_at >= now() - (o.dni || ' days')::interval
+--           group by store_name, norm_nazwa_promo(product_name)
+--           having count(distinct price) >= 2
+--        ) t) as produktow
+-- from (select unnest(array[7, 14, 30, 60, 90, 3650]) as dni) o
+-- order by o.dni;
