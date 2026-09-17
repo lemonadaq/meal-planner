@@ -32,11 +32,26 @@ export function tokenizuj(nazwa) {
 }
 
 // Końcówki od najdłuższych — inaczej „owa" zjadłoby się jako „a".
+// „ce" i „cy" są tu po to, żeby „puszce" dawało ten sam rdzeń co „puszki";
+// bez nich wychodziło „puszc" kontra „pusz" i słowo nie zgadzało się samo ze sobą.
 const KONCOWKI = [
   'iego', 'ego', 'iej', 'ich', 'ymi', 'imi', 'ami', 'ach', 'owe', 'owa', 'owy',
-  'ka', 'ki', 'ek', 'em', 'om', 'ow', 'ie', 'ia', 'iu',
+  'ce', 'cy', 'ka', 'ki', 'ek', 'em', 'om', 'ow', 'ie', 'ia', 'iu',
   'y', 'a', 'e', 'i', 'u', 'ą', 'ę', 'o',
 ]
+
+// Słowa opisujące formę, a nie produkt. Blix ich w nazwach nie używa („Pomidory
+// krojone", nie „Pomidory w puszce"), więc wymaganie ich zabijało dopasowanie:
+// „pomidory" jest w 30 ofertach, „puszce" w 8, ale nigdy razem.
+//
+// Nie są USUWANE, tylko przestają być obowiązkowe: produkt, który je ma,
+// nadal wypada lepiej w punktacji celności. Dzięki temu „fasola z puszki"
+// woli fasolę konserwową od świeżej, jeśli obie są w ofercie.
+const SLOWA_OPCJONALNE = new Set([
+  'puszka', 'puszce', 'puszki', 'puszkach', 'puszkę',
+  'słoik', 'słoiku', 'słoika', 'słoiki',
+  'opakowanie', 'opakowaniu', 'butelce', 'butelka',
+])
 
 // Zgrubny rdzeń polskiego słowa: bez ogonków i bez końcówki fleksyjnej.
 // Nie jest to poprawny lematyzator i nie musi być — ma tylko skleić „pierś"
@@ -59,13 +74,27 @@ export function rdzen(token) {
   return bezOgonkow
 }
 
-// Ile słów nazwy produktu nie ma odpowiednika w składniku. Im mniej, tym
-// dopasowanie celniejsze: „Cebula żółta" ma nadmiar 1, a „Chipsy ziemniaczane
-// cebulka Wiejska" — 3. To ta liczba decyduje o wyborze oferty, nie cena;
-// wybieranie najtańszej podstawiało chipsy zamiast masła.
-export function nadmiarTokenow(tokenyProduktu, tokenySkladnika) {
+// Trafienie w słowo opisujące formę jest mocną przesłanką, że to ten produkt,
+// więc waży więcej niż jedno nadmiarowe słowo w nazwie. Bez tego „Pomidory"
+// (zero nadmiaru) biłyby „Pomidory w puszce Pudliszki" (nadmiar 1) i opcjonalne
+// słowa nie dawałyby nic poza zdjęciem wymogu.
+const PREMIA_ZA_FORME = 2
+
+// Punktacja dopasowania — NIŻSZA znaczy celniejsze. Liczy słowa nazwy produktu
+// bez odpowiednika w składniku i odejmuje premię za trafione słowa formy.
+// „Cebula żółta" dostaje 1, „Chipsy ziemniaczane cebulka Wiejska" — 3.
+// To ta liczba decyduje o wyborze oferty, nie cena: wybieranie najtańszej
+// podstawiało chipsy zamiast masła.
+export function punktacjaDopasowania(tokenyProduktu, tokenySkladnika) {
   const rdzenieSkladnika = new Set(tokenySkladnika.map(rdzen))
-  return tokenyProduktu.filter(t => !rdzenieSkladnika.has(rdzen(t))).length
+  const rdzenieProduktu = new Set(tokenyProduktu.map(rdzen))
+
+  const nadmiar = tokenyProduktu.filter(t => !rdzenieSkladnika.has(rdzen(t))).length
+  const trafioneFormy = tokenySkladnika
+    .filter(t => SLOWA_OPCJONALNE.has(t) && rdzenieProduktu.has(rdzen(t)))
+    .length
+
+  return nadmiar - PREMIA_ZA_FORME * trafioneFormy
 }
 
 // Słowa-transformacje: jeśli promo je zawiera a składnik nie → inny produkt.
@@ -91,11 +120,14 @@ function maZakazanaTransformacje(p, zbiorTokenowItemu) {
 }
 
 // Czy wszystkie tokeny `a` występują w tokenach `b`? Porównanie po rdzeniach,
-// więc „pierś z kurczaka" trafia w „Filet z piersi kurczaka".
+// więc „pierś z kurczaka" trafia w „Filet z piersi kurczaka". Słowa opisujące
+// formę (`w puszce`) są pomijane przy sprawdzaniu — punktuje je dopiero
+// `punktacjaDopasowania`.
 export function zawieraWszystkie(a, b) {
-  if (!a.length) return false
+  const wymagane = a.filter(tok => !SLOWA_OPCJONALNE.has(tok))
+  if (!wymagane.length) return false
   const zbiorB = new Set(b.map(rdzen))
-  return a.every(tok => zbiorB.has(rdzen(tok)))
+  return wymagane.every(tok => zbiorB.has(rdzen(tok)))
 }
 
 // Human-readable „do kiedy": dziś! / do jutra / do niedzieli / do DD.MM
@@ -171,12 +203,12 @@ export function dopasujPromocje(items, promocje) {
     for (const p of pasujace) {
       const sklep = p.rekord.sklep
       const stary = perSklep.get(sklep)
-      const nadmiar = nadmiarTokenow(p.tokeny, tokenyItemu)
+      const punkty = punktacjaDopasowania(p.tokeny, tokenyItemu)
 
       if (!stary ||
-          nadmiar < stary.nadmiar ||
-          (nadmiar === stary.nadmiar && +p.rekord.cena_nowa < +stary.rekord.cena_nowa)) {
-        perSklep.set(sklep, { ...p, nadmiar })
+          punkty < stary.punkty ||
+          (punkty === stary.punkty && +p.rekord.cena_nowa < +stary.rekord.cena_nowa)) {
+        perSklep.set(sklep, { ...p, punkty })
       }
     }
 

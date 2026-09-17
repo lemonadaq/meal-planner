@@ -9,7 +9,15 @@
 
 import { supabase } from './supabase'
 import { dzisLocal } from './dataHelpers'
-import { normalizujNazwePromo, tokenizuj, zawieraWszystkie, nadmiarTokenow } from './promocjeMatch'
+import { normalizujNazwePromo, tokenizuj, zawieraWszystkie, punktacjaDopasowania } from './promocjeMatch'
+
+// Blix wstawia grosz jako cenę produktów odblokowywanych kuponem za punkty
+// w aplikacji sklepu. Jako promocja to prawdziwa oferta i dlatego zostaje na
+// liście, ale cena bazowa to z definicji NAJWYŻSZY widziany odczyt — jeśli
+// wyszedł grosz, to znaczy, że ceny półkowej tego produktu nigdy nie
+// widzieliśmy. Taki wiersz nie ma czego wnieść do wyceny koszyka, a potrafi
+// wygrać każde dopasowanie i zaniżyć całość.
+const MIN_CENA_BAZOWA = 0.1
 
 const CACHE_KLUCZ = 'ceny_bazowe_cache'
 const CACHE_WAZNOSC_MS = 6 * 60 * 60 * 1000
@@ -102,13 +110,13 @@ function dopasujCeny(skladnik, przygotowane) {
       zawieraWszystkie(c.tokeny, tokenyItemu)
     if (!pasuje) continue
 
-    const nadmiar = nadmiarTokenow(c.tokeny, tokenyItemu)
+    const punkty = punktacjaDopasowania(c.tokeny, tokenyItemu)
     const stara = perSklep.get(c.sklep)
 
     if (!stara ||
-        nadmiar < stara.nadmiar ||
-        (nadmiar === stara.nadmiar && c.cena_bazowa < stara.cena_bazowa)) {
-      perSklep.set(c.sklep, { ...c, nadmiar })
+        punkty < stara.punkty ||
+        (punkty === stara.punkty && c.cena_bazowa < stara.cena_bazowa)) {
+      perSklep.set(c.sklep, { ...c, punkty })
     }
   }
 
@@ -131,7 +139,7 @@ export function wycenKoszyk(items, ceny) {
   }
 
   const przygotowane = ceny
-    .filter(c => c.sklep && c.produkt && Number(c.cena_bazowa) > 0)
+    .filter(c => c.sklep && c.produkt && Number(c.cena_bazowa) >= MIN_CENA_BAZOWA)
     .map(c => ({
       sklep: c.sklep,
       produkt: c.produkt,

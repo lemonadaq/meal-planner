@@ -191,3 +191,45 @@ describe('wycenKoszyk — wybór produktu', () => {
     expect(wynik.sklepy[0].koszt).toBeCloseTo(15.74)
   })
 })
+
+describe('wycenKoszyk — ceny kuponowe i opis formy', () => {
+  // Blix daje grosz produktom odblokowywanym kuponem za punkty. Jako promocja
+  // to prawdziwa oferta, ale jako cena bazowa — nie, i wygrywała każde
+  // dopasowanie.
+  it('grosz nie służy za cenę bazową', () => {
+    const wynik = wycenKoszyk(
+      [item('cebula')],
+      [
+        cena('Biedronka', 'Chipsy ziemniaczane cebulka Wiejskie', 0.01),
+        cena('Biedronka', 'Cebula żółta', 1.99),
+      ]
+    )
+    expect(wynik.sklepy[0].koszt).toBeCloseTo(1.99)
+  })
+
+  it('gdy zostaje sam grosz, pozycja jest bez ceny', () => {
+    const wynik = wycenKoszyk([item('cebula')], [cena('Biedronka', 'Cebula', 0.01)])
+    expect(wynik.bezCeny).toBe(1)
+  })
+
+  // „w puszce" to opis formy, którego Blix w nazwach nie używa — wymaganie go
+  // dawało zero dopasowań, choć „pomidory" są w trzydziestu ofertach.
+  it('opis formy nie blokuje dopasowania', () => {
+    const wynik = wycenKoszyk(
+      [item('pomidory w puszce')],
+      [cena('Biedronka', 'Pomidory krojone Pudliszki', 3.49)]
+    )
+    expect(wynik.sklepy[0].wycenionych).toBe(1)
+  })
+
+  it('ale produkt z tym opisem nadal wygrywa', () => {
+    const wynik = wycenKoszyk(
+      [item('pomidory w puszce')],
+      [
+        cena('Biedronka', 'Pomidory w puszce Pudliszki', 3.49),
+        cena('Biedronka', 'Pomidory', 2.99),
+      ]
+    )
+    expect(wynik.sklepy[0].koszt).toBeCloseTo(3.49)
+  })
+})
