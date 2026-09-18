@@ -82,3 +82,56 @@ describe('uproscNazweSkladnika — przypadki brzegowe cięcia', () => {
     expect(uproscNazweSkladnika('roztopione masło')).toBe('masło')
   })
 })
+
+// Filip: „Cebula w kostkę? To też nie jest produkt do kupienia".
+// Te frazy nie mają imiesłowu, więc cięcie po OPISY_PRZYGOTOWANIA ich nie łapało.
+describe('uproscNazweSkladnika — frazy przygotowania bez imiesłowu', () => {
+  it.each([
+    ['cebula w kostkę', 'cebula'],
+    ['marchew w plastry', 'marchew'],
+    ['papryka w paski', 'papryka'],
+    ['por w talarki', 'por'],
+    ['ziemniaki w ćwiartki', 'ziemniaki'],
+    ['czosnek na drobno', 'czosnek'],
+    ['ser żółty na tarce', 'ser żółty'],
+    ['natka pietruszki do dekoracji', 'natka pietruszki'],
+    ['olej do smażenia', 'olej'],
+    ['sól do smaku', 'sól'],
+  ])('tnie instrukcję: %s', (wejscie, oczekiwane) => {
+    expect(uproscNazweSkladnika(wejscie)).toBe(oczekiwane)
+  })
+
+  // Sedno rozróżnienia: instrukcja stoi w bierniku, produkt w miejscowniku.
+  // „w plastry" to jak pokroić, „w plasterkach" to co kupić.
+  it.each([
+    'tuńczyk w oleju',
+    'kukurydza w puszce',
+    'mleko w proszku',
+    'ogórki w occie',
+    'szynka w plasterkach',
+    'brzoskwinie w syropie',
+    'śledź w zalewie',
+    'fasola w sosie pomidorowym',
+  ])('nie rusza produktu w miejscowniku: %s', (nazwa) => {
+    expect(uproscNazweSkladnika(nazwa)).toBe(nazwa)
+  })
+})
+
+describe('uproscNazweSkladnika — gramatura i ogony instrukcji', () => {
+  it.each([
+    ['pasta gochujang 2 łyżki', 'pasta gochujang'],
+    ['mąka pszenna 100 g', 'mąka pszenna'],
+    ['śmietana 30% 200 ml', 'śmietana 30%'],
+    ['olej sezamowy do skropienia na koniec', 'olej sezamowy'],
+    ['sezam do posypania na wierzch', 'sezam'],
+  ])('zdejmuje ogon: %s', (wejscie, oczekiwane) => {
+    expect(uproscNazweSkladnika(wejscie)).toBe(oczekiwane)
+  })
+
+  // Procent to cecha produktu („śmietana 30%" to inny towar niż 18%),
+  // więc sam w sobie nie może być traktowany jak gramatura.
+  it('procent zostaje, bo rozróżnia produkt', () => {
+    expect(uproscNazweSkladnika('śmietana 18%')).toBe('śmietana 18%')
+    expect(uproscNazweSkladnika('mleko 3,2%')).toBe('mleko 3,2%')
+  })
+})

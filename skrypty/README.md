@@ -25,7 +25,8 @@ Lokalnie działają też standardowe nazwy SDK (`ANTHROPIC_API_KEY`,
 - **tryb** — `wszystko` (przepis + zdjęcie), `przepisy` (bez kosztów Replicate),
   `obrazy` (zdjęcia do dań, które są już w bazie bez zdjęcia),
   `lista` (tylko wypisuje dania z bazy — nic nie zmienia, zero kosztów),
-  `usun` (KASUJE dania podane w polu `dania` — nieodwracalne)
+  `usun` (KASUJE dania podane w polu `dania` — nieodwracalne),
+  `czysc` (porządkuje nazwy składników w bazie — suchy bieg, chyba że `zapisz`)
 - **dania** — `Bigos|obiad; Żurek|zupa` (po średniku, bo pole jest jednolinijkowe).
   W trybie `obrazy` puste = wszystkie dania bez zdjęcia.
 - **limit** — bezpiecznik na koszty, `0` = bez limitu
@@ -36,6 +37,7 @@ Lokalnie działają też standardowe nazwy SDK (`ANTHROPIC_API_KEY`,
 - **rodzaj**, **tylko_ulubione** — filtry dla trybu `lista`
 - **zapisz_liste** — tryb `lista`: przepisuje `LISTA_DAN.md` aktualnym stanem bazy
   i commituje zmianę do repo
+- **zapisz** — tryb `czysc`: bez tego suchy bieg, z nim faktyczny zapis poprawek
 
 > Workflow pokazuje się w zakładce Actions dopiero wtedy, gdy plik
 > `.github/workflows/generuj-dania.yml` jest na gałęzi domyślnej (`main`).
@@ -120,6 +122,9 @@ kupić, ani dopasować.
 | `boczek wędzony` | `boczek wędzony lub podgardle` | na liście ma być jedna rzecz |
 | `ryż` | `ryż ugotowany` | stan przygotowania należy do kroków |
 | `cebula` | `cebula pokrojona w kostkę` | jw. |
+| `cebula` | `cebula w kostkę` | jw., tylko bez imiesłowu |
+| `pasta gochujang` | `pasta gochujang 2 łyżki` | od ilości są pola `ilosc` i `jednostka` |
+| `olej sezamowy` | `olej sezamowy do skropienia na koniec` | to krok, nie produkt |
 
 Co **zostaje**, bo rozróżnia produkt na półce: `boczek wędzony`, `mięso mielone`,
 `papryka suszona`, `mleko kokosowe`, `ser żółty`, `kapusta kiszona`. To inny
@@ -131,8 +136,14 @@ Pilnują tego dwie warstwy, bo prośba w prompcie to tylko prośba:
 2. `uproscNazweSkladnika()` — sprząta wynik w `zbudujWiersze()`, czyli w jedynym
    miejscu, przez które składniki wchodzą do bazy. Testy: `src/test/nazwySkladnikow.test.js`.
 
-Druga warstwa jest twarda: nawiasy, `lub`/`albo` i stan przygotowania lecą
-niezależnie od tego, co odpowie model. Lista słów przygotowania (`ugotowany`,
+Druga warstwa jest twarda: nawiasy, `lub`/`albo`, stan przygotowania, frazy
+typu `w kostkę` / `na tarce` / `do smaku` oraz gramatura doklejona do nazwy lecą
+niezależnie od tego, co odpowie model.
+
+Frazy przygotowania odróżniamy od nazw produktów **gramatycznie**: instrukcja
+stoi w bierniku (`w kostkę`, `w plastry`, `na drobno` — jak pokroić), a produkt
+w miejscowniku (`w oleju`, `w puszce`, `w proszku`, `w plasterkach` — w czym
+jest). Dlatego `w plastry` leci, a `w plasterkach` zostaje. Lista słów przygotowania (`ugotowany`,
 `pokrojony`, `starty`, `roztopiony`…) jest w `OPISY_PRZYGOTOWANIA` — świadomie
 **nie ma** w niej `wędzony`, `mielony`, `suszony`, `kiszony`, `konserwowy`,
 `marynowany`, bo te mówią, który produkt wziąć (ta sama zasada co
@@ -158,6 +169,13 @@ ZAPISZ=1 npm run czysc:skladniki   # zapis
 Skrypt zmienia wyłącznie kolumnę `Składnik`, niczego nie kasuje ani nie dodaje,
 pomija zmiany dające pustą nazwę i wypisuje wszystko do logu — z przebiegu da się
 odtworzyć stan sprzed. Można go odpalać wielokrotnie, drugi raz nie znajdzie już nic.
+
+Na końcu leci **PRZEGLĄD**: nazwy, których reguły NIE ruszyły, a które nadal
+wyglądają na instrukcję (nawias, imiesłów, przyimek, liczba, cztery słowa i
+więcej). To nie jest lista zmian — to lista do obejrzenia okiem, z której biorą
+się kolejne reguły. Cechy produktu (`boczek wędzony`, `tuńczyk w oleju`) są z niej
+wyłączone, żeby nie zagłuszały prawdziwych trafień. Przegląd leci też wtedy, gdy
+reguły nie mają nic do poprawy — brak zmian nie znaczy, że baza jest czysta.
 
 Alternatywa, droższa i węższa: tryb `przepisy` + `overwrite` generuje przepisy od
 nowa (zdjęcia i gwiazdki zostają), ale kosztuje tokeny i dotyczy tylko dań, które
