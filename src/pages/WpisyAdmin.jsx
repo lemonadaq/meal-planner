@@ -8,6 +8,7 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import { supabase } from '../supabase'
+import { pobierzWszystkieWiersze } from '../pobierzWszystko'
 import {
   pobierzWszystkieWpisy, zapiszWpis, usunWpis,
   pobierzPrzepisDoWpisu, wgrajZdjecieWpisu, zrobSlug, formatujDate,
@@ -67,11 +68,19 @@ export default function WpisyAdmin({ user, onZamknij }) {
   }, [])
 
   // Nazwy dań do podpowiedzi przy wiązaniu wpisu z przepisem.
+  //
+  // MUSI iść przez paginację: `dania` to wiersz na SKŁADNIK (~2500+ wierszy),
+  // a PostgREST ucina odpowiedź do 1000. Bez tego lista podpowiedzi pokazywała
+  // ~100 dań z 593 i nie dało się wybrać na przykład risotto.
   useEffect(() => {
     let anulowane = false
-    supabase.from('dania').select('"Danie"').then(({ data }) => {
+    pobierzWszystkieWiersze(() =>
+      supabase.from('dania').select('"Danie"').order('id'),
+    ).then(({ data }) => {
       if (anulowane) return
-      setNazwyDan([...new Set((data || []).map(r => r['Danie']).filter(Boolean))].sort())
+      setNazwyDan([...new Set((data || []).map(r => r['Danie']).filter(Boolean))].sort(
+        (a, b) => a.localeCompare(b, 'pl'),
+      ))
     })
     return () => { anulowane = true }
   }, [])

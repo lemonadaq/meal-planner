@@ -19,6 +19,7 @@ on:
           - lista      # tylko wypisuje dania z bazy, nic nie zmienia, zero kosztów
           - usun       # KASUJE dania podane w polu `dania` — nieodwracalne
           - czysc      # porządkuje nazwy składników w bazie (suchy bieg, chyba że `zapisz`)
+          - kuchnie    # dopisuje kuchnię i poziom trudności (suchy bieg, chyba że `zapisz`)
       dania:
         description: "Lista dań, po średniku: Bigos|obiad; Żurek|zupa (tryb 'obrazy' — puste = wszystkie bez zdjęcia)"
         type: string
@@ -55,7 +56,7 @@ on:
         required: false
         default: false
       zapisz:
-        description: "Tryb 'czysc': FAKTYCZNIE zapisz poprawki (bez tego tylko pokazuje, co by zmienił)"
+        description: "Tryby 'czysc' i 'kuchnie': FAKTYCZNIE zapisz (bez tego tylko pokazuje, co by zmienił)"
         type: boolean
         required: false
         default: false
@@ -128,6 +129,7 @@ jobs:
             lista)    node skrypty/lista.mjs ;;
             usun)     node skrypty/usun.mjs ;;
             czysc)    node skrypty/czysc-skladniki.mjs ;;
+            kuchnie)  node skrypty/uzupelnij-kuchnie.mjs ;;
           esac
 
       - name: Zacommituj odświeżoną listę dań

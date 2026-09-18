@@ -11,6 +11,7 @@
 // sprawdzanie po stronie przeglądarki niczego nie pilnuje.
 
 import { supabase } from './supabase'
+import { pobierzWszystkieWiersze } from './pobierzWszystko'
 
 export const BUCKET_KOMENTARZE = 'blog-komentarze'
 export const MAKS_TRESC = 2000
@@ -249,7 +250,11 @@ export async function ustawKomentarzeGlobalnie(wlaczone) {
 
 export async function pobierzOdwiedziny() {
   try {
-    const { data, error } = await supabase.from('wpisy_odwiedziny').select('wpis_id, ile')
+    // Wiersz na wpis i dzień, więc przy kilkudziesięciu wpisach przekroczy
+    // 1000 w ciągu roku — bez paginacji licznik po cichu by się zaniżył.
+    const { data, error } = await pobierzWszystkieWiersze(() =>
+      supabase.from('wpisy_odwiedziny').select('wpis_id, ile').order('wpis_id'),
+    )
     if (error) return { odwiedziny: {}, blad: error.message }
 
     const suma = {}
