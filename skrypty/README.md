@@ -138,8 +138,30 @@ niezależnie od tego, co odpowie model. Lista słów przygotowania (`ugotowany`,
 `marynowany`, bo te mówią, który produkt wziąć (ta sama zasada co
 `TRANSFORM_WORDS` w `src/promocjeMatch.js`).
 
-Dania wygenerowane przed tą zmianą mają stare nazwy — poprawia je dopiero
-ponowne wygenerowanie przepisu (tryb `przepisy` + `overwrite`).
+### Porządki w tym, co już jest w bazie
+
+Sanitizer działa przy zapisie, więc dania wygenerowane wcześniej mają stare
+nazwy. Do ich poprawienia jest osobny tryb — te same reguły tekstowe, bez
+pytania Claude'a, czyli bez kosztów:
+
+**Actions → „Generuj dania" → tryb `czysc`.** Bez zaznaczonego `zapisz` to
+**suchy bieg**: wypisuje każdą zmianę, którą by zrobił, pogrupowaną i z liczbą
+wystąpień, i nic nie rusza. Dopiero `zapisz` faktycznie zapisuje.
+
+Lokalnie:
+
+```bash
+npm run czysc:skladniki            # suchy bieg
+ZAPISZ=1 npm run czysc:skladniki   # zapis
+```
+
+Skrypt zmienia wyłącznie kolumnę `Składnik`, niczego nie kasuje ani nie dodaje,
+pomija zmiany dające pustą nazwę i wypisuje wszystko do logu — z przebiegu da się
+odtworzyć stan sprzed. Można go odpalać wielokrotnie, drugi raz nie znajdzie już nic.
+
+Alternatywa, droższa i węższa: tryb `przepisy` + `overwrite` generuje przepisy od
+nowa (zdjęcia i gwiazdki zostają), ale kosztuje tokeny i dotyczy tylko dań, które
+wskażesz.
 
 ## Gdy model uparcie pudłuje
 

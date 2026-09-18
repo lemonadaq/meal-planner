@@ -18,6 +18,7 @@ on:
           - obrazy     # zdjęcia dla dań, które są już w bazie bez zdjęcia
           - lista      # tylko wypisuje dania z bazy, nic nie zmienia, zero kosztów
           - usun       # KASUJE dania podane w polu `dania` — nieodwracalne
+          - czysc      # porządkuje nazwy składników w bazie (suchy bieg, chyba że `zapisz`)
       dania:
         description: "Lista dań, po średniku: Bigos|obiad; Żurek|zupa (tryb 'obrazy' — puste = wszystkie bez zdjęcia)"
         type: string
@@ -53,6 +54,11 @@ on:
         type: boolean
         required: false
         default: false
+      zapisz:
+        description: "Tryb 'czysc': FAKTYCZNIE zapisz poprawki (bez tego tylko pokazuje, co by zmienił)"
+        type: boolean
+        required: false
+        default: false
 
 # Dwa przebiegi naraz wchodziłyby sobie w drogę przy tych samych daniach.
 concurrency:
@@ -81,6 +87,7 @@ jobs:
       RODZAJ: ${{ inputs.rodzaj }}
       ULUBIONE: ${{ inputs.tylko_ulubione && '1' || '0' }}
       ZAPISZ_LISTE: ${{ inputs.zapisz_liste && '1' || '0' }}
+      ZAPISZ: ${{ inputs.zapisz && '1' || '0' }}
 
     steps:
       - name: Checkout repo
@@ -102,7 +109,7 @@ jobs:
             if [ -z "${!zmienna}" ]; then echo "::error::brak sekretu $zmienna"; brakuje=1; fi
           done
           # tryb 'lista' tylko czyta bazę — nie potrzebuje ani Claude'a, ani Replicate
-          case "${{ inputs.tryb }}" in lista|usun) potrzebnyClaude=0 ;; *) potrzebnyClaude=1 ;; esac
+          case "${{ inputs.tryb }}" in lista|usun|czysc) potrzebnyClaude=0 ;; *) potrzebnyClaude=1 ;; esac
           if [ "$potrzebnyClaude" = 1 ] && [ -z "$ANTHROPIC_KEY" ]; then
             echo "::error::brak sekretu ANTHROPIC_KEY"; brakuje=1
           fi
@@ -120,6 +127,7 @@ jobs:
             obrazy)   node skrypty/generuj-obrazy.mjs ;;
             lista)    node skrypty/lista.mjs ;;
             usun)     node skrypty/usun.mjs ;;
+            czysc)    node skrypty/czysc-skladniki.mjs ;;
           esac
 
       - name: Zacommituj odświeżoną listę dań
