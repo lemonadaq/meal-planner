@@ -106,6 +106,41 @@ ulubione.
 
 Po skasowaniu odśwież `LISTA_DAN.md` (tryb `lista` + `zapisz_liste`).
 
+## Zasady nazw składników
+
+Nazwa składnika trafia **prosto na listę zakupów** i jest kluczem dopasowania do
+`skladniki_meta` (rozmiar opakowania) oraz do promocji. Musi więc być nazwą
+produktu ze sklepu, a nie instrukcją. Bez tego lądowały w bazie rzeczy w stylu
+`ryż ugotowany (najlepiej z dnia poprzedniego)` — czegoś takiego nie da się ani
+kupić, ani dopasować.
+
+| Ma być | Nie ma być | Dlaczego |
+| --- | --- | --- |
+| `dymka` | `dymka (zielona cebulka)` | nawias to wyjaśnienie, nie nazwa |
+| `boczek wędzony` | `boczek wędzony lub podgardle` | na liście ma być jedna rzecz |
+| `ryż` | `ryż ugotowany` | stan przygotowania należy do kroków |
+| `cebula` | `cebula pokrojona w kostkę` | jw. |
+
+Co **zostaje**, bo rozróżnia produkt na półce: `boczek wędzony`, `mięso mielone`,
+`papryka suszona`, `mleko kokosowe`, `ser żółty`, `kapusta kiszona`. To inny
+produkt niż boczek, mięso czy mleko — skracanie wysłałoby po złą rzecz.
+
+Pilnują tego dwie warstwy, bo prośba w prompcie to tylko prośba:
+
+1. `ZASADY_SKLADNIKOW` w `wspolne.js` — dopisane do promptu przepisu.
+2. `uproscNazweSkladnika()` — sprząta wynik w `zbudujWiersze()`, czyli w jedynym
+   miejscu, przez które składniki wchodzą do bazy. Testy: `src/test/nazwySkladnikow.test.js`.
+
+Druga warstwa jest twarda: nawiasy, `lub`/`albo` i stan przygotowania lecą
+niezależnie od tego, co odpowie model. Lista słów przygotowania (`ugotowany`,
+`pokrojony`, `starty`, `roztopiony`…) jest w `OPISY_PRZYGOTOWANIA` — świadomie
+**nie ma** w niej `wędzony`, `mielony`, `suszony`, `kiszony`, `konserwowy`,
+`marynowany`, bo te mówią, który produkt wziąć (ta sama zasada co
+`TRANSFORM_WORDS` w `src/promocjeMatch.js`).
+
+Dania wygenerowane przed tą zmianą mają stare nazwy — poprawia je dopiero
+ponowne wygenerowanie przepisu (tryb `przepisy` + `overwrite`).
+
 ## Gdy model uparcie pudłuje
 
 `opisy-reczne.js` trzyma dwie mapy per danie, obie nadpisują to, co wymyśli model:

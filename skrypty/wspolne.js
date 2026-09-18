@@ -203,6 +203,92 @@ async function pytajClaude(tresc, schemat) {
   return JSON.parse(tekst)
 }
 
+// ── Nazwy składników ──────────────────────────────────────────────
+// Nazwa składnika trafia PROSTO na listę zakupów i jest kluczem dopasowania
+// do `skladniki_meta` (rozmiar opakowania) oraz do promocji. Musi więc być
+// nazwą produktu ze sklepu, a nie instrukcją: „ryż ugotowany (najlepiej
+// z dnia poprzedniego)" nie jest czymś, co się kupuje, i nie dopasuje się
+// do niczego.
+//
+// Prompt prosi o to wprost, ale prośba w prompcie to prośba — dlatego
+// `uproscNazweSkladnika` niżej sprząta wynik niezależnie od tego, co przyjdzie.
+const ZASADY_SKLADNIKOW =
+  'Zasady nazw składników (skladniki[].nazwa):\n' +
+  '- Nazwa składnika = NAZWA PRODUKTU ZE SKLEPU, w mianowniku liczby pojedynczej. ' +
+  'Tak, jak stoi na półce: „ryż", „dymka", „boczek wędzony", „pasta gochujang".\n' +
+  '- ZERO nawiasów, zero wyjaśnień, zero synonimów w nazwie. Nie „dymka (zielona ' +
+  'cebulka)", tylko „dymka".\n' +
+  '- ZERO alternatyw. Nie „boczek wędzony lub podgardle" — wybierz jedno i wpisz je same.\n' +
+  '- ZERO stanu przygotowania. Nie „ryż ugotowany", „cebula pokrojona w kostkę", ' +
+  '„masło roztopione" — to należy do kroków, nie do nazwy. W nazwie ma zostać ' +
+  'sam produkt: „ryż", „cebula", „masło".\n' +
+  '- Zostaw natomiast cechę, która ROZRÓŻNIA produkt w sklepie: „boczek wędzony", ' +
+  '„mięso mielone", „papryka suszona", „mleko kokosowe", „ser żółty" — tego się ' +
+  'nie skraca, bo to inny produkt niż boczek, mięso czy mleko.\n' +
+  '- Bez ilości i gramatury w nazwie — od tego są pola `ilosc` i `jednostka`.'
+
+// Słowa opisujące, co masz z produktem ZROBIĆ. Lecą z nazwy, bo to instrukcja.
+// Świadomie NIE ma tu „wędzony", „mielony", „suszony", „kiszony", „konserwowy",
+// „marynowany" — te akurat mówią, który produkt wziąć z półki, więc zostają
+// (ta sama zasada co TRANSFORM_WORDS w src/promocjeMatch.js).
+const OPISY_PRZYGOTOWANIA = [
+  'ugotowany', 'ugotowana', 'ugotowane', 'ugotowany wcześniej',
+  'upieczony', 'upieczona', 'upieczone',
+  'usmażony', 'usmażona', 'usmażone', 'podsmażony', 'podsmażona', 'podsmażone',
+  'pokrojony', 'pokrojona', 'pokrojone', 'posiekany', 'posiekana', 'posiekane',
+  'starty', 'starta', 'starte', 'rozdrobniony', 'rozdrobniona', 'rozdrobnione',
+  'roztopiony', 'roztopiona', 'roztopione', 'rozpuszczony', 'rozpuszczona', 'rozpuszczone',
+  'schłodzony', 'schłodzona', 'schłodzone', 'ostudzony', 'ostudzona', 'ostudzone',
+  'wystudzony', 'wystudzona', 'wystudzone',
+  'namoczony', 'namoczona', 'namoczone', 'odsączony', 'odsączona', 'odsączone',
+  'odcedzony', 'odcedzona', 'odcedzone', 'obrany', 'obrana', 'obrane',
+  'umyty', 'umyta', 'umyte', 'świeżo mielony', 'świeżo starty',
+]
+
+const ALTERNATYWY = /\s+(?:lub|albo|ewentualnie|bądź|badz)\s+.*$/i
+
+/**
+ * Sprowadza nazwę składnika do nazwy produktu ze sklepu.
+ *
+ *   „dymka (zielona cebulka)"                      → „dymka"
+ *   „boczek wędzony lub podgardle"                 → „boczek wędzony"
+ *   „ryż ugotowany (najlepiej z dnia poprzedniego)" → „ryż"
+ *
+ * Zostawia cechy rozróżniające produkt w sklepie („boczek wędzony",
+ * „mięso mielone"), bo bez nich trafiłoby się w zupełnie inny towar.
+ */
+export function uproscNazweSkladnika(nazwa) {
+  let wynik = String(nazwa ?? '')
+
+  // Nawiasy w całości — siedzą w nich wyjaśnienia i synonimy.
+  wynik = wynik.replace(/\s*[([{][^)\]}]*[)\]}]/g, ' ')
+
+  // „X lub Y" → „X". Zawsze pierwszy wariant, bo jest tym głównym.
+  wynik = wynik.replace(ALTERNATYWY, '')
+
+  // Stan przygotowania ucinamy RAZEM z resztą frazy, bo za nim zwykle idzie
+  // jeszcze sposób („pokrojona w kostkę", „starty na tarce"). Usunięcie samego
+  // słowa zostawiało „cebula w kostkę".
+  //
+  // Gdy takie słowo stoi na początku („ugotowany ryż"), cięcie zabrałoby całą
+  // nazwę — wtedy znika samo słowo, a produkt zostaje.
+  for (const opis of OPISY_PRZYGOTOWANIA) {
+    const odPoczatku = new RegExp(`^${opis}\\s+`, 'i')
+    if (odPoczatku.test(wynik)) {
+      wynik = wynik.replace(odPoczatku, '')
+      continue
+    }
+    wynik = wynik.replace(new RegExp(`\\s+${opis}(?:\\s|$).*$`, 'i'), '')
+  }
+
+  // Ogon po przecinku („cebula, drobno" ) i resztki interpunkcji.
+  wynik = wynik.replace(/\s*,.*$/, '')
+  wynik = wynik.replace(/\s+/g, ' ').replace(/^[\s\-–—]+|[\s\-–—.:;]+$/g, '').trim()
+
+  // Gdyby czyszczenie zjadło wszystko, lepiej oddać oryginał niż pustkę.
+  return wynik || String(nazwa ?? '').trim()
+}
+
 // ── Zasady opisu wyglądu — wspólne dla obu ścieżek ────────────────
 // To jest lekarstwo na „ktoś, kto nigdy nie widział tego dania, kazał
 // narysować obrazek". Wcześniej opis powstawał z samej listy składników,
@@ -234,6 +320,7 @@ export async function generujPrzepis(nazwa, rodzaj) {
       '- Od 3 do 8 kroków, krótkich i konkretnych, po polsku.\n' +
       '- kcal to kalorie na jedną porcję.\n' +
       '- Przepis ma być realistyczny dla domowej kuchni, bez restauracyjnych udziwnień.\n\n' +
+      ZASADY_SKLADNIKOW + '\n\n' +
       ZASADY_WYGLADU,
     SCHEMAT_PRZEPISU,
   )
@@ -397,7 +484,7 @@ export function zbudujWiersze(nazwa, rodzaj, przepis) {
   }
   return przepis.skladniki.map(s => ({
     ...wspolne,
-    'Składnik': s.nazwa,
+    'Składnik': uproscNazweSkladnika(s.nazwa),
     'Ilość na 1 porcję': s.ilosc || '-',
     'Jednostka': s.jednostka || 'g',
     'Kategoria': s.kategoria,
