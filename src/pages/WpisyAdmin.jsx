@@ -12,6 +12,8 @@ import {
   pobierzWszystkieWpisy, zapiszWpis, usunWpis,
   pobierzPrzepisDoWpisu, wgrajZdjecieWpisu, zrobSlug, formatujDate,
 } from '../blog'
+import KomentarzeAdmin from '../components/KomentarzeAdmin'
+import { pobierzOdwiedziny } from '../komentarze'
 import { t, fonts, ui } from '../theme'
 
 const PUSTY = {
@@ -36,6 +38,8 @@ export default function WpisyAdmin({ user, onZamknij }) {
   const [nazwyDan, setNazwyDan] = useState([])
   const [status, setStatus] = useState(null)
   const [zajety, setZajety] = useState(false)
+  const [sekcja, setSekcja] = useState('wpisy')
+  const [odwiedziny, setOdwiedziny] = useState({})
 
   const odswiez = useCallback(async () => {
     const { wpisy: dane, blad } = await pobierzWszystkieWpisy()
@@ -49,6 +53,14 @@ export default function WpisyAdmin({ user, onZamknij }) {
       if (anulowane) return
       if (blad) setStatus({ typ: 'blad', tekst: blad })
       setWpisy(dane)
+    })
+    return () => { anulowane = true }
+  }, [])
+
+  useEffect(() => {
+    let anulowane = false
+    pobierzOdwiedziny().then(({ odwiedziny: dane }) => {
+      if (!anulowane) setOdwiedziny(dane)
     })
     return () => { anulowane = true }
   }, [])
@@ -292,10 +304,26 @@ export default function WpisyAdmin({ user, onZamknij }) {
         <button style={s.back} onClick={onZamknij}>← Wróć</button>
         <h1 style={s.h1}>Blog</h1>
 
+        <div style={s.zakladki}>
+          {[['wpisy', '📝 Wpisy'], ['komentarze', '💬 Komentarze']].map(([id, etykieta]) => (
+            <button
+              key={id}
+              style={{ ...s.zakladka, ...(sekcja === id ? s.zakladkaAktywna : null) }}
+              onClick={() => setSekcja(id)}
+            >
+              {etykieta}
+            </button>
+          ))}
+        </div>
+
         {status && (
           <div style={status.typ === 'blad' ? s.komunikatBlad : s.komunikatOk}>{status.tekst}</div>
         )}
 
+        {sekcja === 'komentarze' ? (
+          <KomentarzeAdmin onBlad={tekst => setStatus({ typ: 'blad', tekst })} />
+        ) : (
+        <>
         <button style={s.btnGlowny} onClick={() => { setEdytowany({ ...PUSTY }); setStatus(null) }}>
           + Nowy wpis
         </button>
@@ -319,6 +347,7 @@ export default function WpisyAdmin({ user, onZamknij }) {
                 </span>
                 {w.opublikowano_at ? ` · ${formatujDate(w.opublikowano_at)}` : ''}
                 {w.danie ? ` · ${w.danie}` : ''}
+                {odwiedziny[w.id] ? ` · 👁️ ${odwiedziny[w.id]}` : ''}
               </div>
             </div>
             <button style={s.btnMaly} onClick={() => { setEdytowany(w); setStatus(null) }}>
@@ -327,6 +356,8 @@ export default function WpisyAdmin({ user, onZamknij }) {
             <button style={s.btnKasuj} onClick={() => skasuj(w)}>Usuń</button>
           </div>
         ))}
+        </>
+        )}
       </div>
     </div>
   )
@@ -420,6 +451,17 @@ const s = {
     padding: '10px 12px', fontSize: 13, color: t.text, marginBottom: 14,
     wordBreak: 'break-word',
   },
+
+  zakladki: {
+    display: 'flex', gap: 4, background: t.surface,
+    border: `1px solid ${t.border}`, borderRadius: 14, padding: 4, marginBottom: 16,
+  },
+  zakladka: {
+    flex: 1, background: 'transparent', border: 'none', borderRadius: 10,
+    padding: '9px 10px', fontFamily: fonts.sans, fontSize: 13,
+    fontWeight: 600, color: t.mute, cursor: 'pointer',
+  },
+  zakladkaAktywna: { background: t.accent, color: '#fff' },
 
   pusto: { color: t.mute, fontSize: 14, padding: '24px 0', textAlign: 'center' },
   pustoPod: { fontSize: 12, color: t.muteLight, marginTop: 8 },

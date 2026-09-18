@@ -6,6 +6,8 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { pobierzWpis, formatujDate } from '../blog'
+import { zliczOdwiedziny } from '../komentarze'
+import Komentarze from '../components/Komentarze'
 import { t, fonts } from '../theme'
 
 // Lekki render treści: akapity, nagłówki i listy. Świadomie NIE wstawiamy
@@ -105,6 +107,12 @@ export default function Wpis() {
     return () => { anulowane = true }
   }, [slug])
 
+  // Odwiedziny liczymy dopiero, gdy wpis faktycznie się wczytał — inaczej
+  // 404 i literówki w adresie nabijałyby licznik.
+  useEffect(() => {
+    if (wpis?.slug) zliczOdwiedziny(wpis.slug)
+  }, [wpis?.slug])
+
   // Tytuł karty przeglądarki — SPA nie zrobi tego samo, a to on trafia
   // do zakładek i do podglądu linku.
   useEffect(() => {
@@ -160,6 +168,11 @@ export default function Wpis() {
             )}
 
             <Przepis przepis={wpis.przepis} />
+
+            <Komentarze
+              wpisId={wpis.id}
+              komentarzeWlaczoneWpis={wpis.komentarze_wlaczone !== false}
+            />
           </article>
         )}
 

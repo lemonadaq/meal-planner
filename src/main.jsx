@@ -1,6 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { Analytics } from '@vercel/analytics/react'
 import './index.css'
 import App from './App.jsx'
 import Blog from './pages/Blog.jsx'
@@ -27,6 +28,9 @@ createRoot(document.getElementById('root')).render(
         {/* Nieznany adres wraca na blog, a nie na biały ekran. */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      {/* Statystyki Vercela — zbiera tylko odsłony, bez ciasteczek.
+          Własny licznik w bazie zostaje, bo tamten widać w panelu bloga. */}
+      {!jestNatywna && <Analytics />}
     </BrowserRouter>
   </StrictMode>,
 )
