@@ -8,6 +8,7 @@ import { Link, useParams } from 'react-router-dom'
 import { pobierzWpis, formatujDate } from '../blog'
 import { zliczOdwiedziny } from '../komentarze'
 import Komentarze from '../components/Komentarze'
+import NaglowekBloga from '../components/NaglowekBloga'
 import { t, fonts } from '../theme'
 
 // Lekki render treści: akapity, nagłówki i listy. Świadomie NIE wstawiamy
@@ -123,10 +124,7 @@ export default function Wpis() {
   return (
     <div style={s.outer}>
       <div style={s.container}>
-        <header style={s.naglowek}>
-          <Link to="/" style={s.wroc}>← Wszystkie wpisy</Link>
-          <Link to="/planer" style={s.btnLogin}>Zaloguj się</Link>
-        </header>
+        <NaglowekBloga wariant="podstrona" />
 
         {ladowanie && <div style={s.info}>Ładowanie…</div>}
 

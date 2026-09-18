@@ -11,6 +11,7 @@ import { supabase } from '../supabase'
 import {
   pobierzWszystkieWpisy, zapiszWpis, usunWpis,
   pobierzPrzepisDoWpisu, wgrajZdjecieWpisu, zrobSlug, formatujDate,
+  KATEGORIE_BLOGA, kategoriaZRodzaju,
 } from '../blog'
 import KomentarzeAdmin from '../components/KomentarzeAdmin'
 import { pobierzOdwiedziny } from '../komentarze'
@@ -18,7 +19,7 @@ import { t, fonts, ui } from '../theme'
 
 const PUSTY = {
   id: null, slug: '', tytul: '', lead: '', tresc: '',
-  danie: '', przepis: null, zdjecie_glowne: '', zdjecia: [],
+  danie: '', kategoria: '', przepis: null, zdjecie_glowne: '', zdjecia: [],
   opublikowany: false, opublikowano_at: null,
 }
 
@@ -97,7 +98,10 @@ export default function WpisyAdmin({ user, onZamknij }) {
       setStatus({ typ: 'blad', tekst: blad || 'Nie znalazłem takiego dania w bazie.' })
       return
     }
-    zmien('przepis', przepis)
+    // Kategorię podpowiadamy z rodzaju dania, ale tylko gdy pole jest puste —
+    // ręczny wybór Filipa ma pierwszeństwo.
+    const podpowiedz = kategoriaZRodzaju(przepis.rodzaj)
+    setEdytowany(w => ({ ...w, przepis, kategoria: w.kategoria || podpowiedz || '' }))
     setStatus({ typ: 'ok', tekst: `Wczytano przepis: ${przepis.skladniki.length} składników.` })
   }
 
@@ -240,6 +244,21 @@ export default function WpisyAdmin({ user, onZamknij }) {
             )}
             <input type="file" accept="image/*" style={s.plik}
               onChange={e => wgrajZdjecie(e, false)} />
+          </Pole>
+
+          <Pole etykieta="Kategoria" podpowiedz="Po niej działa podział na blogu.">
+            <div style={s.rzad}>
+              {KATEGORIE_BLOGA.map(k => (
+                <button
+                  key={k.id}
+                  type="button"
+                  style={{ ...s.chip, ...(edytowany.kategoria === k.id ? s.chipOn : null) }}
+                  onClick={() => zmien('kategoria', edytowany.kategoria === k.id ? '' : k.id)}
+                >
+                  {k.label}
+                </button>
+              ))}
+            </div>
           </Pole>
 
           <Pole
@@ -451,6 +470,13 @@ const s = {
     padding: '10px 12px', fontSize: 13, color: t.text, marginBottom: 14,
     wordBreak: 'break-word',
   },
+
+  chip: {
+    background: t.surfaceAlt, border: `1px solid ${t.border}`, borderRadius: 999,
+    padding: '7px 13px', fontFamily: fonts.sans, fontSize: 12.5,
+    fontWeight: 600, color: t.mute, cursor: 'pointer',
+  },
+  chipOn: { background: t.accent, color: '#fff', borderColor: t.accent },
 
   zakladki: {
     display: 'flex', gap: 4, background: t.surface,

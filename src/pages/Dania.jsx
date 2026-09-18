@@ -17,6 +17,21 @@ const FILTRY = [
   { id: 'surowka',   label: 'Surówki' },
 ]
 
+// Etykiety do wyświetlenia. Wartości techniczne (bez ogonków) siedzą
+// w skrypty/wspolne.js — tam powstają dane, tutaj tylko je nazywamy.
+const KUCHNIA_LABEL = {
+  polska: '🇵🇱 Polska', wloska: '🇮🇹 Włoska', francuska: '🇫🇷 Francuska',
+  hiszpanska: '🇪🇸 Hiszpańska', grecka: '🇬🇷 Grecka', niemiecka: '🇩🇪 Niemiecka',
+  wegierska: '🇭🇺 Węgierska', ukrainska: '🇺🇦 Ukraińska',
+  amerykanska: '🇺🇸 Amerykańska', meksykanska: '🇲🇽 Meksykańska',
+  koreanska: '🇰🇷 Koreańska', japonska: '🇯🇵 Japońska', chinska: '🇨🇳 Chińska',
+  tajska: '🇹🇭 Tajska', wietnamska: '🇻🇳 Wietnamska', indyjska: '🇮🇳 Indyjska',
+  bliskowschodnia: '🥙 Bliski Wschód', turecka: '🇹🇷 Turecka',
+  afrykanska: '🌍 Afrykańska', miedzynarodowa: '🌐 Międzynarodowa',
+}
+
+const POZIOM_LABEL = { latwe: '🟢 Łatwe', srednie: '🟡 Średnie', trudne: '🔴 Trudne' }
+
 const RODZAJ_LABEL = {
   obiad: 'Obiad', sniadanie: 'Śniadanie', kolacja: 'Kolacja',
   zupa: 'Zupa', deser: 'Deser',
@@ -70,6 +85,9 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
 
   // Potwierdzenie usunięcia (modal)
   const [potwierdz, setPotwierdz] = useState(null)
+  const [kuchnia, setKuchnia] = useState(() => sessionStorage.getItem('dania_kuchnia') || '')
+  const [poziom, setPoziom] = useState(() => sessionStorage.getItem('dania_poziom') || '')
+
   // { danie: '...', rodzaj: '...', wpisyKalendarza: [...] }
 
   // Toast z undo
@@ -84,6 +102,8 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
 
   useEffect(() => { sessionStorage.setItem('dania_szukaj', szukaj) }, [szukaj])
   useEffect(() => { sessionStorage.setItem('dania_filtry', JSON.stringify(filtry)) }, [filtry])
+  useEffect(() => { sessionStorage.setItem('dania_kuchnia', kuchnia) }, [kuchnia])
+  useEffect(() => { sessionStorage.setItem('dania_poziom', poziom) }, [poziom])
   useEffect(() => { sessionStorage.setItem('dania_widok', widok) }, [widok])
   useEffect(() => { sessionStorage.setItem('dania_ulubione', String(ulubioneNaGorze)) }, [ulubioneNaGorze])
 
@@ -126,7 +146,7 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
     while (true) {
       const { data, error } = await supabase
         .from('dania')
-        .select('"Danie", "TYP", rodzaj, czas_minuty, kcal, porcje_bazowe, ulubione, zdjecie')
+        .select('"Danie", "TYP", rodzaj, kuchnia, poziom, czas_minuty, kcal, porcje_bazowe, ulubione, zdjecie')
         .order('"Danie"')
         .range(od, od + STRONA - 1)
       if (error || !data?.length) break
@@ -174,6 +194,8 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
     .filter(d => {
       if (tylkoUlubione && !d.ulubione) return false
       if (aktywneRodzaje.length > 0 && !aktywneRodzaje.includes(d.rodzaj)) return false
+      if (kuchnia && d.kuchnia !== kuchnia) return false
+      if (poziom && d.poziom !== poziom) return false
       if (szukaj && !d['Danie'].toLowerCase().includes(szukaj.toLowerCase())) return false
       return true
     })
@@ -289,6 +311,11 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
     ? 'Wszystko'
     : filtry.map(id => FILTRY.find(f => f.id === id)?.label || id).join(' + ')
   const showFeatured = false
+  // Kolejność z KUCHNIA_LABEL/POZIOM_LABEL, nie alfabetyczna — łatwe przed
+  // trudnymi, a Polska przed Wietnamem.
+  const obecnePoziomy = Object.keys(POZIOM_LABEL).filter(p => wszystkie.some(d => d.poziom === p))
+  const obecneKuchnie = Object.keys(KUCHNIA_LABEL).filter(k => wszystkie.some(d => d.kuchnia === k))
+
   const [featured, ...reszta] = filtrowane
   const tabela = showFeatured ? reszta : filtrowane
 
@@ -343,6 +370,29 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
             })}
           </div>
         </div>
+
+        {/* Kuchnia i poziom — pokazujemy tylko wartości, które są w danych,
+            żeby przed uzupełnieniem bazy nie wisiał tu pusty rząd. */}
+        {(obecneKuchnie.length > 0 || obecnePoziomy.length > 0) && (
+          <div style={s.chipsRow}>
+            <div style={s.chipsScroll}>
+              {obecnePoziomy.map(p => (
+                <button key={p}
+                  style={{ ...s.chip, ...(poziom === p ? s.chipOn : {}) }}
+                  onClick={() => setPoziom(poziom === p ? '' : p)}>
+                  {POZIOM_LABEL[p] || p}
+                </button>
+              ))}
+              {obecneKuchnie.map(k => (
+                <button key={k}
+                  style={{ ...s.chip, ...(kuchnia === k ? s.chipOn : {}) }}
+                  onClick={() => setKuchnia(kuchnia === k ? '' : k)}>
+                  {KUCHNIA_LABEL[k] || k}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Liczba wyników + toggle widoku */}
         <div style={s.metaRow}>

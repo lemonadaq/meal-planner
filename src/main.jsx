@@ -6,6 +6,7 @@ import './index.css'
 import App from './App.jsx'
 import Blog from './pages/Blog.jsx'
 import Wpis from './pages/Wpis.jsx'
+import OMnie from './pages/OMnie.jsx'
 
 // Routing siedzi TYLKO tutaj, na samej górze. Planer (`App`) ma własną
 // nawigację na stanie Reacta razem z obsługą cofania w Capacitorze i celowo
@@ -24,6 +25,7 @@ createRoot(document.getElementById('root')).render(
       <Routes>
         <Route path="/" element={jestNatywna ? <Navigate to="/planer" replace /> : <Blog />} />
         <Route path="/wpis/:slug" element={<Wpis />} />
+        <Route path="/o-mnie" element={<OMnie />} />
         <Route path="/planer/*" element={<App />} />
         {/* Nieznany adres wraca na blog, a nie na biały ekran. */}
         <Route path="*" element={<Navigate to="/" replace />} />

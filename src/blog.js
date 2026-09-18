@@ -10,6 +10,34 @@ import { supabase } from './supabase'
 
 export const BUCKET_BLOG = 'blog-zdjecia'
 
+// Podział bloga. Te same nazwy techniczne co `dania.rodzaj`, żeby wpis
+// powiązany z daniem dało się kiedyś zakwalifikować automatycznie.
+export const KATEGORIE_BLOGA = [
+  { id: 'sniadania', label: 'Śniadania' },
+  { id: 'obiady', label: 'Obiady' },
+  { id: 'kolacje', label: 'Kolacje' },
+  { id: 'zupy', label: 'Zupy' },
+  { id: 'przekaski', label: 'Przekąski' },
+  { id: 'desery', label: 'Desery' },
+  { id: 'inne', label: 'Inne' },
+]
+
+export function etykietaKategorii(id) {
+  return KATEGORIE_BLOGA.find(k => k.id === id)?.label || null
+}
+
+// `dania.rodzaj` jest w liczbie pojedynczej, kategorie bloga w mnogiej —
+// mapowanie pozwala podpowiedzieć kategorię przy wiązaniu wpisu z daniem.
+const RODZAJ_NA_KATEGORIE = {
+  sniadanie: 'sniadania', obiad: 'obiady', kolacja: 'kolacje',
+  zupa: 'zupy', przekaska: 'przekaski', deser: 'desery',
+  dodatek: 'inne', surowka: 'inne',
+}
+
+export function kategoriaZRodzaju(rodzaj) {
+  return RODZAJ_NA_KATEGORIE[rodzaj] || null
+}
+
 // Slug trafia do adresu (menuplaner.pl/wpis/<slug>), więc musi być ascii,
 // bez spacji i bez znaków, które trzeba by kodować.
 export function zrobSlug(tekst = '') {
@@ -82,7 +110,7 @@ export async function pobierzWpisy({ limit = 50 } = {}) {
   try {
     const { data, error } = await supabase
       .from('wpisy')
-      .select('id, slug, tytul, lead, tresc, danie, zdjecie_glowne, opublikowano_at')
+      .select('id, slug, tytul, lead, tresc, danie, kategoria, zdjecie_glowne, opublikowano_at')
       .eq('opublikowany', true)
       .order('opublikowano_at', { ascending: false })
       .limit(limit)
@@ -135,6 +163,7 @@ export async function zapiszWpis(wpis) {
     lead: wpis.lead || null,
     tresc: wpis.tresc || '',
     danie: wpis.danie || null,
+    kategoria: wpis.kategoria || null,
     przepis: wpis.przepis || null,
     zdjecie_glowne: wpis.zdjecie_glowne || null,
     zdjecia: wpis.zdjecia || [],

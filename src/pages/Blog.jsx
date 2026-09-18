@@ -4,20 +4,9 @@
 
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { pobierzWpisy, zajawka, formatujDate } from '../blog'
+import { pobierzWpisy, zajawka, formatujDate, KATEGORIE_BLOGA, etykietaKategorii } from '../blog'
+import NaglowekBloga from '../components/NaglowekBloga'
 import { t, fonts } from '../theme'
-
-function Naglowek() {
-  return (
-    <header style={s.naglowek}>
-      <Link to="/" style={s.marka}>
-        <span style={s.markaTytul}>Menu planer</span>
-        <span style={s.markaPod}>przepisy i notatki z kuchni</span>
-      </Link>
-      <Link to="/planer" style={s.btnLogin}>Zaloguj się</Link>
-    </header>
-  )
-}
 
 function KartaWpisu({ wpis }) {
   return (
@@ -33,7 +22,12 @@ function KartaWpisu({ wpis }) {
         )}
         <h2 style={s.kartaTytul}>{wpis.tytul}</h2>
         <p style={s.kartaLead}>{zajawka(wpis)}</p>
-        {wpis.danie && <span style={s.kartaTag}>🍽️ {wpis.danie}</span>}
+        <div style={s.kartaTagi}>
+          {wpis.kategoria && (
+            <span style={s.kartaKategoria}>{etykietaKategorii(wpis.kategoria)}</span>
+          )}
+          {wpis.danie && <span style={s.kartaTag}>🍽️ {wpis.danie}</span>}
+        </div>
       </div>
     </Link>
   )
@@ -42,6 +36,7 @@ function KartaWpisu({ wpis }) {
 export default function Blog() {
   const [wpisy, setWpisy] = useState(null)
   const [blad, setBlad] = useState(null)
+  const [kategoria, setKategoria] = useState(null)
 
   useEffect(() => {
     let anulowane = false
@@ -53,10 +48,37 @@ export default function Blog() {
     return () => { anulowane = true }
   }, [])
 
+  // Chipy pokazują wyłącznie kategorie, które naprawdę mają wpisy — pusta
+  // zakładka na blogu z trzema wpisami wygląda gorzej niż jej brak.
+  const obecneKategorie = KATEGORIE_BLOGA.filter(
+    k => wpisy?.some(w => w.kategoria === k.id),
+  )
+  const widoczne = kategoria ? wpisy?.filter(w => w.kategoria === kategoria) : wpisy
+
   return (
     <div style={s.outer}>
       <div style={s.container}>
-        <Naglowek />
+        <NaglowekBloga wariant="glowna" />
+
+        {obecneKategorie.length > 1 && (
+          <div style={s.chipsRow}>
+            <button
+              style={{ ...s.chip, ...(kategoria === null ? s.chipOn : null) }}
+              onClick={() => setKategoria(null)}
+            >
+              Wszystko
+            </button>
+            {obecneKategorie.map(k => (
+              <button
+                key={k.id}
+                style={{ ...s.chip, ...(kategoria === k.id ? s.chipOn : null) }}
+                onClick={() => setKategoria(k.id)}
+              >
+                {k.label}
+              </button>
+            ))}
+          </div>
+        )}
 
         {wpisy === null && <div style={s.info}>Ładowanie…</div>}
 
@@ -78,7 +100,11 @@ export default function Blog() {
           </div>
         )}
 
-        {wpisy?.map(w => <KartaWpisu key={w.id} wpis={w} />)}
+        {widoczne?.map(w => <KartaWpisu key={w.id} wpis={w} />)}
+
+        {wpisy?.length > 0 && widoczne?.length === 0 && (
+          <div style={s.pusto}>Brak wpisów w tej kategorii.</div>
+        )}
 
         <footer style={s.stopka}>
           <Link to="/planer" style={s.stopkaLink}>Masz konto? Przejdź do planera →</Link>
@@ -106,6 +132,22 @@ const s = {
     background: t.accent, color: '#fff', textDecoration: 'none',
     borderRadius: 12, padding: '9px 16px', fontSize: 13.5, fontWeight: 600,
     whiteSpace: 'nowrap',
+  },
+
+  chipsRow: {
+    display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 18,
+  },
+  chip: {
+    background: t.surface, border: `1px solid ${t.border}`, borderRadius: 999,
+    padding: '7px 14px', fontFamily: fonts.sans, fontSize: 13,
+    fontWeight: 600, color: t.mute, cursor: 'pointer',
+  },
+  chipOn: { background: t.accent, color: '#fff', borderColor: t.accent },
+
+  kartaTagi: { display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' },
+  kartaKategoria: {
+    fontSize: 11, fontWeight: 700, color: t.accent, background: t.accentSoft,
+    borderRadius: 6, padding: '3px 8px',
   },
 
   karta: {

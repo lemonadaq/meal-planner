@@ -111,3 +111,32 @@ describe('formatujDate', () => {
     expect(formatujDate('nie-data')).toBe('')
   })
 })
+
+describe('kategorie bloga', () => {
+  it('mapuje rodzaj dania na kategorię wpisu', async () => {
+    const { kategoriaZRodzaju } = await import('../blog')
+    expect(kategoriaZRodzaju('obiad')).toBe('obiady')
+    expect(kategoriaZRodzaju('sniadanie')).toBe('sniadania')
+    expect(kategoriaZRodzaju('przekaska')).toBe('przekaski')
+  })
+
+  // Dodatki i surówki nie mają własnej zakładki na blogu — lądują w „Inne",
+  // zamiast tworzyć kategorie z jednym wpisem.
+  it('typy boczne trafiają do Inne', async () => {
+    const { kategoriaZRodzaju } = await import('../blog')
+    expect(kategoriaZRodzaju('dodatek')).toBe('inne')
+    expect(kategoriaZRodzaju('surowka')).toBe('inne')
+  })
+
+  it('nieznany rodzaj nie daje kategorii', async () => {
+    const { kategoriaZRodzaju } = await import('../blog')
+    expect(kategoriaZRodzaju('cokolwiek')).toBeNull()
+    expect(kategoriaZRodzaju(null)).toBeNull()
+  })
+
+  it('etykieta kategorii', async () => {
+    const { etykietaKategorii } = await import('../blog')
+    expect(etykietaKategorii('zupy')).toBe('Zupy')
+    expect(etykietaKategorii('nie-ma')).toBeNull()
+  })
+})

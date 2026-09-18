@@ -31,6 +31,18 @@ export const RODZAJE = [
   'deser', 'dodatek', 'surowka',
 ]
 
+// Kuchnie pochodzenia — zamknięta lista, żeby filtr w apce nie rozsypał się
+// na „włoska", „Włoska" i „kuchnia włoska". Bez ogonków, bo to wartość
+// techniczna; etykiety do wyświetlenia siedzą w src/pages/Dania.jsx.
+export const KUCHNIE = [
+  'polska', 'wloska', 'francuska', 'hiszpanska', 'grecka', 'niemiecka',
+  'wegierska', 'ukrainska', 'amerykanska', 'meksykanska',
+  'koreanska', 'japonska', 'chinska', 'tajska', 'wietnamska', 'indyjska',
+  'bliskowschodnia', 'turecka', 'afrykanska', 'miedzynarodowa',
+]
+
+export const POZIOMY = ['latwe', 'srednie', 'trudne']
+
 export const KATEGORIE = [
   '1_Warzywa i owoce', '2_Mięso i ryby', '3_Nabiał', '4_Pieczywo',
   '5_Produkty sypkie', '6_Konserwy i słoiki', '7_Przyprawy', '8_Inne',
@@ -154,6 +166,16 @@ const SCHEMAT_PRZEPISU = {
   properties: {
     czas_minuty: { type: 'integer', description: 'Szacowany czas przygotowania w minutach' },
     kcal: { type: 'integer', description: 'Kalorie na JEDNĄ porcję' },
+    kuchnia: {
+      type: 'string',
+      enum: KUCHNIE,
+      description: 'Kuchnia pochodzenia dania. Gdy danie nie należy do żadnej konkretnej — miedzynarodowa',
+    },
+    poziom: {
+      type: 'string',
+      enum: POZIOMY,
+      description: 'Trudność dla domowego kucharza: latwe (do 30 min, bez technik), srednie, trudne (długie, wymaga wprawy)',
+    },
     skladniki: {
       type: 'array',
       items: {
@@ -182,11 +204,13 @@ const SCHEMAT_PRZEPISU = {
         'typowe dodatki obok. Tylko to, co widać — bez stylu fotografii, światła, tła i naczynia.',
     },
   },
-  required: ['czas_minuty', 'kcal', 'skladniki', 'kroki', 'opis_wizualny'],
+  required: ['czas_minuty', 'kcal', 'kuchnia', 'poziom', 'skladniki', 'kroki', 'opis_wizualny'],
   additionalProperties: false,
 }
 
-async function pytajClaude(tresc, schemat) {
+// Eksportowane, bo korzysta z tego też uzupelnij-kuchnie.mjs — ta sama
+// ścieżka do Claude'a ze schematem, bez duplikowania obsługi odmów i retry.
+export async function pytajClaudeSchematem(tresc, schemat) {
   const odpowiedz = await ponow('Claude', () =>
     klientAnthropic().messages.create({
       model: MODEL_TEKST,
@@ -346,7 +370,7 @@ export async function generujPrzepis(nazwa, rodzaj) {
   // czym to danie ma być — inaczej model robi swoją wersję zamiast tej z domu.
   const wskazowka = wskazowkaPrzepisu(nazwa)
 
-  const przepis = await pytajClaude(
+  const przepis = await pytajClaudeSchematem(
     `Jesteś polskim kucharzem. Wygeneruj przepis na danie: "${nazwa}" (rodzaj: ${rodzaj}).\n\n` +
       (wskazowka ? `NAJWAŻNIEJSZE — tak ma wyglądać to danie:\n${wskazowka}\n\n` : '') +
       'Zasady:\n' +
@@ -354,7 +378,12 @@ export async function generujPrzepis(nazwa, rodzaj) {
       '- Od 4 do 12 składników.\n' +
       '- Od 3 do 8 kroków, krótkich i konkretnych, po polsku.\n' +
       '- kcal to kalorie na jedną porcję.\n' +
-      '- Przepis ma być realistyczny dla domowej kuchni, bez restauracyjnych udziwnień.\n\n' +
+      '- Przepis ma być realistyczny dla domowej kuchni, bez restauracyjnych udziwnień.\n' +
+      '- `kuchnia` to kraj pochodzenia dania, nie kraj składników. Schabowy to polska, ' +
+      'tteokbokki to koreanska. Danie bez wyraźnego rodowodu (omlet, kanapka) → miedzynarodowa.\n' +
+      '- `poziom` oceniaj z perspektywy kogoś, kto gotuje w domu po pracy: `latwe` to ' +
+      'do pół godziny i bez technik, `trudne` to długie wyrastanie, smażenie w głębokim ' +
+      'tłuszczu, praca z ciastem albo kilka rzeczy naraz.\n\n' +
       ZASADY_SKLADNIKOW + '\n\n' +
       ZASADY_WYGLADU,
     SCHEMAT_PRZEPISU,
@@ -383,7 +412,7 @@ export async function generujOpisWizualny(nazwa, skladniki, przepis) {
   if (reczny) return reczny
 
   const lista = skladniki.map(s => `- ${s.nazwa}: ${s.ilosc} ${s.jednostka}`).join('\n')
-  const { opis_wizualny } = await pytajClaude(
+  const { opis_wizualny } = await pytajClaudeSchematem(
     'Jesteś fotografem jedzenia i znasz kuchnię polską.\n\n' +
       `Danie: "${nazwa}"\n\nSkładniki:\n${lista}\n` +
       (przepis ? `\nPrzepis:\n${przepis}\n` : '') +
@@ -514,6 +543,8 @@ export function zbudujWiersze(nazwa, rodzaj, przepis) {
     'rodzaj': rodzaj,
     'czas_minuty': przepis.czas_minuty || null,
     'kcal': przepis.kcal || null,
+    'kuchnia': przepis.kuchnia || null,
+    'poziom': przepis.poziom || null,
     'porcje_bazowe': PORCJE_BAZOWE,
     'notatki': null,
   }
