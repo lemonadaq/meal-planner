@@ -16,7 +16,6 @@
     "promo:import": "node blix-import-supabase.mjs",
     "promo:daily": "node promo-daily.mjs",
     "promo:ceny": "node ceny-bazowe.mjs",
-    "czysc:skladniki": "node skrypty/czysc-skladniki.mjs",
     "kuchnie": "node skrypty/uzupelnij-kuchnie.mjs",
     "generuj:wszystko": "node skrypty/generuj-wszystko.mjs",
     "generuj:przepisy": "node skrypty/generuj-przepisy.mjs",

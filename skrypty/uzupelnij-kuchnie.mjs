@@ -24,7 +24,10 @@ sprawdzKlucze(['SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'ANTHROPIC_KEY'])
 
 const ZAPISZ = process.env.ZAPISZ === '1'
 const LIMIT = Number(process.env.LIMIT || '0')
-const PACZKA = 40
+// 40 okazało się za dużo: model urywał odpowiedź na końcu tablicy i przy
+// pierwszym przebiegu wróciło 313 z 593 dań, z ostrzeżeniami „brak odpowiedzi"
+// przy ostatnich pozycjach paczek. 20 mieści się z zapasem.
+const PACZKA = 20
 
 const SCHEMAT = {
   type: 'object',
@@ -65,7 +68,9 @@ function zbudujPrompt(paczka) {
     '- Podany czas przygotowania jest wskazówką, ale nie przesądza: szarlotka ' +
     'piecze się długo i jest średnia, a rozbijanie majonezu jest szybkie i trudne.\n' +
     '- Nazwy przepisz DOKŁADNIE tak, jak je podano — po nich dopasowuję wiersze.\n\n' +
-    `Dania (${paczka.length}):\n${lista}`
+    `Dania (${paczka.length}):\n${lista}\n\n` +
+    `Zwróć DOKŁADNIE ${paczka.length} pozycji — po jednej na każde danie z listy, ` +
+    'w tej samej kolejności. Nie pomijaj żadnego.'
   )
 }
 
@@ -123,6 +128,30 @@ async function main() {
     } catch (e) {
       console.error(`  ✗ paczka ${numer}: ${e.message}`)
       zglos(e.message)
+    }
+  }
+
+  // Druga tura dla dań, których model nie odesłał. Przy pierwszym przebiegu
+  // gubił końcówki paczek, więc zamiast kazać Filipowi odpalać wszystko
+  // od nowa, dopytujemy o brakujące mniejszymi porcjami.
+  const zrobione = new Set(wyniki.map(w => w.nazwa))
+  const brakujace = doZrobienia.filter(d => !zrobione.has(d.nazwa))
+
+  if (brakujace.length) {
+    console.log(`\nDruga tura — brakuje ${brakujace.length} dań, pytam po ${Math.floor(PACZKA / 2)}...`)
+
+    for (let i = 0; i < brakujace.length; i += Math.floor(PACZKA / 2)) {
+      const paczka = brakujace.slice(i, i + Math.floor(PACZKA / 2))
+      try {
+        const odpowiedz = await pytajClaudeSchematem(zbudujPrompt(paczka), SCHEMAT)
+        const wgNazwy = new Map((odpowiedz.dania || []).map(d => [d.nazwa, d]))
+        for (const danie of paczka) {
+          const wynik = wgNazwy.get(danie.nazwa)
+          if (wynik) wyniki.push({ nazwa: danie.nazwa, kuchnia: wynik.kuchnia, poziom: wynik.poziom })
+        }
+      } catch (e) {
+        console.error(`  ✗ ${e.message}`)
+      }
     }
   }
 

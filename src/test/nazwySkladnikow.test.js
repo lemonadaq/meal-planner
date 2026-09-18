@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { uproscNazweSkladnika } from '../../skrypty/wspolne.js'
+import { uproscNazweSkladnika } from '../nazwySkladnikow'
 
 describe('uproscNazweSkladnika', () => {
   // Te trzy przyszły z wygenerowanych przepisów koreańskich i to one
@@ -134,4 +134,31 @@ describe('uproscNazweSkladnika — gramatura i ogony instrukcji', () => {
     expect(uproscNazweSkladnika('śmietana 18%')).toBe('śmietana 18%')
     expect(uproscNazweSkladnika('mleko 3,2%')).toBe('mleko 3,2%')
   })
+})
+
+// Zgłoszone przez Filipa po obejrzeniu wygenerowanych przepisów koreańskich.
+describe('uproscNazweSkladnika — zgłoszenia z bazy', () => {
+  it.each([
+    ['ryż z wczoraj', 'ryż'],
+    ['ryż z dnia poprzedniego', 'ryż'],
+    ['prażone orzechy laskowe - siekane', 'prażone orzechy laskowe'],
+    ['gorzka czekolada do posypania', 'gorzka czekolada'],
+    ['kawa espresso (świeżo zaparzona)', 'kawa espresso'],
+  ])('czyści: %s', (wejscie, oczekiwane) => {
+    expect(uproscNazweSkladnika(wejscie)).toBe(oczekiwane)
+  })
+
+  // Białka i żółtka nie stoją na półce — kupuje się jajka, a rozdzielenie
+  // jest krokiem przepisu.
+  it.each(['białko jajka', 'żółtko jajka', 'białka jaj', 'żółtka jaj'])(
+    'część jajka staje się jajkami: %s',
+    (nazwa) => { expect(uproscNazweSkladnika(nazwa)).toBe('jajka') },
+  )
+
+  // Myślnik tnie tylko jako separator ze spacjami — inaczej poleciałyby
+  // nazwy własne.
+  it.each(['coca-cola', 'ser blue-cheese', 'pepsi-cola'])(
+    'myślnik w nazwie własnej zostaje: %s',
+    (nazwa) => { expect(uproscNazweSkladnika(nazwa)).toBe(nazwa) },
+  )
 })

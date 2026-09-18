@@ -26,7 +26,7 @@ Lokalnie działają też standardowe nazwy SDK (`ANTHROPIC_API_KEY`,
   `obrazy` (zdjęcia do dań, które są już w bazie bez zdjęcia),
   `lista` (tylko wypisuje dania z bazy — nic nie zmienia, zero kosztów),
   `usun` (KASUJE dania podane w polu `dania` — nieodwracalne),
-  `czysc` (porządkuje nazwy składników w bazie — suchy bieg, chyba że `zapisz`)
+  `kuchnie` (dopisuje kuchnię i poziom trudności — suchy bieg, chyba że `zapisz`)
 - **dania** — `Bigos|obiad; Żurek|zupa` (po średniku, bo pole jest jednolinijkowe).
   W trybie `obrazy` puste = wszystkie dania bez zdjęcia.
 - **limit** — bezpiecznik na koszty, `0` = bez limitu
@@ -37,7 +37,7 @@ Lokalnie działają też standardowe nazwy SDK (`ANTHROPIC_API_KEY`,
 - **rodzaj**, **tylko_ulubione** — filtry dla trybu `lista`
 - **zapisz_liste** — tryb `lista`: przepisuje `LISTA_DAN.md` aktualnym stanem bazy
   i commituje zmianę do repo
-- **zapisz** — tryb `czysc`: bez tego suchy bieg, z nim faktyczny zapis poprawek
+- **zapisz** — tryb `kuchnie`: bez tego suchy bieg, z nim faktyczny zapis
 
 > Workflow pokazuje się w zakładce Actions dopiero wtedy, gdy plik
 > `.github/workflows/generuj-dania.yml` jest na gałęzi domyślnej (`main`).
@@ -108,78 +108,47 @@ ulubione.
 
 Po skasowaniu odśwież `LISTA_DAN.md` (tryb `lista` + `zapisz_liste`).
 
-## Zasady nazw składników
+## Nazwy składników: przepis kontra lista zakupów
 
-Nazwa składnika trafia **prosto na listę zakupów** i jest kluczem dopasowania do
-`skladniki_meta` (rozmiar opakowania) oraz do promocji. Musi więc być nazwą
-produktu ze sklepu, a nie instrukcją. Bez tego lądowały w bazie rzeczy w stylu
-`ryż ugotowany (najlepiej z dnia poprzedniego)` — czegoś takiego nie da się ani
-kupić, ani dopasować.
+To są dwie różne potrzeby i dlatego rozwiązane są w dwóch różnych miejscach.
 
-| Ma być | Nie ma być | Dlaczego |
-| --- | --- | --- |
-| `dymka` | `dymka (zielona cebulka)` | nawias to wyjaśnienie, nie nazwa |
-| `boczek wędzony` | `boczek wędzony lub podgardle` | na liście ma być jedna rzecz |
-| `ryż` | `ryż ugotowany` | stan przygotowania należy do kroków |
-| `cebula` | `cebula pokrojona w kostkę` | jw. |
-| `cebula` | `cebula w kostkę` | jw., tylko bez imiesłowu |
-| `pasta gochujang` | `pasta gochujang 2 łyżki` | od ilości są pola `ilosc` i `jednostka` |
-| `olej sezamowy` | `olej sezamowy do skropienia na koniec` | to krok, nie produkt |
+**W przepisie nazwa może być precyzyjna.** „Białko jajka", „ryż ugotowany",
+„orzechy laskowe prażone" niosą informację, która jest w przepisie potrzebna
+i tam zostaje. Tabela `dania` NIE jest przez nic przerabiana.
 
-Co **zostaje**, bo rozróżnia produkt na półce: `boczek wędzony`, `mięso mielone`,
-`papryka suszona`, `mleko kokosowe`, `ser żółty`, `kapusta kiszona`. To inny
-produkt niż boczek, mięso czy mleko — skracanie wysłałoby po złą rzecz.
+**Na liście zakupów nazwa musi być produktem ze sklepu.** Białka jajka nie
+kupisz, a nazwa z nawiasem nie dopasuje się ani do `skladniki_meta` (rozmiar
+opakowania), ani do promocji.
 
-Pilnują tego dwie warstwy, bo prośba w prompcie to tylko prośba:
+Przekształcenie robi `uproscNazweSkladnika()` z `src/nazwySkladnikow.js`,
+wołane **w locie** przy budowaniu listy w `ListaZakupow.jsx`:
 
-1. `ZASADY_SKLADNIKOW` w `wspolne.js` — dopisane do promptu przepisu.
-2. `uproscNazweSkladnika()` — sprząta wynik w `zbudujWiersze()`, czyli w jedynym
-   miejscu, przez które składniki wchodzą do bazy. Testy: `src/test/nazwySkladnikow.test.js`.
+| W przepisie | Na liście zakupów |
+| --- | --- |
+| `białko jajka` | `jajka` |
+| `ryż z wczoraj` | `ryż` |
+| `prażone orzechy laskowe - siekane` | `prażone orzechy laskowe` |
+| `gorzka czekolada do posypania` | `gorzka czekolada` |
+| `kawa espresso (świeżo zaparzona)` | `kawa espresso` |
+| `cebula w kostkę` | `cebula` |
 
-Druga warstwa jest twarda: nawiasy, `lub`/`albo`, stan przygotowania, frazy
-typu `w kostkę` / `na tarce` / `do smaku` oraz gramatura doklejona do nazwy lecą
-niezależnie od tego, co odpowie model.
+Efekt uboczny i pożądany: „białko jajka" z jednego przepisu i „jajka"
+z drugiego schodzą się w JEDNĄ pozycję na liście, zamiast dwóch osobnych.
+
+Co **zostaje nietknięte**, bo rozróżnia produkt na półce: `boczek wędzony`,
+`mięso mielone`, `papryka suszona`, `mleko kokosowe`, `ser żółty`,
+`kapusta kiszona`, a także `tuńczyk w oleju` i `szynka w plasterkach`.
 
 Frazy przygotowania odróżniamy od nazw produktów **gramatycznie**: instrukcja
-stoi w bierniku (`w kostkę`, `w plastry`, `na drobno` — jak pokroić), a produkt
-w miejscowniku (`w oleju`, `w puszce`, `w proszku`, `w plasterkach` — w czym
-jest). Dlatego `w plastry` leci, a `w plasterkach` zostaje. Lista słów przygotowania (`ugotowany`,
-`pokrojony`, `starty`, `roztopiony`…) jest w `OPISY_PRZYGOTOWANIA` — świadomie
-**nie ma** w niej `wędzony`, `mielony`, `suszony`, `kiszony`, `konserwowy`,
-`marynowany`, bo te mówią, który produkt wziąć (ta sama zasada co
-`TRANSFORM_WORDS` w `src/promocjeMatch.js`).
+stoi w bierniku (`w kostkę`, `w plastry`, `na drobno` — jak pokroić), produkt
+w miejscowniku (`w oleju`, `w puszce`, `w plasterkach` — w czym jest).
 
-### Porządki w tym, co już jest w bazie
+Testy: `src/test/nazwySkladnikow.test.js`. Każdy nowy przypadek zgłoszony
+z apki zaczyna się tam od testu.
 
-Sanitizer działa przy zapisie, więc dania wygenerowane wcześniej mają stare
-nazwy. Do ich poprawienia jest osobny tryb — te same reguły tekstowe, bez
-pytania Claude'a, czyli bez kosztów:
-
-**Actions → „Generuj dania" → tryb `czysc`.** Bez zaznaczonego `zapisz` to
-**suchy bieg**: wypisuje każdą zmianę, którą by zrobił, pogrupowaną i z liczbą
-wystąpień, i nic nie rusza. Dopiero `zapisz` faktycznie zapisuje.
-
-Lokalnie:
-
-```bash
-npm run czysc:skladniki            # suchy bieg
-ZAPISZ=1 npm run czysc:skladniki   # zapis
-```
-
-Skrypt zmienia wyłącznie kolumnę `Składnik`, niczego nie kasuje ani nie dodaje,
-pomija zmiany dające pustą nazwę i wypisuje wszystko do logu — z przebiegu da się
-odtworzyć stan sprzed. Można go odpalać wielokrotnie, drugi raz nie znajdzie już nic.
-
-Na końcu leci **PRZEGLĄD**: nazwy, których reguły NIE ruszyły, a które nadal
-wyglądają na instrukcję (nawias, imiesłów, przyimek, liczba, cztery słowa i
-więcej). To nie jest lista zmian — to lista do obejrzenia okiem, z której biorą
-się kolejne reguły. Cechy produktu (`boczek wędzony`, `tuńczyk w oleju`) są z niej
-wyłączone, żeby nie zagłuszały prawdziwych trafień. Przegląd leci też wtedy, gdy
-reguły nie mają nic do poprawy — brak zmian nie znaczy, że baza jest czysta.
-
-Alternatywa, droższa i węższa: tryb `przepisy` + `overwrite` generuje przepisy od
-nowa (zdjęcia i gwiazdki zostają), ale kosztuje tokeny i dotyczy tylko dań, które
-wskażesz.
+Prompt przepisu (`ZASADY_SKLADNIKOW` w `wspolne.js`) nadal prosi o nazwy bez
+nawiasów i bez alternatyw, bo to szum również w przepisie — ale nic tego nie
+egzekwuje przy zapisie i jest to świadome.
 
 ## Gdy model uparcie pudłuje
 

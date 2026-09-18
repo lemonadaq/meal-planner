@@ -5,6 +5,7 @@ import Toast from '../components/Toast'
 import { formatDataLocal, dzisLocal } from '../dataHelpers'
 import { PromoBanner, PromoChip, PromoDetail, StoreDot } from '../components/Promocje'
 import { dopasujPromocje, pobierzAktualnePromocje } from '../promocjeMatch'
+import { uproscNazweSkladnika } from '../nazwySkladnikow'
 import KosztKoszyka from '../components/KosztKoszyka'
 import { pobierzCenyBazowe, wycenKoszyk } from '../cenyBazowe'
 import { useSloty, kluczDnia } from '../useSloty'
@@ -1072,7 +1073,11 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
       })
       daniaDedup.forEach(r => {
         const mnoznik = porcjeWszystkich[r['Danie']] || 1
-        dodaj(r['Składnik'], r['Ilość na 1 porcję'], r['Jednostka'], r['Kategoria'], mnoznik)
+        // Nazwa z przepisu → nazwa produktu ze sklepu. Przepis w bazie zostaje
+        // nietknięty: „białko jajka" jest tam potrzebne, na liście zakupów nie.
+        // Przy okazji „białko jajka" i „jajka" z dwóch przepisów schodzą się
+        // w jedną pozycję, zamiast dwóch osobnych.
+        dodaj(uproscNazweSkladnika(r['Składnik']), r['Ilość na 1 porcję'], r['Jednostka'], r['Kategoria'], mnoznik)
       })
     }
 
