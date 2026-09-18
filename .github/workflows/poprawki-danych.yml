@@ -1,0 +1,35 @@
+name: Poprawki danych → produkcja
+
+# Po merge'u PR-a z nowym plikiem supabase/fixes/*.sql wykonuje go na produkcji.
+on:
+  push:
+    branches: [main]
+    paths: ['supabase/fixes/*.sql']
+  workflow_dispatch:
+    inputs:
+      plik:
+        description: 'Ręcznie: ścieżka pliku, np. supabase/fixes/20260918-0500-dane.sql'
+        required: true
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    env:
+      PROD_DB_URL: ${{ secrets.PROD_DB_URL }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Wykonaj nowe pliki SQL
+        run: |
+          if [ -n "${{ inputs.plik }}" ]; then
+            PLIKI="${{ inputs.plik }}"
+          else
+            PLIKI=$(git diff --name-only --diff-filter=A "${{ github.event.before }}" "${{ github.sha }}" -- 'supabase/fixes/*.sql')
+          fi
+          [ -z "$PLIKI" ] && echo "Brak nowych plików" && exit 0
+          for f in $PLIKI; do
+            echo "▶ $f"
+            psql "$PROD_DB_URL" -v ON_ERROR_STOP=1 --single-transaction -f "$f"
+          done

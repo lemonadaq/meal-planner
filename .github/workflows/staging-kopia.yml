@@ -1,0 +1,44 @@
+name: Staging – kopia bazy
+
+# pelny = schemat (tabele, RLS, funkcje) + dane katalogu; uruchom RAZ na świeżym projekcie.
+# dane  = odświeżenie samych przepisów; leci też automatycznie w każdy poniedziałek.
+# Kopiowane są tylko tabele katalogu — żadnych danych użytkowników.
+on:
+  schedule:
+    - cron: '0 3 * * 1'
+  workflow_dispatch:
+    inputs:
+      tryb:
+        type: choice
+        default: dane
+        options: [dane, pelny]
+
+env:
+  TABELE: "dania skladniki_meta"
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    env:
+      PROD_DB_URL: ${{ secrets.PROD_DB_URL }}
+      STAGING_DB_URL: ${{ secrets.STAGING_DB_URL }}
+    steps:
+      - name: Schemat (tylko tryb pelny)
+        if: inputs.tryb == 'pelny'
+        run: |
+          npx -y supabase@latest db dump --db-url "$PROD_DB_URL" -f schema.sql
+          psql "$STAGING_DB_URL" -v ON_ERROR_STOP=1 -f schema.sql
+
+      - name: Dane katalogu przepisów
+        run: |
+          ARGS=""; LISTA=""
+          for t in $TABELE; do
+            ARGS="$ARGS -t public.$t"
+            LISTA="${LISTA:+$LISTA, }public.$t"
+          done
+          docker run --rm postgres:17 pg_dump "$PROD_DB_URL" --data-only --no-owner $ARGS > dane.sql
+          psql "$STAGING_DB_URL" -v ON_ERROR_STOP=1 --single-transaction \
+            -c "SET session_replication_role = replica" \
+            -c "TRUNCATE $LISTA CASCADE" \
+            -f dane.sql
+          echo "Skopiowano: $LISTA"

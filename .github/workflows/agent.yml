@@ -1,0 +1,181 @@
+name: Agent QA
+
+# 4 taski dziennie. Cron jest w UTC:
+# czas letni (UTC+2) → 07:00, 12:00, 17:00, 22:00; zimowy (UTC+1) → 06:00, 11:00, 16:00, 21:00
+on:
+  schedule:
+    - cron: '0 5 * * *'
+    - cron: '0 10 * * *'
+    - cron: '0 15 * * *'
+    - cron: '0 20 * * *'
+  workflow_dispatch:
+    inputs:
+      obszar:
+        description: 'Obszar (puste = według rotacji)'
+        required: false
+        type: choice
+        default: ''
+        options: ['', home, planer, przepisy, dodawanie, zakupy, ustawienia, dane]
+
+concurrency:
+  group: agent-qa
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  id-token: write
+
+jobs:
+  task:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      STAGING_DB_URL: ${{ secrets.STAGING_DB_URL }}
+      AGENT_EMAIL: ${{ secrets.AGENT_EMAIL }}
+      AGENT_HASLO: ${{ secrets.AGENT_HASLO }}
+      GH_TOKEN: ${{ github.token }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalacja zależności
+        run: npm ci
+
+      - name: Wybór obszaru i gałęzi
+        id: plan
+        run: |
+          OBSZARY=(home planer przepisy dodawanie zakupy ustawienia dane)
+          if [ -n "${{ inputs.obszar }}" ]; then
+            OBSZAR="${{ inputs.obszar }}"
+          else
+            DZIEN=$(( $(date -u +%s) / 86400 ))
+            SLOT=$(( 10#$(date -u +%H) / 6 ))
+            OBSZAR=${OBSZARY[$(( (DZIEN * 4 + SLOT) % ${#OBSZARY[@]} ))]}
+          fi
+          ID="$(date -u +%Y%m%d-%H%M)-$OBSZAR"
+          echo "obszar=$OBSZAR" >> "$GITHUB_OUTPUT"
+          echo "id=$ID" >> "$GITHUB_OUTPUT"
+          echo "galaz=agent/$ID" >> "$GITHUB_OUTPUT"
+          git checkout -b "agent/$ID"
+          mkdir -p agent-out/zrzuty
+          printf 'agent-out/\n.playwright-mcp/\n' >> .git/info/exclude
+          echo "Obszar: $OBSZAR"
+
+      - name: Historia poprzednich tasków
+        run: |
+          gh label create agent --color 5319e7 --description "Zmiany od agenta QA" --force
+          TPL='{{range .}}#{{.number}} [{{.state}}] {{.title}}{{"\n"}}{{end}}'
+          {
+            echo "## PR-y agenta (ostatnie 30; CLOSED = odrzucone przez Filipa)"
+            gh pr list --label agent --state all --limit 30 --json number,title,state --template "$TPL"
+            echo
+            echo "## Issue agenta (ostatnie 30)"
+            gh issue list --label agent --state all --limit 30 --json number,title,state --template "$TPL"
+          } > agent-out/historia.md
+          cat agent-out/historia.md
+
+      - name: Aplikacja na bazie STAGING
+        run: |
+          printf 'VITE_SUPABASE_URL=%s\nVITE_SUPABASE_ANON_KEY=%s\n' \
+            "${{ secrets.STAGING_SUPABASE_URL }}" "${{ secrets.STAGING_SUPABASE_ANON_KEY }}" > .env.local
+          nohup npm run dev -- --port 5173 --strictPort > agent-out/vite.log 2>&1 &
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:5173 > /dev/null && echo "Dev server działa" && exit 0
+            sleep 2
+          done
+          cat agent-out/vite.log
+          exit 1
+
+      - name: Konfiguracja przeglądarki (Playwright MCP)
+        run: |
+          cat > /tmp/mcp.json << JSON
+          {
+            "mcpServers": {
+              "playwright": {
+                "command": "npx",
+                "args": ["-y", "@playwright/mcp@latest", "--headless", "--isolated",
+                         "--viewport-size", "390,844",
+                         "--output-dir", "${{ github.workspace }}/agent-out/zrzuty"]
+              }
+            }
+          }
+          JSON
+
+      - name: Agent
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ github.token }}
+          prompt: |
+            Jesteś agentem QA aplikacji Menu Planer i pracujesz bez człowieka.
+            Przeczytaj plik .claude/agent-prompt.md i wykonaj go dokładnie.
+            OBSZAR: ${{ steps.plan.outputs.obszar }}
+            ID_TASKU: ${{ steps.plan.outputs.id }}
+            Aplikacja działa pod http://localhost:5173 (baza STAGING).
+          claude_args: |
+            --model claude-sonnet-5
+            --max-turns 80
+            --mcp-config /tmp/mcp.json
+            --allowedTools "Read,Edit,Write,Glob,Grep,mcp__playwright,Bash(npm run lint),Bash(npm run build),Bash(psql:*),Bash(printenv AGENT_EMAIL),Bash(printenv AGENT_HASLO),Bash(git status),Bash(git diff:*),Bash(ls:*)"
+
+      - name: Wynik → PR albo issue
+        if: always()
+        env:
+          GALAZ: ${{ steps.plan.outputs.galaz }}
+          OBSZAR: ${{ steps.plan.outputs.obszar }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          rm -f .env.local
+          WYNIK=agent-out/wynik.md
+          if [ ! -f "$WYNIK" ]; then
+            gh issue create --label agent \
+              --title "🤖 [PRZERWANY] Task bez wyniku ($OBSZAR)" \
+              --body "Agent nie zapisał wyniku (limit tur, limit subskrypcji albo błąd). Logi: $RUN_URL"
+            exit 0
+          fi
+
+          STATUS=$(grep -m1 '^STATUS:' "$WYNIK" | awk '{print $2}')
+          TYTUL=$(grep -m1 '^TYTUL:' "$WYNIK" | cut -d' ' -f2- | cut -c1-80)
+          [ -z "$TYTUL" ] && TYTUL="Task agenta ($OBSZAR)"
+          sed -i '/^STATUS:/d;/^TYTUL:/d' "$WYNIK"
+          printf '\n---\n🤖 Obszar: `%s` · zrzuty ekranu i logi (artefakt): %s\n' "$OBSZAR" "$RUN_URL" >> "$WYNIK"
+
+          case "$STATUS" in
+            OK)
+              if [ -z "$(git status --porcelain)" ]; then
+                gh issue create --label agent --title "🤖 [BEZ ZMIAN] $TYTUL" --body-file "$WYNIK"
+                exit 0
+              fi
+              git config user.name "agent-qa[bot]"
+              git config user.email "agent-qa@users.noreply.github.com"
+              git add -A
+              git commit -m "agent($OBSZAR): $TYTUL"
+              git push -u origin "$GALAZ"
+              gh pr create --base main --head "$GALAZ" --label agent \
+                --title "🤖 $TYTUL" --body-file "$WYNIK"
+              ;;
+            PROPOZYCJA|NIEUDANE)
+              gh issue create --label agent --title "🤖 [$STATUS] $TYTUL" --body-file "$WYNIK"
+              ;;
+            *)
+              echo "Brak zmian w tym tasku ($STATUS):"
+              cat "$WYNIK"
+              ;;
+          esac
+
+      - name: Zrzuty ekranu i logi
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-${{ steps.plan.outputs.id }}
+          path: agent-out/
+          retention-days: 14
