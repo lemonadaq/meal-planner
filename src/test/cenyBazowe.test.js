@@ -166,6 +166,98 @@ describe('pobierzCenyBazowe', () => {
     expect(wynik.blad).toBeNull()
     expect(wynik.ceny).toHaveLength(1)
   })
+
+  // Kilka tysięcy wierszy to kilka stron po 1000. Ciągnięte po kolei były
+  // kilkoma rundami do Supabase jedna po drugiej — stąd zacinanie się
+  // zakładki Koszty. Te trzy testy pilnują, że równoległe pobranie niczego
+  // nie gubi i że brak licznika nadal kończy się kompletem, a nie pustką
+  // (dokładnie ten błąd zgasił kiedyś wszystkie promocje).
+  const wywolania = { licznik: 0, strony: [] }
+
+  function mockStron(strony, { count } = {}) {
+    wywolania.licznik = 0
+    wywolania.strony = []
+    return {
+      supabase: {
+        from: () => ({
+          select: (_kolumny, opcje) => {
+            if (opcje?.head) {
+              wywolania.licznik += 1
+              return Promise.resolve(
+                typeof count === 'number'
+                  ? { count, error: null }
+                  : { count: null, error: { code: 'PGRST', message: 'brak licznika' } },
+              )
+            }
+            return {
+              range: (od) => {
+                const nr = Math.floor(od / 1000)
+                wywolania.strony.push(nr)
+                const strona = strony[nr]
+                if (strona?.error) return Promise.resolve({ data: null, error: strona.error })
+                return Promise.resolve({ data: strona?.data || [], error: null })
+              },
+            }
+          },
+        }),
+      },
+    }
+  }
+
+  const wiersze = (ile, prefiks) => Array.from({ length: ile }, (_, i) => ({
+    sklep: 'Lidl', produkt: `${prefiks}-${i}`, cena_bazowa: 5, cena_min: 3, obserwacji: 2,
+  }))
+
+  it('z licznikiem bierze wszystkie strony naraz i nie gubi żadnej', async () => {
+    localStorage.clear()
+    vi.resetModules()
+    vi.doMock('../supabase', () => mockStron(
+      [{ data: wiersze(1000, 'a') }, { data: wiersze(1000, 'b') }, { data: wiersze(250, 'c') }],
+      { count: 2250 },
+    ))
+
+    const { pobierzCenyBazowe } = await import('../cenyBazowe')
+    const wynik = await pobierzCenyBazowe()
+
+    expect(wynik.blad).toBeNull()
+    expect(wynik.ceny).toHaveLength(2250)
+    // licznik zapytany = poszliśmy ścieżką równoległą, a nie pętlą
+    expect(wywolania.licznik).toBe(1)
+    expect(wywolania.strony).toEqual([0, 1, 2])
+  })
+
+  it('bez licznika schodzi na pętlę i nadal oddaje komplet', async () => {
+    localStorage.clear()
+    vi.resetModules()
+    vi.doMock('../supabase', () => mockStron(
+      [{ data: wiersze(1000, 'a') }, { data: wiersze(120, 'b') }],
+    ))
+
+    const { pobierzCenyBazowe } = await import('../cenyBazowe')
+    const wynik = await pobierzCenyBazowe()
+
+    expect(wynik.blad).toBeNull()
+    expect(wynik.ceny).toHaveLength(1120)
+    // krótsza strona kończy pętlę — trzeciego zapytania nie ma
+    expect(wywolania.strony).toEqual([0, 1])
+  })
+
+  it('gdy jedna ze stron padnie, mówi o tym zamiast udawać komplet', async () => {
+    localStorage.clear()
+    vi.resetModules()
+    vi.doMock('../supabase', () => mockStron(
+      [{ data: wiersze(1000, 'a') }, { error: { code: '57014', message: 'statement timeout' } }],
+      { count: 1500 },
+    ))
+
+    const { pobierzCenyBazowe } = await import('../cenyBazowe')
+    const wynik = await pobierzCenyBazowe()
+
+    expect(wynik.blad).toContain('57014')
+    expect(wynik.ceny).toHaveLength(1000)
+    // niekompletny komplet nie może trafić do cache na 6 godzin
+    expect(localStorage.getItem('ceny_bazowe_cache')).toBeNull()
+  })
 })
 
 describe('wycenKoszyk — wybór produktu', () => {
@@ -231,5 +323,42 @@ describe('wycenKoszyk — ceny kuponowe i opis formy', () => {
       ]
     )
     expect(wynik.sklepy[0].koszt).toBeCloseTo(3.49)
+  })
+})
+
+// Katalog cen był tokenizowany od nowa przy każdym przerysowaniu listy.
+// Teraz buduje się raz na tablicę z bazy, z pamięcią wyników per składnik.
+describe('wycenKoszyk — katalog liczony raz', () => {
+  const cena = (produkt, sklep, kwota) => ({
+    produkt, sklep, cena_bazowa: kwota, cena_min: kwota, obserwacji: 3,
+  })
+
+  it('druga wycena tego samego koszyka daje ten sam wynik', () => {
+    const ceny = [cena('Masło Extra 200g', 'Lidl', 7.99), cena('Masło Extra 200g', 'Biedronka', 8.49)]
+    const items = [{ klucz: 'masło||g', skladnik: 'masło', opakowania: 1 }]
+
+    const raz = wycenKoszyk(items, ceny)
+    const dwa = wycenKoszyk(items, ceny)
+    expect(dwa.sklepy).toEqual(raz.sklepy)
+    expect(dwa.wspolnych).toBe(raz.wspolnych)
+  })
+
+  it('nowa tablica cen NIE dziedziczy wyników po starej', () => {
+    const items = [{ klucz: 'masło||g', skladnik: 'masło', opakowania: 1 }]
+
+    const stare = wycenKoszyk(items, [cena('Masło Extra 200g', 'Lidl', 7.99)])
+    expect(stare.sklepy[0].kosztCalosci).toBeCloseTo(7.99, 2)
+
+    const nowe = wycenKoszyk(items, [cena('Masło Extra 200g', 'Lidl', 9.49)])
+    expect(nowe.sklepy[0].kosztCalosci).toBeCloseTo(9.49, 2)
+  })
+
+  it('zmiana liczby opakowań przelicza koszt, choć dopasowanie jest z pamięci', () => {
+    const ceny = [cena('Masło Extra 200g', 'Lidl', 7.99)]
+    const jedno = wycenKoszyk([{ klucz: 'masło||g', skladnik: 'masło', opakowania: 1 }], ceny)
+    const trzy = wycenKoszyk([{ klucz: 'masło||g', skladnik: 'masło', opakowania: 3 }], ceny)
+
+    expect(jedno.sklepy[0].kosztCalosci).toBeCloseTo(7.99, 2)
+    expect(trzy.sklepy[0].kosztCalosci).toBeCloseTo(23.97, 2)
   })
 })

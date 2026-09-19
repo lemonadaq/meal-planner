@@ -551,7 +551,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
   // na skasowanie jednego produktu. Widok nakłada korekty w listaPoKorektach.
   const [korektyZakupow, setKorektyZakupow] = useState({})
 
-  const { config: slotyConfig } = useSloty(householdId)
+  const { config: slotyConfig, loading: slotyLoading } = useSloty(householdId)
 
   // Promocje sklepowe — globalne (bez household_id), fetch raz na wejście w listę.
   const [promocje, setPromocje] = useState([])
@@ -1160,7 +1160,13 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     setOdswiezanie(false)
   }, [householdId, domyslnePorcje, tydzienKalendarza, offsetLokalny, slotyConfig])
 
-  useEffect(() => { generuj() }, [generuj])
+  // Sloty dociągają się osobno i podmieniają `slotyConfig` z domyślnego na
+  // prawdziwy. Bez tego warunku każde wejście w listę robiło PEŁNY komplet
+  // zapytań dwa razy: raz na domyślnych slotach, raz na tych z bazy.
+  useEffect(() => {
+    if (slotyLoading) return
+    generuj()
+  }, [generuj, slotyLoading])
 
   // Realtime: gdy partner odhaczy/doda coś, aktualizuj lokalnie bez pełnego reloadu.
   useEffect(() => { generujRef.current = generuj }, [generuj])
@@ -1822,8 +1828,17 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     return odznaczone.has(item.klucz)
   }, [odznaczone])
 
-  const doKupienia = wszystkieItemy.filter(i => !czyKupione(i))
-  const kupione = wszystkieItemy.filter(i => czyKupione(i))
+  // Przez useMemo, a nie zwykły filter: `doKupienia` idzie do wycenKoszyk,
+  // a świeża tablica przy każdym przerysowaniu kazałaby przeliczać koszyk
+  // od nowa nawet wtedy, gdy nic się na liście nie zmieniło.
+  const doKupienia = useMemo(
+    () => wszystkieItemy.filter(i => !czyKupione(i)),
+    [wszystkieItemy, czyKupione],
+  )
+  const kupione = useMemo(
+    () => wszystkieItemy.filter(i => czyKupione(i)),
+    [wszystkieItemy, czyKupione],
+  )
   const procent = wszystkieItemy.length > 0 ? Math.round(kupione.length / wszystkieItemy.length * 100) : 0
 
   // Wyceniamy tylko to, co zostało do kupienia — rzeczy w koszyku są już opłacone.

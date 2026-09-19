@@ -1,8 +1,7 @@
 import { useEffect, useState, useMemo } from 'react'
 import { supabase } from '../supabase'
 import { t, fonts, ui } from '../theme'
-import { formatDataLocal as formatData } from '../dataHelpers'
-import { useSloty, slotyWDniu, kluczDnia } from '../useSloty'
+import { poniedzialekTygodnia, zakresTygodniaLabel, etykietaTygodnia, TYGODNIE_DO_WYBORU } from '../useTydzien'
 import { kcalZeSkladnikow, etykietaKcal } from '../kcalZeSkladnikow'
 
 async function kompresujObraz(plik, maxSzerokosc = 1200, jakosc = 0.82) {
@@ -73,8 +72,6 @@ const TYPY = [
   { id: 'samodzielne', label: 'Samodzielne' },
   { id: 'z dodatkiem', label: 'Z dodatkiem' },
 ]
-const DNI = ['Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota', 'Niedziela']
-const DNI_KROTKO = ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Nd']
 
 // Chipsy meta pokazywane pod tytułem dania w widoku przepisu.
 // UWAGA: pole TYP (np. "z dodatkiem" / "samodzielne") służy WYŁĄCZNIE do logiki
@@ -88,16 +85,6 @@ export function metaChipyDania(skladnik, rodzaje = RODZAJE) {
   if (skladnik.kcal) chipy.push(`${skladnik.kcal} kcal`)
   return chipy
 }
-
-function getPoniedzialek(offset = 0) {
-  const d = new Date()
-  const day = d.getDay() || 7
-  d.setDate(d.getDate() - day + 1 + offset * 7)
-  d.setHours(0, 0, 0, 0)
-  return d
-}
-// formatData z dataHelpers
-function formatKrotkoMies(date) { return date.toLocaleDateString('pl-PL', { day: 'numeric', month: 'short' }) }
 
 export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdId, sledz }) {
   const [skladniki, setSkladniki] = useState([])
@@ -120,44 +107,16 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
   const [edTyp, setEdTyp] = useState('')
   const [metaSkladnikow, setMetaSkladnikow] = useState(null) // skladniki_meta do podpowiedzi kcal
 
-  const [pokazKalendarz, setPokazKalendarz] = useState(false)
-  const [tydzien, setTydzien] = useState(0)
-  const [wybranyDni, setWybranyDni] = useState(new Set())
-  // wybranyPosilek = ID slotu (np. 'sn'), nie nazwa. null póki user nie wybierze dnia.
-  const [wybranyPosilek, setWybranyPosilek] = useState(null)
+  // Planowanie idzie do puli tygodnia (plan_tygodnia), nie do dni i slotów —
+  // apka działa w trybie "Tydzień", a kalendarz po dniach jest schowany
+  // w Ustawieniach i ma tam własny drag&drop.
+  const [pokazPlan, setPokazPlan] = useState(false)
+  const [wybranyTydzien, setWybranyTydzien] = useState(0) // offset tygodni od bieżącego
   const [dodawanie, setDodawanie] = useState(false)
   const [sukces, setSukces] = useState(false)
-  const [planTygodnia, setPlanTygodnia] = useState({})
-
-  // Konfiguracja slotów (per household)
-  const { config: slotyConfig } = useSloty(householdId)
-
-  const pierwszyWybranyDzien = wybranyDni.size > 0 ? [...wybranyDni].sort()[0] : null
-
-  // Sloty dostępne dla pierwszego wybranego dnia (slot stosuje się do wszystkich)
-  const slotyWybranegoDnia = useMemo(() => {
-    if (!pierwszyWybranyDzien) return []
-    return slotyWDniu(slotyConfig, kluczDnia(pierwszyWybranyDzien))
-  }, [slotyConfig, pierwszyWybranyDzien])
-
-  // Gdy zestaw dni się zmienia, a aktualnie wybrany slot nie istnieje — wybierz pierwszy.
-  useEffect(() => {
-    if (!pierwszyWybranyDzien) return
-    if (slotyWybranegoDnia.length === 0) {
-      setWybranyPosilek(null)
-      return
-    }
-    if (!wybranyPosilek || !slotyWybranegoDnia.some(s => s.id === wybranyPosilek)) {
-      setWybranyPosilek(slotyWybranegoDnia[0].id)
-    }
-  }, [pierwszyWybranyDzien, slotyWybranegoDnia, wybranyPosilek])
-
-  const poniedzialek = getPoniedzialek(tydzien)
-  const dni = Array.from({ length: 7 }, (_, i) => {
-    const d = new Date(poniedzialek)
-    d.setDate(d.getDate() + i)
-    return d
-  })
+  const [bladPlanu, setBladPlanu] = useState(null)
+  // offsety tygodni, w których to danie już siedzi w puli
+  const [juzWPlanie, setJuzWPlanie] = useState(() => new Set())
 
   // Wejście w danie zawsze od góry (zdjęcie + składniki), nie od kroków przepisu —
   // bez tego strona dziedziczy pozycję scrolla z planera i otwiera się na dole.
@@ -183,20 +142,24 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
   }, [edycja, edSkladniki, metaSkladnikow])
 
   useEffect(() => { pobierz() }, [nazwaProp])
+  // Które z pokazywanych tygodni mają już to danie w puli. Tygodnie są ciągłe,
+  // więc wystarczy zakres od pierwszego do ostatniego poniedziałku.
   useEffect(() => {
-    if (!pokazKalendarz || !user) return
-    async function pobierzPlan() {
-      const od = formatData(dni[0])
-      const doStr = formatData(dni[6])
+    if (!pokazPlan || !householdId) return
+    let anulowane = false
+    async function pobierzPule() {
+      const tygodnie = TYGODNIE_DO_WYBORU.map(o => poniedzialekTygodnia(o))
       const { data } = await supabase
-        .from('kalendarz').select('*')
-        .eq('household_id', householdId).gte('data', od).lte('data', doStr)
-      const mapa = {}
-      ;(data || []).forEach(p => { mapa[`${p.data}_${p.posilek}`] = p.danie })
-      setPlanTygodnia(mapa)
+        .from('plan_tygodnia').select('tydzien')
+        .eq('household_id', householdId).eq('danie', nazwa)
+        .gte('tydzien', tygodnie[0]).lte('tydzien', tygodnie[tygodnie.length - 1])
+      if (anulowane) return
+      const maja = new Set((data || []).map(r => r.tydzien))
+      setJuzWPlanie(new Set(TYGODNIE_DO_WYBORU.filter((o, i) => maja.has(tygodnie[i]))))
     }
-    pobierzPlan()
-  }, [pokazKalendarz, tydzien, householdId])
+    pobierzPule()
+    return () => { anulowane = true }
+  }, [pokazPlan, householdId, nazwa])
 
   async function pobierz() {
     setLoading(true)
@@ -325,23 +288,30 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
   }
 
 
-  async function dodajDoKalendarza() {
-    if (wybranyDni.size === 0 || !wybranyPosilek || !user) return
-    setDodawanie(true)
-    for (const dataStr of wybranyDni) {
-      const { data: istniejacy } = await supabase
-        .from('kalendarz').select('id')
-        .eq('household_id', householdId).eq('data', dataStr).eq('posilek', wybranyPosilek)
-        .maybeSingle()
-      if (istniejacy) {
-        await supabase.from('kalendarz').update({ danie: nazwa, podmiany: {} }).eq('id', istniejacy.id)
-      } else {
-        await supabase.from('kalendarz').insert({ household_id: householdId, user_id: user.id, data: dataStr, posilek: wybranyPosilek, danie: nazwa })
-      }
+  async function dodajDoPlanu() {
+    if (!user || !householdId || juzWPlanie.has(wybranyTydzien)) return
+    setDodawanie(true); setBladPlanu(null)
+
+    const tydzien = poniedzialekTygodnia(wybranyTydzien)
+    const { error } = await supabase.from('plan_tygodnia')
+      .insert({ household_id: householdId, user_id: user.id, tydzien, danie: nazwa, porcje: 1 })
+    setDodawanie(false)
+
+    // 23505 = unikalny duplikat (drugi domownik dodał to samo równolegle).
+    // Dla użytkownika efekt jest ten sam co udany zapis, więc nie straszymy błędem.
+    if (error && error.code !== '23505') {
+      setBladPlanu('Nie udało się dodać do planu. Spróbuj jeszcze raz.')
+      return
     }
-    sledz?.('dodaj_do_kalendarza', { danie: nazwa, ile_dni: wybranyDni.size, posilek: wybranyPosilek })
-    setDodawanie(false); setSukces(true)
-    setTimeout(() => { setSukces(false); setPokazKalendarz(false); setWybranyDni(new Set()) }, 1500)
+
+    setJuzWPlanie(prev => new Set(prev).add(wybranyTydzien))
+    sledz?.('tydzien_dodaj_z_przepisu', { danie: nazwa, tydzien })
+    setSukces(true)
+    setTimeout(() => { setSukces(false); setPokazPlan(false) }, 1500)
+  }
+
+  function zamknijPlan() {
+    setPokazPlan(false); setBladPlanu(null)
   }
 
   const pogrupowane = skladniki.reduce((acc, sk) => {
@@ -358,15 +328,15 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
 
   return (
     <div style={s.outer}>
-      {pokazKalendarz && (
-        <div style={s.modalOverlay} onClick={() => setPokazKalendarz(false)}>
+      {pokazPlan && (
+        <div style={s.modalOverlay} onClick={zamknijPlan}>
           <div style={s.modal} onClick={e => e.stopPropagation()}>
             <div style={s.modalHeader}>
               <div>
-                <div style={s.modalEyebrow}>DO KALENDARZA</div>
+                <div style={s.modalEyebrow}>DO PLANU TYGODNIA</div>
                 <div style={s.modalTytul}>{nazwa}</div>
               </div>
-              <button style={s.modalClose} onClick={() => setPokazKalendarz(false)} aria-label="Zamknij">✕</button>
+              <button style={s.modalClose} onClick={zamknijPlan} aria-label="Zamknij">✕</button>
             </div>
 
             {sukces ? (
@@ -374,40 +344,29 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
                 <div style={s.sukcesIkona}>
                   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={t.accent} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12l5 5L20 7"/></svg>
                 </div>
-                <div style={s.sukcesTxt}>Dodano do kalendarza</div>
+                <div style={s.sukcesTxt}>Dodano do planu</div>
               </div>
             ) : (
               <>
-                <div style={s.tydzienNav}>
-                  <button style={s.navBtn} onClick={() => setTydzien(t => t - 1)}>‹</button>
-                  <span style={s.tydzienLabel}>
-                    {formatKrotkoMies(dni[0])} — {formatKrotkoMies(dni[6])}
-                  </span>
-                  <button style={s.navBtn} onClick={() => setTydzien(t => t + 1)}>›</button>
-                </div>
-
-                <div style={s.dniGrid}>
-                  {dni.map((dzien, i) => {
-                    const dataStr = formatData(dzien)
-                    const aktywny = wybranyDni.has(dataStr)
-                    const zaplanowane = wybranyPosilek ? planTygodnia[`${dataStr}_${wybranyPosilek}`] : null
+                <div style={s.tygodnieLista}>
+                  {TYGODNIE_DO_WYBORU.map(offset => {
+                    const aktywny = offset === wybranyTydzien
+                    const juzJest = juzWPlanie.has(offset)
                     return (
-                      <button key={dataStr}
-                        style={{ ...s.dzienBtn, ...(aktywny ? s.dzienBtnOn : {}) }}
-                        onClick={() => setWybranyDni(prev => {
-                          const next = new Set(prev)
-                          next.has(dataStr) ? next.delete(dataStr) : next.add(dataStr)
-                          return next
-                        })}>
-                        <span style={{ ...s.dzienBtnDow, color: aktywny ? '#fff' : t.mute }}>
-                          {DNI_KROTKO[i]}
+                      <button key={offset}
+                        style={{ ...s.tydzienBtn, ...(aktywny ? s.tydzienBtnOn : {}) }}
+                        onClick={() => { setWybranyTydzien(offset); setBladPlanu(null) }}>
+                        <span style={s.tydzienBtnTekst}>
+                          <span style={{ ...s.tydzienBtnNazwa, color: aktywny ? '#fff' : t.text }}>
+                            {etykietaTygodnia(offset)}
+                          </span>
+                          <span style={{ ...s.tydzienBtnZakres, color: aktywny ? 'rgba(255,255,255,.85)' : t.mute }}>
+                            {zakresTygodniaLabel(offset)}
+                          </span>
                         </span>
-                        <span style={{ ...s.dzienBtnDate, color: aktywny ? '#fff' : t.text }}>
-                          {dzien.getDate()}
-                        </span>
-                        {zaplanowane && (
-                          <span style={{ ...s.dzienBtnNote, color: aktywny ? 'rgba(255,255,255,.85)' : t.accent }}>
-                            {zaplanowane}
+                        {juzJest && (
+                          <span style={{ ...s.tydzienBtnZnacznik, ...(aktywny ? s.tydzienBtnZnacznikOn : {}) }}>
+                            ✓ w planie
                           </span>
                         )}
                       </button>
@@ -415,25 +374,14 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
                   })}
                 </div>
 
-                <div style={s.posilkiRow}>
-                  {slotyWybranegoDnia.length === 0 && pierwszyWybranyDzien && (
-                    <div style={s.brakSlotow}>
-                      Brak skonfigurowanych posiłków w wybrany dzień
-                    </div>
-                  )}
-                  {slotyWybranegoDnia.map(slot => (
-                    <button key={slot.id}
-                      style={{ ...s.posilekBtn, ...(wybranyPosilek === slot.id ? s.posilekBtnOn : {}) }}
-                      onClick={() => setWybranyPosilek(slot.id)}>
-                      {slot.nazwa}
-                    </button>
-                  ))}
-                </div>
+                {bladPlanu && <div style={s.bladPlanu}>{bladPlanu}</div>}
 
-                <button style={{ ...s.btnDodajKal, opacity: (wybranyDni.size > 0 && wybranyPosilek) ? 1 : 0.5 }}
-                  onClick={dodajDoKalendarza}
-                  disabled={wybranyDni.size === 0 || !wybranyPosilek || dodawanie}>
-                  {dodawanie ? 'Dodaję…' : wybranyDni.size > 1 ? `Dodaj do ${wybranyDni.size} dni` : 'Dodaj do kalendarza'}
+                <button style={{ ...s.btnDodajKal, opacity: juzWPlanie.has(wybranyTydzien) ? 0.5 : 1 }}
+                  onClick={dodajDoPlanu}
+                  disabled={dodawanie || juzWPlanie.has(wybranyTydzien)}>
+                  {juzWPlanie.has(wybranyTydzien)
+                    ? 'Już w planie'
+                    : dodawanie ? 'Dodaję…' : 'Dodaj do planu'}
                 </button>
               </>
             )}
@@ -529,7 +477,7 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
             )}
             {!edycja && (
               <div style={s.heroActions}>
-                <button style={s.btnKalendarz} onClick={() => setPokazKalendarz(true)}>
+                <button style={s.btnKalendarz} onClick={() => setPokazPlan(true)}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: 8 }}><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
                   Zaplanuj
                 </button>
@@ -770,44 +718,31 @@ function makeS() {
     background: t.surfaceAlt, border: 'none', borderRadius: 999,
     width: 32, height: 32, fontSize: 14, color: t.mute, cursor: 'pointer',
   },
-  tydzienNav: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 },
-  tydzienLabel: { fontFamily: fonts.serif, fontSize: 16, color: t.text },
-  navBtn: {
-    width: 32, height: 32, borderRadius: 999,
-    background: t.surface, border: `0.5px solid ${t.border}`,
-    fontFamily: fonts.serif, fontSize: 18, color: t.text, cursor: 'pointer',
-    display: 'grid', placeItems: 'center',
-  },
-  dniGrid: { display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 5, marginBottom: 14 },
-  dzienBtn: {
-    display: 'flex', flexDirection: 'column', alignItems: 'center',
-    padding: '8px 2px', minHeight: 70,
-    background: t.surface, border: `0.5px solid ${t.border}`, borderRadius: 12,
+  tygodnieLista: { display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 },
+  tydzienBtn: {
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10,
+    width: '100%', padding: '13px 14px', textAlign: 'left',
+    background: t.surface, border: `0.5px solid ${t.border}`, borderRadius: 14,
     cursor: 'pointer',
   },
-  dzienBtnOn: {
+  tydzienBtnOn: {
     background: t.accent, borderColor: t.accent,
     boxShadow: '0 4px 12px rgba(77,124,77,.3)',
   },
-  dzienBtnDow: { fontSize: 9.5, fontWeight: 700, letterSpacing: 0.6, textTransform: 'uppercase' },
-  dzienBtnDate: { fontFamily: fonts.serif, fontSize: 17, marginTop: 2 },
-  dzienBtnNote: {
-    fontSize: 8.5, marginTop: 3, padding: '0 2px',
-    overflow: 'hidden', display: '-webkit-box',
-    WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', textAlign: 'center', lineHeight: 1.2,
+  tydzienBtnTekst: { display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0 },
+  tydzienBtnNazwa: { fontFamily: fonts.sans, fontSize: 14.5, fontWeight: 600 },
+  tydzienBtnZakres: { fontFamily: fonts.sans, fontSize: 12 },
+  tydzienBtnZnacznik: {
+    flexShrink: 0, padding: '4px 9px', borderRadius: 999,
+    background: t.accentSoft, color: t.accentDark,
+    fontFamily: fonts.sans, fontSize: 11, fontWeight: 600, whiteSpace: 'nowrap',
   },
-  posilkiRow: { display: 'flex', gap: 6, marginBottom: 16, flexWrap: 'wrap' },
-  brakSlotow: {
-    flex: 1, padding: '10px 12px', borderRadius: 10,
-    background: t.surfaceAlt, fontFamily: fonts.sans, fontSize: 12, color: t.mute,
+  tydzienBtnZnacznikOn: { background: 'rgba(255,255,255,.22)', color: '#fff' },
+  bladPlanu: {
+    padding: '10px 12px', borderRadius: 10, marginBottom: 12,
+    background: t.surfaceAlt, fontFamily: fonts.sans, fontSize: 12.5, color: t.text,
     textAlign: 'center', lineHeight: 1.4,
   },
-  posilekBtn: {
-    flex: '1 1 auto', minWidth: 80, padding: '10px 6px', borderRadius: 10,
-    background: t.surfaceAlt, border: 'none', cursor: 'pointer',
-    fontFamily: fonts.sans, fontSize: 13, color: t.text, fontWeight: 500,
-  },
-  posilekBtnOn: { background: t.warm, color: '#fff', fontWeight: 600 },
   btnDodajKal: { ...ui.btnPrimary, width: '100%', padding: '14px' },
   sukces: { padding: '30px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 },
   sukcesIkona: {

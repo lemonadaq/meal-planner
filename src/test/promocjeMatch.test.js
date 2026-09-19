@@ -140,3 +140,58 @@ describe('dopasujPromocje — wybór oferty', () => {
     expect(tokenizuj('marchew-banan-jabłko')).toEqual(['marchew', 'banan', 'jabłko'])
   })
 })
+
+// Dopasowanie chodziło po WSZYSTKICH ofertach przy każdym przerysowaniu listy
+// (4000 ofert × 60 pozycji ≈ 3,7 s blokady UI), więc doszedł indeks po
+// rdzeniach i pamięć wyników per nazwa. Te testy pilnują, żeby pamięć nie
+// zaczęła kłamać — reszta pliku sprawdza, że wyniki są te same co wcześniej.
+describe('dopasujPromocje — indeks i pamięć podręczna', () => {
+  const oferta = (nazwa, sklep, cena) => ({
+    nazwa, nazwa_norm: nazwa.toLowerCase(), sklep,
+    cena_nowa: cena, cena_stara: cena + 2, wazne_do: '2099-12-31',
+  })
+
+  it('drugie wywołanie na tej samej tablicy daje ten sam wynik', () => {
+    const promocje = [oferta('Masło Extra 200g', 'Lidl', 5.99)]
+    const items = [{ klucz: 'masło||g', skladnik: 'masło' }]
+
+    const raz = dopasujPromocje(items, promocje)
+    const dwa = dopasujPromocje(items, promocje)
+    expect(dwa[0].promo).toEqual(raz[0].promo)
+    expect(dwa[0].promo.now).toBe(5.99)
+  })
+
+  it('nowa tablica promocji NIE dziedziczy wyników po starej', () => {
+    const items = [{ klucz: 'masło||g', skladnik: 'masło' }]
+
+    const stare = dopasujPromocje(items, [oferta('Masło Extra 200g', 'Lidl', 5.99)])
+    expect(stare[0].promo.now).toBe(5.99)
+
+    // Scraper przeliczył gazetki — inna tablica, inne ceny.
+    const nowe = dopasujPromocje(items, [oferta('Masło Extra 200g', 'Lidl', 4.49)])
+    expect(nowe[0].promo.now).toBe(4.49)
+  })
+
+  it('ta sama nazwa w dwóch pozycjach listy dostaje to samo dopasowanie', () => {
+    const promocje = [oferta('Cebula żółta luzem', 'Biedronka', 2.49)]
+    const wynik = dopasujPromocje([
+      { klucz: 'cebula||g', skladnik: 'cebula' },
+      { klucz: 'cebula||szt.', skladnik: 'Cebula' }, // inna wielkość liter
+    ], promocje)
+
+    expect(wynik[0].promo.now).toBe(2.49)
+    expect(wynik[1].promo.now).toBe(2.49)
+  })
+
+  it('pozycja bez dopasowania nie dostaje promocji z pamięci sąsiada', () => {
+    const promocje = [oferta('Masło Extra 200g', 'Lidl', 5.99)]
+    const wynik = dopasujPromocje([
+      { klucz: 'masło||g', skladnik: 'masło' },
+      { klucz: 'gochujang||g', skladnik: 'pasta gochujang' },
+    ], promocje)
+
+    expect(wynik[0].promo).not.toBeNull()
+    expect(wynik[1].promo).toBeNull()
+    expect(wynik[1].promos).toEqual([])
+  })
+})
