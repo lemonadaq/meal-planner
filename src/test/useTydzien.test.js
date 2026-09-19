@@ -4,7 +4,7 @@ import { describe, it, expect, vi } from 'vitest'
 // nie wywołał createClient z pustymi env.
 vi.mock('../supabase', () => ({ supabase: {} }))
 
-import { poniedzialekTygodnia, zakresTygodniaLabel } from '../useTydzien'
+import { poniedzialekTygodnia, zakresTygodniaLabel, etykietaTygodnia, TYGODNIE_DO_WYBORU } from '../useTydzien'
 
 // Fakty kalendarzowe 2026: 3 sierpnia = poniedziałek, 9 sierpnia = niedziela,
 // 27 lipca = poniedziałek, 1 stycznia = czwartek.
@@ -69,5 +69,23 @@ describe('zakresTygodniaLabel', () => {
     const sroda = new Date(2026, 7, 5)
     expect(zakresTygodniaLabel(1, sroda)).toBe('10–16 sierpnia')
     expect(zakresTygodniaLabel(-1, sroda)).toBe('27 lipca – 2 sierpnia')
+  })
+})
+
+describe('etykietaTygodnia', () => {
+  it('nazywa bieżący i następny tydzień słowami', () => {
+    expect(etykietaTygodnia(0)).toBe('Ten tydzień')
+    expect(etykietaTygodnia(1)).toBe('Przyszły tydzień')
+  })
+
+  it('dalsze tygodnie liczy', () => {
+    expect(etykietaTygodnia(2)).toBe('Za 2 tygodnie')
+    expect(etykietaTygodnia(3)).toBe('Za 3 tygodnie')
+  })
+
+  it('lista do wyboru zaczyna się od bieżącego tygodnia i idzie do przodu', () => {
+    expect(TYGODNIE_DO_WYBORU[0]).toBe(0)
+    expect(TYGODNIE_DO_WYBORU.every(o => o >= 0)).toBe(true)
+    expect([...TYGODNIE_DO_WYBORU].sort((a, b) => a - b)).toEqual(TYGODNIE_DO_WYBORU)
   })
 })

@@ -33,6 +33,18 @@ export function zakresTygodniaLabel(offset = 0, teraz = new Date()) {
   return `${pelna(start)} – ${pelna(koniec)}`
 }
 
+// Ile tygodni do przodu da się zaplanować danie z widoku przepisu.
+// Dalej niż miesiąc nikt realnie nie planuje, a lista przestaje się mieścić.
+export const TYGODNIE_DO_WYBORU = [0, 1, 2, 3]
+
+// Nazwa tygodnia dla offsetu: 0 = bieżący. Zakres dat dokłada
+// zakresTygodniaLabel, bo samo „za 3 tygodnie" nic nie mówi.
+export function etykietaTygodnia(offset) {
+  if (offset === 0) return 'Ten tydzień'
+  if (offset === 1) return 'Przyszły tydzień'
+  return `Za ${offset} tygodnie`
+}
+
 // Czyste filtrowanie listy dań na ekranie Tydzień: chipy rodzajów
 // (multi-select, OR w obrębie rodzajów), 'ulubione' jako dodatkowy warunek
 // AND, szukajka po nazwie (bez wielkości liter).
