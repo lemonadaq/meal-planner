@@ -397,7 +397,7 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
         {/* Liczba wyników + toggle widoku */}
         <div style={s.metaRow}>
           <span style={s.licznik}>
-            {filtrowane.length} {filtrowane.length === 1 ? 'wpis' : (filtrowane.length < 5 ? 'wpisy' : 'wpisów')} · {aktywneFiltryLabel}
+            {filtrowane.length} {filtrowane.length === 1 ? 'wpis' : (filtrowane.length >= 2 && filtrowane.length < 5 ? 'wpisy' : 'wpisów')} · {aktywneFiltryLabel}
           </span>
           <div style={s.metaActions}>
             <button
