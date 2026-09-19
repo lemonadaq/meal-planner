@@ -51,33 +51,76 @@ function doCache(ceny) {
 // Zwraca { ceny, blad }. Błąd NIE jest połykany — bez niego „brak cen" wygląda
 // identycznie, czy widoku nie ma, czy jest pusty, czy PostgREST go nie wystawia,
 // a to trzy różne problemy z trzema różnymi naprawami.
+const KOLUMNY = 'sklep, produkt, cena_bazowa, cena_min, obserwacji'
+
+function stronaCen(numer) {
+  return supabase
+    .from('ceny_bazowe_view')
+    .select(KOLUMNY)
+    .range(numer * STRONA, numer * STRONA + STRONA - 1)
+}
+
+function opisBledu(error) {
+  return [error.code, error.message].filter(Boolean).join(': ') || 'nieznany błąd'
+}
+
+// Ile wierszy — wyłącznie po to, żeby wiedzieć, ile stron ciągnąć naraz.
+// null = licznik nie zadziałał, wołający schodzi na pętlę.
+async function policzCeny() {
+  const { count, error } = await supabase
+    .from('ceny_bazowe_view')
+    .select('produkt', { count: 'exact', head: true })
+
+  return error || typeof count !== 'number' ? null : count
+}
+
+// Strona po stronie — wolniejsze, ale nie zależy od licznika.
+async function cenySekwencyjnie() {
+  const wszystkie = []
+
+  for (let i = 0; ; i++) {
+    const { data, error } = await stronaCen(i)
+    if (error) return { ceny: wszystkie, blad: opisBledu(error) }
+    if (!data?.length) return { ceny: wszystkie, blad: null }
+
+    wszystkie.push(...data)
+    if (data.length < STRONA) return { ceny: wszystkie, blad: null }
+  }
+}
+
+// Wszystkie strony naraz — jedna runda zamiast N.
+async function cenyRownolegle(count) {
+  const wyniki = await Promise.all(
+    Array.from({ length: Math.ceil(count / STRONA) }, (_, i) => stronaCen(i))
+  )
+
+  const ceny = []
+  let blad = null
+  for (const { data, error } of wyniki) {
+    if (error) { blad = blad || opisBledu(error); continue }
+    ceny.push(...(data || []))
+  }
+
+  return { ceny, blad }
+}
+
 export async function pobierzCenyBazowe() {
   const zapisane = zCache()
   if (zapisane?.length) return { ceny: zapisane, blad: null }
 
   try {
-    const wszystkie = []
+    // Kilka tysięcy wierszy to kilka stron po 1000. Ciągnięte po kolei były
+    // czterema rundami do Supabase jedna po drugiej — na telefonie to sekundy
+    // czekania na zakładkę Koszty. Licznik mówi, ile stron wziąć RAZEM;
+    // gdy nie odda liczby (HEAD nie zawsze niesie Content-Range przez proxy),
+    // lecimy starą pętlą, bo wolne ceny biją brak cen.
+    const count = await policzCeny()
+    const { ceny, blad } = count ? await cenyRownolegle(count) : await cenySekwencyjnie()
 
-    for (let i = 0; ; i++) {
-      const { data, error } = await supabase
-        .from('ceny_bazowe_view')
-        .select('sklep, produkt, cena_bazowa, cena_min, obserwacji')
-        .range(i * STRONA, i * STRONA + STRONA - 1)
-
-      if (error) {
-        return {
-          ceny: wszystkie,
-          blad: [error.code, error.message].filter(Boolean).join(': ') || 'nieznany błąd',
-        }
-      }
-      if (!data?.length) break
-
-      wszystkie.push(...data)
-      if (data.length < STRONA) break
-    }
-
-    if (wszystkie.length) doCache(wszystkie)
-    return { ceny: wszystkie, blad: null }
+    // Niekompletnego kompletu nie cache'ujemy — inaczej jedna nieudana runda
+    // zamraża zaniżony koszyk na 6 godzin.
+    if (ceny.length && !blad) doCache(ceny)
+    return { ceny, blad }
   } catch (e) {
     return { ceny: [], blad: e?.message || 'wyjątek przy pobieraniu cen' }
   }

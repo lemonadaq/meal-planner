@@ -171,18 +171,25 @@ export function useSloty(householdId) {
       return
     }
     setLoading(true)
-    const { data, error } = await supabase
-      .from('households')
-      .select('sloty')
-      .eq('id', householdId)
-      .maybeSingle()
+    // finally, bo na `loading` czeka teraz lista zakupów — wyjątek przy
+    // pobieraniu zostawiłby ją na zawsze w „Ładowanie…".
+    try {
+      const { data, error } = await supabase
+        .from('households')
+        .select('sloty')
+        .eq('id', householdId)
+        .maybeSingle()
 
-    if (!error && data) {
-      setConfig(sanityzuj(data.sloty))
-    } else {
+      if (!error && data) {
+        setConfig(sanityzuj(data.sloty))
+      } else {
+        setConfig(DEFAULT_SLOTY_CONFIG)
+      }
+    } catch {
       setConfig(DEFAULT_SLOTY_CONFIG)
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }, [householdId])
 
   useEffect(() => {
