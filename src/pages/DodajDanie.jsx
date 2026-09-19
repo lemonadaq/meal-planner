@@ -147,10 +147,9 @@ export default function DodajDanie({ onBack, onZapisano }) {
 
   function wyczyscFormularz() {
     setRodzaj('obiad'); setNazwa(''); setTyp('samodzielne')
-    setCzasMinuty(''); setPorcjeBazowe('4'); setNotatki('')
-    setSkladniki([]); setKroki([])
+    setCzasMinuty(''); setKcal(''); setPorcjeBazowe('4'); setNotatki('')
+    setSkladniki([]); setPrzepisRaw('')
     setNowyS({ nazwa: '', ilosc: '', jednostka: 'g', kategoria: '1_Warzywa i owoce' })
-    setNowyKrok('')
     setBlad(''); setPodpowiedzi([])
     setZdjeciePlik(null); setZdjeciePreview(null)
   }
