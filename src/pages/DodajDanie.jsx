@@ -173,9 +173,12 @@ export default function DodajDanie({ onBack, onZapisano }) {
     setSaving(true); setBlad('')
 
     // Duplikat — sprawdzamy wszystko w nowej, scalonej tabeli `dania`
+    // ilike (nie eq): nazwa nie powinna rozróżniać wielkości liter;
+    // % i _ escapujemy, żeby nie działały jako wieloznaczniki ilike
+    const nazwaDoSzukania = nazwa.trim().replace(/[%_]/g, '\\$&')
     const { data: istniejace } = await supabase
       .from('dania').select('"Danie", rodzaj')
-      .eq('"Danie"', nazwa.trim())
+      .ilike('"Danie"', nazwaDoSzukania)
       .limit(1)
     if (istniejace?.length) {
       const r = RODZAJE.find(x => x.id === istniejace[0].rodzaj)?.label || 'bazie'
