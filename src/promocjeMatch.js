@@ -47,7 +47,7 @@ const KONCOWKI = [
 // Nie są USUWANE, tylko przestają być obowiązkowe: produkt, który je ma,
 // nadal wypada lepiej w punktacji celności. Dzięki temu „fasola z puszki"
 // woli fasolę konserwową od świeżej, jeśli obie są w ofercie.
-const SLOWA_OPCJONALNE = new Set([
+export const SLOWA_OPCJONALNE = new Set([
   'puszka', 'puszce', 'puszki', 'puszkach', 'puszkę',
   'słoik', 'słoiku', 'słoika', 'słoiki',
   'opakowanie', 'opakowaniu', 'butelce', 'butelka',
@@ -57,7 +57,23 @@ const SLOWA_OPCJONALNE = new Set([
 // Nie jest to poprawny lematyzator i nie musi być — ma tylko skleić „pierś"
 // z „piersi", „koper" z „koperek" i „marchewka" z „marchew". Rdzeń nigdy nie
 // schodzi poniżej 4 znaków, żeby krótkie słowa nie zlewały się w kaszę.
+// Rdzeń liczy się setki tysięcy razy na jedno przeliczenie listy, a różnych
+// słów jest najwyżej kilka tysięcy — bez pamięci podręcznej samo `normalize`
+// zjadało sekundy. Limit chroni przed puchnięciem na dziwnych danych.
+const PAMIEC_RDZENI = new Map()
+const LIMIT_PAMIECI_RDZENI = 50000
+
 export function rdzen(token) {
+  const klucz = String(token ?? '')
+  const zapamietany = PAMIEC_RDZENI.get(klucz)
+  if (zapamietany !== undefined) return zapamietany
+
+  const wynik = policzRdzen(klucz)
+  if (PAMIEC_RDZENI.size < LIMIT_PAMIECI_RDZENI) PAMIEC_RDZENI.set(klucz, wynik)
+  return wynik
+}
+
+function policzRdzen(token) {
   const bezOgonkow = String(token ?? '')
     .normalize('NFD').replace(/[̀-ͯ]/g, '')
     .replace(/ł/g, 'l')
@@ -113,12 +129,6 @@ const TRANSFORM_WORDS = new Set([
   'liofilizowana', 'liofilizowany', 'liofilizowane',
 ])
 
-// Promo zawiera słowo-transformację, którego nie ma w tokenacha składnika →
-// to inny produkt, nawet jeśli bazowe słowo się zgadza (cebula ≠ cebula prażona).
-function maZakazanaTransformacje(p, zbiorTokenowItemu) {
-  return p.tokeny.some(t => TRANSFORM_WORDS.has(t) && !zbiorTokenowItemu.has(t))
-}
-
 // Czy wszystkie tokeny `a` występują w tokenach `b`? Porównanie po rdzeniach,
 // więc „pierś z kurczaka" trafia w „Filet z piersi kurczaka". Słowa opisujące
 // formę (`w puszce`) są pomijane przy sprawdzaniu — punktuje je dopiero
@@ -168,55 +178,130 @@ function promoZRekordu(p) {
 //   1. exact: nazwa_norm === znormalizowany skladnik
 //   2. token overlap: tokeny składnika ⊆ tokeny promo LUB odwrotnie
 //   3. kilka dopasowań → najtańsza cena_nowa
+// Indeks ofert budowany RAZ na tablicę promocji (klucz po tożsamości tablicy,
+// a ta zmienia się tylko przy ponownym pobraniu z bazy). Bez tego każde
+// tapnięcie „mam w domu" tokenizowało od nowa cztery tysiące ofert.
+const INDEKSY_PROMOCJI = new WeakMap()
+
+export function zbudujIndeksPromocji(promocje) {
+  const gotowy = INDEKSY_PROMOCJI.get(promocje)
+  if (gotowy) return gotowy
+
+  const oferty = promocje
+    .filter(p => p.cena_nowa != null)
+    .map(p => {
+      const norm = normalizujNazwePromo(p.nazwa_norm || p.nazwa)
+      const tokeny = tokenizuj(p.nazwa_norm || p.nazwa)
+      return {
+        rekord: p,
+        norm,
+        tokeny,
+        rdzenie: new Set(tokeny.map(rdzen)),
+        // rdzenie tokenów obowiązkowych — te muszą się znaleźć po drugiej stronie
+        wymagane: tokeny.filter(t => !SLOWA_OPCJONALNE.has(t)).map(rdzen),
+        transformacje: tokeny.filter(t => TRANSFORM_WORDS.has(t)),
+      }
+    })
+
+  // Odwrócony indeks rdzeń → oferty. Dopasowanie w OBIE strony wymaga, by
+  // wszystkie obowiązkowe rdzenie jednej strony były w drugiej, więc każda
+  // pasująca oferta dzieli ze składnikiem co najmniej jeden rdzeń. Zamiast
+  // czterech tysięcy ofert oglądamy więc kilkadziesiąt.
+  const wgRdzenia = new Map()
+  const wgNormy = new Map()
+  oferty.forEach((oferta, i) => {
+    for (const r of oferta.rdzenie) {
+      const kubelek = wgRdzenia.get(r)
+      if (kubelek) kubelek.push(i)
+      else wgRdzenia.set(r, [i])
+    }
+    // Nazwa złożona z samych stop-słów/gramatury nie ma rdzeni, a wciąż może
+    // trafić przez równość nazw — dlatego drugi indeks.
+    const kubelek = wgNormy.get(oferta.norm)
+    if (kubelek) kubelek.push(i)
+    else wgNormy.set(oferta.norm, [i])
+  })
+
+  const indeks = { oferty, wgRdzenia, wgNormy, pamiec: new Map() }
+  INDEKSY_PROMOCJI.set(promocje, indeks)
+  return indeks
+}
+
+// Dopasowanie zależy WYŁĄCZNIE od nazwy składnika, więc wynik trzymamy
+// w pamięci indeksu. Odhaczenie pozycji czy schowanie jej przez „mam w domu"
+// nie zmienia nazw, które zostały — i nie przelicza już niczego.
+function dopasujJeden(skladnik, indeks) {
+  const norm = normalizujNazwePromo(skladnik)
+  if (!norm) return BRAK_PROMOCJI
+
+  const zPamieci = indeks.pamiec.get(norm)
+  if (zPamieci) return zPamieci
+
+  const tokenyItemu = tokenizuj(skladnik)
+  const zbiorTokenowItemu = new Set(tokenyItemu)
+  const rdzenieItemu = new Set(tokenyItemu.map(rdzen))
+  const wymaganeItemu = tokenyItemu.filter(t => !SLOWA_OPCJONALNE.has(t)).map(rdzen)
+
+  const kandydaci = new Set()
+  for (const r of rdzenieItemu) {
+    const kubelek = indeks.wgRdzenia.get(r)
+    if (kubelek) for (const i of kubelek) kandydaci.add(i)
+  }
+  const zNormy = indeks.wgNormy.get(norm)
+  if (zNormy) for (const i of zNormy) kandydaci.add(i)
+
+  // Najlepiej pasująca oferta per sklep — decyduje celność nazwy, dopiero
+  // przy remisie cena. Reguła „najtańsza wygrywa" podstawiała chipsy
+  // o smaku cebulki zamiast cebuli, bo śmieć bywa tańszy od produktu.
+  const perSklep = new Map()
+  for (const i of kandydaci) {
+    const p = indeks.oferty[i]
+
+    // Promo z "prażona", "wędzona" itp. kiedy składnik jej nie ma → inny produkt
+    if (p.transformacje.some(t => !zbiorTokenowItemu.has(t))) continue
+
+    const pasuje =
+      p.norm === norm ||
+      // składnik ⊆ promo (promo bardziej szczegółowa)
+      (wymaganeItemu.length > 0 && wymaganeItemu.every(r => p.rdzenie.has(r))) ||
+      // promo ⊆ składnik (promo ogólniejsza)
+      (p.wymagane.length > 0 && p.wymagane.every(r => rdzenieItemu.has(r)))
+    if (!pasuje) continue
+
+    const sklep = p.rekord.sklep
+    const stary = perSklep.get(sklep)
+    const punkty = punktacjaDopasowania(p.tokeny, tokenyItemu)
+
+    if (!stary ||
+        punkty < stary.punkty ||
+        (punkty === stary.punkty && +p.rekord.cena_nowa < +stary.rekord.cena_nowa)) {
+      perSklep.set(sklep, { rekord: p.rekord, punkty })
+    }
+  }
+
+  const wynik = perSklep.size === 0
+    ? BRAK_PROMOCJI
+    : (() => {
+        const promos = [...perSklep.values()]
+          .map(p => promoZRekordu(p.rekord))
+          .sort((a, b) => a.now - b.now)
+        return { promo: promos[0], promos }
+      })()
+
+  indeks.pamiec.set(norm, wynik)
+  return wynik
+}
+
+// Wspólny obiekt dla „nic nie znaleziono" — i tak jest tylko czytany.
+const BRAK_PROMOCJI = { promo: null, promos: [] }
+
 export function dopasujPromocje(items, promocje) {
   if (!promocje?.length) return items
 
-  const przygotowane = promocje
-    .filter(p => p.cena_nowa != null)
-    .map(p => ({
-      rekord: p,
-      norm: normalizujNazwePromo(p.nazwa_norm || p.nazwa),
-      tokeny: tokenizuj(p.nazwa_norm || p.nazwa),
-    }))
-
+  const indeks = zbudujIndeksPromocji(promocje)
   return items.map(item => {
-    const norm = normalizujNazwePromo(item.skladnik)
-    if (!norm) return { ...item, promo: null, promos: [] }
-    const tokenyItemu = tokenizuj(item.skladnik)
-
-    const zbiorTokenowItemu = new Set(tokenyItemu)
-    const pasujace = przygotowane.filter(p => {
-      // Promo z "prażona", "wędzona" itp. kiedy składnik jej nie ma → inny produkt
-      if (maZakazanaTransformacje(p, zbiorTokenowItemu)) return false
-      return (
-        p.norm === norm ||
-        zawieraWszystkie(tokenyItemu, p.tokeny) ||  // składnik ⊆ promo (promo bardziej szczegółowa)
-        zawieraWszystkie(p.tokeny, tokenyItemu)      // promo ⊆ składnik (promo ogólniejsza)
-      )
-    })
-    if (!pasujace.length) return { ...item, promo: null, promos: [] }
-
-    // Najlepiej pasująca oferta per sklep — decyduje celność nazwy, dopiero
-    // przy remisie cena. Reguła „najtańsza wygrywa" podstawiała chipsy
-    // o smaku cebulki zamiast cebuli, bo śmieć bywa tańszy od produktu.
-    const perSklep = new Map()
-    for (const p of pasujace) {
-      const sklep = p.rekord.sklep
-      const stary = perSklep.get(sklep)
-      const punkty = punktacjaDopasowania(p.tokeny, tokenyItemu)
-
-      if (!stary ||
-          punkty < stary.punkty ||
-          (punkty === stary.punkty && +p.rekord.cena_nowa < +stary.rekord.cena_nowa)) {
-        perSklep.set(sklep, { ...p, punkty })
-      }
-    }
-
-    const promos = [...perSklep.values()]
-      .map(p => promoZRekordu(p.rekord))
-      .sort((a, b) => a.now - b.now)
-
-    return { ...item, promo: promos[0], promos }
+    const { promo, promos } = dopasujJeden(item.skladnik, indeks)
+    return { ...item, promo, promos }
   })
 }
 

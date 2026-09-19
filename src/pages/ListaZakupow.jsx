@@ -1822,8 +1822,17 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     return odznaczone.has(item.klucz)
   }, [odznaczone])
 
-  const doKupienia = wszystkieItemy.filter(i => !czyKupione(i))
-  const kupione = wszystkieItemy.filter(i => czyKupione(i))
+  // Przez useMemo, a nie zwykły filter: `doKupienia` idzie do wycenKoszyk,
+  // a świeża tablica przy każdym przerysowaniu kazałaby przeliczać koszyk
+  // od nowa nawet wtedy, gdy nic się na liście nie zmieniło.
+  const doKupienia = useMemo(
+    () => wszystkieItemy.filter(i => !czyKupione(i)),
+    [wszystkieItemy, czyKupione],
+  )
+  const kupione = useMemo(
+    () => wszystkieItemy.filter(i => czyKupione(i)),
+    [wszystkieItemy, czyKupione],
+  )
   const procent = wszystkieItemy.length > 0 ? Math.round(kupione.length / wszystkieItemy.length * 100) : 0
 
   // Wyceniamy tylko to, co zostało do kupienia — rzeczy w koszyku są już opłacone.

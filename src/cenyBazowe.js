@@ -9,7 +9,7 @@
 
 import { supabase } from './supabase'
 import { dzisLocal } from './dataHelpers'
-import { normalizujNazwePromo, tokenizuj, zawieraWszystkie, punktacjaDopasowania } from './promocjeMatch'
+import { normalizujNazwePromo, tokenizuj, rdzen, SLOWA_OPCJONALNE, punktacjaDopasowania } from './promocjeMatch'
 
 // Blix wstawia grosz jako cenę produktów odblokowywanych kuponem za punkty
 // w aplikacji sklepu. Jako promocja to prawdziwa oferta i dlatego zostaje na
@@ -91,23 +91,89 @@ function ileOpakowan(item) {
   return Number.isFinite(n) && n > 0 ? Math.ceil(n) : 1
 }
 
+// Katalog cen budowany RAZ na tablicę z bazy — tokenizacja kilku tysięcy nazw
+// przy każdym przerysowaniu listy była głównym kosztem zakładki Koszty.
+// Odwrócony indeks po rdzeniach jak w promocjeMatch: pasujący produkt zawsze
+// dzieli ze składnikiem co najmniej jeden rdzeń.
+const KATALOGI_CEN = new WeakMap()
+
+function katalogCen(ceny) {
+  const gotowy = KATALOGI_CEN.get(ceny)
+  if (gotowy) return gotowy
+
+  const produkty = ceny
+    .filter(c => c.sklep && c.produkt && Number(c.cena_bazowa) >= MIN_CENA_BAZOWA)
+    .map(c => {
+      const tokeny = tokenizuj(c.produkt)
+      return {
+        sklep: c.sklep,
+        produkt: c.produkt,
+        cena_bazowa: Number(c.cena_bazowa),
+        norm: normalizujNazwePromo(c.produkt),
+        tokeny,
+        rdzenie: new Set(tokeny.map(rdzen)),
+        wymagane: tokeny.filter(t => !SLOWA_OPCJONALNE.has(t)).map(rdzen),
+      }
+    })
+
+  const wgRdzenia = new Map()
+  const wgNormy = new Map()
+  produkty.forEach((produkt, i) => {
+    for (const r of produkt.rdzenie) {
+      const kubelek = wgRdzenia.get(r)
+      if (kubelek) kubelek.push(i)
+      else wgRdzenia.set(r, [i])
+    }
+    const kubelek = wgNormy.get(produkt.norm)
+    if (kubelek) kubelek.push(i)
+    else wgNormy.set(produkt.norm, [i])
+  })
+
+  const katalog = {
+    produkty,
+    wgRdzenia,
+    wgNormy,
+    sklepy: [...new Set(produkty.map(c => c.sklep))].sort(),
+    pamiec: new Map(),
+  }
+  KATALOGI_CEN.set(ceny, katalog)
+  return katalog
+}
+
 // Najlepiej pasujący produkt per sklep. Ta sama logika tokenowa co
 // w dopasujPromocje — składnik ⊆ produkt albo produkt ⊆ składnik, po rdzeniach.
 //
 // O wyborze decyduje celność nazwy, nie cena. Przy „najtańszym wygrywa"
 // składnik „masło" łapał „Chipsy ziemniaczane masło z solą" za 0,01 zł
 // i zaniżał cały koszyk.
-function dopasujCeny(skladnik, przygotowane) {
+//
+// Wynik zależy tylko od nazwy składnika, więc ląduje w pamięci katalogu —
+// odhaczenie pozycji nie musi przeliczać całego koszyka od nowa.
+function dopasujCeny(skladnik, katalog) {
   const norm = normalizujNazwePromo(skladnik)
-  if (!norm) return new Map()
+  if (!norm) return PUSTE_TRAFIENIA
+
+  const zPamieci = katalog.pamiec.get(norm)
+  if (zPamieci) return zPamieci
 
   const tokenyItemu = tokenizuj(skladnik)
-  const perSklep = new Map()
+  const rdzenieItemu = new Set(tokenyItemu.map(rdzen))
+  const wymaganeItemu = tokenyItemu.filter(t => !SLOWA_OPCJONALNE.has(t)).map(rdzen)
 
-  for (const c of przygotowane) {
+  const kandydaci = new Set()
+  for (const r of rdzenieItemu) {
+    const kubelek = katalog.wgRdzenia.get(r)
+    if (kubelek) for (const i of kubelek) kandydaci.add(i)
+  }
+  const zNormy = katalog.wgNormy.get(norm)
+  if (zNormy) for (const i of zNormy) kandydaci.add(i)
+
+  const perSklep = new Map()
+  for (const i of kandydaci) {
+    const c = katalog.produkty[i]
     const pasuje = c.norm === norm ||
-      zawieraWszystkie(tokenyItemu, c.tokeny) ||
-      zawieraWszystkie(c.tokeny, tokenyItemu)
+      (wymaganeItemu.length > 0 && wymaganeItemu.every(r => c.rdzenie.has(r))) ||
+      (c.wymagane.length > 0 && c.wymagane.every(r => rdzenieItemu.has(r)))
     if (!pasuje) continue
 
     const punkty = punktacjaDopasowania(c.tokeny, tokenyItemu)
@@ -120,8 +186,12 @@ function dopasujCeny(skladnik, przygotowane) {
     }
   }
 
+  katalog.pamiec.set(norm, perSklep)
   return perSklep
 }
+
+// Wspólna pusta mapa — jest tylko odczytywana.
+const PUSTE_TRAFIENIA = new Map()
 
 /**
  * Wycena koszyka per sklep.
@@ -138,20 +208,11 @@ export function wycenKoszyk(items, ceny) {
     return { sklepy: [], pozycje: [], wspolnych: 0, bezCeny: doKupienia.length }
   }
 
-  const przygotowane = ceny
-    .filter(c => c.sklep && c.produkt && Number(c.cena_bazowa) >= MIN_CENA_BAZOWA)
-    .map(c => ({
-      sklep: c.sklep,
-      produkt: c.produkt,
-      cena_bazowa: Number(c.cena_bazowa),
-      norm: normalizujNazwePromo(c.produkt),
-      tokeny: tokenizuj(c.produkt),
-    }))
-
-  const sklepy = [...new Set(przygotowane.map(c => c.sklep))].sort()
+  const katalog = katalogCen(ceny)
+  const sklepy = katalog.sklepy
 
   const pozycje = doKupienia.map(item => {
-    const trafienia = dopasujCeny(item.skladnik, przygotowane)
+    const trafienia = dopasujCeny(item.skladnik, katalog)
     const sztuk = ileOpakowan(item)
 
     // Aktualna promocja bije cenę bazową — to ona robi różnicę między sklepami.

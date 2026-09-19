@@ -233,3 +233,40 @@ describe('wycenKoszyk — ceny kuponowe i opis formy', () => {
     expect(wynik.sklepy[0].koszt).toBeCloseTo(3.49)
   })
 })
+
+// Katalog cen był tokenizowany od nowa przy każdym przerysowaniu listy.
+// Teraz buduje się raz na tablicę z bazy, z pamięcią wyników per składnik.
+describe('wycenKoszyk — katalog liczony raz', () => {
+  const cena = (produkt, sklep, kwota) => ({
+    produkt, sklep, cena_bazowa: kwota, cena_min: kwota, obserwacji: 3,
+  })
+
+  it('druga wycena tego samego koszyka daje ten sam wynik', () => {
+    const ceny = [cena('Masło Extra 200g', 'Lidl', 7.99), cena('Masło Extra 200g', 'Biedronka', 8.49)]
+    const items = [{ klucz: 'masło||g', skladnik: 'masło', opakowania: 1 }]
+
+    const raz = wycenKoszyk(items, ceny)
+    const dwa = wycenKoszyk(items, ceny)
+    expect(dwa.sklepy).toEqual(raz.sklepy)
+    expect(dwa.wspolnych).toBe(raz.wspolnych)
+  })
+
+  it('nowa tablica cen NIE dziedziczy wyników po starej', () => {
+    const items = [{ klucz: 'masło||g', skladnik: 'masło', opakowania: 1 }]
+
+    const stare = wycenKoszyk(items, [cena('Masło Extra 200g', 'Lidl', 7.99)])
+    expect(stare.sklepy[0].kosztCalosci).toBeCloseTo(7.99, 2)
+
+    const nowe = wycenKoszyk(items, [cena('Masło Extra 200g', 'Lidl', 9.49)])
+    expect(nowe.sklepy[0].kosztCalosci).toBeCloseTo(9.49, 2)
+  })
+
+  it('zmiana liczby opakowań przelicza koszt, choć dopasowanie jest z pamięci', () => {
+    const ceny = [cena('Masło Extra 200g', 'Lidl', 7.99)]
+    const jedno = wycenKoszyk([{ klucz: 'masło||g', skladnik: 'masło', opakowania: 1 }], ceny)
+    const trzy = wycenKoszyk([{ klucz: 'masło||g', skladnik: 'masło', opakowania: 3 }], ceny)
+
+    expect(jedno.sklepy[0].kosztCalosci).toBeCloseTo(7.99, 2)
+    expect(trzy.sklepy[0].kosztCalosci).toBeCloseTo(23.97, 2)
+  })
+})
