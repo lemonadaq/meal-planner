@@ -9,108 +9,71 @@
 # Puste linie i linie zaczynające się od # są pomijane.
 # Dania, które już są w bazie, zostaną pominięte przy generowaniu.
 #
-# ── PACZKA 4: kuchnia koreańska, 54 dania (stan bazy przed nią: 539) ──
+# ── PACZKA 5: kuchnia chińska, 37 dań ──
 #
-# Powód: Filip kupił pastę gochujang. Lista dzieli się na dwie części, bo
-# gochujang z definicji piecze — słodko-fermentowana, ale ostra. Dania bez
-# ostrości to osobna grupa i NIE ma w nich ani gochujangu, ani gochugaru,
-# ani kimchi.
+# Filip prosił o „makaron chiński z kurczakiem jak padthai". Pad thai jest
+# tajski, nie chiński — chińskim odpowiednikiem smażonego makaronu jest
+# CHOW MEIN (makaron smażony na chrupko) i LO MEIN (miękki, mieszany z sosem).
+# Oba są tu na początku listy. Gdyby Filip chciał jednak samego pad thaia,
+# to osobna paczka tajska.
 #
-# W bazie było tylko jedno danie koreańskie („Bibimbap z wołowiną"), więc
-# nic się tu nie powtarza. Sprawdzone `npm run duble` przeciwko całej bazie.
+# W bazie chińszczyzny prawie nie było: „Kurczak po chińsku", „Kurczak
+# w sosie słodko-kwaśnym", „Spring rolls (sajgonki)" i dwa smażone ryże.
+# Ta lista ich nie powtarza — sprawdzone tą samą logiką co `npm run duble`,
+# zestawiając ją z wszystkimi 539 daniami bazy.
 #
-# Nazwy trzymają styl reszty bazy: bez myślników, koreańska nazwa tam, gdzie
-# jest tożsamością dania (tteokbokki, japchae, kimbap), polski opis tam, gdzie
-# sama nazwa nic nie mówi (gyeran jjim → „koreański omlet parowany").
+# Nazwy trzymają styl bazy: bez myślników, chińska nazwa tam, gdzie jest
+# tożsamością dania (chow mein, mapo tofu, gong bao, dan dan), polski opis
+# tam, gdzie sama nazwa nic nie mówi.
 
 
-# ════════════════════════════════════════════════════════════
-# CZĘŚĆ 1: Z GOCHUJANGIEM (21) — pikantne, po to kupiona pasta
-# ════════════════════════════════════════════════════════════
+# ── OBIADY (14) ──
+Chow mein z kurczakiem|obiad
+Lo mein z wołowiną|obiad
+Kurczak gong bao z orzeszkami|obiad
+Kurczak generała Tso|obiad
+Wołowina w sosie ostrygowym|obiad
+Wołowina z brokułami po chińsku|obiad
+Wieprzowina gu lao rou|obiad
+Mapo tofu z mielonym mięsem|obiad
+Makaron dan dan z mielonym mięsem|obiad
+Kaczka po pekińsku|obiad
+Chow fun z wołowiną|obiad
+Kurczak z imbirem i dymką|obiad
+Krewetki w sosie chili po chińsku|obiad
+Bakłażan w sosie yuxiang|obiad
 
-# ── OBIADY (10) ──
-Tteokbokki z serem|obiad
-Tteokbokki z owocami morza|obiad
-Bibimbap z tofu|obiad
-Wieprzowina w sosie gochujang|obiad
-Kurczak dakgalbi z warzywami|obiad
-Kalmary w sosie gochujang|obiad
-Zimny makaron bibim guksu|obiad
-Smażony ryż z kimchi i gochujangiem|obiad
-Bulgogi wieprzowe w gochujangu|obiad
-Bakłażan duszony w gochujangu|obiad
+# ── ZUPY (4) ──
+Zupa wonton z pierożkami|zupa
+Chińska zupa pikantno kwaśna|zupa
+Zupa kukurydziana z kurczakiem|zupa
+Zupa z makaronem i wołowiną po chińsku|zupa
 
-# ── ZUPY (3) ──
-Sundubu jjigae z miękkim tofu|zupa
-Kimchi jjigae z wieprzowiną|zupa
-Gochujang jjigae z cukinią|zupa
+# ── PRZEKĄSKI (6) ──
+Pierożki jiaozi z wieprzowiną|przekaska
+Pierożki dim sum na parze|przekaska
+Bułeczki bao z nadzieniem wieprzowym|przekaska
+Żeberka w sosie hoisin|przekaska
+Skrzydełka w sosie sojowo miodowym|przekaska
+Chrupiące wontony smażone|przekaska
 
-# ── PRZEKĄSKI (3) ──
-Skrzydełka w glazurze gochujang|przekaska
-Tofu smażone w sosie gochujang|przekaska
-Frytki z majonezem gochujang|przekaska
-
-# ── KOLACJE (2) ──
-Makaron ramyeon z gochujangiem|kolacja
-Budae jjigae z parówkami i tofu|kolacja
-
-# ── DODATKI (2) ──
-Sos ssamjang do mięsa|dodatek
-Marynata gochujang do wieprzowiny|dodatek
-
-# ── SURÓWKI (1) ──
-Sałatka z ogórka w sosie gochujang|surowka
-
-
-# ════════════════════════════════════════════════════════════
-# CZĘŚĆ 2: ŁAGODNE (33) — zero ostrości, bez gochujangu i kimchi
-# ════════════════════════════════════════════════════════════
-
-# ── ŚNIADANIA (4) ──
-Koreański omlet parowany|sniadanie
-Rolowany omlet koreański z warzywami|sniadanie
-Ryż z jajkiem i masłem po koreańsku|sniadanie
-Koreańska owsianka ryżowa z kurczakiem|sniadanie
-
-# ── OBIADY (8) ──
-Japchae z wołowiną|obiad
-Bulgogi wołowe|obiad
-Duszone żeberka wołowe po koreańsku|obiad
-Makaron jajangmyeon w sosie z czarnej fasoli|obiad
-Tofu duszone w sosie sojowym po koreańsku|obiad
-Zimny makaron naengmyeon w bulionie|obiad
-Kurczak w sosie sojowo czosnkowym po koreańsku|obiad
-Koreański gulasz z kurczaka i ziemniaków|obiad
-
-# ── ZUPY (5) ──
-Koreańska zupa z wodorostów|zupa
-Zupa z kiełków sojowych po koreańsku|zupa
-Zupa tteokguk z plackami ryżowymi|zupa
-Koreańskie kluski sujebi w bulionie|zupa
-Rosół samgyetang z kurczakiem i żeń-szeniem|zupa
-
-# ── PRZEKĄSKI (5) ──
-Kimbap z tuńczykiem|przekaska
-Kimbap warzywny|przekaska
-Pajeon z dymką|przekaska
-Placki z cukinii po koreańsku|przekaska
-Pierożki mandu z warzywami|przekaska
-
-# ── KOLACJE (1) ──
-Tosty koreańskie z jajkiem i kapustą|kolacja
+# ── KOLACJE (4) ──
+Jajka smażone z pomidorami po chińsku|kolacja
+Ryż smażony po kantońsku|kolacja
+Placki z dymką po chińsku|kolacja
+Tofu smażone z warzywami po chińsku|kolacja
 
 # ── SURÓWKI (3) ──
-Szpinak z sezamem po koreańsku|surowka
-Kiełki sojowe z sezamem|surowka
-Marchewka z sezamem po koreańsku|surowka
+Sałatka z ogórka po syczuańsku|surowka
+Sałatka z makaronem szklanym|surowka
+Marynowana kapusta pekińska po chińsku|surowka
 
-# ── DODATKI (2) ──
-Ziemniaki duszone w sosie sojowym|dodatek
-Marynowana rzodkiew do kimbapu|dodatek
+# ── DODATKI (3) ──
+Sos słodko kwaśny domowy|dodatek
+Ryż jaśminowy na parze|dodatek
+Chrupiące chili w oleju|dodatek
 
-# ── DESERY (5) ──
-Hotteok z cynamonem|deser
-Bungeoppang z pastą z czerwonej fasoli|deser
-Miodowe ciasteczka yakgwa|deser
-Napój ryżowy sikhye|deser
-Patbingsu z kruszonym lodem|deser
+# ── DESERY (3) ──
+Smażone banany w cieście|deser
+Ciasteczka z wróżbą|deser
+Budyń mango z tapioką|deser
