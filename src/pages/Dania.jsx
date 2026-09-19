@@ -674,7 +674,7 @@ function makeS() {
   chip: {
     flexShrink: 0,
     padding: '8px 14px', borderRadius: 999,
-    background: t.surface, border: `0.5px solid ${t.border}`,
+    background: t.surface, borderWidth: '0.5px', borderStyle: 'solid', borderColor: t.border,
     fontFamily: fonts.sans, fontSize: 13, color: t.text, fontWeight: 500,
     cursor: 'pointer', whiteSpace: 'nowrap',
   },
@@ -689,7 +689,7 @@ function makeS() {
   },
   metaActions: { display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 },
   sortBtn: {
-    border: `0.5px solid ${t.border}`, background: t.surface, color: t.mute,
+    borderWidth: '0.5px', borderStyle: 'solid', borderColor: t.border, background: t.surface, color: t.mute,
     borderRadius: 999, padding: '6px 10px', cursor: 'pointer',
     fontFamily: fonts.sans, fontSize: 11.5, fontWeight: 600, whiteSpace: 'nowrap',
   },
