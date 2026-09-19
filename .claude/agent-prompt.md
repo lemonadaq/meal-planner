@@ -25,15 +25,26 @@ Jeden task = JEDEN problem w przydzielonym OBSZARZE: znaleźć, naprawić, potwi
 - **dane** — jakość przepisów w bazie (`dania`, `skladniki_meta`) + sprawdzenie w UI
 
 ## Przebieg
+
+**Budżet tur wynosi 120 i jest twardy — po jego wyczerpaniu proces ginie w pół zdania.**
+Dlatego `agent-out/wynik.md` powstaje w kroku 3, a nie na końcu: plik, którego nie ma,
+to task zmarnowany w całości (workflow zakłada wtedy „PRZERWANY" i wyrzuca Twoją analizę).
+Lepszy jest wynik niedokończony niż żaden.
+
 1. **Rozpoznanie** (ok. 20 akcji w przeglądarce): zaloguj się i przejdź obszar jak zwykły użytkownik — typowa ścieżka, potem przypadki brzegowe: pusty stan, długie nazwy, podwójne kliknięcie, przycisk wstecz, odświeżenie strony w trakcie. Zrzut `przed-<nazwa>.png`.
 2. **Wybór jednego problemu** według priorytetu:
    1. crash, biały ekran, błąd w konsoli
    2. funkcja działa źle (złe przeliczenie, nie zapisuje, nieaktualna lista)
    3. błąd w danych przepisu
    4. drobny problem UX na telefonie: ucięty tekst, element poza ekranem, cel dotyku < 40 px, brak informacji zwrotnej po akcji, niejasny komunikat
-3. **Poprawka** — minimalna i lokalna, w stylu istniejącego kodu; kolory i odstępy z `theme.js`.
-4. **Weryfikacja** — `npm run lint` (nie dokładaj nowych błędów w zmienionych plikach), `npm run build`, powtórz ten sam scenariusz w przeglądarce, konsola czysta, zrzut `po-<nazwa>.png`. Jeśli nie działa — popraw i sprawdź jeszcze raz. **Maksymalnie 3 podejścia.**
-5. **Wynik** — zapisz `agent-out/wynik.md` i zakończ. Po ok. 60 akcjach kończ i zapisz wynik, nawet jeśli nie skończyłeś.
+3. **Szkic wyniku — ZAPISZ OD RAZU, zanim tkniesz kod.** Zapisz `agent-out/wynik.md` w pełnym formacie (patrz niżej) ze statusem `NIEUDANE` i opisem problemu z kroku 2. To jest Twoja siatka bezpieczeństwa: od tej chwili każde zakończenie taska — także nagłe — zostawia Filipowi czytelne zgłoszenie.
+4. **Poprawka** — minimalna i lokalna, w stylu istniejącego kodu; kolory i odstępy z `theme.js`.
+5. **Weryfikacja** — `npm run lint` (nie dokładaj nowych błędów w zmienionych plikach), `npm run build`, powtórz ten sam scenariusz w przeglądarce, konsola czysta, zrzut `po-<nazwa>.png`. Jeśli nie działa — popraw i sprawdź jeszcze raz. **Maksymalnie 3 podejścia.**
+6. **Wynik** — nadpisz `agent-out/wynik.md` finalną treścią (status `OK` / `PROPOZYCJA` / `NIEUDANE` / `BRAK`) i zakończ.
+
+**Twarde punkty kontrolne w trakcie:**
+- Po ok. 40 turach szkic z kroku 3 ma już istnieć. Jeśli nie — przerwij rozpoznanie i zapisz go natychmiast.
+- Po ok. 90 turach kończ niezależnie od stanu: dopisz do `wynik.md`, jak daleko doszedłeś, i zakończ. Nie zaczynaj wtedy nowego podejścia do poprawki.
 
 ## Obszar „dane”
 Najpierw `\d dania` i `\d skladniki_meta` — nie zgaduj nazw kolumn (są polskie, np. "Danie", "Składnik", "Ilość na 1 porcję", "Jednostka"). Tabela `dania` jest w formacie długim: wiersz = jeden składnik dania.
@@ -55,6 +66,10 @@ Poprawka:
 - Zmiana większa niż jeden komponent albo zmiana zachowania, co do której Filip mógłby mieć inne zdanie → nie implementuj; status PROPOZYCJA z 2–3 wariantami opisanymi słownie.
 
 ## Plik wyniku — `agent-out/wynik.md` (ZAWSZE, także gdy nic nie znalazłeś)
+Piszesz go dwa razy: szkic w kroku 3 i wersja finalna w kroku 6. Za każdym razem
+pełny plik, nie fragment — workflow czyta tylko `STATUS:` z pierwszej linii i nie
+wie, czy to szkic, czy wersja ostateczna.
+
 Dwie pierwsze linie dokładnie w tym formacie:
 ```
 STATUS: OK

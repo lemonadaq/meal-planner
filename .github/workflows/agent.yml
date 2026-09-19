@@ -123,7 +123,7 @@ jobs:
             Aplikacja działa pod http://localhost:5173 (baza STAGING).
           claude_args: |
             --model claude-sonnet-5
-            --max-turns 80
+            --max-turns 120
             --mcp-config /tmp/mcp.json
             --allowedTools "Read,Edit,Write,Glob,Grep,mcp__playwright,Bash(npm run lint),Bash(npm run build),Bash(psql:*),Bash(printenv AGENT_EMAIL),Bash(printenv AGENT_HASLO),Bash(git status),Bash(git diff:*),Bash(ls:*)"
 
