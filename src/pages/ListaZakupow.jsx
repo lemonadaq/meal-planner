@@ -452,11 +452,38 @@ function policzOpakowania(item, meta) {
   }
 }
 
+// Odmiana rzeczowników opakowań w liczbie mnogiej (mianownik / dopełniacz).
+// Skróty typu „szt.”/„opak.” zostają bez zmian — nie mają widocznego problemu z odmianą.
+const ODMIANA_OPAKOWANIA = {
+  puszka:     ['puszki', 'puszek'],
+  tubka:      ['tubki', 'tubek'],
+  słoik:      ['słoiki', 'słoików'],
+  karton:     ['kartony', 'kartonów'],
+  butelka:    ['butelki', 'butelek'],
+  opakowanie: ['opakowania', 'opakowań'],
+  kostka:     ['kostki', 'kostek'],
+  kubek:      ['kubki', 'kubków'],
+  paczka:     ['paczki', 'paczek'],
+}
+
+// Odmienia pierwsze słowo opisu opakowania wg liczby, resztę (np. „400g”) zostawia bez zmian.
+function odmienOpisOpakowania(liczba, opis) {
+  if (!opis || liczba === 1) return opis
+  const [pierwsze, ...reszta] = opis.split(' ')
+  const formy = ODMIANA_OPAKOWANIA[pierwsze.toLowerCase()]
+  if (!formy) return opis
+  const kilkaCzyWiele = (liczba % 100 >= 12 && liczba % 100 <= 14) ? 1
+    : (liczba % 10 >= 2 && liczba % 10 <= 4) ? 0
+    : 1
+  return [formy[kilkaCzyWiele], ...reszta].join(' ')
+}
+
 // Sformatuj „1 szt." albo „2 puszki 400g".
 function formatujOpakowania(opak) {
   if (!opak) return ''
   const { liczbaOpakowan, opisOpakowania } = opak
-  return `${liczbaOpakowan} ${opisOpakowania || 'szt.'}`
+  const opis = odmienOpisOpakowania(liczbaOpakowan, opisOpakowania || 'szt.')
+  return `${liczbaOpakowan} ${opis}`
 }
 
 // Sformatuj „potrzeba 750 ml" — oryginalna ilość z przepisu jako podpowiedź.
