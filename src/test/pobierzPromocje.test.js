@@ -8,6 +8,7 @@ const stan = {
   bladLicznika: null,
   strony: [],
   zapytaniaOStrony: 0,
+  sortowanie: [],
 }
 
 vi.mock('../supabase', () => ({
@@ -16,15 +17,23 @@ vi.mock('../supabase', () => ({
       select: (_kolumny, opcje) => {
         const licznik = opcje?.head === true
         const wynik = {
-          gte: () => (licznik
-            ? Promise.resolve({ count: stan.count, error: stan.bladLicznika })
-            : {
+          gte: () => {
+            if (licznik) {
+              return Promise.resolve({ count: stan.count, error: stan.bladLicznika })
+            }
+            // order() zwraca siebie, żeby dało się je łańcuchować jak w PostgREST,
+            // i notuje kolumny — po tym poznajemy, że stronicowanie ma stabilny
+            // porządek.
+            const zapytanie = {
+              order: (kolumna) => { stan.sortowanie.push(kolumna); return zapytanie },
               range: (od) => {
                 stan.zapytaniaOStrony++
                 const strona = stan.strony[Math.floor(od / 1000)]
                 return Promise.resolve(strona ?? { data: [], error: null })
               },
-            }),
+            }
+            return zapytanie
+          },
         }
         return wynik
       },
@@ -48,6 +57,7 @@ beforeEach(() => {
   stan.bladLicznika = null
   stan.strony = []
   stan.zapytaniaOStrony = 0
+  stan.sortowanie = []
 })
 
 describe('pobierzAktualnePromocje', () => {
@@ -118,5 +128,32 @@ describe('pobierzAktualnePromocje', () => {
 
     expect(drugi).toHaveLength(1)
     expect(stan.zapytaniaOStrony).toBe(poPierwszym)
+  })
+})
+
+// OFFSET bez ORDER BY nie obiecuje niczego — a strony lecą RÓWNOLEGLE, każda
+// własnym planem. Bez stabilnego porządku ta sama oferta mogła wpaść dwa razy
+// albo wypaść z wyniku, czyli zniknąć z listy zakupów bez śladu.
+describe('pobierzAktualnePromocje — stabilne stronicowanie', () => {
+  it('każda strona jest sortowana po unikalnej parze kolumn', async () => {
+    stan.count = 1500
+    stan.strony = [
+      { data: [ofertaTestowa('Masło', 5.99)], error: null },
+      { data: [ofertaTestowa('Mleko', 2.99)], error: null },
+    ]
+
+    await pobierzAktualnePromocje()
+
+    // dwie strony × dwie kolumny sortowania
+    expect(stan.sortowanie).toEqual(['offer_end_at', 'source_hash', 'offer_end_at', 'source_hash'])
+  })
+
+  it('pętla bez licznika też sortuje', async () => {
+    stan.bladLicznika = { message: 'brak licznika' }
+    stan.strony = [{ data: [ofertaTestowa('Masło', 5.99)], error: null }]
+
+    await pobierzAktualnePromocje()
+
+    expect(stan.sortowanie).toEqual(['offer_end_at', 'source_hash'])
   })
 })

@@ -1,0 +1,63 @@
+-- ════════════════════════════════════════════════════════════
+-- Migracja: indeks pod pobieranie aktualnych promocji
+-- Uruchom w Supabase: SQL Editor → New query → wklej → Run
+--
+-- Filip: „promocje ładują się jakieś 30 sekund".
+--
+-- Lista zakupów robi na `promo_offers` dokładnie jedno zapytanie:
+--
+--     select product_name, price, old_price, store_name, offer_end_at
+--     from promo_offers
+--     where offer_end_at >= now()
+--
+-- a jedyny indeks, jaki ta tabela miała, to BRIN na `scraped_at`
+-- (z migracja_ceny_bazowe.sql, pod nocne przeliczanie cen bazowych).
+-- Po `offer_end_at` nie było NICZEGO, więc każde takie zapytanie skanowało
+-- całą historię promocji — a ta zbiera się od 12.06.2026, wiersz na każdą
+-- zaobserwowaną cenę każdego produktu.
+--
+-- I nie raz: front pyta najpierw o liczbę wierszy, potem ciągnie strony po
+-- 1000. Przy kilku tysiącach aktualnych ofert to pięć pełnych skanów historii
+-- na jedno wejście w listę zakupów. Stąd trzydzieści sekund.
+--
+-- Migracja jest idempotentna — można ją odpalać wielokrotnie.
+-- ════════════════════════════════════════════════════════════
+
+-- `source_hash` w kluczu, bo strony ciągniemy przez OFFSET, a OFFSET bez
+-- stabilnego porządku potrafi zgubić albo zdublować wiersze między stronami
+-- (Postgres nie obiecuje kolejności bez ORDER BY, a strony lecą równolegle,
+-- każda własnym planem). Para (offer_end_at, source_hash) jest unikalna, więc
+-- porządek jest jednoznaczny, a front może po niej sortować bez kosztu sortu.
+--
+-- INCLUDE z kolumnami, które front i tak czyta — wtedy wystarczy sam indeks,
+-- bez schodzenia do tabeli po każdy wiersz (index-only scan).
+--
+-- Celowo BEZ klauzuli WHERE. Indeks częściowy (np. `where price is not null`)
+-- planer wziąłby pod uwagę tylko wtedy, gdyby zapytanie samo niosło ten sam
+-- warunek — a nie niesie, więc taki indeks byłby martwy.
+create index if not exists promo_offers_aktualne_idx
+  on promo_offers (offer_end_at, source_hash)
+  include (product_name, price, old_price, store_name);
+
+-- ── Sprawdzenie, czy zadziałało ──
+-- Powinno pokazać „Index Only Scan using promo_offers_aktualne_idx",
+-- a nie „Seq Scan on promo_offers".
+--
+-- explain analyze
+-- select product_name, price, old_price, store_name, offer_end_at
+-- from promo_offers
+-- where offer_end_at >= now()
+-- order by offer_end_at, source_hash
+-- limit 1000;
+
+-- ── Ile to w ogóle jest wierszy ──
+-- Warto wiedzieć, jak szybko historia rośnie — gdyby kiedyś zaczęła ciążyć,
+-- następnym krokiem jest kasowanie ofert wygasłych ponad 90 dni temu
+-- (ceny bazowe i tak liczą się z okna 90-dniowego).
+--
+-- select
+--   count(*)                                             as wszystkie,
+--   count(*) filter (where offer_end_at >= now())        as aktualne,
+--   min(scraped_at)::date                                as od,
+--   pg_size_pretty(pg_total_relation_size('promo_offers')) as rozmiar
+-- from promo_offers;

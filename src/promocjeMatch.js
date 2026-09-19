@@ -341,11 +341,19 @@ function doCache(promocje) {
 const STRONA_PROMO = 1000
 const KOLUMNY_PROMO = 'product_name, price, old_price, store_name, offer_end_at'
 
+// ORDER BY jest tu obowiązkowy, nie kosmetyczny: strony ciągniemy przez OFFSET
+// i to RÓWNOLEGLE, a Postgres bez ORDER BY nie obiecuje żadnej kolejności —
+// dwie strony mogły dostać różne plany i zwrócić ten sam wiersz dwa razy albo
+// żadnego. Para (offer_end_at, source_hash) jest unikalna, więc porządek jest
+// jednoznaczny, a indeks promo_offers_aktualne_idx oddaje go bez sortowania
+// (migracja_promocje_indeks.sql).
 function stronaPromocji(teraz, numer) {
   return supabase
     .from('promo_offers')
     .select(KOLUMNY_PROMO)
     .gte('offer_end_at', teraz)
+    .order('offer_end_at')
+    .order('source_hash')
     .range(numer * STRONA_PROMO, numer * STRONA_PROMO + STRONA_PROMO - 1)
 }
 
