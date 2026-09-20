@@ -655,7 +655,7 @@ function makeS() {
     cursor: 'pointer', whiteSpace: 'nowrap',
   },
   sugestiaTypBtnAktywny: {
-    background: t.accent, borderColor: t.accent, color: '#fff',
+    background: t.accent, border: `1px solid ${t.accent}`, color: '#fff',
   },
   sugestiaCard: {
     ...ui.card, padding: 12,
