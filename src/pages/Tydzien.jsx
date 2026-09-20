@@ -60,7 +60,7 @@ function formatPorcje(p) {
 
 export default function Tydzien({ user, householdId, onSelectDanie, sledz, refreshKey, onZakupy, onUstawienia }) {
   const [offset, setOffset] = useState(0)
-  const { pula, dodaj, usun, zmienPorcje } = useTydzien(householdId, user, offset)
+  const { pula, loading: loadingPula, dodaj, usun, zmienPorcje } = useTydzien(householdId, user, offset)
 
   const [dania, setDania] = useState([])
   const [loadingDania, setLoadingDania] = useState(true)
@@ -235,17 +235,21 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
       {/* Panel wybranych dań tygodnia */}
       <section style={s.pulaSekcja}>
         <div style={s.pulaHeader}>
-          <h2 style={{ ...s.h2, marginBottom: 0 }}>W tym tygodniu ({pula.length})</h2>
+          <h2 style={{ ...s.h2, marginBottom: 0 }}>W tym tygodniu {loadingPula ? '' : `(${pula.length})`}</h2>
           <button
             style={s.losujBtn}
             onClick={wylosujDanie}
-            disabled={losowanie || loadingDania}
+            disabled={losowanie || loadingDania || loadingPula}
           >
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4"/></svg>
             {losowanie ? 'Losuję…' : 'Wylosuj danie'}
           </button>
         </div>
-        {pula.length === 0 ? (
+        {loadingPula ? (
+          <div style={s.pulaLista}>
+            {[0, 1].map(i => <div key={i} style={s.skeleton} />)}
+          </div>
+        ) : pula.length === 0 ? (
           <div style={s.pulaPusta}>
             Wybierz z listy poniżej co chcesz jeść w tym tygodniu.
           </div>
@@ -300,9 +304,11 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
       </section>
 
       {/* Sticky licznik puli */}
-      <div style={s.licznikWrap}>
-        <div style={s.licznik}>W tym tygodniu: {pula.length}</div>
-      </div>
+      {!loadingPula && (
+        <div style={s.licznikWrap}>
+          <div style={s.licznik}>W tym tygodniu: {pula.length}</div>
+        </div>
+      )}
 
       {/* Search */}
       <div style={s.searchWrap}>
