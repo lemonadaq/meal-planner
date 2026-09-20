@@ -738,10 +738,13 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
       return
     }
 
+    // Zachowaj kopię nadpisywanego tygodnia — bez tego "Cofnij" bezpowrotnie
+    // kasowałoby już zaplanowane (także dzisiejsze) posiłki.
+    const nadpisywane = Object.values(plan).filter(p => p.id)
+
     // Usuń istniejące w bieżącym tygodniu
-    const doUsuniecia = Object.values(plan).filter(p => p.id)
-    if (doUsuniecia.length > 0) {
-      await supabase.from('kalendarz').delete().in('id', doUsuniecia.map(p => p.id))
+    if (nadpisywane.length > 0) {
+      await supabase.from('kalendarz').delete().in('id', nadpisywane.map(p => p.id))
     }
 
     // Wstaw przesunięte o 7 dni
@@ -755,8 +758,28 @@ export default function Kalendarz({ user, householdId, onBack, domyslnePorcje = 
     const nowyPlan = {}
     ;(utworzone || []).forEach(p => { nowyPlan[`${p.data}_${p.posilek}`] = p })
     setPlan(nowyPlan)
-    pokazToast(`Skopiowano ${zZawartoscia.length} posiłków z ub. tygodnia`)
     sledz?.('kopiuj_tydzien', { ile: zZawartoscia.length })
+
+    pokazToast(`Skopiowano ${zZawartoscia.length} posiłków z ub. tygodnia`, async () => {
+      // Cofnij: usuń świeżo skopiowane, przywróć to co było wcześniej
+      const noweId = (utworzone || []).map(p => p.id)
+      if (noweId.length > 0) await supabase.from('kalendarz').delete().in('id', noweId)
+      let przywrocone = []
+      if (nadpisywane.length > 0) {
+        const doPrzywrocenia = nadpisywane.map(p => {
+          const kopia = { ...p }
+          delete kopia.id
+          delete kopia.created_at
+          return kopia
+        })
+        const { data } = await supabase.from('kalendarz').insert(doPrzywrocenia).select()
+        przywrocone = data || []
+      }
+      const przywroconyPlan = {}
+      przywrocone.forEach(p => { przywroconyPlan[`${p.data}_${p.posilek}`] = p })
+      setPlan(przywroconyPlan)
+      setToast(null)
+    })
   }
 
   // isDzis importowane z dataHelpers
