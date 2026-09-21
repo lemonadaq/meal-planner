@@ -1,13 +1,19 @@
 name: Agent QA
 
-# 4 taski dziennie. Cron jest w UTC:
-# czas letni (UTC+2) → 07:00, 12:00, 17:00, 22:00; zimowy (UTC+1) → 06:00, 11:00, 16:00, 21:00
+# 8 tasków dziennie, co 3 godziny — dwa na okno subskrypcji (5 h). Cron w UTC:
+# czas letni (UTC+2) → 04, 07, 10, 13, 16, 19, 22, 01; zimowy (UTC+1) → godzinę wcześniej.
+# Odstęp 3 h musi się zgadzać z KUBELEK w kroku „Wybór obszaru" — rotacja liczy
+# się z epoki w kubełkach tej długości. Zmieniasz cron → zmień KUBELEK.
 on:
   schedule:
+    - cron: '0 2 * * *'
     - cron: '0 5 * * *'
-    - cron: '0 10 * * *'
-    - cron: '0 15 * * *'
+    - cron: '0 8 * * *'
+    - cron: '0 11 * * *'
+    - cron: '0 14 * * *'
+    - cron: '0 17 * * *'
     - cron: '0 20 * * *'
+    - cron: '0 23 * * *'
   workflow_dispatch:
     inputs:
       obszar:
@@ -57,9 +63,11 @@ jobs:
           if [ -n "${{ inputs.obszar }}" ]; then
             OBSZAR="${{ inputs.obszar }}"
           else
-            DZIEN=$(( $(date -u +%s) / 86400 ))
-            SLOT=$(( 10#$(date -u +%H) / 6 ))
-            OBSZAR=${OBSZARY[$(( (DZIEN * 4 + SLOT) % ${#OBSZARY[@]} ))]}
+            # Indeks prosto z epoki, w kubełkach równych odstępowi cronów (3 h).
+            # Każdy run wpada we własny kubełek, więc kolejne runy biorą kolejne
+            # obszary — niezależnie od tego, ile cronów jest zdefiniowanych.
+            KUBELEK=10800
+            OBSZAR=${OBSZARY[$(( ($(date -u +%s) / KUBELEK) % ${#OBSZARY[@]} ))]}
           fi
           ID="$(date -u +%Y%m%d-%H%M)-$OBSZAR"
           echo "obszar=$OBSZAR" >> "$GITHUB_OUTPUT"
