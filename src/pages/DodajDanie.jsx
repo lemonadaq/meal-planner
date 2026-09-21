@@ -159,6 +159,9 @@ export default function DodajDanie({ onBack, onZapisano }) {
     if (skladniki.find(sk => sk.nazwa.toLowerCase() === nowyS.nazwa.toLowerCase())) {
       setBlad('Ten składnik już jest na liście'); return
     }
+    if (!nowyS.ilosc.trim() && nowyS.jednostka !== 'do smaku') {
+      setBlad('Podaj ilość (albo wybierz jednostkę „do smaku")'); return
+    }
     setSkladniki(prev => [...prev, { ...nowyS, nazwa: nowyS.nazwa.trim() }])
     setNowyS({ nazwa: '', ilosc: '', jednostka: 'g', kategoria: '1_Warzywa i owoce' })
     setPodpowiedzi([]); setWybrano(false); setBlad('')
