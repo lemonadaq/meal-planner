@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { supabase } from './supabase'
 import { applyTheme, DOMYSLNY_MOTYW } from './theme'
 
@@ -18,6 +18,11 @@ export function useUstawienia(user) {
   // wybór wartością domyślną i motyw z theme.js migotał na systemowy.
   const [ustawienia, setUstawienia] = useState({ domyslne_porcje: 1, motyw: null })
   const [loading, setLoading] = useState(true)
+  // Debounce zapisu do bazy: kilka szybkich zmian (np. seria kliknięć "+" przy
+  // porcjach) wysyłałoby tyle samo równoległych upsertów, które mogą dotrzeć
+  // do serwera w innej kolejności niż zostały kliknięte — wygrywałaby losowa
+  // odpowiedź sieci, nie ostatnia zmiana. Do bazy leci tylko finalna wartość.
+  const zapisTimerRef = useRef(null)
 
   // Nasłuch systemowej preferencji — aktywny tylko gdy motyw === 'system'
   useEffect(() => {
@@ -74,13 +79,21 @@ export function useUstawienia(user) {
     return () => { anulowane = true }
   }, [user?.id])
 
-  const zapisz = useCallback(async (zmiany) => {
-    const nowe = { ...ustawienia, ...zmiany }
-    setUstawienia(nowe) // optimistic
-    await supabase
-      .from('ustawienia')
-      .upsert({ id: user.id, ...nowe, updated_at: new Date().toISOString() })
-  }, [user?.id, ustawienia])
+  const zapisz = useCallback((zmiany) => {
+    setUstawienia(prev => {
+      const nowe = { ...prev, ...zmiany }
+
+      if (zapisTimerRef.current) clearTimeout(zapisTimerRef.current)
+      zapisTimerRef.current = setTimeout(() => {
+        zapisTimerRef.current = null
+        supabase
+          .from('ustawienia')
+          .upsert({ id: user.id, ...nowe, updated_at: new Date().toISOString() })
+      }, 400)
+
+      return nowe
+    })
+  }, [user?.id])
 
   return { ustawienia, zapisz, loading }
 }
