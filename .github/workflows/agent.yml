@@ -15,7 +15,7 @@ on:
         required: false
         type: choice
         default: ''
-        options: ['', home, planer, przepisy, dodawanie, zakupy, ustawienia, dane]
+        options: ['', tydzien, przepisy, dodawanie, zakupy, ustawienia, dane]
 
 concurrency:
   group: agent-qa
@@ -53,7 +53,7 @@ jobs:
       - name: Wybór obszaru i gałęzi
         id: plan
         run: |
-          OBSZARY=(home planer przepisy dodawanie zakupy ustawienia dane)
+          OBSZARY=(tydzien przepisy dodawanie zakupy ustawienia dane)
           if [ -n "${{ inputs.obszar }}" ]; then
             OBSZAR="${{ inputs.obszar }}"
           else
