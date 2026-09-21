@@ -409,6 +409,12 @@ const SCAL_NAZWY = {
   'pieczywo do podania': 'Chleb',
   'marchewka':           'Marchew',
   'jogurt naturalny':    'Jogurt naturalny',
+  // W bazie krążą trzy pisownie tego samego sera („skladniki_meta" ma
+  // literówkę w dwóch wpisach, przepisy różnie ją przepisują) — bez tego
+  // trafiały na listę jako dwie osobne pozycje.
+  'mozarella':           'Mozzarella',
+  'ser mozarella':       'Mozzarella',
+  'ser mozzarella':      'Mozzarella',
 }
 
 // Sufiksy, które nie rozróżniają produktu na liście zakupów.
