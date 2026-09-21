@@ -128,7 +128,10 @@ export default function Rodzina({ user, householdId, onBack, onZmianaHousehold }
   }
 
   function nazwaCzlonka(c) {
-    return c.full_name || c.email?.split('@')[0] || 'Bez nazwy'
+    // household_members_view nie zwraca full_name — dla siebie bierzemy je
+    // z aktualnej sesji, żeby imię zapisane w Ustawieniach było tu widoczne.
+    const imie = c.user_id === user.id ? user.user_metadata?.full_name : c.full_name
+    return imie || c.email?.split('@')[0] || 'Bez nazwy'
   }
 
   const samNaSwoim = czlonkowie.length === 1 && czlonkowie[0]?.user_id === user.id
