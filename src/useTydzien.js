@@ -1,7 +1,7 @@
 // Hook + helpery tygodniowej puli dań (tabela plan_tygodnia, tryb "Tydzień").
 // Jeden wiersz = jedno danie wybrane na dany tydzień (unique household+tydzien+danie).
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { supabase } from './supabase'
 import { formatDataLocal } from './dataHelpers'
 
@@ -78,6 +78,16 @@ export function wlasneDanieZSzukajki(dania, szukaj) {
 export function useTydzien(householdId, user, offset = 0) {
   const [pula, setPula] = useState([])
   const [loading, setLoading] = useState(true)
+  // Źródło prawdy dla porcji przy kolejnych szybkich zmianach — ref jest
+  // aktualizowany synchronicznie w zmienPorcje, więc dwa kliknięcia +/- w
+  // tym samym ticku (zanim React przerysuje `pula`) liczą się od siebie,
+  // zamiast oba startować z tej samej "starej" wartości.
+  const porcjeRef = useRef(new Map())
+  // Debounce zapisu do bazy per danie: dwa niezależne zapytania UPDATE z
+  // dwóch szybkich kliknięć mogą się wyścigowo nadpisać (wygrywa to, które
+  // serwer przetworzy jako ostatnie, niekoniecznie to kliknięte jako
+  // ostatnie) — więc do bazy leci tylko jeden zapis z finalną wartością.
+  const zapisTimeryRef = useRef(new Map())
 
   const tydzien = poniedzialekTygodnia(offset)
 
@@ -107,6 +117,20 @@ export function useTydzien(householdId, user, offset = 0) {
     })
     return () => { anulowane = true }
   }, [refresh])
+
+  useEffect(() => {
+    porcjeRef.current = new Map(pula.map(r => [r.danie, Number(r.porcje) || 1]))
+  }, [pula])
+
+  useEffect(() => {
+    // Sprzątanie oczekujących zapisów przy zmianie tygodnia / odmontowaniu —
+    // nie chcemy dopisać porcji do już nieaktualnego tygodnia.
+    const timery = zapisTimeryRef.current
+    return () => {
+      for (const wpis of timery.values()) clearTimeout(wpis.timer)
+      timery.clear()
+    }
+  }, [tydzien])
 
   async function dodaj(danie) {
     if (!householdId || !user?.id || !danie) return
@@ -145,6 +169,12 @@ export function useTydzien(householdId, user, offset = 0) {
     const wiersz = pula.find(r => r.danie === danie)
     if (!wiersz || !householdId) return
 
+    const oczekujacy = zapisTimeryRef.current.get(danie)
+    if (oczekujacy) {
+      clearTimeout(oczekujacy.timer)
+      zapisTimeryRef.current.delete(danie)
+    }
+
     setPula(prev => prev.filter(r => r.danie !== danie))
 
     const { error } = await supabase
@@ -157,27 +187,46 @@ export function useTydzien(householdId, user, offset = 0) {
     if (error) setPula(prev => [...prev, wiersz])
   }
 
-  async function zmienPorcje(danie, delta) {
-    const wiersz = pula.find(r => r.danie === danie)
-    if (!wiersz || !householdId) return
+  function zmienPorcje(danie, delta) {
+    if (!householdId || !pula.some(r => r.danie === danie)) return
 
-    const stare = Number(wiersz.porcje) || 1
+    // `stare` z porcjeRef, nie z domkniętego `pula` — dwa szybkie kliknięcia
+    // w tym samym ticku React (automatic batching, `pula` jeszcze nie
+    // przerysowana) inaczej startowałyby z tej samej "starej" wartości i
+    // drugie kliknięcie ginęłoby bez śladu, także w zapisie do bazy.
+    const stare = porcjeRef.current.get(danie) ?? 1
     // krok 0.5, minimum 0.5 — zaokrąglenie broni przed dryfem floatów
     const nowe = Math.max(0.5, Math.round((stare + delta) * 2) / 2)
     if (nowe === stare) return
+    porcjeRef.current.set(danie, nowe)
 
     setPula(prev => prev.map(r => (r.danie === danie ? { ...r, porcje: nowe } : r)))
 
-    const { error } = await supabase
-      .from('plan_tygodnia')
-      .update({ porcje: nowe })
-      .eq('household_id', householdId)
-      .eq('tydzien', tydzien)
-      .eq('danie', danie)
+    // Debounce: kolejne kliknięcie w tym samym daniu przed upływem czasu
+    // anuluje poprzedni zapis i startuje nowy — do bazy leci tylko ostatnia
+    // wartość, więc zapisy z rozjechanych w czasie odpowiedzi sieciowych nie
+    // mogą się nawzajem nadpisać w złej kolejności.
+    const istniejacy = zapisTimeryRef.current.get(danie)
+    if (istniejacy) clearTimeout(istniejacy.timer)
+    const przedBurstem = istniejacy ? istniejacy.przedBurstem : stare
 
-    if (error) {
-      setPula(prev => prev.map(r => (r.danie === danie ? { ...r, porcje: stare } : r)))
-    }
+    const timer = setTimeout(async () => {
+      zapisTimeryRef.current.delete(danie)
+      const finalna = porcjeRef.current.get(danie)
+      const { error } = await supabase
+        .from('plan_tygodnia')
+        .update({ porcje: finalna })
+        .eq('household_id', householdId)
+        .eq('tydzien', tydzien)
+        .eq('danie', danie)
+
+      if (error) {
+        porcjeRef.current.set(danie, przedBurstem)
+        setPula(prev => prev.map(r => (r.danie === danie ? { ...r, porcje: przedBurstem } : r)))
+      }
+    }, 400)
+
+    zapisTimeryRef.current.set(danie, { timer, przedBurstem })
   }
 
   return { pula, loading, tydzien, dodaj, usun, zmienPorcje, refresh }
