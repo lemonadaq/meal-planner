@@ -417,11 +417,14 @@ const SCAL_NAZWY = {
   'ser mozzarella':      'Mozzarella',
 }
 
-// Sufiksy, które nie rozróżniają produktu na liście zakupów.
-// "Ogórek" i "Ogórek świeży" trafiają do tej samej pozycji.
+// Sufiksy/prefiksy, które nie rozróżniają produktu na liście zakupów.
+// "Ogórek" i "Ogórek świeży" trafiają do tej samej pozycji — a przepisy
+// piszą ten sam przymiotnik też na początku ("świeża bazylia", "Świeża
+// mięta"), więc bez PREFIKS_RGX te dwie pisownie nie schodziły się w jedną.
 const SUFIKS_RGX = /\s+(swiezy|swieza|swieze|surowy|surowa|surowe|mrozony|mrozona|mrozone)$/
+const PREFIKS_RGX = /^(swiezy|swieza|swieze|surowy|surowa|surowe|mrozony|mrozona|mrozone)\s+/
 function normalizujDlaScalania(normNazwa) {
-  return normNazwa.replace(SUFIKS_RGX, '').trim()
+  return normNazwa.replace(SUFIKS_RGX, '').replace(PREFIKS_RGX, '').trim()
 }
 function domyslnieWDomu(item) {
   if (!item) return false
