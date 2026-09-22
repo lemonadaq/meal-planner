@@ -127,8 +127,8 @@ export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin
           <div style={s.porcjeRow}>
             <button style={s.porcjeBtn} onClick={() => zmienPorcje(-0.5)} disabled={porcje <= 0.5}>−</button>
             <div style={s.porcjeWart}>
-              <span style={s.porcjeNum}>{porcje}</span>
-              <span style={s.porcjeUnit}>{porcje === 1 ? 'porcja' : porcje < 5 ? 'porcje' : 'porcji'}</span>
+              <span style={s.porcjeNum}>{String(porcje).replace('.', ',')}</span>
+              <span style={s.porcjeUnit}>{!Number.isInteger(porcje) ? 'porcji' : porcje === 1 ? 'porcja' : porcje < 5 ? 'porcje' : 'porcji'}</span>
             </div>
             <button style={s.porcjeBtn} onClick={() => zmienPorcje(0.5)} disabled={porcje >= 20}>+</button>
           </div>
