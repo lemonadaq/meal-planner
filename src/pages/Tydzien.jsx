@@ -551,7 +551,7 @@ function makeS() {
       cursor: 'pointer', whiteSpace: 'nowrap',
     },
     chipOn: {
-      background: t.accent, borderColor: t.accent, color: '#fff', fontWeight: 600,
+      background: t.accent, border: `0.5px solid ${t.accent}`, color: '#fff', fontWeight: 600,
       boxShadow: '0 2px 8px rgba(77,124,77,.25)',
     },
 
@@ -622,7 +622,7 @@ function makeS() {
       background: 'transparent',
     },
     checkOn: {
-      background: t.accent, borderColor: t.accent,
+      background: t.accent, border: `1.5px solid ${t.accent}`,
     },
 
     skeleton: {
