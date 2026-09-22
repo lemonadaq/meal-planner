@@ -93,8 +93,10 @@ export function useTydzien(householdId, user, offset = 0) {
 
   const refresh = useCallback(async () => {
     if (!householdId) {
+      // householdId jeszcze się ładuje (useHousehold w App.jsx) — nie
+      // wiemy, czy pula jest pusta, więc zostajemy w stanie ładowania
+      // zamiast na chwilę pokazywać fałszywe "pusto".
       setPula([])
-      setLoading(false)
       return
     }
     setLoading(true)
