@@ -73,6 +73,14 @@ const TYPY = [
   { id: 'z dodatkiem', label: 'Z dodatkiem' },
 ]
 
+// Sanityzacja pól liczbowych z edycji (czas/kcal) — pola liczbowe mają atrybuty
+// min/max tylko jako podpowiedź, przeglądarka nie blokuje wpisania spoza zakresu.
+function liczbaDodatnia(wartosc, maks) {
+  const n = Number(wartosc)
+  if (wartosc === '' || !Number.isFinite(n) || n <= 0) return null
+  return Math.min(n, maks)
+}
+
 // Chipsy meta pokazywane pod tytułem dania w widoku przepisu.
 // UWAGA: pole TYP (np. "z dodatkiem" / "samodzielne") służy WYŁĄCZNIE do logiki
 // dodawania dodatków przy planowaniu — NIE pokazujemy go użytkownikowi.
@@ -206,6 +214,8 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
 
   async function zapiszZmiany() {
     setSaving(true)
+    const czasMinutyVal = liczbaDodatnia(edCzas, 480)
+    const kcalVal = liczbaDodatnia(edKcal, 5000)
     const przepisTekst = edPrzepisRaw
       .split('\n').map(k => k.replace(/^\d+[\.\)]\s*/, '').trim()).filter(Boolean)
       .map((k, i) => `${i + 1}. ${k}`).join('\n')
@@ -234,8 +244,8 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
         'Przepis': przepisTekst,
         'zdjecie': noweZdjecieUrl,
         'rodzaj': edRodzaj || null,
-        'czas_minuty': edCzas !== '' ? Number(edCzas) : null,
-        'kcal': edKcal !== '' ? Number(edKcal) : null,
+        'czas_minuty': czasMinutyVal,
+        'kcal': kcalVal,
         'TYP': edTyp || null,
       }).eq('Danie', aktualnaNazwa)
     )
@@ -264,8 +274,8 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
         'TYP': wzor['TYP'] || null,
         'zdjecie': noweZdjecieUrl,
         'rodzaj': edRodzaj || null,
-        'czas_minuty': edCzas !== '' ? Number(edCzas) : null,
-        'kcal': edKcal !== '' ? Number(edKcal) : null,
+        'czas_minuty': czasMinutyVal,
+        'kcal': kcalVal,
       }))
       operacje.push(supabase.from('dania').insert(wiersze))
     }
