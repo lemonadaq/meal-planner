@@ -205,13 +205,18 @@ export default function DodajDanie({ onBack, onZapisano }) {
       }
     }
 
+    const czasNum = parseInt(czasMinuty, 10)
+    const kcalNum = parseInt(kcal, 10)
+    const porcjeNum = parseInt(porcjeBazowe, 10)
+
     const wspolne = {
       'Danie': nazwa.trim(),
       'Przepis': przepisTekst,
       'rodzaj': rodzaj,
-      'czas_minuty': czasMinuty ? parseInt(czasMinuty, 10) || null : null,
-      'kcal': kcal ? parseInt(kcal, 10) || null : null,
-      'porcje_bazowe': porcjeBazowe ? parseInt(porcjeBazowe, 10) || 4 : 4,
+      // > 0, nie tylko truthy — samo `parseInt(...) || null` przepuszczało liczby ujemne
+      'czas_minuty': czasNum > 0 ? czasNum : null,
+      'kcal': kcalNum > 0 ? kcalNum : null,
+      'porcje_bazowe': porcjeNum > 0 ? porcjeNum : 4,
       'notatki': notatki.trim() || null,
       'zdjecie': zdjecieUrl,
     }
