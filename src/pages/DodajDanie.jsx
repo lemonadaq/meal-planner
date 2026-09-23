@@ -164,7 +164,12 @@ export default function DodajDanie({ onBack, onZapisano }) {
     if (!nowyS.ilosc.trim() && nowyS.jednostka !== 'do smaku') {
       setBlad('Podaj ilość (albo wybierz jednostkę „do smaku")'); return
     }
-    setSkladniki(prev => [...prev, { ...nowyS, nazwa: nazwaTrim }])
+    // pole jednostki jest wolnym tekstem — bez tej walidacji dało się zapisać
+    // ilość zupełnie bez jednostki (np. "3" zamiast "3 g"), co psuje listę zakupów
+    if (!nowyS.jednostka.trim()) {
+      setBlad('Podaj jednostkę'); return
+    }
+    setSkladniki(prev => [...prev, { ...nowyS, nazwa: nazwaTrim, jednostka: nowyS.jednostka.trim() }])
     setNowyS({ nazwa: '', ilosc: '', jednostka: 'g', kategoria: '1_Warzywa i owoce' })
     setPodpowiedzi([]); setWybrano(false); setBlad('')
   }
