@@ -155,14 +155,16 @@ export default function DodajDanie({ onBack, onZapisano }) {
   }
 
   function dodajSkladnik() {
-    if (!nowyS.nazwa.trim()) return
-    if (skladniki.find(sk => sk.nazwa.toLowerCase() === nowyS.nazwa.toLowerCase())) {
+    const nazwaTrim = nowyS.nazwa.trim()
+    if (!nazwaTrim) return
+    // trim po obu stronach — inaczej "Cebula" i "Cebula " (spacja na końcu) mijają się jako różne
+    if (skladniki.find(sk => sk.nazwa.toLowerCase() === nazwaTrim.toLowerCase())) {
       setBlad('Ten składnik już jest na liście'); return
     }
     if (!nowyS.ilosc.trim() && nowyS.jednostka !== 'do smaku') {
       setBlad('Podaj ilość (albo wybierz jednostkę „do smaku")'); return
     }
-    setSkladniki(prev => [...prev, { ...nowyS, nazwa: nowyS.nazwa.trim() }])
+    setSkladniki(prev => [...prev, { ...nowyS, nazwa: nazwaTrim }])
     setNowyS({ nazwa: '', ilosc: '', jednostka: 'g', kategoria: '1_Warzywa i owoce' })
     setPodpowiedzi([]); setWybrano(false); setBlad('')
   }
