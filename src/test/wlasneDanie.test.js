@@ -36,4 +36,16 @@ describe('wlasneDanieZSzukajki — własne danie z szukajki (ekran Tydzień)', (
     expect(wlasneDanieZSzukajki(null, 'kanapki')).toBe('kanapki')
     expect(wlasneDanieZSzukajki([{ }], 'kanapki')).toBe('kanapki')
   })
+
+  it('własne danie już w puli tygodnia nie proponuje duplikatu (bez wielkości liter)', () => {
+    const pula = [{ danie: 'Testowa Zupa QA' }]
+    expect(wlasneDanieZSzukajki(DANIA, 'Testowa Zupa QA', pula)).toBeNull()
+    expect(wlasneDanieZSzukajki(DANIA, 'testowa zupa qa', pula)).toBeNull()
+    expect(wlasneDanieZSzukajki(DANIA, ' TESTOWA ZUPA QA ', pula)).toBeNull()
+  })
+
+  it('brak puli (jeszcze się ładuje) nie wywala', () => {
+    expect(wlasneDanieZSzukajki(DANIA, 'kanapki', null)).toBe('kanapki')
+    expect(wlasneDanieZSzukajki(DANIA, 'kanapki', undefined)).toBe('kanapki')
+  })
 })
