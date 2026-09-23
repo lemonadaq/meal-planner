@@ -473,6 +473,8 @@ const ODMIANA_OPAKOWANIA = {
   kostka:     ['kostki', 'kostek'],
   kubek:      ['kubki', 'kubków'],
   paczka:     ['paczki', 'paczek'],
+  pęczek:     ['pęczki', 'pęczków'],
+  główka:     ['główki', 'główek'],
 }
 
 // Odmienia pierwsze słowo opisu opakowania wg liczby, resztę (np. „400g”) zostawia bez zmian.
