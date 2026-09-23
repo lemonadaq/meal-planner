@@ -23,6 +23,11 @@ export default function Rodzina({ user, householdId, onBack, onZmianaHousehold }
   // Modal potwierdzenia usunięcia członka
   const [usuwany, setUsuwany] = useState(null) // { user_id, email, nazwa }
 
+  // id zaproszenia aktualnie anulowanego — blokuje podwójne kliknięcie ✕,
+  // które inaczej wysyłałoby drugi RPC do już nieistniejącego zaproszenia
+  // i pokazywało fałszywy błąd mimo udanego anulowania
+  const [anulowanyId, setAnulowanyId] = useState(null)
+
   const [toast, setToast] = useState(null)
 
   function pokazToast(msg) {
@@ -93,7 +98,10 @@ export default function Rodzina({ user, householdId, onBack, onZmianaHousehold }
   }
 
   async function anulujZaproszenie(inviteId) {
+    if (anulowanyId) return
+    setAnulowanyId(inviteId)
     const { error } = await supabase.rpc('anuluj_zaproszenie', { p_invite_id: inviteId })
+    setAnulowanyId(null)
     if (error) {
       pokazToast('Błąd: ' + error.message)
       return
@@ -210,7 +218,12 @@ export default function Rodzina({ user, householdId, onBack, onZmianaHousehold }
                   <div style={s.rzadNazwa}>{z.invited_email}</div>
                   <div style={s.rzadEmail}>Czeka na akceptację</div>
                 </div>
-                <button style={s.usunBtn} onClick={() => anulujZaproszenie(z.id)} aria-label="Anuluj">
+                <button
+                  style={s.usunBtn}
+                  onClick={() => anulujZaproszenie(z.id)}
+                  disabled={anulowanyId === z.id}
+                  aria-label="Anuluj"
+                >
                   ✕
                 </button>
               </div>
