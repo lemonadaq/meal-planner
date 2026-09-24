@@ -100,6 +100,7 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
   const [loading, setLoading] = useState(true)
   const [edycja, setEdycja] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [bladZapisu, setBladZapisu] = useState('')
   const [nazwa, setNazwa] = useState(nazwaProp)
 
   const [edNazwa, setEdNazwa] = useState('')
@@ -202,6 +203,7 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
     setEdCzas(skladniki[0]?.czas_minuty != null ? String(skladniki[0].czas_minuty) : '')
     setEdKcal(skladniki[0]?.kcal != null ? String(skladniki[0].kcal) : '')
     setEdTyp(skladniki[0]?.TYP || '')
+    setBladZapisu('')
     setEdycja(true)
   }
 
@@ -213,6 +215,17 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
   }
 
   async function zapiszZmiany() {
+    // Składnik bez ilości nie nadaje się na listę zakupów — blokujemy zapis,
+    // tak samo jak przy dodawaniu nowego dania (DodajDanie.jsx).
+    const bezIlosci = edSkladniki.filter(sk =>
+      (sk.id && !sk._nowy || sk.Skladnik.trim()) &&
+      !sk.Ilosc.trim() && sk.Jednostka !== 'do smaku'
+    )
+    if (bezIlosci.length > 0) {
+      setBladZapisu(`Podaj ilość dla: ${bezIlosci.map(sk => sk.Skladnik.trim() || '(bez nazwy)').join(', ')} — albo wybierz jednostkę „do smaku”.`)
+      return
+    }
+    setBladZapisu('')
     setSaving(true)
     const czasMinutyVal = liczbaDodatnia(edCzas, 480)
     const kcalVal = liczbaDodatnia(edKcal, 5000)
@@ -577,6 +590,10 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
           )}
         </section>
 
+        {edycja && bladZapisu && (
+          <div style={s.bladZapisu}>{bladZapisu}</div>
+        )}
+
         {edycja && (
           <div style={s.saveRow}>
             <button style={{ ...ui.btnPrimary, flex: 1 }} onClick={zapiszZmiany} disabled={saving}>
@@ -706,6 +723,11 @@ function makeS() {
     cursor: 'pointer', marginTop: 6,
   },
   saveRow: { display: 'flex', gap: 8, marginTop: 14 },
+  bladZapisu: {
+    padding: '10px 12px', borderRadius: 10, marginTop: 14,
+    background: t.surfaceAlt, fontFamily: fonts.sans, fontSize: 12.5, color: t.danger,
+    lineHeight: 1.4,
+  },
   modalOverlay: {
     position: 'fixed', inset: 0, zIndex: 1000,
     background: 'rgba(20,15,10,.4)', backdropFilter: 'blur(6px)',
