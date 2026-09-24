@@ -144,6 +144,11 @@ export default function Rodzina({ user, householdId, onBack, onZmianaHousehold }
 
   const samNaSwoim = czlonkowie.length === 1 && czlonkowie[0]?.user_id === user.id
 
+  // liczone w ciele komponentu (nie na poziomie modułu) — inaczej po zmianie
+  // motywu ten ekran zostałby zamrożony w kolorach sprzed przełączenia
+  const s = makeS()
+  const modS = makeModS()
+
   if (loading) {
     return (
       <div style={s.outer}>
@@ -343,7 +348,8 @@ export default function Rodzina({ user, householdId, onBack, onZmianaHousehold }
   )
 }
 
-const s = {
+function makeS() {
+  return {
   outer: { background: t.bg, minHeight: '100vh', fontFamily: fonts.sans },
   container: { padding: '20px 20px 32px', maxWidth: 600, margin: '0 auto', boxSizing: 'border-box' },
   back: { ...ui.btnText, padding: '0 0 14px', display: 'block' },
@@ -407,9 +413,11 @@ const s = {
   },
 
   loading: { textAlign: 'center', padding: 80, color: t.mute, fontSize: 14 },
+  }
 }
 
-const modS = {
+function makeModS() {
+  return {
   overlay: {
     position: 'fixed', inset: 0, zIndex: 1000,
     background: 'rgba(20,15,10,.45)', backdropFilter: 'blur(6px)',
@@ -429,4 +437,5 @@ const modS = {
   btnRow: { display: 'flex', gap: 10, marginTop: 22 },
   btnGhost: { ...ui.btnGhost, flex: 1, padding: '12px 16px', fontSize: 14 },
   btnPrim: { ...ui.btnPrimary, flex: 1, padding: '12px 16px', fontSize: 14 },
+  }
 }
