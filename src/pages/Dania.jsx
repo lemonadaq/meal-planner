@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useState, useRef } from 'react'
 import { supabase } from '../supabase'
 import { t, fonts, ui } from '../theme'
 import Toast from '../components/Toast'
+import { KUCHNIA_LABEL, POZIOM_LABEL, RODZAJ_LABEL } from '../etykiety'
 
 // Filtry-chipy: 'wszystko' i 'ulubione' to specjalne, reszta to wartości pola `rodzaj`
 const FILTRY = [
@@ -19,24 +20,6 @@ const FILTRY = [
 
 // Etykiety do wyświetlenia. Wartości techniczne (bez ogonków) siedzą
 // w skrypty/wspolne.js — tam powstają dane, tutaj tylko je nazywamy.
-const KUCHNIA_LABEL = {
-  polska: '🇵🇱 Polska', wloska: '🇮🇹 Włoska', francuska: '🇫🇷 Francuska',
-  hiszpanska: '🇪🇸 Hiszpańska', grecka: '🇬🇷 Grecka', niemiecka: '🇩🇪 Niemiecka',
-  wegierska: '🇭🇺 Węgierska', ukrainska: '🇺🇦 Ukraińska',
-  amerykanska: '🇺🇸 Amerykańska', meksykanska: '🇲🇽 Meksykańska',
-  koreanska: '🇰🇷 Koreańska', japonska: '🇯🇵 Japońska', chinska: '🇨🇳 Chińska',
-  tajska: '🇹🇭 Tajska', wietnamska: '🇻🇳 Wietnamska', indyjska: '🇮🇳 Indyjska',
-  bliskowschodnia: '🥙 Bliski Wschód', turecka: '🇹🇷 Turecka',
-  afrykanska: '🌍 Afrykańska', miedzynarodowa: '🌐 Międzynarodowa',
-}
-
-const POZIOM_LABEL = { latwe: '🟢 Łatwe', srednie: '🟡 Średnie', trudne: '🔴 Trudne' }
-
-const RODZAJ_LABEL = {
-  obiad: 'Obiad', sniadanie: 'Śniadanie', kolacja: 'Kolacja',
-  zupa: 'Zupa', deser: 'Deser',
-  przekaska: 'Przekąska', dodatek: 'Dodatek', surowka: 'Surówka',
-}
 
 // Pastel placeholder color from name hash — identyczne jak wcześniej, żeby
 // stare karty zachowały te same kolory.

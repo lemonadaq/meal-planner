@@ -6,6 +6,8 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../supabase'
 import { t, fonts, ui } from '../theme'
 import Toast from '../components/Toast'
+import { RODZAJ_LABEL } from '../etykiety'
+import PodgladPrzepisu from '../components/PodgladPrzepisu'
 import { formatDataLocal } from '../dataHelpers'
 import { pobierzWszystkieWiersze } from '../pobierzWszystko'
 import { useTydzien, zakresTygodniaLabel, poniedzialekTygodnia, filtrujDania, wlasneDanieZSzukajki } from '../useTydzien'
@@ -20,12 +22,6 @@ const FILTRY = [
   { id: 'zupa',      label: 'Zupy' },
   { id: 'deser',     label: 'Desery' },
 ]
-
-const RODZAJ_LABEL = {
-  sniadanie: 'Śniadanie', obiad: 'Obiad', kolacja: 'Kolacja',
-  zupa: 'Zupa', deser: 'Deser',
-  przekaska: 'Przekąska', dodatek: 'Dodatek', surowka: 'Surówka',
-}
 
 // Mały odcisk koloru dla dania — stabilny po nazwie (jak w Home.jsx)
 function getKolor(nazwa) {
@@ -60,6 +56,8 @@ function formatPorcje(p) {
 
 export default function Tydzien({ user, householdId, onSelectDanie, sledz, refreshKey, onZakupy, onUstawienia }) {
   const [offset, setOffset] = useState(0)
+  // Nazwa dania pokazywanego w podglądzie przepisu (null = zamknięty)
+  const [podglad, setPodglad] = useState(null)
   const { pula, loading: loadingPula, dodaj, usun, zmienPorcje } = useTydzien(householdId, user, offset)
 
   const [dania, setDania] = useState([])
@@ -375,29 +373,57 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
           {filtrowane.map(d => {
             const wybrane = wPuli.has(d.Danie)
             return (
-              <button
+              <div
                 key={d.Danie}
                 style={{ ...s.wiersz, ...(wybrane ? s.wierszWybrany : {}) }}
-                onClick={() => przelaczDanie(d.Danie)}
               >
-                <div style={{ ...s.thumb, background: d.zdjecie ? 'transparent' : getKolor(d.Danie) }}>
-                  {d.zdjecie
-                    ? <img src={d.zdjecie} alt="" style={s.thumbImg} loading="lazy" />
-                    : <span style={s.thumbEmoji}>{getEmoji(d.Danie)}</span>}
-                </div>
-                <div style={s.wierszInfo}>
-                  <div style={s.wierszNazwa}>{d.Danie}</div>
-                  <div style={s.wierszRodzaj}>{RODZAJ_LABEL[d.rodzaj] || d.rodzaj}</div>
-                </div>
+                {/* Tapnięcie wiersza nadal dodaje/wyjmuje z puli — to główna
+                    akcja tego ekranu i nie zmieniamy jej. Podgląd przepisu
+                    siedzi w osobnym przycisku obok, bo przycisk w przycisku
+                    to nieprawidłowy HTML i nieprzewidywalne klikanie. */}
+                <button style={s.wierszGlowny} onClick={() => przelaczDanie(d.Danie)}>
+                  <div style={{ ...s.thumb, background: d.zdjecie ? 'transparent' : getKolor(d.Danie) }}>
+                    {d.zdjecie
+                      ? <img src={d.zdjecie} alt="" style={s.thumbImg} loading="lazy" />
+                      : <span style={s.thumbEmoji}>{getEmoji(d.Danie)}</span>}
+                  </div>
+                  <div style={s.wierszInfo}>
+                    <div style={s.wierszNazwa}>{d.Danie}</div>
+                    <div style={s.wierszRodzaj}>{RODZAJ_LABEL[d.rodzaj] || d.rodzaj}</div>
+                  </div>
+                </button>
+
+                <button
+                  style={s.podgladBtn}
+                  onClick={() => { setPodglad(d.Danie); sledz?.('tydzien_podglad', { danie: d.Danie }) }}
+                  aria-label={`Zobacz przepis: ${d.Danie}`}
+                  title="Zobacz przepis"
+                >
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H16l4 4v13.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 20.5z"/>
+                    <path d="M15 3v5h5M8.5 12.5h7M8.5 16.5h5"/>
+                  </svg>
+                </button>
+
                 <div style={{ ...s.check, ...(wybrane ? s.checkOn : {}) }}>
                   {wybrane && (
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                   )}
                 </div>
-              </button>
+              </div>
             )
           })}
         </div>
+      )}
+
+      {podglad && (
+        <PodgladPrzepisu
+          nazwa={podglad}
+          wPuli={wPuli.has(podglad)}
+          onPrzelacz={przelaczDanie}
+          onPelnyPrzepis={(n) => { setPodglad(null); onSelectDanie?.(n) }}
+          onZamknij={() => setPodglad(null)}
+        />
       )}
 
       <Toast
@@ -591,10 +617,24 @@ function makeS() {
     lista: { display: 'flex', flexDirection: 'column', gap: 8 },
     wiersz: {
       ...ui.card, padding: '10px 12px',
-      display: 'flex', alignItems: 'center', gap: 12,
-      width: '100%', cursor: 'pointer', textAlign: 'left',
+      display: 'flex', alignItems: 'center', gap: 4,
+      width: '100%', textAlign: 'left',
       fontFamily: fonts.sans, boxSizing: 'border-box',
       border: `1.5px solid transparent`,
+    },
+    // Zdjęcie i nazwa — to tu się tapie, żeby dodać danie do puli.
+    wierszGlowny: {
+      flex: 1, minWidth: 0,
+      display: 'flex', alignItems: 'center', gap: 12,
+      background: 'none', border: 'none', padding: 0, margin: 0,
+      cursor: 'pointer', textAlign: 'left', font: 'inherit', color: 'inherit',
+    },
+    // Cel dotyku 40×40 mimo ikony 17 px — mniejszy trudno trafić kciukiem,
+    // a stoi tuż obok akcji dodawania, więc pomyłka jest kosztowna.
+    podgladBtn: {
+      flexShrink: 0, width: 40, height: 40, borderRadius: 11,
+      background: 'none', border: 'none', cursor: 'pointer',
+      color: t.mute, display: 'grid', placeItems: 'center',
     },
     wierszWybrany: {
       border: `1.5px solid ${t.accent}`,

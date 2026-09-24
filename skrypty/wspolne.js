@@ -223,6 +223,12 @@ export async function pytajClaudeSchematem(tresc, schemat) {
   if (odpowiedz.stop_reason === 'refusal') {
     throw new Error(`Claude odmówił: ${odpowiedz.stop_details?.explanation || 'bez powodu'}`)
   }
+  // Urwana odpowiedź ma być BŁĘDEM, nie cichą stratą. Przy generowaniu
+  // strukturalnym urwanie potrafi dać JSON, który się parsuje, tylko krótszy —
+  // i wtedy część dań znika bez śladu, a skrypt melduje sukces.
+  if (odpowiedz.stop_reason === 'max_tokens') {
+    throw new Error('Odpowiedź urwana na max_tokens — zmniejsz paczkę albo podnieś limit')
+  }
   const tekst = odpowiedz.content.filter(b => b.type === 'text').map(b => b.text).join('')
   return JSON.parse(tekst)
 }

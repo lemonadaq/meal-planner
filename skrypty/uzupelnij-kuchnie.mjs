@@ -19,6 +19,7 @@ import {
   sprawdzKlucze, supabase, pobierzWszystkieWiersze,
   pytajClaudeSchematem, KUCHNIE, POZIOMY, utworzStraznika,
 } from './wspolne.js'
+import { polaczOdpowiedzi } from './dopasowanie-nazw.mjs'
 
 sprawdzKlucze(['SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'ANTHROPIC_KEY'])
 
@@ -115,15 +116,13 @@ async function main() {
 
     try {
       const odpowiedz = await pytajClaudeSchematem(zbudujPrompt(paczka), SCHEMAT)
-      const wgNazwy = new Map((odpowiedz.dania || []).map(d => [d.nazwa, d]))
+      const { pary, brakujace } = polaczOdpowiedzi(paczka, odpowiedz.dania)
 
-      for (const danie of paczka) {
-        const wynik = wgNazwy.get(danie.nazwa)
-        if (!wynik) {
-          console.warn(`  ⚠ brak odpowiedzi dla: ${danie.nazwa}`)
-          continue
-        }
+      for (const [danie, wynik] of pary) {
         wyniki.push({ nazwa: danie.nazwa, kuchnia: wynik.kuchnia, poziom: wynik.poziom })
+      }
+      for (const danie of brakujace) {
+        console.warn(`  ⚠ brak odpowiedzi dla: ${danie.nazwa}`)
       }
     } catch (e) {
       console.error(`  ✗ paczka ${numer}: ${e.message}`)
@@ -144,10 +143,9 @@ async function main() {
       const paczka = brakujace.slice(i, i + Math.floor(PACZKA / 2))
       try {
         const odpowiedz = await pytajClaudeSchematem(zbudujPrompt(paczka), SCHEMAT)
-        const wgNazwy = new Map((odpowiedz.dania || []).map(d => [d.nazwa, d]))
-        for (const danie of paczka) {
-          const wynik = wgNazwy.get(danie.nazwa)
-          if (wynik) wyniki.push({ nazwa: danie.nazwa, kuchnia: wynik.kuchnia, poziom: wynik.poziom })
+        const { pary } = polaczOdpowiedzi(paczka, odpowiedz.dania)
+        for (const [danie, wynik] of pary) {
+          wyniki.push({ nazwa: danie.nazwa, kuchnia: wynik.kuchnia, poziom: wynik.poziom })
         }
       } catch (e) {
         console.error(`  ✗ ${e.message}`)
