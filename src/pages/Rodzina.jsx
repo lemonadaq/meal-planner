@@ -372,7 +372,7 @@ const s = {
   },
   usunBtn: {
     background: 'transparent', border: 'none', cursor: 'pointer',
-    width: 32, height: 32, borderRadius: 999,
+    width: 40, height: 40, borderRadius: 999,
     color: t.muteLight, fontSize: 18, padding: 0,
     display: 'grid', placeItems: 'center', flexShrink: 0,
   },
