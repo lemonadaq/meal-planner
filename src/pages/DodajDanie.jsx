@@ -3,6 +3,7 @@ import { supabase } from '../supabase'
 import { t, fonts, ui } from '../theme'
 import { kcalZeSkladnikow, etykietaKcal } from '../kcalZeSkladnikow'
 import { pobierzWszystkieWiersze } from '../pobierzWszystko'
+import { parsujIlosc } from '../jednostki'
 
 async function kompresujObraz(plik, maxSzerokosc = 1200, jakosc = 0.82) {
   return new Promise(resolve => {
@@ -163,6 +164,14 @@ export default function DodajDanie({ onBack, onZapisano }) {
     }
     if (!nowyS.ilosc.trim() && nowyS.jednostka !== 'do smaku') {
       setBlad('Podaj ilość (albo wybierz jednostkę „do smaku")'); return
+    }
+    // ilość musi dać się przeliczyć na dodatnią liczbę — inaczej trafia dosłownie
+    // na listę zakupów jako "-5 g" albo "abc g"
+    if (nowyS.ilosc.trim()) {
+      const ilosc = parsujIlosc(nowyS.ilosc)
+      if (ilosc == null || ilosc <= 0) {
+        setBlad('Ilość musi być liczbą większą od zera'); return
+      }
     }
     setSkladniki(prev => [...prev, { ...nowyS, nazwa: nazwaTrim }])
     setNowyS({ nazwa: '', ilosc: '', jednostka: 'g', kategoria: '1_Warzywa i owoce' })
