@@ -230,10 +230,12 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
         .select('id, data, posilek, danie, dodatki')
         .eq('household_id', householdId).eq('danie', danie),
       // contains: znajdź wpisy gdzie tablica dodatki zawiera obiekt z tą nazwą
+      // (wartość musi iść jako gotowy JSON string — supabase-js dla zwykłej
+      // tablicy JS serializuje ją jako literał tablicy Postgresa, nie jsonb)
       supabase.from('kalendarz')
         .select('id, data, posilek, danie, dodatki')
         .eq('household_id', householdId)
-        .contains('dodatki', [{ nazwa: danie }]),
+        .contains('dodatki', JSON.stringify([{ nazwa: danie }])),
     ])
     const wszystkieWpisy = [...(jakoD || []), ...(jakoSide || [])]
     const unikalneWpisy = [...new Map(wszystkieWpisy.map(w => [w.id, w])).values()]
