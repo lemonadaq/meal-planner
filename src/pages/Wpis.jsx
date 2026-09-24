@@ -139,7 +139,7 @@ export default function Wpis() {
           <div style={s.pusto}>
             <div style={{ fontSize: 34, marginBottom: 10 }}>🔍</div>
             <div style={s.pustoTytul}>Nie ma takiego wpisu</div>
-            <Link to="/" style={s.stopkaLink}>Wróć na stronę główną</Link>
+            <Link to="/blog" style={s.stopkaLink}>Wróć na bloga</Link>
           </div>
         )}
 
@@ -175,7 +175,7 @@ export default function Wpis() {
         )}
 
         <footer style={s.stopka}>
-          <Link to="/" style={s.stopkaLink}>← Wszystkie wpisy</Link>
+          <Link to="/blog" style={s.stopkaLink}>← Wszystkie wpisy</Link>
         </footer>
       </div>
     </div>
