@@ -38,10 +38,10 @@ export function kategoriaZRodzaju(rodzaj) {
   return RODZAJ_NA_KATEGORIE[rodzaj] || null
 }
 
-// Slug trafia do adresu (menuplaner.pl/wpis/<slug>), więc musi być ascii,
+// Slug trafia do adresu (menuplaner.pl/blog/<slug>), więc musi być ascii,
 // bez spacji i bez znaków, które trzeba by kodować.
 export function zrobSlug(tekst = '') {
-  // `String(null)` to „null", więc brak tytułu dałby adres /wpis/null.
+  // `String(null)` to „null", więc brak tytułu dałby adres /blog/null.
   if (tekst == null) return ''
 
   return String(tekst)

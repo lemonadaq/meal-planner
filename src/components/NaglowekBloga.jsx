@@ -41,16 +41,16 @@ export default function NaglowekBloga({ wariant = 'glowna' }) {
   return (
     <header style={s.naglowek}>
       {wariant === 'glowna' ? (
-        <Link to="/" style={s.marka}>
+        <Link to="/blog" style={s.marka}>
           <span style={s.markaTytul}>Menu planer</span>
           <span style={s.markaPod}>przepisy i notatki z kuchni</span>
         </Link>
       ) : (
-        <Link to="/" style={s.wroc}>← Wszystkie wpisy</Link>
+        <Link to="/blog" style={s.wroc}>← Wszystkie wpisy</Link>
       )}
 
       <nav style={s.prawa}>
-        <Link to="/o-mnie" style={s.link}>O mnie</Link>
+        <Link to="/blog/o-mnie" style={s.link}>O mnie</Link>
 
         {user ? (
           <Link to="/planer" style={s.btnUser}>

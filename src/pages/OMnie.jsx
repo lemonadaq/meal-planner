@@ -63,7 +63,7 @@ export default function OMnie() {
         </div>
 
         <footer style={s.stopka}>
-          <Link to="/" style={s.stopkaLink}>← Wszystkie wpisy</Link>
+          <Link to="/blog" style={s.stopkaLink}>← Wszystkie wpisy</Link>
         </footer>
       </div>
     </div>

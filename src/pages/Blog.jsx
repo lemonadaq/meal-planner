@@ -10,7 +10,7 @@ import { t, fonts } from '../theme'
 
 function KartaWpisu({ wpis }) {
   return (
-    <Link to={`/wpis/${wpis.slug}`} style={s.karta}>
+    <Link to={`/blog/${wpis.slug}`} style={s.karta}>
       {wpis.zdjecie_glowne && (
         <div style={s.kartaFotoWrap}>
           <img src={wpis.zdjecie_glowne} alt="" style={s.kartaFoto} loading="lazy" />

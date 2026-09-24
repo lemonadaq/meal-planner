@@ -20,7 +20,13 @@
 
 \## Architektura krótko
 
-\- `App.jsx` — root, routing, sesja użytkownika
+\- `main.jsx` — montowanie; `Trasy.jsx` — CAŁA mapa adresów serwisu
+\- `StronaGlowna.jsx` — co jest pod `/`: planer dla zalogowanych, blog dla gości
+\- `App.jsx` — root planera, własna nawigacja na stanie Reacta, sesja użytkownika
+
+Adresy: `/` → planer albo blog (po sesji), `/planer/*` → planer zawsze,
+`/blog`, `/blog/<slug>`, `/blog/o-mnie` → blog zawsze. Stare `/wpis/<slug>`
+i `/o-mnie` przekierowują. Aplikacja jest nadrzędna, blog jest dodatkiem.
 
 \- `Tydzien.jsx` + `useTydzien.js` — EKRAN STARTOWY: tygodniowa pula dań (tryb "Tydzień") — wybierasz dania na tydzień bez przypisywania do dni, lista zakupów liczy się z puli
 
