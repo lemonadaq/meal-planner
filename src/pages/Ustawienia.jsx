@@ -61,7 +61,7 @@ export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin
 
         <header style={s.header}>
           <div style={s.avatar} title={imie}>{imie[0]?.toUpperCase()}</div>
-          <div>
+          <div style={s.headerTekst}>
             <div style={s.eyebrow}>USTAWIENIA</div>
             <h1 style={s.title}>{imie}</h1>
             <div style={s.email}>{user?.email}</div>
@@ -215,9 +215,10 @@ function makeS() {
       flexShrink: 0,
       boxShadow: '0 4px 12px rgba(74,55,40,.12)',
     },
+    headerTekst: { minWidth: 0 },
     eyebrow: { ...ui.eyebrow, marginBottom: 4 },
-    title: { ...ui.h1, fontSize: 26, lineHeight: 1.1 },
-    email: { fontFamily: fonts.sans, fontSize: 13, color: t.mute, marginTop: 4 },
+    title: { ...ui.h1, fontSize: 26, lineHeight: 1.1, overflowWrap: 'anywhere' },
+    email: { fontFamily: fonts.sans, fontSize: 13, color: t.mute, marginTop: 4, overflowWrap: 'anywhere' },
 
     section: { ...ui.card, padding: 20, marginBottom: 14 },
     sectionHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
