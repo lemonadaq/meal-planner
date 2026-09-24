@@ -90,6 +90,13 @@ export function useTydzien(householdId, user, offset = 0) {
   // serwer przetworzy jako ostatnie, niekoniecznie to kliknięte jako
   // ostatnie) — więc do bazy leci tylko jeden zapis z finalną wartością.
   const zapisTimeryRef = useRef(new Map())
+  // Dania właśnie dodawane (insert w locie) — `pula` ze stanu renderu nie
+  // widzi jeszcze optimistic update z pierwszego kliknięcia, więc podwójny
+  // szybki tap na to samo danie (typowy na telefonie) przechodziłby przez
+  // guard dwa razy: dwa tymczasowe wiersze z tym samym kluczem `danie` w
+  // liście (błąd Reacta o duplikacie klucza) i drugi INSERT kończący się
+  // konfliktem unikalności w bazie.
+  const dodawanieWTokuRef = useRef(new Set())
 
   const tydzien = poniedzialekTygodnia(offset)
 
@@ -139,6 +146,8 @@ export function useTydzien(householdId, user, offset = 0) {
   async function dodaj(danie) {
     if (!householdId || !user?.id || !danie) return
     if (pula.some(r => r.danie === danie)) return
+    if (dodawanieWTokuRef.current.has(danie)) return
+    dodawanieWTokuRef.current.add(danie)
 
     const tymczasowy = {
       id: `tmp_${Date.now()}`,
@@ -150,23 +159,27 @@ export function useTydzien(householdId, user, offset = 0) {
     }
     setPula(prev => [...prev, tymczasowy])
 
-    const { data, error } = await supabase
-      .from('plan_tygodnia')
-      .insert({ household_id: householdId, user_id: user.id, tydzien, danie, porcje: 1 })
-      .select()
-      .single()
+    try {
+      const { data, error } = await supabase
+        .from('plan_tygodnia')
+        .insert({ household_id: householdId, user_id: user.id, tydzien, danie, porcje: 1 })
+        .select()
+        .single()
 
-    if (error) {
-      // 23505 = unikalny duplikat (np. drugi domownik dodał równolegle) —
-      // nie traktujemy jak błąd, po prostu dociągamy stan z bazy.
-      if (error.code === '23505') {
-        await refresh()
+      if (error) {
+        // 23505 = unikalny duplikat (np. drugi domownik dodał równolegle) —
+        // nie traktujemy jak błąd, po prostu dociągamy stan z bazy.
+        if (error.code === '23505') {
+          await refresh()
+          return
+        }
+        setPula(prev => prev.filter(r => r.id !== tymczasowy.id))
         return
       }
-      setPula(prev => prev.filter(r => r.id !== tymczasowy.id))
-      return
+      setPula(prev => prev.map(r => (r.id === tymczasowy.id ? data : r)))
+    } finally {
+      dodawanieWTokuRef.current.delete(danie)
     }
-    setPula(prev => prev.map(r => (r.id === tymczasowy.id ? data : r)))
   }
 
   async function usun(danie) {
