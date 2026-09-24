@@ -62,14 +62,16 @@ export function filtrujDania(dania, { filtry = [], szukaj = '' } = {}) {
 }
 
 // Nazwa własnego dania do dodania z szukajki (danie "bez przepisu" — sama
-// nazwa, żadnych składników). Zwraca przyciętą frazę, o ile niepusta i żaden
-// istniejący przepis nie nazywa się dokładnie tak samo (bez wielkości liter) —
-// wtedy user powinien po prostu tapnąć istniejący wiersz.
-export function wlasneDanieZSzukajki(dania, szukaj) {
+// nazwa, żadnych składników). Zwraca przyciętą frazę, o ile niepusta i ani
+// żaden istniejący przepis, ani danie już wybrane w tym tygodniu (np. wcześniej
+// dodane własne danie) nie nazywa się dokładnie tak samo (bez wielkości liter) —
+// wtedy user powinien po prostu tapnąć istniejący wiersz / danie jest już w puli.
+export function wlasneDanieZSzukajki(dania, szukaj, pula) {
   const nazwa = (szukaj || '').trim()
   if (!nazwa) return null
   const q = nazwa.toLowerCase()
   if ((dania || []).some(d => (d.Danie || '').toLowerCase() === q)) return null
+  if ((pula || []).some(r => (r.danie || '').toLowerCase() === q)) return null
   return nazwa
 }
 

@@ -181,7 +181,7 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
 
   // Własne danie z szukajki — sama nazwa, bez przepisu i składników.
   // Pokazujemy przycisk tylko gdy fraza nie pokrywa się 1:1 z istniejącym daniem.
-  const wlasneDoDodania = !loadingDania ? wlasneDanieZSzukajki(dania, szukaj) : null
+  const wlasneDoDodania = !loadingDania ? wlasneDanieZSzukajki(dania, szukaj, pula) : null
 
   async function dodajWlasne() {
     const nazwa = wlasneDoDodania
