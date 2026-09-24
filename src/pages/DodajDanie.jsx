@@ -137,12 +137,14 @@ export default function DodajDanie({ onBack, onZapisano }) {
   }
   function wybierzPodpowiedz(sk) {
     setWybrano(true)
-    setNowyS({
+    // zachowujemy ilość, jeśli użytkownik wpisał ją przed wybraniem podpowiedzi —
+    // inaczej podpowiedź po cichu kasowała już wpisaną wartość
+    setNowyS(prev => ({
       nazwa: sk['Składnik'],
-      ilosc: '',
+      ilosc: prev.ilosc,
       jednostka: sk['Jednostka'] || 'g',
       kategoria: sk['Kategoria'] || '1_Warzywa i owoce',
-    })
+    }))
     setPodpowiedzi([])
   }
 
