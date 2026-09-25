@@ -628,8 +628,10 @@ function makeS() {
   skNazwa: { fontFamily: fonts.sans, fontSize: 14, color: t.text, fontWeight: 500 },
   skMeta: { fontFamily: fonts.sans, fontSize: 12, color: t.mute, marginTop: 2 },
   btnUsun: {
-    background: 'none', border: 'none',
-    color: t.muteLight, fontSize: 14, cursor: 'pointer', padding: '4px 8px',
+    background: 'none', border: 'none', cursor: 'pointer',
+    width: 40, height: 40, borderRadius: 999,
+    color: t.muteLight, fontSize: 16, padding: 0,
+    display: 'grid', placeItems: 'center', flexShrink: 0,
   },
 
   btnMini: {
