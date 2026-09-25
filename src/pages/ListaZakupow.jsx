@@ -184,6 +184,13 @@ function poprawNazwe(nazwa = '') {
     .trim()
 }
 
+// Wielka litera na początku nazwy — przepisy wpisują składniki różnie
+// (małą/wielką literą), a bez tego lista zakupów miała pozycje jak „Cebula"
+// obok „dymka" i „bakłażan" w tej samej kategorii.
+function zWielkiejLitery(nazwa = '') {
+  return nazwa ? nazwa.charAt(0).toUpperCase() + nazwa.slice(1) : nazwa
+}
+
 function toIlosc(raw) {
   const n = parseFloat((raw || '').toString().replace(',', '.'))
   return Number.isFinite(n) ? n : null
@@ -1051,7 +1058,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
       const podmieniony = globalnePodmiany[skladnik] || skladnik
       const finalny = SCAL_NAZWY[normalizujNazweMeta(podmieniony)] || podmieniony
       const meta = dopasujMeta(finalny, wszystkieMeta)
-      const kanon = meta?.nazwa || finalny
+      const kanon = zWielkiejLitery(meta?.nazwa || finalny)
       const mapaKlucz = normalizujDlaScalania(normalizujNazweMeta(kanon))
       if (!mapaKlucz) return
 
