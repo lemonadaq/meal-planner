@@ -61,8 +61,23 @@ describe('grupujSkladniki', () => {
       wiersz('Cebula', '1_Warzywa i owoce'),
       wiersz('Masło', '3_Nabiał'),
     ])
-    expect(grupy.map(([kat]) => kat)).toEqual(['Nabiał', 'Warzywa i owoce'])
+    expect(grupy.map(([kat]) => kat)).toEqual(['Warzywa i owoce', 'Nabiał'])
     expect(grupy.find(([kat]) => kat === 'Nabiał')[1]).toHaveLength(2)
+  })
+
+  // Kolejność grup = prefiks porządkowy z bazy (trasa po sklepie), nie
+  // alfabet — ta sama kolejność co w DanieDetail.jsx i ListaZakupow.jsx.
+  // Kolejność wierszy na wejściu jest tu celowo odwrotna do tej trasy.
+  it('sortuje grupy po prefiksie porządkowym, nie alfabetycznie', () => {
+    const grupy = grupujSkladniki([
+      wiersz('Sól', '7_Przyprawy'),
+      wiersz('Ser', '3_Nabiał'),
+      wiersz('Papier do pieczenia', '8_Inne'),
+      wiersz('Cebula', '1_Warzywa i owoce'),
+    ])
+    expect(grupy.map(([kat]) => kat)).toEqual(
+      ['Warzywa i owoce', 'Nabiał', 'Przyprawy', 'Inne'],
+    )
   })
 
   // `dania` trzyma metadane dania w KAŻDYM wierszu, więc trafia się wiersz
