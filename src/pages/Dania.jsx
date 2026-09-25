@@ -280,7 +280,7 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
   function renderImg(d) {
     const nazwa = d['Danie']
     if (d.zdjecie) {
-      return <img src={d.zdjecie} alt={nazwa} style={s.img} loading="lazy" />
+      return <img src={d.zdjecie} alt={nazwa} style={{ ...s.img, background: getKolor(nazwa) }} loading="lazy" />
     }
     return (
       <div style={{ ...s.placeholder, background: getKolor(nazwa) }}>
