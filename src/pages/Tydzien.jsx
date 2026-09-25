@@ -21,6 +21,9 @@ const FILTRY = [
   { id: 'kolacja',   label: 'Kolacje' },
   { id: 'zupa',      label: 'Zupy' },
   { id: 'deser',     label: 'Desery' },
+  { id: 'przekaska', label: 'Przekąski' },
+  { id: 'dodatek',   label: 'Dodatki' },
+  { id: 'surowka',   label: 'Surówki' },
 ]
 
 // Mały odcisk koloru dla dania — stabilny po nazwie (jak w Home.jsx)
