@@ -166,7 +166,7 @@ function normalizujJednostke(raw = '') {
 
 function rozpoznajKategorie(nazwa = '') {
   const x = nazwa.toLowerCase()
-  if (/chleb|buł|bul|bagiet|kajzer|pieczyw|tost|tortill/.test(x)) return '4_Pieczywo'
+  if (/chleb|buł|\bbul|bagiet|kajzer|pieczyw|tost|tortill/.test(x)) return '4_Pieczywo'
   if (/mleko|jogurt|kefir|maślank|maslank|ser|twar[oó]g|śmietan|smietan|masło|maslo|margaryn|jaj/.test(x)) return '3_Nabiał'
   if (/pomidor|og[oó]rek|ziemni|marchew|cebula|czosnek|papryk|sałat|salat|jabł|jabl|banan|cytryn|limonk|awokado|broku|kalafior|kapust|cukini|bakła|bakla|pietruszk|koper|szczyp/.test(x)) return '1_Warzywa i owoce'
   if (/kurczak|wołow|wolow|wieprz|schab|kark[oó]w|mi[eę]so|mielon|szynk|boczek|kiełbas|kielbas|ryb|łosoś|losos|dorsz|tuńczyk|tunczyk/.test(x)) return '2_Mięso i ryby'
