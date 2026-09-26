@@ -298,7 +298,7 @@ export default function DodajDanie({ onBack, onZapisano }) {
           <div style={s.row2}>
             <div style={{ flex: 1 }}>
               <input
-                style={s.input}
+                style={s.inputMini}
                 placeholder="Czas (min)"
                 type="number"
                 inputMode="numeric"
@@ -309,7 +309,7 @@ export default function DodajDanie({ onBack, onZapisano }) {
             </div>
             <div style={{ flex: 1 }}>
               <input
-                style={s.input}
+                style={s.inputMini}
                 placeholder="kcal/porcję"
                 type="number"
                 inputMode="numeric"
@@ -320,7 +320,7 @@ export default function DodajDanie({ onBack, onZapisano }) {
             </div>
             <div style={{ flex: 1 }}>
               <input
-                style={s.input}
+                style={s.inputMini}
                 placeholder="Porcje"
                 type="number"
                 inputMode="numeric"
@@ -582,6 +582,9 @@ function makeS() {
 
   // Form
   input: { ...ui.input, marginBottom: 8 },
+  // Węższy wariant dla trzech pól w rzędzie (Czas/kcal/Porcje) — pełny placeholder
+  // przy s.input się nie mieścił i wyglądał na ucięty ("Czas (min", "kcal/porc")
+  inputMini: { ...ui.input, marginBottom: 8, padding: '12px 10px', fontSize: 12.5 },
   row2: { display: 'flex', gap: 8 },
 
   // Suggestions
