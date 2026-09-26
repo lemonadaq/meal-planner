@@ -57,11 +57,11 @@ function formatPorcje(p) {
 }
 
 
-export default function Tydzien({ user, householdId, onSelectDanie, sledz, refreshKey, onZakupy, onUstawienia }) {
+export default function Tydzien({ user, householdId, onSelectDanie, sledz, refreshKey, onZakupy, onUstawienia, domyslnePorcje = 1 }) {
   const [offset, setOffset] = useState(0)
   // Nazwa dania pokazywanego w podglądzie przepisu (null = zamknięty)
   const [podglad, setPodglad] = useState(null)
-  const { pula, loading: loadingPula, dodaj, usun, zmienPorcje } = useTydzien(householdId, user, offset)
+  const { pula, loading: loadingPula, dodaj, usun, zmienPorcje } = useTydzien(householdId, user, offset, domyslnePorcje)
 
   const [dania, setDania] = useState([])
   const [loadingDania, setLoadingDania] = useState(true)

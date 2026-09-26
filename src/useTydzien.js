@@ -77,7 +77,7 @@ export function wlasneDanieZSzukajki(dania, szukaj, pula) {
 
 // Pula dań na tydzień wskazany offsetem (0 = bieżący). Wszystkie akcje robią
 // optimistic update na stanie lokalnym i rollback gdy zapis do bazy padnie.
-export function useTydzien(householdId, user, offset = 0) {
+export function useTydzien(householdId, user, offset = 0, domyslnePorcje = 1) {
   const [pula, setPula] = useState([])
   const [loading, setLoading] = useState(true)
   // Źródło prawdy dla porcji przy kolejnych szybkich zmianach — ref jest
@@ -149,20 +149,22 @@ export function useTydzien(householdId, user, offset = 0) {
     if (dodawanieWTokuRef.current.has(danie)) return
     dodawanieWTokuRef.current.add(danie)
 
+    const porcje = Number(domyslnePorcje) || 1
+
     const tymczasowy = {
       id: `tmp_${Date.now()}`,
       household_id: householdId,
       user_id: user.id,
       tydzien,
       danie,
-      porcje: 1,
+      porcje,
     }
     setPula(prev => [...prev, tymczasowy])
 
     try {
       const { data, error } = await supabase
         .from('plan_tygodnia')
-        .insert({ household_id: householdId, user_id: user.id, tydzien, danie, porcje: 1 })
+        .insert({ household_id: householdId, user_id: user.id, tydzien, danie, porcje })
         .select()
         .single()
 
