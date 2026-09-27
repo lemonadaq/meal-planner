@@ -225,6 +225,23 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
       setBladZapisu(`Podaj ilość dla: ${bezIlosci.map(sk => sk.Skladnik.trim() || '(bez nazwy)').join(', ')} — albo wybierz jednostkę „do smaku”.`)
       return
     }
+
+    // Zmiana nazwy na już istniejące danie scaliłaby oba przepisy (tabela `dania`
+    // jest w formacie długim — UPDATE po starej nazwie przepisałby wszystkie jej
+    // wiersze na nową). Sprawdzamy tak samo jak przy dodawaniu nowego dania
+    // (DodajDanie.jsx) — ilike, bez rozróżniania wielkości liter.
+    if (edNazwa.trim() && edNazwa.trim().toLowerCase() !== nazwa.toLowerCase()) {
+      const nazwaDoSzukania = edNazwa.trim().replace(/[%_]/g, '\\$&')
+      const { data: istniejace } = await supabase
+        .from('dania').select('"Danie"')
+        .ilike('"Danie"', nazwaDoSzukania)
+        .limit(1)
+      if (istniejace?.length) {
+        setBladZapisu(`Danie "${edNazwa.trim()}" już istnieje — wybierz inną nazwę.`)
+        return
+      }
+    }
+
     setBladZapisu('')
     setSaving(true)
     const czasMinutyVal = liczbaDodatnia(edCzas, 480)
