@@ -352,7 +352,10 @@ function makeS() {
   return {
   outer: { background: t.bg, minHeight: '100vh', fontFamily: fonts.sans },
   container: { padding: '20px 20px 32px', maxWidth: 600, margin: '0 auto', boxSizing: 'border-box' },
-  back: { ...ui.btnText, padding: '0 0 14px', display: 'block' },
+  back: {
+    ...ui.btnText, padding: '0 0 14px',
+    display: 'inline-flex', alignItems: 'center', minHeight: 40,
+  },
 
   header: { marginBottom: 22 },
   eyebrow: { ...ui.eyebrow, marginBottom: 6 },
