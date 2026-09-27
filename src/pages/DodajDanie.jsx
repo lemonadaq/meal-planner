@@ -79,6 +79,7 @@ export default function DodajDanie({ onBack, onZapisano }) {
 
   const [saving, setSaving] = useState(false)
   const [blad, setBlad] = useState('')
+  const [bladSkladnik, setBladSkladnik] = useState('')
 
   const rodzajCfg = RODZAJE.find(r => r.id === rodzaj)
   const pokazTyp = RODZAJE_GLOWNE.includes(rodzaj)
@@ -153,7 +154,7 @@ export default function DodajDanie({ onBack, onZapisano }) {
     setCzasMinuty(''); setKcal(''); setPorcjeBazowe('4'); setNotatki('')
     setSkladniki([]); setPrzepisRaw('')
     setNowyS({ nazwa: '', ilosc: '', jednostka: 'g', kategoria: '1_Warzywa i owoce' })
-    setBlad(''); setPodpowiedzi([])
+    setBlad(''); setBladSkladnik(''); setPodpowiedzi([])
     setZdjeciePlik(null); setZdjeciePreview(null)
   }
 
@@ -162,22 +163,22 @@ export default function DodajDanie({ onBack, onZapisano }) {
     if (!nazwaTrim) return
     // trim po obu stronach — inaczej "Cebula" i "Cebula " (spacja na końcu) mijają się jako różne
     if (skladniki.find(sk => sk.nazwa.toLowerCase() === nazwaTrim.toLowerCase())) {
-      setBlad('Ten składnik już jest na liście'); return
+      setBladSkladnik('Ten składnik już jest na liście'); return
     }
     if (!nowyS.ilosc.trim() && nowyS.jednostka !== 'do smaku') {
-      setBlad('Podaj ilość (albo wybierz jednostkę „do smaku")'); return
+      setBladSkladnik('Podaj ilość (albo wybierz jednostkę „do smaku")'); return
     }
     // ilość musi dać się przeliczyć na dodatnią liczbę — inaczej trafia dosłownie
     // na listę zakupów jako "-5 g" albo "abc g"
     if (nowyS.ilosc.trim()) {
       const ilosc = parsujIlosc(nowyS.ilosc)
       if (ilosc == null || ilosc <= 0) {
-        setBlad('Ilość musi być liczbą większą od zera'); return
+        setBladSkladnik('Ilość musi być liczbą większą od zera'); return
       }
     }
     setSkladniki(prev => [...prev, { ...nowyS, nazwa: nazwaTrim }])
     setNowyS({ nazwa: '', ilosc: '', jednostka: 'g', kategoria: '1_Warzywa i owoce' })
-    setPodpowiedzi([]); setWybrano(false); setBlad('')
+    setPodpowiedzi([]); setWybrano(false); setBladSkladnik('')
   }
   function usunSkladnik(i) { setSkladniki(prev => prev.filter((_, idx) => idx !== i)) }
 
@@ -441,6 +442,7 @@ export default function DodajDanie({ onBack, onZapisano }) {
           <button style={s.btnDodajSkl} onClick={dodajSkladnik}>
             + Dodaj składnik
           </button>
+          {bladSkladnik && <div style={s.bladSkladnik}>{bladSkladnik}</div>}
         </section>
 
         {/* Lista składników */}
@@ -664,6 +666,11 @@ function makeS() {
     background: '#FBEAE4', color: '#9B3B23',
     fontFamily: fonts.sans, fontSize: 13.5, fontWeight: 500,
     padding: '10px 14px', borderRadius: 12, marginBottom: 14,
+  },
+  bladSkladnik: {
+    background: '#FBEAE4', color: '#9B3B23',
+    fontFamily: fonts.sans, fontSize: 13.5, fontWeight: 500,
+    padding: '10px 14px', borderRadius: 12, marginTop: 8,
   },
 
   bottomRow: { display: 'flex', gap: 8, marginTop: 8 },
