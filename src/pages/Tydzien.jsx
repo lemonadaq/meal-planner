@@ -549,7 +549,7 @@ function makeS() {
       fontVariantNumeric: 'tabular-nums',
     },
     pulaUsun: {
-      width: 28, height: 28, borderRadius: '50%',
+      width: 40, height: 40, borderRadius: '50%',
       background: 'none', border: 'none',
       color: t.muteLight, fontSize: 13, cursor: 'pointer',
       display: 'grid', placeItems: 'center', flexShrink: 0,
