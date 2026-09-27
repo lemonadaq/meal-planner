@@ -2,7 +2,7 @@
 // po dniach i slotach. Tapnięcie dania dodaje/wyjmuje je z puli bieżącego
 // tygodnia (tabela plan_tygodnia, hook useTydzien).
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { supabase } from '../supabase'
 import { t, fonts, ui } from '../theme'
 import Toast from '../components/Toast'
@@ -70,6 +70,21 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
   const [toast, setToast] = useState(null)
   const [losowanie, setLosowanie] = useState(false)
 
+  // Blokada krótkich serii kliknięć w pulę: dodanie/usunięcie dania zmienia
+  // wysokość sekcji „W tym tygodniu”, więc cała reszta ekranu (szukajka,
+  // chipy, lista wyników) przesuwa się w pionie. Drugie kliknięcie
+  // szybkiego dwukliku trafia wtedy w te same współrzędne co pierwsze, ale
+  // pod nimi jest już INNY element (np. przycisk „Dodaj własne”, który
+  // wjechał w miejsce klikniętego wiersza) — bez tej blokady taki dwuklik
+  // dorzuca do puli przypadkowe, niechciane danie.
+  const blokadaKlikuRef = useRef(false)
+  function pozwolNaKlik() {
+    if (blokadaKlikuRef.current) return false
+    blokadaKlikuRef.current = true
+    setTimeout(() => { blokadaKlikuRef.current = false }, 400)
+    return true
+  }
+
   useEffect(() => {
     let anulowane = false
 
@@ -108,6 +123,7 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
   const metaDan = new Map(dania.map(d => [d.Danie, d]))
 
   async function przelaczDanie(nazwa) {
+    if (!pozwolNaKlik()) return
     if (wPuli.has(nazwa)) {
       await usunZPuli(nazwa)
     } else {
@@ -185,6 +201,7 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
   const wlasneDoDodania = !loadingDania ? wlasneDanieZSzukajki(dania, szukaj, pula) : null
 
   async function dodajWlasne() {
+    if (!pozwolNaKlik()) return
     const nazwa = wlasneDoDodania
     if (!nazwa) return
     if (wPuli.has(nazwa)) {
@@ -290,7 +307,7 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
                     </div>
                     <button
                       style={s.pulaUsun}
-                      onClick={() => usunZPuli(r.danie)}
+                      onClick={() => { if (pozwolNaKlik()) usunZPuli(r.danie) }}
                       aria-label={`Usuń ${r.danie}`}
                     >✕</button>
                   </div>
