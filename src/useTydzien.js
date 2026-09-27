@@ -151,8 +151,14 @@ export function useTydzien(householdId, user, offset = 0, domyslnePorcje = 1) {
 
     const porcje = Number(domyslnePorcje) || 1
 
+    // id z `danie` (nie Date.now()) — dwa dodania w tym samym millisekundowym
+    // ticku (możliwe od kiedy tapnięcia w RÓŻNE dania nie są już serializowane
+    // przez blokadę kliknięć w Tydzien.jsx) miałyby identyczny `tmp_${Date.now()}`,
+    // więc podmiana tymczasowego wiersza na realny (`r.id === tymczasowy.id`)
+    // trafiałaby w OBA wiersze i psuła pulę o dwa różne dania. `danie` jest już
+    // unikalne w puli (guard powyżej + unikalny constraint w bazie).
     const tymczasowy = {
-      id: `tmp_${Date.now()}`,
+      id: `tmp_${danie}`,
       household_id: householdId,
       user_id: user.id,
       tydzien,
