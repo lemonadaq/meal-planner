@@ -70,19 +70,27 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
   const [toast, setToast] = useState(null)
   const [losowanie, setLosowanie] = useState(false)
 
-  // Blokada krótkich serii kliknięć w pulę: dodanie/usunięcie dania zmienia
-  // wysokość sekcji „W tym tygodniu”, więc cała reszta ekranu (szukajka,
-  // chipy, lista wyników) przesuwa się w pionie. Drugie kliknięcie
-  // szybkiego dwukliku trafia wtedy w te same współrzędne co pierwsze, ale
-  // pod nimi jest już INNY element (np. przycisk „Dodaj własne”, który
-  // wjechał w miejsce klikniętego wiersza) — bez tej blokady taki dwuklik
-  // dorzuca do puli przypadkowe, niechciane danie.
-  const blokadaKlikuRef = useRef(false)
-  function pozwolNaKlik() {
-    if (blokadaKlikuRef.current) return false
-    blokadaKlikuRef.current = true
-    setTimeout(() => { blokadaKlikuRef.current = false }, 400)
-    return true
+  // Blokada krótkich serii kliknięć W TO SAMO MIEJSCE: dodanie/usunięcie
+  // dania zmienia wysokość sekcji „W tym tygodniu”, więc cała reszta ekranu
+  // (szukajka, chipy, lista wyników) przesuwa się w pionie. Drugie
+  // kliknięcie szybkiego dwukliku trafia wtedy w te same współrzędne co
+  // pierwsze, ale pod nimi jest już INNY element (np. przycisk „Dodaj
+  // własne”, który wjechał w miejsce klikniętego wiersza) — bez tej blokady
+  // taki dwuklik dorzuca do puli przypadkowe, niechciane danie. Warunek na
+  // bliskość w pionie (nie tylko w czasie) jest kluczowy — bez niego
+  // blokada łapała też dwa kolejne, celowe tapnięcia w RÓŻNE dania (typowy
+  // sposób budowania puli tygodnia), które ginęły bez żadnej informacji.
+  // e.timeStamp (czas zdarzenia od przeglądarki), nie Date.now() — czysta
+  // wartość pochodząca z eventu, bez wywoływania zegara w ciele komponentu.
+  const ostatniKlikRef = useRef({ czas: null, y: null })
+  function pozwolNaKlik(e) {
+    const teraz = e?.timeStamp ?? null
+    const y = e?.clientY ?? null
+    const { czas: poprzedniCzas, y: poprzedniY } = ostatniKlikRef.current
+    const toSamoMiejsceISzybko = teraz != null && poprzedniCzas != null && y != null && poprzedniY != null
+      && (teraz - poprzedniCzas) < 400 && Math.abs(y - poprzedniY) < 30
+    ostatniKlikRef.current = { czas: teraz, y }
+    return !toSamoMiejsceISzybko
   }
 
   useEffect(() => {
@@ -122,8 +130,8 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
   // Metadane (zdjęcie/emoji) dla miniatur w panelu wybranych
   const metaDan = new Map(dania.map(d => [d.Danie, d]))
 
-  async function przelaczDanie(nazwa) {
-    if (!pozwolNaKlik()) return
+  async function przelaczDanie(nazwa, e) {
+    if (!pozwolNaKlik(e)) return
     if (wPuli.has(nazwa)) {
       await usunZPuli(nazwa)
     } else {
@@ -200,8 +208,8 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
   // Pokazujemy przycisk tylko gdy fraza nie pokrywa się 1:1 z istniejącym daniem.
   const wlasneDoDodania = !loadingDania ? wlasneDanieZSzukajki(dania, szukaj, pula) : null
 
-  async function dodajWlasne() {
-    if (!pozwolNaKlik()) return
+  async function dodajWlasne(e) {
+    if (!pozwolNaKlik(e)) return
     const nazwa = wlasneDoDodania
     if (!nazwa) return
     if (wPuli.has(nazwa)) {
@@ -307,7 +315,7 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
                     </div>
                     <button
                       style={s.pulaUsun}
-                      onClick={() => { if (pozwolNaKlik()) usunZPuli(r.danie) }}
+                      onClick={(e) => { if (pozwolNaKlik(e)) usunZPuli(r.danie) }}
                       aria-label={`Usuń ${r.danie}`}
                     >✕</button>
                   </div>
@@ -401,7 +409,7 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
                     akcja tego ekranu i nie zmieniamy jej. Podgląd przepisu
                     siedzi w osobnym przycisku obok, bo przycisk w przycisku
                     to nieprawidłowy HTML i nieprzewidywalne klikanie. */}
-                <button style={s.wierszGlowny} onClick={() => przelaczDanie(d.Danie)}>
+                <button style={s.wierszGlowny} onClick={(e) => przelaczDanie(d.Danie, e)}>
                   <div style={{ ...s.thumb, background: d.zdjecie ? 'transparent' : getKolor(d.Danie) }}>
                     {d.zdjecie
                       ? <img src={d.zdjecie} alt="" style={s.thumbImg} loading="lazy" />
