@@ -6,8 +6,12 @@ import { pobierzWszystkieWiersze } from '../pobierzWszystko'
 import { parsujIlosc } from '../jednostki'
 
 async function kompresujObraz(plik, maxSzerokosc = 1200, jakosc = 0.82) {
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     const img = new Image()
+    // Bez onerror plik, który nie da się zdekodować jako obraz (uszkodzony,
+    // zły format), zostawiał Promise w zawieszeniu na zawsze — Zapisz wisiał
+    // na „Zapisuję…" bez końca i bez żadnego komunikatu.
+    img.onerror = () => reject(new Error('Nie udało się wczytać zdjęcia — plik jest uszkodzony albo to nie jest obraz'))
     img.onload = () => {
       let { width, height } = img
       if (width > maxSzerokosc) { height = Math.round(height * maxSzerokosc / width); width = maxSzerokosc }
