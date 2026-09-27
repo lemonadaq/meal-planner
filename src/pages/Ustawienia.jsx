@@ -247,7 +247,8 @@ function makeS() {
       display: 'flex', gap: 8,
     },
     segBtn: {
-      flex: 1,
+      flex: 1, minHeight: 44,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
       fontFamily: fonts.sans, fontSize: 13, fontWeight: 500,
       padding: '10px 6px', borderRadius: 10, cursor: 'pointer',
       border: `1px solid ${t.border}`,
