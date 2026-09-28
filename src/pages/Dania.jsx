@@ -493,7 +493,9 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
                       style={s.listStar}
                       onClick={e => { e.stopPropagation(); toggleUlubione(d['Danie']) }}
                       aria-label={d.ulubione ? 'Usuń z ulubionych' : 'Dodaj do ulubionych'}>
-                      <StarIcon filled={d.ulubione} small />
+                      <span style={s.listStarBadge}>
+                        <StarIcon filled={d.ulubione} small />
+                      </span>
                     </button>
                   </div>
                   <div style={s.listInfo}>
@@ -745,19 +747,19 @@ function makeS() {
   },
   cardImgWrap: { position: 'relative', cursor: 'pointer' },
   cardStar: {
-    position: 'absolute', top: 8, left: 8,
+    position: 'absolute', top: 6, left: 6,
     background: t.surface, backdropFilter: 'blur(6px)',
     border: `0.5px solid ${t.border}`,
-    borderRadius: 999, padding: 4,
+    borderRadius: 999, width: 40, height: 40,
     boxShadow: '0 1px 4px rgba(0,0,0,.15)',
     cursor: 'pointer',
     display: 'grid', placeItems: 'center',
   },
   cardMenu: {
-    position: 'absolute', top: 8, right: 8,
+    position: 'absolute', top: 6, right: 6,
     background: t.surface, backdropFilter: 'blur(6px)',
     border: `0.5px solid ${t.border}`,
-    borderRadius: 999, width: 28, height: 28,
+    borderRadius: 999, width: 40, height: 40,
     color: t.text, cursor: 'pointer',
     display: 'grid', placeItems: 'center',
     boxShadow: '0 1px 4px rgba(0,0,0,.15)',
@@ -802,12 +804,19 @@ function makeS() {
     width: 56, height: 56, borderRadius: 12, overflow: 'hidden',
     flexShrink: 0, position: 'relative',
   },
+  // Tapowalny obszar 40×40 (minimum dotykowe), ale widoczna plakietka zostaje
+  // mała jak wcześniej — na 56×56 miniaturce pełne 40px tła zakrywałoby zdjęcie.
   listStar: {
-    position: 'absolute', top: 4, left: 4,
+    position: 'absolute', top: 0, left: 0, width: 40, height: 40,
+    background: 'none', border: 'none', padding: 0,
+    cursor: 'pointer',
+    display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start',
+  },
+  listStarBadge: {
+    margin: 4,
     background: t.surface, backdropFilter: 'blur(6px)',
     border: `0.5px solid ${t.border}`,
     borderRadius: 999, padding: 2,
-    cursor: 'pointer',
     display: 'grid', placeItems: 'center',
   },
   listInfo: { flex: 1, minWidth: 0 },
@@ -822,7 +831,7 @@ function makeS() {
   },
   listMenuBtn: {
     background: 'none', border: 'none', cursor: 'pointer',
-    color: t.muteLight, padding: 8, display: 'grid', placeItems: 'center',
+    color: t.muteLight, width: 40, height: 40, display: 'grid', placeItems: 'center',
     flexShrink: 0,
   },
 
