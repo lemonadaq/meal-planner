@@ -433,6 +433,13 @@ const PREFIKS_RGX = /^(swiezy|swieza|swieze|surowy|surowa|surowe|mrozony|mrozona
 function normalizujDlaScalania(normNazwa) {
   return normNazwa.replace(SUFIKS_RGX, '').replace(PREFIKS_RGX, '').trim()
 }
+
+// Ten sam klucz, którego generuj() używa do scalania wariantów nazw w jedną
+// pozycję z planu — potrzebny też przy dopisywaniu własnego produktu, żeby
+// "Cebula" dopisana ręcznie nie wylądowała jako druga pozycja obok "Cebula" z planu.
+function kluczDoPorownania(nazwa = '') {
+  return normalizujDlaScalania(normalizujNazweMeta(poprawNazwe(nazwa || '')))
+}
 function domyslnieWDomu(item) {
   if (!item) return false
   const n = normalizujNazweMeta(item.skladnik || '')
@@ -664,6 +671,20 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     })
     return () => { anulowane = true }
   }, [zakladka, cenyBazowe])
+
+  // Nazwy już obecne na liście (z planu + dopisane ręcznie/cyklicznie) — do
+  // wykrywania duplikatów przy dopisywaniu nowego produktu.
+  const istniejaceNazwy = useMemo(() => {
+    const mapa = new Map()
+    const dodaj = nazwa => {
+      const klucz = kluczDoPorownania(nazwa)
+      if (klucz && !mapa.has(klucz)) mapa.set(klucz, poprawNazwe(nazwa))
+    }
+    lista.forEach(i => dodaj(i.skladnik))
+    wlasne.forEach(w => dodaj(w.nazwa))
+    cykliczne.forEach(c => dodaj(c.nazwa))
+    return mapa
+  }, [lista, wlasne, cykliczne])
 
   // Tablica nazw (do UI) wyprodukowana z rows, posortowana i zdedupowana.
   const produktyWDomu = useMemo(
@@ -1513,7 +1534,15 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
         }
       }
     } else {
-      // Ścieżka 3: nowy produkt
+      // Ścieżka 3: nowy produkt — pomiń, jeśli taka nazwa już jest na liście
+      // (z planu, dopisana ręcznie albo cyklicznie), żeby nie robić drugiej pozycji.
+      const istniejaca = istniejaceNazwy.get(kluczDoPorownania(daneDoZapisu.nazwa))
+      if (istniejaca) {
+        pokazToast(`Już na liście: ${istniejaca}`)
+        setEdycjaWlasnego(null)
+        setPokazDodaj(false)
+        return
+      }
       if (chceCykliczny) {
         const rekord = {
           ...daneDoZapisu,
@@ -1660,6 +1689,9 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
 
     if (linie.length === 0) return
 
+    // Produkt, który już jest na liście (z planu, ręcznie albo cyklicznie),
+    // nie dostaje drugiej pozycji — zamiast tego zostaje pominięty i wymieniony w toaście.
+    const pominiete = []
     const rekordy = linie
       .map(parsujSzybkiProdukt)
       .filter(Boolean)
@@ -1673,8 +1705,16 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
         odznaczone: false,
       }))
       .filter(rekord => rekord.nazwa)
+      .filter(rekord => {
+        const istniejaca = istniejaceNazwy.get(kluczDoPorownania(rekord.nazwa))
+        if (istniejaca) { pominiete.push(istniejaca); return false }
+        return true
+      })
 
-    if (rekordy.length === 0) return
+    if (rekordy.length === 0) {
+      if (pominiete.length) pokazToast(`Już na liście: ${pominiete.join(', ')}`)
+      return
+    }
 
     const { data, error } = await supabase.from('zakupy_wlasne')
       .insert(rekordy)
@@ -1709,7 +1749,8 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
         const ids = new Set(prev.map(w => w.id))
         return [...prev, ...dodane.filter(w => !ids.has(w.id))]
       })
-      pokazToast(dodane.length === 1 ? `Dodano: ${dodane[0].nazwa}` : `Dodano ${dodane.length} produktów`)
+      const komunikat = dodane.length === 1 ? `Dodano: ${dodane[0].nazwa}` : `Dodano ${dodane.length} produktów`
+      pokazToast(pominiete.length ? `${komunikat} · już na liście: ${pominiete.join(', ')}` : komunikat)
       return
     }
 
@@ -1721,7 +1762,8 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
       sledz?.('dodaj_szybki_produkt', { ile: data.length })
     }
 
-    pokazToast(data?.length === 1 ? `Dodano: ${data[0].nazwa}` : `Dodano ${data?.length || rekordy.length} produktów`)
+    const komunikat = data?.length === 1 ? `Dodano: ${data[0].nazwa}` : `Dodano ${data?.length || rekordy.length} produktów`
+    pokazToast(pominiete.length ? `${komunikat} · już na liście: ${pominiete.join(', ')}` : komunikat)
   }
 
   async function usunWlasny(item) {
