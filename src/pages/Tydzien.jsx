@@ -223,6 +223,10 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
   }
 
   const s = makeS()
+  // Ta sama odmiana słowa "tydzień", co w tytule — panel puli i sticky
+  // odznaka niżej muszą się z nim zgadzać, inaczej po przełączeniu tygodnia
+  // wyglądają, jakby nadal pokazywały pulę bieżącego tygodnia.
+  const odmianaTygodnia = offset === 0 ? 'tym' : offset === 1 ? 'przyszłym' : 'tamtym'
 
   return (
     <div style={s.container}>
@@ -253,7 +257,7 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
           </button>
         </div>
         <h1 style={s.tytul}>
-          Co jemy w {offset === 0 ? 'tym' : offset === 1 ? 'przyszłym' : 'tamtym'} <em style={s.italic}>tygodniu</em>
+          Co jemy w {odmianaTygodnia} <em style={s.italic}>tygodniu</em>
           <span style={{ color: t.warm }}>?</span>
         </h1>
       </header>
@@ -261,7 +265,7 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
       {/* Panel wybranych dań tygodnia */}
       <section style={s.pulaSekcja}>
         <div style={s.pulaHeader}>
-          <h2 style={{ ...s.h2, marginBottom: 0 }}>W tym tygodniu {loadingPula ? '' : `(${pula.length})`}</h2>
+          <h2 style={{ ...s.h2, marginBottom: 0 }}>W {odmianaTygodnia} tygodniu {loadingPula ? '' : `(${pula.length})`}</h2>
           <button
             style={s.losujBtn}
             onClick={wylosujDanie}
@@ -277,7 +281,7 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
           </div>
         ) : pula.length === 0 ? (
           <div style={s.pulaPusta}>
-            Wybierz z listy poniżej co chcesz jeść w tym tygodniu.
+            Wybierz z listy poniżej co chcesz jeść w {odmianaTygodnia} tygodniu.
           </div>
         ) : (
           <>
@@ -332,7 +336,7 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
       {/* Sticky licznik puli */}
       {!loadingPula && (
         <div style={s.licznikWrap}>
-          <div style={s.licznik}>W tym tygodniu: {pula.length}</div>
+          <div style={s.licznik}>W {odmianaTygodnia} tygodniu: {pula.length}</div>
         </div>
       )}
 
