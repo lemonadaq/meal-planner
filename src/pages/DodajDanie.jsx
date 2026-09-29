@@ -206,8 +206,10 @@ export default function DodajDanie({ onBack, onZapisano }) {
       setSaving(false); return
     }
 
+    // (?!\d) — bez tego "1.5 kg kurczaka…" gubiło "1" (kropka dziesiętna
+    // mylona z numerem listy, bo \s* nie wymaga spacji po kropce)
     const krokiParsed = przepisRaw
-      .split('\n').map(k => k.replace(/^\d+[\.\)]\s*/, '').trim()).filter(Boolean)
+      .split('\n').map(k => k.replace(/^\d+[.)](?!\d)\s*/, '').trim()).filter(Boolean)
     const przepisTekst = krokiParsed.length > 0
       ? krokiParsed.map((k, i) => `${i + 1}. ${k}`).join('\n')
       : null
