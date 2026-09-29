@@ -9,6 +9,7 @@ export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin
   const [zapisano, setZapisano] = useState(false)
   const [imieEdyt, setImieEdyt] = useState(pelneImie)
   const [imieStan, setImieStan] = useState('idle') // 'idle' | 'saving' | 'done'
+  const [imieBlad, setImieBlad] = useState(null)
   const motyw = ustawienia?.motyw ?? DOMYSLNY_MOTYW
 
   useEffect(() => {
@@ -23,10 +24,15 @@ export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin
     const nowe = imieEdyt.trim()
     if (!nowe || nowe === pelneImie) return
     setImieStan('saving')
+    setImieBlad(null)
     const { error } = await supabase.auth.updateUser({ data: { full_name: nowe } })
+    if (error) {
+      setImieStan('idle')
+      setImieBlad('Nie udało się zapisać imienia. Spróbuj ponownie.')
+      return
+    }
     setImieStan('done')
     setTimeout(() => setImieStan('idle'), 1400)
-    if (error) setImieStan('idle')
   }
 
   function zmienPorcje(delta) {
@@ -80,7 +86,7 @@ export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin
               style={s.imieInput}
               type="text"
               value={imieEdyt}
-              onChange={e => setImieEdyt(e.target.value)}
+              onChange={e => { setImieEdyt(e.target.value); setImieBlad(null) }}
               placeholder="Twoje imię"
               autoComplete="given-name"
             />
@@ -95,6 +101,7 @@ export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin
               {imieStan === 'saving' ? '...' : 'Zapisz'}
             </button>
           </div>
+          {imieBlad && <p style={s.imieBlad}>{imieBlad}</p>}
         </section>
 
         {/* Motyw */}
@@ -244,6 +251,7 @@ function makeS() {
       flexShrink: 0, whiteSpace: 'nowrap',
     },
     imieBtnOff: { opacity: 0.45, cursor: 'default' },
+    imieBlad: { fontFamily: fonts.sans, fontSize: 12.5, color: t.danger, margin: '8px 0 0' },
 
     // Segmentowany przełącznik motywu
     segRow: {
