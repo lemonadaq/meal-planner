@@ -165,6 +165,9 @@ export default function DodajDanie({ onBack, onZapisano }) {
     if (skladniki.find(sk => sk.nazwa.toLowerCase() === nazwaTrim.toLowerCase())) {
       setBladSkladnik('Ten składnik już jest na liście'); return
     }
+    if (!nowyS.jednostka.trim()) {
+      setBladSkladnik('Wybierz jednostkę'); return
+    }
     if (!nowyS.ilosc.trim() && nowyS.jednostka !== 'do smaku') {
       setBladSkladnik('Podaj ilość (albo wybierz jednostkę „do smaku")'); return
     }
