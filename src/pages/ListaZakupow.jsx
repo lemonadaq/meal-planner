@@ -505,11 +505,15 @@ function formatujOpakowania(opak) {
 }
 
 // Sformatuj „potrzeba 750 ml" — oryginalna ilość z przepisu jako podpowiedź.
+// Dla sztuk (jaja, główki itp.) zaokrąglamy w górę — „52,5 szt." to nonsens,
+// pół sztuki się nie kupuje, więc pokazujemy najbliższą liczbę całą w górę.
 function formatujOryginalnaIlosc(opak) {
   if (!opak?.oryginalna) return ''
   const { ilosc, jednostka } = opak.oryginalna
   if (ilosc == null) return ''
-  const liczba = Number.isInteger(ilosc) ? String(ilosc) : String(Math.round(ilosc * 100) / 100).replace('.', ',')
+  const liczba = kanonJednostka(jednostka) === 'szt'
+    ? String(Math.ceil(ilosc))
+    : Number.isInteger(ilosc) ? String(ilosc) : String(Math.round(ilosc * 100) / 100).replace('.', ',')
   return `${liczba}${jednostka ? ` ${jednostka}` : ''}`.trim()
 }
 
