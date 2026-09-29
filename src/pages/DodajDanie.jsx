@@ -556,6 +556,7 @@ function makeS() {
     padding: 4, background: t.surfaceAlt, borderRadius: 14,
   },
   rodzajBtn: {
+    minHeight: 44, display: 'flex', alignItems: 'center', justifyContent: 'center',
     padding: '11px 6px', border: 'none', borderRadius: 10,
     background: 'transparent', color: t.mute,
     fontFamily: fonts.sans, fontSize: 13, fontWeight: 500, cursor: 'pointer',
@@ -569,7 +570,8 @@ function makeS() {
   // Segmented control (Typ dania)
   segRow: { display: 'flex', gap: 4, padding: 3, background: t.surfaceAlt, borderRadius: 12 },
   segBtn: {
-    flex: 1, padding: '9px 8px', border: 'none', borderRadius: 9,
+    flex: 1, minHeight: 44, display: 'flex', alignItems: 'center', justifyContent: 'center',
+    padding: '9px 8px', border: 'none', borderRadius: 9,
     background: 'transparent', color: t.mute,
     fontFamily: fonts.sans, fontSize: 13, fontWeight: 500, cursor: 'pointer',
   },
