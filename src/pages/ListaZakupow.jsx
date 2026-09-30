@@ -31,7 +31,7 @@ const KATEGORIE = [
   { id: '5_Produkty sypkie',   label: 'Produkty sypkie' },
   { id: '6_Konserwy i słoiki', label: 'Konserwy i słoiki' },
   { id: '7_Przyprawy',         label: 'Przyprawy' },
-  { id: '8_Inne',              label: 'Inne (papier, chemia, itp.)' },
+  { id: '8_Inne',              label: 'Inne (alkohol, chemia, papier, itp.)' },
 ]
 
 const JEDNOSTKI = ['', 'szt.', 'opak.', 'g', 'kg', 'ml', 'l', 'pęczek']
@@ -166,12 +166,13 @@ function normalizujJednostke(raw = '') {
 
 function rozpoznajKategorie(nazwa = '') {
   const x = nazwa.toLowerCase()
-  if (/chleb|buł|\bbul|bagiet|kajzer|pieczyw|tost|tortill/.test(x)) return '4_Pieczywo'
+  // \bbul(?!ion) — łapie „bulka"/„bulki" (bez polskich znaków), ale nie „bulion"
+  if (/chleb|buł|\bbul(?!ion)|bagiet|kajzer|pieczyw|tost|tortill/.test(x)) return '4_Pieczywo'
   if (/mleko|jogurt|kefir|maślank|maslank|ser|twar[oó]g|śmietan|smietan|masło|maslo|margaryn|jaj/.test(x)) return '3_Nabiał'
   if (/pomidor|og[oó]rek|ziemni|marchew|cebula|czosnek|papryk|sałat|salat|jabł|jabl|banan|cytryn|limonk|awokado|broku|kalafior|kapust|cukini|bakła|bakla|pietruszk|koper|szczyp/.test(x)) return '1_Warzywa i owoce'
   if (/kurczak|wołow|wolow|wieprz|schab|kark[oó]w|mi[eę]so|mielon|szynk|boczek|kiełbas|kielbas|ryb|łosoś|losos|dorsz|tuńczyk|tunczyk/.test(x)) return '2_Mięso i ryby'
-  if (/makaron|ryż|ryz|kasz|mąk|maka|cukier|płatki|platki|owsian|soczewic|ciecierzyc|fasol|groch/.test(x)) return '5_Produkty sypkie'
-  if (/konserw|puszk|słoik|sloik|passat|przecier|kukurydz|groszek|oliwk|musztard|majonez|ketchup|chrzan/.test(x)) return '6_Konserwy i słoiki'
+  if (/makaron|ryż|ryz|kasz|mąk|maka|cukier|płatki|platki|owsian|soczewic|ciecierzyc|fasol|groch|kaw[ae]|kakao|herbat|czekolad/.test(x)) return '5_Produkty sypkie'
+  if (/konserw|puszk|słoik|sloik|passat|przecier|kukurydz|groszek|oliwk|musztard|majonez|ketchup|chrzan|bulion|rosł|rosol/.test(x)) return '6_Konserwy i słoiki'
   if (/s[oó]l|pieprz|papryka słodka|papryka ostra|oregano|bazyl|curry|przypraw|zioł|ziol|cynamon/.test(x)) return '7_Przyprawy'
   return '8_Inne'
 }
@@ -1080,7 +1081,10 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
           bazaJedn: ustalJednostkeBazowa(meta, jednostka),
           jednostka: '',
           wagaSztuki: wagaSztukiZMeta(meta),
-          kategoria: kategoria || '8_Inne',
+          // Przepis bez kategorii albo wrzucony do domyślnego „Inne" — spróbuj
+          // rozpoznać coś trafniejszego z samej nazwy (np. „Kawa espresso",
+          // „Bulion" lądowały pod „Inne (papier, chemia, itp.)", co myli przy zakupach).
+          kategoria: bezpiecznaKategoria(kategoria) === '8_Inne' ? rozpoznajKategorie(kanon) : bezpiecznaKategoria(kategoria),
           podmieniono: !!globalnePodmiany[skladnik],
           zrodlo: 'plan',
           nieprzeliczone: [], // ilości, których nie dało się sprowadzić do bazy
