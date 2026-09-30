@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { supabase } from '../supabase'
 import { t, fonts, ui, avatarBg, DOMYSLNY_MOTYW } from '../theme'
 
@@ -11,13 +11,17 @@ export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin
   const [imieStan, setImieStan] = useState('idle') // 'idle' | 'saving' | 'done'
   const [imieBlad, setImieBlad] = useState(null)
   const motyw = ustawienia?.motyw ?? DOMYSLNY_MOTYW
+  // Gdy zapis imienia kończy się, `pelneImie` odświeża się z sesji i ten efekt
+  // normalnie nadpisałby pole — również wtedy, gdy user w międzyczasie zdążył
+  // wpisać kolejną zmianę. edytujeRef pilnuje, żeby nie kasować świeżej edycji.
+  const edytujeRef = useRef(false)
 
   useEffect(() => {
     setPorcje(ustawienia?.domyslne_porcje ?? 1)
   }, [ustawienia?.domyslne_porcje])
 
   useEffect(() => {
-    setImieEdyt(pelneImie)
+    if (!edytujeRef.current) setImieEdyt(pelneImie)
   }, [pelneImie])
 
   async function zapiszImie() {
@@ -87,6 +91,8 @@ export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin
               type="text"
               value={imieEdyt}
               onChange={e => { setImieEdyt(e.target.value); setImieBlad(null) }}
+              onFocus={() => { edytujeRef.current = true }}
+              onBlur={() => { edytujeRef.current = false }}
               placeholder="Twoje imię"
               autoComplete="given-name"
             />
