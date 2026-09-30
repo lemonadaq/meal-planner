@@ -54,6 +54,15 @@ function getEmoji(nazwa) {
   return '🍽️'
 }
 
+// Odmiana „wpis” po liczbie — jak w ListaZakupow.jsx (etykietaTygodnia), bo
+// samo n>=2 && n<5 myli się przy 22-24, 32-34 itd.
+function odmianaWpis(n) {
+  if (n === 1) return 'wpis'
+  const m10 = n % 10, m100 = n % 100
+  if (m10 >= 2 && m10 <= 4 && !(m100 >= 12 && m100 <= 14)) return 'wpisy'
+  return 'wpisów'
+}
+
 export default function Dania({ onSelect, user, householdId, onDodaj, onBack, refreshKey }) {
   const [wszystkie, setWszystkie] = useState([])
   const [loading, setLoading] = useState(true)
@@ -382,7 +391,7 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
         {/* Liczba wyników + toggle widoku */}
         <div style={s.metaRow}>
           <span style={s.licznik}>
-            {filtrowane.length} {filtrowane.length === 1 ? 'wpis' : (filtrowane.length >= 2 && filtrowane.length < 5 ? 'wpisy' : 'wpisów')} · {aktywneFiltryLabel}
+            {filtrowane.length} {odmianaWpis(filtrowane.length)} · {aktywneFiltryLabel}
           </span>
           <div style={s.metaActions}>
             <button
