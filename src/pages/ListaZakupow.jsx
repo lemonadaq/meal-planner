@@ -1090,8 +1090,10 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
         wpis.skladnik = kanon
       }
 
-      // Brak ilości („do smaku", „—") — nic do sumowania, pozycja już istnieje
-      if (!Number.isFinite(iloscNum) || iloscNum === 0) return
+      // Brak ilości („do smaku", „—") albo ilość ujemna (literówka w przepisie,
+      // np. „-5 g" zamiast „5 g") — nic do sumowania, pozycja już istnieje.
+      // Bez tego błędny minus z bazy leciał na listę zakupów jako np. „-30 g".
+      if (!Number.isFinite(iloscNum) || iloscNum <= 0) return
 
       const realna = iloscNum * (mnoznik || 1)
       const p = naBazowa(realna, jednostka, wpis.bazaJedn, wpis.wagaSztuki)
