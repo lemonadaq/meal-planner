@@ -327,14 +327,17 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
             </button>
           </>
         )}
-      </section>
 
-      {/* Sticky licznik puli */}
-      {!loadingPula && (
-        <div style={s.licznikWrap}>
-          <div style={s.licznik}>W tym tygodniu: {pula.length}</div>
-        </div>
-      )}
+        {/* Sticky licznik puli — `position: relative` na sekcji ogranicza
+            zasięg przyklejenia (CSS sticky) do wysokości TEGO panelu, więc
+            odznaka znika po przewinięciu do listy przepisów poniżej, zamiast
+            wisieć nad jej wierszami przez całe przewijanie strony. */}
+        {!loadingPula && (
+          <div style={s.licznikWrap}>
+            <div style={s.licznik}>W tym tygodniu: {pula.length}</div>
+          </div>
+        )}
+      </section>
 
       {/* Search */}
       <div style={s.searchWrap}>
@@ -497,7 +500,7 @@ function makeS() {
     tytul: { ...ui.h1, fontSize: 30, lineHeight: 1.08, fontWeight: 400 },
     italic: { fontStyle: 'italic', color: t.accent, fontFamily: fonts.serif },
 
-    pulaSekcja: { marginBottom: 18 },
+    pulaSekcja: { marginBottom: 18, position: 'relative' },
     h2: { ...ui.h2, marginBottom: 10 },
     pulaHeader: {
       display: 'flex', justifyContent: 'space-between',
