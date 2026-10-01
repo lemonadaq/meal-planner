@@ -100,6 +100,16 @@ export function useTydzien(householdId, user, offset = 0, domyslnePorcje = 1) {
 
   const tydzien = poniedzialekTygodnia(offset)
 
+  // Najświeższy `tydzien` — do porównania w `refresh` PO powrocie odpowiedzi
+  // z bazy. Bez tego szybkie przełączanie tygodni (offset w tę i z powrotem,
+  // zanim poprzednie zapytanie zdąży wrócić) mogło pokazać pulę tygodnia, na
+  // którym użytkownik już nie jest — odpowiedź z bazy dla NIEAKTUALNEGO już
+  // tygodnia potrafiła wrócić później niż odpowiedź dla aktualnego i nadpisać
+  // `pula` przestarzałymi danymi (dane w bazie zostawały nietknięte, błąd był
+  // tylko w tym, co pokazywał ekran).
+  const tydzienRef = useRef(tydzien)
+  useEffect(() => { tydzienRef.current = tydzien }, [tydzien])
+
   const refresh = useCallback(async () => {
     if (!householdId) {
       // householdId jeszcze się ładuje (useHousehold w App.jsx) — nie
@@ -109,12 +119,16 @@ export function useTydzien(householdId, user, offset = 0, domyslnePorcje = 1) {
       return
     }
     setLoading(true)
+    const zapytanyTydzien = tydzien
     const { data, error } = await supabase
       .from('plan_tygodnia')
       .select('*')
       .eq('household_id', householdId)
-      .eq('tydzien', tydzien)
+      .eq('tydzien', zapytanyTydzien)
       .order('created_at')
+    // Użytkownik zdążył przełączyć się na inny tydzień, zanim ta odpowiedź
+    // wróciła — nie nadpisujemy jego aktualnego widoku przestarzałymi danymi.
+    if (tydzienRef.current !== zapytanyTydzien) return
     if (!error) setPula(data || [])
     setLoading(false)
   }, [householdId, tydzien])
