@@ -220,7 +220,7 @@ export default function Rodzina({ user, householdId, onBack, onZmianaHousehold }
                   ✉
                 </div>
                 <div style={s.rzadInfo}>
-                  <div style={s.rzadNazwa}>{z.invited_email}</div>
+                  <div style={s.rzadNazwaZaproszenia}>{z.invited_email}</div>
                   <div style={s.rzadEmail}>Czeka na akceptację</div>
                 </div>
                 <button
@@ -383,6 +383,10 @@ function makeS() {
   rzadNazwa: {
     fontFamily: fonts.sans, fontSize: 14.5, fontWeight: 600, color: t.text,
     display: 'flex', alignItems: 'center', gap: 8,
+  },
+  rzadNazwaZaproszenia: {
+    fontFamily: fonts.sans, fontSize: 14.5, fontWeight: 600, color: t.text,
+    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
   },
   rzadEmail: {
     fontFamily: fonts.sans, fontSize: 12, color: t.mute, marginTop: 2,
