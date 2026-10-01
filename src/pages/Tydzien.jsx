@@ -547,8 +547,10 @@ function makeS() {
       background: t.surfaceAlt, borderRadius: 999, padding: 2,
       flexShrink: 0,
     },
+    // 40×40 — cel dotyku, nie wizualny rozmiar kółka (jak pulaUsun obok).
+    // Poniżej 40 px kciuk regularnie chybiał w sąsiedni element rzędu.
     stepperBtn: {
-      width: 26, height: 26, borderRadius: '50%',
+      width: 40, height: 40, borderRadius: '50%',
       background: t.surface, border: `0.5px solid ${t.border}`,
       color: t.accent, fontFamily: fonts.sans, fontSize: 15, fontWeight: 600,
       cursor: 'pointer', display: 'grid', placeItems: 'center', lineHeight: 1,
