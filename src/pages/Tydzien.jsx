@@ -57,6 +57,12 @@ function formatPorcje(p) {
   return String(Number(p) || 1).replace('.', ',')
 }
 
+// Odmiana „tydzień" po liczbie — jak w etykietaTygodnia z ListaZakupow.jsx
+function formaTygodni(n) {
+  if (n % 100 >= 12 && n % 100 <= 14) return 'tygodni'
+  if (n % 10 >= 2 && n % 10 <= 4) return 'tygodnie'
+  return 'tygodni'
+}
 
 export default function Tydzien({ user, householdId, onSelectDanie, sledz, refreshKey, onZakupy, onUstawienia, domyslnePorcje = 1 }) {
   const [offset, setOffset] = useState(0)
@@ -255,8 +261,14 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
           </button>
         </div>
         <h1 style={s.tytul}>
-          Co jemy w {offset === 0 ? 'tym' : offset === 1 ? 'przyszłym' : 'tamtym'} <em style={s.italic}>tygodniu</em>
-          <span style={{ color: t.warm }}>?</span>
+          {/* "tamtym tygodniu" dla offsetu ≥ 2 brzmiało jak czas przeszły —
+              mylące przy planowaniu odległej przyszłości. Dla przeszłości
+              (offset ≤ -1) zostaje bez zmian, tam brzmi naturalnie. */}
+          {offset > 1 ? (
+            <>Co jemy za <em style={s.italic}>{offset} {formaTygodni(offset)}</em><span style={{ color: t.warm }}>?</span></>
+          ) : (
+            <>Co jemy w {offset === 0 ? 'tym' : offset === 1 ? 'przyszłym' : 'tamtym'} <em style={s.italic}>tygodniu</em><span style={{ color: t.warm }}>?</span></>
+          )}
         </h1>
       </header>
 
