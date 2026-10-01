@@ -22,6 +22,8 @@ import StronaGlowna from './StronaGlowna.jsx'
 import Blog from './pages/Blog.jsx'
 import Wpis from './pages/Wpis.jsx'
 import OMnie from './pages/OMnie.jsx'
+import PolitykaPrywatnosci from './pages/PolitykaPrywatnosci.jsx'
+import Regulamin from './pages/Regulamin.jsx'
 
 // Stary adres wpisu → nowy, z zachowaniem sluga.
 function PrzekierujWpis() {
@@ -43,6 +45,13 @@ export default function Trasy({ jestNatywna = false }) {
           potraktowane jak nazwa wpisu. */}
       <Route path="/blog/o-mnie" element={<OMnie />} />
       <Route path="/blog/:slug" element={<Wpis />} />
+
+      {/* Dokumenty prawne pod stałymi, publicznymi adresami. Google Play
+          wymaga podania adresu polityki prywatności w opisie aplikacji,
+          a adres musi działać bez logowania. Ten sam komponent renderuje
+          się też jako modal na ekranie logowania — treść jest jedna. */}
+      <Route path="/polityka-prywatnosci" element={<PolitykaPrywatnosci />} />
+      <Route path="/regulamin" element={<Regulamin />} />
 
       {/* Adresy sprzed rozdzielenia bloga i aplikacji. */}
       <Route path="/wpis/:slug" element={<PrzekierujWpis />} />

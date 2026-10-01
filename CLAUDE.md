@@ -135,6 +135,18 @@ Helpery SQL: `moj\_household\_id()`, `moj\_email()` — używają JWT pytająceg
 
 
 
+\## Wydanie na Androida
+
+`WYDANIE-ANDROID.md` — jak powstaje `.aab` (workflow „Wydanie Android"
+w Actions) i co trzeba zrobić poza kodem. `SKLEP-PLAY.md` — gotowe teksty
+do Play Console i odpowiedzi do formularza bezpieczeństwa danych.
+
+UWAGA: nowe osobiste konto deweloperskie musi przejść testy zamknięte
+(12 testerów przez 14 dni), zanim dostanie dostęp do produkcji.
+
+Klucz podpisujący i hasła WYŁĄCZNIE z sekretów Actions. `.gitignore` blokuje
+`*.jks`, `*.keystore` i `android/keystore.properties`.
+
 \## Ustalenia produktowe
 
 `USTALENIA.md` — decyzje, które wyglądają na błąd, a są celowe (np. jednostka
