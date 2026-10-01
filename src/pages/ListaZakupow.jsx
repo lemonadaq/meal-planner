@@ -81,6 +81,11 @@ function kluczZakupu(skladnik, jednostka = '') {
 
 function tekstIlosciZItemu(item) {
   if (!item) return ''
+  // Pozycje policzone w opakowaniach (np. „1 kostka 200g") pokazują na liście
+  // formatujOpakowania(), nie surową wagę z przepisu — pole edycji musi
+  // startować z tego samego tekstu, inaczej „Zapisz" bez zmian nadpisuje
+  // kupowalną ilość surowymi gramami (masła nie da się kupić luzem na gramy).
+  if (item.opakowania) return formatujOpakowania(item.opakowania)
   if (item.iloscOryginalna != null && item.iloscOryginalna !== '') return item.iloscOryginalna.toString()
   if (item.ilosc != null) return `${item.ilosc}${item.jednostka ? ` ${item.jednostka}` : ''}`.trim()
   if (item.jednostka) return item.jednostka.toString()
