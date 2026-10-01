@@ -114,6 +114,101 @@ Zainstaluj `.apk` na telefonie i przejdź:
    w przeglądarce
 4. aplikacja ma otworzyć **planer**, nie blog (`jestNatywna` w `Trasy.jsx`)
 
+## Krok 5 — testy zamknięte
+
+**Nie potrzebujesz osobnego buildu dla testerów.** Ten sam `.aab` z artefaktu
+idzie na kanał testów zamkniętych, a później — bez przebudowy — można go
+awansować do produkcji.
+
+### 5a. Zanim w ogóle pojawi się kanał testów
+
+Play Console nie wypuści żadnej wersji, dopóki nie uzupełnisz tych sekcji.
+Teksty i odpowiedzi są gotowe w `SKLEP-PLAY.md`.
+
+- **Store listing** — nazwa, krótki i pełny opis, kategoria
+- **Grafiki** — ikona 512×512, grafika promocyjna 1024×500, minimum 2 zrzuty
+- **Polityka prywatności** — `https://menuplaner.pl/polityka-prywatnosci`
+- **Bezpieczeństwo danych** — formularz, odpowiedzi w `SKLEP-PLAY.md`
+- **Klasyfikacja treści** — kwestionariusz
+- **Grupa odbiorców i reklamy** — aplikacja nie zawiera reklam
+
+### 5b. Dostęp do aplikacji — to najczęstszy powód odrzucenia
+
+Aplikacja wymaga logowania, więc recenzent Google **nie zobaczy nic poza
+ekranem logowania**, jeśli nie dostanie konta. W sekcji **App access**
+(Dostęp do aplikacji) trzeba podać działający login i hasło.
+
+Zrób do tego **osobne konto**, nie swoje:
+
+1. załóż konto w aplikacji na adres, który nie jest Twoim prywatnym,
+2. zaloguj się na nie i dodaj kilka dań do tygodnia, żeby lista zakupów
+   nie była pusta — recenzent ma zobaczyć działającą aplikację, a nie
+   pusty ekran powitalny,
+3. wpisz ten login i hasło w App access,
+4. **nie kasuj tego konta** i nie zmieniaj mu hasła, dopóki aplikacja żyje
+   w sklepie — Google wraca do niego przy każdej aktualizacji.
+
+### 5c. Kanał testów i testerzy
+
+**Testing → Closed testing → Create new release.**
+
+- Lista testerów: przy 18 osobach najprościej **Email list** (do 100 adresów).
+  Grupa Google ma sens dopiero przy większej skali.
+- Adres musi być tym, na który dana osoba **loguje się do Google na telefonie**.
+  Najczęstsza wpadka: ktoś podaje adres firmowy, a w telefonie ma prywatny —
+  i potem nie widzi aplikacji.
+- Wgraj `.aab` z artefaktu, dopisz krótkie „co nowego", wypuść wersję.
+- Skopiuj **link do zapisu** (opt-in URL) — to jego rozsyłasz.
+
+Po wypuszczeniu wersja bywa widoczna dopiero po kilku godzinach. Nie panikuj,
+jeśli pierwsi testerzy zobaczą „nie znaleziono aplikacji".
+
+### 5d. Co wysłać testerom
+
+Gotowy tekst do wklejenia (WhatsApp, SMS):
+
+```
+Cześć! Testuję swoją apkę do planowania posiłków i zakupów —
+potrzebuję kilku osób, żeby Google wpuścił ją do sklepu.
+
+Zajmie Ci to 2 minuty:
+
+1. Otwórz ten link NA TELEFONIE, zalogowany tym kontem Google,
+   które podałeś/aś mi wcześniej:
+   <TUTAJ WKLEJ LINK DO ZAPISU>
+
+2. Kliknij „Zostań testerem" / „Become a tester".
+
+3. Z tej samej strony przejdź do Google Play i zainstaluj apkę.
+
+4. NAJWAŻNIEJSZE: zostaw ją zainstalowaną przez 2 tygodnie.
+   Google liczy, ile osób jest zapisanych — jak ktoś się wypisze
+   albo odinstaluje, licznik leci w dół i zaczynamy od nowa.
+
+Możesz jej używać normalnie albo wcale, ważne żeby została.
+Jak coś nie działa — pisz śmiało, o to chodzi.
+```
+
+### 5e. Licznik 14 dni
+
+- Zegar rusza, gdy masz **co najmniej 12 zapisanych testerów**, i wymaga
+  utrzymania tej liczby **nieprzerwanie**.
+- Osiemnastu to dobry zapas: część osób nie kliknie linku, część zapomni,
+  ktoś zmieni telefon. Poniżej dwunastu licznik startuje od nowa.
+- Nie usuwaj i nie dodawaj testerów w trakcie bez potrzeby.
+- Postęp widać w Play Console, w sekcji dostępu do produkcji — i to tam,
+  a nie tutaj, jest prawda o aktualnych wymaganiach. Google tę zasadę
+  zmieniał i może zmienić znowu.
+
+Po przejściu okresu: **wniosek o dostęp do produkcji**, a po jego przyznaniu
+awansujesz tę samą wersję z testów zamkniętych na produkcję.
+
+### 5f. Gdy poprawiasz coś w trakcie testów
+
+Odpalasz „Wydanie Android" z **podbitym `version_code`** (3, 4, 5…) i wgrywasz
+nowy `.aab` na ten sam kanał. Testerzy dostają aktualizację automatycznie,
+a licznik dni leci dalej — liczy się zapisanie do testu, nie konkretna wersja.
+
 ## Do przemyślenia przed wysłaniem
 
 **Treści tworzone przez użytkowników.** Każdy zalogowany może dodać i edytować

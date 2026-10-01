@@ -146,7 +146,12 @@ w Actions) i co trzeba zrobić poza kodem. `SKLEP-PLAY.md` — gotowe teksty
 do Play Console i odpowiedzi do formularza bezpieczeństwa danych.
 
 UWAGA: nowe osobiste konto deweloperskie musi przejść testy zamknięte
-(12 testerów przez 14 dni), zanim dostanie dostęp do produkcji.
+(12 testerów przez 14 dni), zanim dostanie dostęp do produkcji. Instrukcja
+krok po kroku: `WYDANIE-ANDROID.md`, sekcja „Krok 5 — testy zamknięte",
+razem z gotowym tekstem do rozesłania testerom.
+
+Dla testerów NIE buduje się osobnej wersji — ten sam `.aab` idzie na kanał
+testów, a potem bez przebudowy awansuje do produkcji.
 
 Klucz podpisujący i hasła WYŁĄCZNIE z sekretów Actions. `.gitignore` blokuje
 `*.jks`, `*.keystore` i `android/keystore.properties`.
