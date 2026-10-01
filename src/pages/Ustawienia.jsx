@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { supabase } from '../supabase'
 import { t, fonts, ui, avatarBg, DOMYSLNY_MOTYW } from '../theme'
 
@@ -9,24 +9,34 @@ export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin
   const [zapisano, setZapisano] = useState(false)
   const [imieEdyt, setImieEdyt] = useState(pelneImie)
   const [imieStan, setImieStan] = useState('idle') // 'idle' | 'saving' | 'done'
+  const [imieBlad, setImieBlad] = useState(null)
   const motyw = ustawienia?.motyw ?? DOMYSLNY_MOTYW
+  // Gdy zapis imienia kończy się, `pelneImie` odświeża się z sesji i ten efekt
+  // normalnie nadpisałby pole — również wtedy, gdy user w międzyczasie zdążył
+  // wpisać kolejną zmianę. edytujeRef pilnuje, żeby nie kasować świeżej edycji.
+  const edytujeRef = useRef(false)
 
   useEffect(() => {
     setPorcje(ustawienia?.domyslne_porcje ?? 1)
   }, [ustawienia?.domyslne_porcje])
 
   useEffect(() => {
-    setImieEdyt(pelneImie)
+    if (!edytujeRef.current) setImieEdyt(pelneImie)
   }, [pelneImie])
 
   async function zapiszImie() {
     const nowe = imieEdyt.trim()
     if (!nowe || nowe === pelneImie) return
     setImieStan('saving')
+    setImieBlad(null)
     const { error } = await supabase.auth.updateUser({ data: { full_name: nowe } })
+    if (error) {
+      setImieStan('idle')
+      setImieBlad('Nie udało się zapisać imienia. Spróbuj ponownie.')
+      return
+    }
     setImieStan('done')
     setTimeout(() => setImieStan('idle'), 1400)
-    if (error) setImieStan('idle')
   }
 
   function zmienPorcje(delta) {
@@ -61,7 +71,7 @@ export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin
 
         <header style={s.header}>
           <div style={s.avatar} title={imie}>{imie[0]?.toUpperCase()}</div>
-          <div>
+          <div style={s.headerTekst}>
             <div style={s.eyebrow}>USTAWIENIA</div>
             <h1 style={s.title}>{imie}</h1>
             <div style={s.email}>{user?.email}</div>
@@ -80,7 +90,9 @@ export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin
               style={s.imieInput}
               type="text"
               value={imieEdyt}
-              onChange={e => setImieEdyt(e.target.value)}
+              onChange={e => { setImieEdyt(e.target.value); setImieBlad(null) }}
+              onFocus={() => { edytujeRef.current = true }}
+              onBlur={() => { edytujeRef.current = false }}
               placeholder="Twoje imię"
               autoComplete="given-name"
             />
@@ -95,6 +107,7 @@ export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin
               {imieStan === 'saving' ? '...' : 'Zapisz'}
             </button>
           </div>
+          {imieBlad && <p style={s.imieBlad}>{imieBlad}</p>}
         </section>
 
         {/* Motyw */}
@@ -200,7 +213,10 @@ function makeS() {
       padding: '20px 20px 32px',
       maxWidth: 600, margin: '0 auto', boxSizing: 'border-box',
     },
-    back: { ...ui.btnText, padding: '0 0 14px', display: 'block' },
+    back: {
+      ...ui.btnText, padding: '0 0 14px',
+      display: 'inline-flex', alignItems: 'center', minHeight: 40,
+    },
 
     header: {
       display: 'flex', alignItems: 'center', gap: 16,
@@ -215,9 +231,10 @@ function makeS() {
       flexShrink: 0,
       boxShadow: '0 4px 12px rgba(74,55,40,.12)',
     },
+    headerTekst: { minWidth: 0 },
     eyebrow: { ...ui.eyebrow, marginBottom: 4 },
-    title: { ...ui.h1, fontSize: 26, lineHeight: 1.1 },
-    email: { fontFamily: fonts.sans, fontSize: 13, color: t.mute, marginTop: 4 },
+    title: { ...ui.h1, fontSize: 26, lineHeight: 1.1, overflowWrap: 'anywhere' },
+    email: { fontFamily: fonts.sans, fontSize: 13, color: t.mute, marginTop: 4, overflowWrap: 'anywhere' },
 
     section: { ...ui.card, padding: 20, marginBottom: 14 },
     sectionHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
@@ -240,13 +257,15 @@ function makeS() {
       flexShrink: 0, whiteSpace: 'nowrap',
     },
     imieBtnOff: { opacity: 0.45, cursor: 'default' },
+    imieBlad: { fontFamily: fonts.sans, fontSize: 12.5, color: t.danger, margin: '8px 0 0' },
 
     // Segmentowany przełącznik motywu
     segRow: {
       display: 'flex', gap: 8,
     },
     segBtn: {
-      flex: 1,
+      flex: 1, minHeight: 44,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
       fontFamily: fonts.sans, fontSize: 13, fontWeight: 500,
       padding: '10px 6px', borderRadius: 10, cursor: 'pointer',
       border: `1px solid ${t.border}`,

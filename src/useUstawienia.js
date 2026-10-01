@@ -86,9 +86,14 @@ export function useUstawienia(user) {
       if (zapisTimerRef.current) clearTimeout(zapisTimerRef.current)
       zapisTimerRef.current = setTimeout(() => {
         zapisTimerRef.current = null
+        // .then() jest tu konieczny — builder supabase-js wysyła fetch()
+        // dopiero przy konsumpcji promise'a, bez niego zapytanie nigdy nie leci.
         supabase
           .from('ustawienia')
           .upsert({ id: user.id, ...nowe, updated_at: new Date().toISOString() })
+          .then(({ error }) => {
+            if (error) console.error('Nie udało się zapisać ustawień:', error.message)
+          })
       }, 400)
 
       return nowe

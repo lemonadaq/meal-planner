@@ -77,7 +77,7 @@ export function wlasneDanieZSzukajki(dania, szukaj, pula) {
 
 // Pula dań na tydzień wskazany offsetem (0 = bieżący). Wszystkie akcje robią
 // optimistic update na stanie lokalnym i rollback gdy zapis do bazy padnie.
-export function useTydzien(householdId, user, offset = 0) {
+export function useTydzien(householdId, user, offset = 0, domyslnePorcje = 1) {
   const [pula, setPula] = useState([])
   const [loading, setLoading] = useState(true)
   // Źródło prawdy dla porcji przy kolejnych szybkich zmianach — ref jest
@@ -100,6 +100,16 @@ export function useTydzien(householdId, user, offset = 0) {
 
   const tydzien = poniedzialekTygodnia(offset)
 
+  // Najświeższy `tydzien` — do porównania w `refresh` PO powrocie odpowiedzi
+  // z bazy. Bez tego szybkie przełączanie tygodni (offset w tę i z powrotem,
+  // zanim poprzednie zapytanie zdąży wrócić) mogło pokazać pulę tygodnia, na
+  // którym użytkownik już nie jest — odpowiedź z bazy dla NIEAKTUALNEGO już
+  // tygodnia potrafiła wrócić później niż odpowiedź dla aktualnego i nadpisać
+  // `pula` przestarzałymi danymi (dane w bazie zostawały nietknięte, błąd był
+  // tylko w tym, co pokazywał ekran).
+  const tydzienRef = useRef(tydzien)
+  useEffect(() => { tydzienRef.current = tydzien }, [tydzien])
+
   const refresh = useCallback(async () => {
     if (!householdId) {
       // householdId jeszcze się ładuje (useHousehold w App.jsx) — nie
@@ -109,12 +119,16 @@ export function useTydzien(householdId, user, offset = 0) {
       return
     }
     setLoading(true)
+    const zapytanyTydzien = tydzien
     const { data, error } = await supabase
       .from('plan_tygodnia')
       .select('*')
       .eq('household_id', householdId)
-      .eq('tydzien', tydzien)
+      .eq('tydzien', zapytanyTydzien)
       .order('created_at')
+    // Użytkownik zdążył przełączyć się na inny tydzień, zanim ta odpowiedź
+    // wróciła — nie nadpisujemy jego aktualnego widoku przestarzałymi danymi.
+    if (tydzienRef.current !== zapytanyTydzien) return
     if (!error) setPula(data || [])
     setLoading(false)
   }, [householdId, tydzien])
@@ -149,20 +163,28 @@ export function useTydzien(householdId, user, offset = 0) {
     if (dodawanieWTokuRef.current.has(danie)) return
     dodawanieWTokuRef.current.add(danie)
 
+    const porcje = Number(domyslnePorcje) || 1
+
+    // id z `danie` (nie Date.now()) — dwa dodania w tym samym millisekundowym
+    // ticku (możliwe od kiedy tapnięcia w RÓŻNE dania nie są już serializowane
+    // przez blokadę kliknięć w Tydzien.jsx) miałyby identyczny `tmp_${Date.now()}`,
+    // więc podmiana tymczasowego wiersza na realny (`r.id === tymczasowy.id`)
+    // trafiałaby w OBA wiersze i psuła pulę o dwa różne dania. `danie` jest już
+    // unikalne w puli (guard powyżej + unikalny constraint w bazie).
     const tymczasowy = {
-      id: `tmp_${Date.now()}`,
+      id: `tmp_${danie}`,
       household_id: householdId,
       user_id: user.id,
       tydzien,
       danie,
-      porcje: 1,
+      porcje,
     }
     setPula(prev => [...prev, tymczasowy])
 
     try {
       const { data, error } = await supabase
         .from('plan_tygodnia')
-        .insert({ household_id: householdId, user_id: user.id, tydzien, danie, porcje: 1 })
+        .insert({ household_id: householdId, user_id: user.id, tydzien, danie, porcje })
         .select()
         .single()
 

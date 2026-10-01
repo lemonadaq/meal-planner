@@ -27,7 +27,12 @@ export function krokiPrzepisu(tekst) {
     .filter(Boolean)
 }
 
-// Składniki grupowane po kategorii; z prefiksu „3_Nabiał" zostaje „Nabiał".
+// Składniki grupowane po kategorii; z prefiksu „3_Nabiał" zostaje „Nabiał"
+// w kluczu grupy, ale sam prefiks decyduje o kolejności grup — to ta sama
+// trasa po sklepie co w DanieDetail.jsx i ListaZakupow.jsx (Warzywa i owoce,
+// Mięso i ryby, Nabiał, Pieczywo, Produkty sypkie, Konserwy i słoiki,
+// Przyprawy, Inne). Sortowanie alfabetyczne po nazwie bez prefiksu dawało
+// inną kolejność niż w pełnym widoku tego samego dania.
 // Wiersze bez nazwy składnika lecą za burtę — `dania` trzyma metadane dania
 // w każdym wierszu, więc zdarza się wiersz istniejący tylko dla przepisu.
 export function grupujSkladniki(wiersze) {
@@ -35,11 +40,14 @@ export function grupujSkladniki(wiersze) {
   for (const w of wiersze || []) {
     const nazwa = w?.['Składnik']
     if (!nazwa) continue
-    const kat = (w['Kategoria'] || '8_Inne').replace(/^\d_/, '')
-    if (!grupy.has(kat)) grupy.set(kat, [])
-    grupy.get(kat).push(w)
+    const surowa = w['Kategoria'] || '8_Inne'
+    const kat = surowa.replace(/^\d_/, '')
+    if (!grupy.has(kat)) grupy.set(kat, { surowa, pozycje: [] })
+    grupy.get(kat).pozycje.push(w)
   }
-  return [...grupy.entries()].sort((a, b) => a[0].localeCompare(b[0], 'pl'))
+  return [...grupy.entries()]
+    .sort((a, b) => a[1].surowa.localeCompare(b[1].surowa))
+    .map(([kat, { pozycje }]) => [kat, pozycje])
 }
 
 // „200 g", albo sama jednostka gdy ilości nie ma („do smaku").

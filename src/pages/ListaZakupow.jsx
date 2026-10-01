@@ -166,7 +166,7 @@ function normalizujJednostke(raw = '') {
 
 function rozpoznajKategorie(nazwa = '') {
   const x = nazwa.toLowerCase()
-  if (/chleb|buł|bul|bagiet|kajzer|pieczyw|tost|tortill/.test(x)) return '4_Pieczywo'
+  if (/chleb|buł|\bbul|bagiet|kajzer|pieczyw|tost|tortill/.test(x)) return '4_Pieczywo'
   if (/mleko|jogurt|kefir|maślank|maslank|ser|twar[oó]g|śmietan|smietan|masło|maslo|margaryn|jaj/.test(x)) return '3_Nabiał'
   if (/pomidor|og[oó]rek|ziemni|marchew|cebula|czosnek|papryk|sałat|salat|jabł|jabl|banan|cytryn|limonk|awokado|broku|kalafior|kapust|cukini|bakła|bakla|pietruszk|koper|szczyp/.test(x)) return '1_Warzywa i owoce'
   if (/kurczak|wołow|wolow|wieprz|schab|kark[oó]w|mi[eę]so|mielon|szynk|boczek|kiełbas|kielbas|ryb|łosoś|losos|dorsz|tuńczyk|tunczyk/.test(x)) return '2_Mięso i ryby'
@@ -182,6 +182,13 @@ function poprawNazwe(nazwa = '') {
     .replace(/\s+/g, ' ')
     .replace(/[;,.\s]+$/, '')
     .trim()
+}
+
+// Wielka litera na początku nazwy — przepisy wpisują składniki różnie
+// (małą/wielką literą), a bez tego lista zakupów miała pozycje jak „Cebula"
+// obok „dymka" i „bakłażan" w tej samej kategorii.
+function zWielkiejLitery(nazwa = '') {
+  return nazwa ? nazwa.charAt(0).toUpperCase() + nazwa.slice(1) : nazwa
 }
 
 function toIlosc(raw) {
@@ -498,11 +505,15 @@ function formatujOpakowania(opak) {
 }
 
 // Sformatuj „potrzeba 750 ml" — oryginalna ilość z przepisu jako podpowiedź.
+// Dla sztuk (jaja, główki itp.) zaokrąglamy w górę — „52,5 szt." to nonsens,
+// pół sztuki się nie kupuje, więc pokazujemy najbliższą liczbę całą w górę.
 function formatujOryginalnaIlosc(opak) {
   if (!opak?.oryginalna) return ''
   const { ilosc, jednostka } = opak.oryginalna
   if (ilosc == null) return ''
-  const liczba = Number.isInteger(ilosc) ? String(ilosc) : String(Math.round(ilosc * 100) / 100).replace('.', ',')
+  const liczba = kanonJednostka(jednostka) === 'szt'
+    ? String(Math.ceil(ilosc))
+    : Number.isInteger(ilosc) ? String(ilosc) : String(Math.round(ilosc * 100) / 100).replace('.', ',')
   return `${liczba}${jednostka ? ` ${jednostka}` : ''}`.trim()
 }
 
@@ -1051,7 +1062,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
       const podmieniony = globalnePodmiany[skladnik] || skladnik
       const finalny = SCAL_NAZWY[normalizujNazweMeta(podmieniony)] || podmieniony
       const meta = dopasujMeta(finalny, wszystkieMeta)
-      const kanon = meta?.nazwa || finalny
+      const kanon = zWielkiejLitery(meta?.nazwa || finalny)
       const mapaKlucz = normalizujDlaScalania(normalizujNazweMeta(kanon))
       if (!mapaKlucz) return
 
@@ -1079,8 +1090,10 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
         wpis.skladnik = kanon
       }
 
-      // Brak ilości („do smaku", „—") — nic do sumowania, pozycja już istnieje
-      if (!Number.isFinite(iloscNum) || iloscNum === 0) return
+      // Brak ilości („do smaku", „—") albo ilość ujemna (literówka w przepisie,
+      // np. „-5 g" zamiast „5 g") — nic do sumowania, pozycja już istnieje.
+      // Bez tego błędny minus z bazy leciał na listę zakupów jako np. „-30 g".
+      if (!Number.isFinite(iloscNum) || iloscNum <= 0) return
 
       const realna = iloscNum * (mnoznik || 1)
       const p = naBazowa(realna, jednostka, wpis.bazaJedn, wpis.wagaSztuki)

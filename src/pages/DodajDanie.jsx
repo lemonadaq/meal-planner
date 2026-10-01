@@ -6,8 +6,12 @@ import { pobierzWszystkieWiersze } from '../pobierzWszystko'
 import { parsujIlosc } from '../jednostki'
 
 async function kompresujObraz(plik, maxSzerokosc = 1200, jakosc = 0.82) {
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     const img = new Image()
+    // Bez onerror plik, który nie da się zdekodować jako obraz (uszkodzony,
+    // zły format), zostawiał Promise w zawieszeniu na zawsze — Zapisz wisiał
+    // na „Zapisuję…" bez końca i bez żadnego komunikatu.
+    img.onerror = () => reject(new Error('Nie udało się wczytać zdjęcia — plik jest uszkodzony albo to nie jest obraz'))
     img.onload = () => {
       let { width, height } = img
       if (width > maxSzerokosc) { height = Math.round(height * maxSzerokosc / width); width = maxSzerokosc }
@@ -79,6 +83,7 @@ export default function DodajDanie({ onBack, onZapisano }) {
 
   const [saving, setSaving] = useState(false)
   const [blad, setBlad] = useState('')
+  const [bladSkladnik, setBladSkladnik] = useState('')
 
   const rodzajCfg = RODZAJE.find(r => r.id === rodzaj)
   const pokazTyp = RODZAJE_GLOWNE.includes(rodzaj)
@@ -137,12 +142,14 @@ export default function DodajDanie({ onBack, onZapisano }) {
   }
   function wybierzPodpowiedz(sk) {
     setWybrano(true)
-    setNowyS({
+    // zachowujemy ilość, jeśli użytkownik wpisał ją przed wybraniem podpowiedzi —
+    // inaczej podpowiedź po cichu kasowała już wpisaną wartość
+    setNowyS(prev => ({
       nazwa: sk['Składnik'],
-      ilosc: '',
+      ilosc: prev.ilosc,
       jednostka: sk['Jednostka'] || 'g',
       kategoria: sk['Kategoria'] || '1_Warzywa i owoce',
-    })
+    }))
     setPodpowiedzi([])
   }
 
@@ -151,7 +158,7 @@ export default function DodajDanie({ onBack, onZapisano }) {
     setCzasMinuty(''); setKcal(''); setPorcjeBazowe('4'); setNotatki('')
     setSkladniki([]); setPrzepisRaw('')
     setNowyS({ nazwa: '', ilosc: '', jednostka: 'g', kategoria: '1_Warzywa i owoce' })
-    setBlad(''); setPodpowiedzi([])
+    setBlad(''); setBladSkladnik(''); setPodpowiedzi([])
     setZdjeciePlik(null); setZdjeciePreview(null)
   }
 
@@ -160,22 +167,22 @@ export default function DodajDanie({ onBack, onZapisano }) {
     if (!nazwaTrim) return
     // trim po obu stronach — inaczej "Cebula" i "Cebula " (spacja na końcu) mijają się jako różne
     if (skladniki.find(sk => sk.nazwa.toLowerCase() === nazwaTrim.toLowerCase())) {
-      setBlad('Ten składnik już jest na liście'); return
+      setBladSkladnik('Ten składnik już jest na liście'); return
     }
     if (!nowyS.ilosc.trim() && nowyS.jednostka !== 'do smaku') {
-      setBlad('Podaj ilość (albo wybierz jednostkę „do smaku")'); return
+      setBladSkladnik('Podaj ilość (albo wybierz jednostkę „do smaku")'); return
     }
     // ilość musi dać się przeliczyć na dodatnią liczbę — inaczej trafia dosłownie
     // na listę zakupów jako "-5 g" albo "abc g"
     if (nowyS.ilosc.trim()) {
       const ilosc = parsujIlosc(nowyS.ilosc)
       if (ilosc == null || ilosc <= 0) {
-        setBlad('Ilość musi być liczbą większą od zera'); return
+        setBladSkladnik('Ilość musi być liczbą większą od zera'); return
       }
     }
     setSkladniki(prev => [...prev, { ...nowyS, nazwa: nazwaTrim }])
     setNowyS({ nazwa: '', ilosc: '', jednostka: 'g', kategoria: '1_Warzywa i owoce' })
-    setPodpowiedzi([]); setWybrano(false); setBlad('')
+    setPodpowiedzi([]); setWybrano(false); setBladSkladnik('')
   }
   function usunSkladnik(i) { setSkladniki(prev => prev.filter((_, idx) => idx !== i)) }
 
@@ -199,8 +206,10 @@ export default function DodajDanie({ onBack, onZapisano }) {
       setSaving(false); return
     }
 
+    // (?!\d) — bez tego "1.5 kg kurczaka…" gubiło "1" (kropka dziesiętna
+    // mylona z numerem listy, bo \s* nie wymaga spacji po kropce)
     const krokiParsed = przepisRaw
-      .split('\n').map(k => k.replace(/^\d+[\.\)]\s*/, '').trim()).filter(Boolean)
+      .split('\n').map(k => k.replace(/^\d+[.)](?!\d)\s*/, '').trim()).filter(Boolean)
     const przepisTekst = krokiParsed.length > 0
       ? krokiParsed.map((k, i) => `${i + 1}. ${k}`).join('\n')
       : null
@@ -296,7 +305,7 @@ export default function DodajDanie({ onBack, onZapisano }) {
           <div style={s.row2}>
             <div style={{ flex: 1 }}>
               <input
-                style={s.input}
+                style={s.inputMini}
                 placeholder="Czas (min)"
                 type="number"
                 inputMode="numeric"
@@ -307,7 +316,7 @@ export default function DodajDanie({ onBack, onZapisano }) {
             </div>
             <div style={{ flex: 1 }}>
               <input
-                style={s.input}
+                style={s.inputMini}
                 placeholder="kcal/porcję"
                 type="number"
                 inputMode="numeric"
@@ -318,7 +327,7 @@ export default function DodajDanie({ onBack, onZapisano }) {
             </div>
             <div style={{ flex: 1 }}>
               <input
-                style={s.input}
+                style={s.inputMini}
                 placeholder="Porcje"
                 type="number"
                 inputMode="numeric"
@@ -439,6 +448,7 @@ export default function DodajDanie({ onBack, onZapisano }) {
           <button style={s.btnDodajSkl} onClick={dodajSkladnik}>
             + Dodaj składnik
           </button>
+          {bladSkladnik && <div style={s.bladSkladnik}>{bladSkladnik}</div>}
         </section>
 
         {/* Lista składników */}
@@ -552,6 +562,7 @@ function makeS() {
     padding: 4, background: t.surfaceAlt, borderRadius: 14,
   },
   rodzajBtn: {
+    minHeight: 44, display: 'flex', alignItems: 'center', justifyContent: 'center',
     padding: '11px 6px', border: 'none', borderRadius: 10,
     background: 'transparent', color: t.mute,
     fontFamily: fonts.sans, fontSize: 13, fontWeight: 500, cursor: 'pointer',
@@ -565,7 +576,8 @@ function makeS() {
   // Segmented control (Typ dania)
   segRow: { display: 'flex', gap: 4, padding: 3, background: t.surfaceAlt, borderRadius: 12 },
   segBtn: {
-    flex: 1, padding: '9px 8px', border: 'none', borderRadius: 9,
+    flex: 1, minHeight: 44, display: 'flex', alignItems: 'center', justifyContent: 'center',
+    padding: '9px 8px', border: 'none', borderRadius: 9,
     background: 'transparent', color: t.mute,
     fontFamily: fonts.sans, fontSize: 13, fontWeight: 500, cursor: 'pointer',
   },
@@ -580,6 +592,9 @@ function makeS() {
 
   // Form
   input: { ...ui.input, marginBottom: 8 },
+  // Węższy wariant dla trzech pól w rzędzie (Czas/kcal/Porcje) — pełny placeholder
+  // przy s.input się nie mieścił i wyglądał na ucięty ("Czas (min", "kcal/porc")
+  inputMini: { ...ui.input, marginBottom: 8, padding: '12px 10px', fontSize: 12.5 },
   row2: { display: 'flex', gap: 8 },
 
   // Suggestions
@@ -626,8 +641,10 @@ function makeS() {
   skNazwa: { fontFamily: fonts.sans, fontSize: 14, color: t.text, fontWeight: 500 },
   skMeta: { fontFamily: fonts.sans, fontSize: 12, color: t.mute, marginTop: 2 },
   btnUsun: {
-    background: 'none', border: 'none',
-    color: t.muteLight, fontSize: 14, cursor: 'pointer', padding: '4px 8px',
+    background: 'none', border: 'none', cursor: 'pointer',
+    width: 40, height: 40, borderRadius: 999,
+    color: t.muteLight, fontSize: 16, padding: 0,
+    display: 'grid', placeItems: 'center', flexShrink: 0,
   },
 
   btnMini: {
@@ -657,6 +674,11 @@ function makeS() {
     background: '#FBEAE4', color: '#9B3B23',
     fontFamily: fonts.sans, fontSize: 13.5, fontWeight: 500,
     padding: '10px 14px', borderRadius: 12, marginBottom: 14,
+  },
+  bladSkladnik: {
+    background: '#FBEAE4', color: '#9B3B23',
+    fontFamily: fonts.sans, fontSize: 13.5, fontWeight: 500,
+    padding: '10px 14px', borderRadius: 12, marginTop: 8,
   },
 
   bottomRow: { display: 'flex', gap: 8, marginTop: 8 },

@@ -225,6 +225,23 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
       setBladZapisu(`Podaj ilość dla: ${bezIlosci.map(sk => sk.Skladnik.trim() || '(bez nazwy)').join(', ')} — albo wybierz jednostkę „do smaku”.`)
       return
     }
+
+    // Zmiana nazwy na już istniejące danie scaliłaby oba przepisy (tabela `dania`
+    // jest w formacie długim — UPDATE po starej nazwie przepisałby wszystkie jej
+    // wiersze na nową). Sprawdzamy tak samo jak przy dodawaniu nowego dania
+    // (DodajDanie.jsx) — ilike, bez rozróżniania wielkości liter.
+    if (edNazwa.trim() && edNazwa.trim().toLowerCase() !== nazwa.toLowerCase()) {
+      const nazwaDoSzukania = edNazwa.trim().replace(/[%_]/g, '\\$&')
+      const { data: istniejace } = await supabase
+        .from('dania').select('"Danie"')
+        .ilike('"Danie"', nazwaDoSzukania)
+        .limit(1)
+      if (istniejace?.length) {
+        setBladZapisu(`Danie "${edNazwa.trim()}" już istnieje — wybierz inną nazwę.`)
+        return
+      }
+    }
+
     setBladZapisu('')
     setSaving(true)
     const czasMinutyVal = liczbaDodatnia(edCzas, 480)
@@ -451,6 +468,7 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
             {edycja ? (
               <>
                 <input style={s.inputNazwa} value={edNazwa} onChange={e => setEdNazwa(e.target.value)} />
+                <label style={s.metaEdLabel}>Szczegóły dania</label>
                 <div style={s.metaEdRow}>
                   <select style={s.edInputMeta} value={edRodzaj} onChange={e => setEdRodzaj(e.target.value)}>
                     <option value="">— rodzaj —</option>
@@ -660,6 +678,11 @@ function makeS() {
     letterSpacing: 0.5, textTransform: 'uppercase',
     background: t.accentSoft, color: t.accentDark,
     padding: '3px 10px', borderRadius: 999,
+  },
+  metaEdLabel: {
+    display: 'block', fontFamily: fonts.sans, fontSize: 11, fontWeight: 700,
+    letterSpacing: 1.4, textTransform: 'uppercase', color: t.accent,
+    marginTop: 14, marginBottom: 2,
   },
   metaEdRow: { display: 'flex', gap: 6, marginTop: 10, flexWrap: 'wrap' },
   edInputMeta: { ...ui.input, padding: '8px 10px', fontSize: 12, flex: '1 1 auto', minWidth: 100, marginBottom: 0 },

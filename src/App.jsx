@@ -381,6 +381,7 @@ function App() {
           refreshKey={homeRefresh}
           onZakupy={() => zmienTab('zakupy')}
           onUstawienia={() => setEkran('ustawienia')}
+          domyslnePorcje={ustawienia?.domyslne_porcje ?? 1}
         />
       )}
       {tab === 'home' && (

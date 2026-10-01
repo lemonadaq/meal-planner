@@ -2,7 +2,7 @@
 // po dniach i slotach. Tapnięcie dania dodaje/wyjmuje je z puli bieżącego
 // tygodnia (tabela plan_tygodnia, hook useTydzien).
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { supabase } from '../supabase'
 import { t, fonts, ui } from '../theme'
 import Toast from '../components/Toast'
@@ -21,6 +21,9 @@ const FILTRY = [
   { id: 'kolacja',   label: 'Kolacje' },
   { id: 'zupa',      label: 'Zupy' },
   { id: 'deser',     label: 'Desery' },
+  { id: 'przekaska', label: 'Przekąski' },
+  { id: 'dodatek',   label: 'Dodatki' },
+  { id: 'surowka',   label: 'Surówki' },
 ]
 
 // Mały odcisk koloru dla dania — stabilny po nazwie (jak w Home.jsx)
@@ -54,11 +57,11 @@ function formatPorcje(p) {
 }
 
 
-export default function Tydzien({ user, householdId, onSelectDanie, sledz, refreshKey, onZakupy, onUstawienia }) {
+export default function Tydzien({ user, householdId, onSelectDanie, sledz, refreshKey, onZakupy, onUstawienia, domyslnePorcje = 1 }) {
   const [offset, setOffset] = useState(0)
   // Nazwa dania pokazywanego w podglądzie przepisu (null = zamknięty)
   const [podglad, setPodglad] = useState(null)
-  const { pula, loading: loadingPula, dodaj, usun, zmienPorcje } = useTydzien(householdId, user, offset)
+  const { pula, loading: loadingPula, dodaj, usun, zmienPorcje } = useTydzien(householdId, user, offset, domyslnePorcje)
 
   const [dania, setDania] = useState([])
   const [loadingDania, setLoadingDania] = useState(true)
@@ -66,6 +69,29 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
   const [filtry, setFiltry] = useState([])
   const [toast, setToast] = useState(null)
   const [losowanie, setLosowanie] = useState(false)
+
+  // Blokada krótkich serii kliknięć W TO SAMO MIEJSCE: dodanie/usunięcie
+  // dania zmienia wysokość sekcji „W tym tygodniu”, więc cała reszta ekranu
+  // (szukajka, chipy, lista wyników) przesuwa się w pionie. Drugie
+  // kliknięcie szybkiego dwukliku trafia wtedy w te same współrzędne co
+  // pierwsze, ale pod nimi jest już INNY element (np. przycisk „Dodaj
+  // własne”, który wjechał w miejsce klikniętego wiersza) — bez tej blokady
+  // taki dwuklik dorzuca do puli przypadkowe, niechciane danie. Warunek na
+  // bliskość w pionie (nie tylko w czasie) jest kluczowy — bez niego
+  // blokada łapała też dwa kolejne, celowe tapnięcia w RÓŻNE dania (typowy
+  // sposób budowania puli tygodnia), które ginęły bez żadnej informacji.
+  // e.timeStamp (czas zdarzenia od przeglądarki), nie Date.now() — czysta
+  // wartość pochodząca z eventu, bez wywoływania zegara w ciele komponentu.
+  const ostatniKlikRef = useRef({ czas: null, y: null })
+  function pozwolNaKlik(e) {
+    const teraz = e?.timeStamp ?? null
+    const y = e?.clientY ?? null
+    const { czas: poprzedniCzas, y: poprzedniY } = ostatniKlikRef.current
+    const toSamoMiejsceISzybko = teraz != null && poprzedniCzas != null && y != null && poprzedniY != null
+      && (teraz - poprzedniCzas) < 400 && Math.abs(y - poprzedniY) < 30
+    ostatniKlikRef.current = { czas: teraz, y }
+    return !toSamoMiejsceISzybko
+  }
 
   useEffect(() => {
     let anulowane = false
@@ -104,7 +130,8 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
   // Metadane (zdjęcie/emoji) dla miniatur w panelu wybranych
   const metaDan = new Map(dania.map(d => [d.Danie, d]))
 
-  async function przelaczDanie(nazwa) {
+  async function przelaczDanie(nazwa, e) {
+    if (!pozwolNaKlik(e)) return
     if (wPuli.has(nazwa)) {
       await usunZPuli(nazwa)
     } else {
@@ -181,7 +208,8 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
   // Pokazujemy przycisk tylko gdy fraza nie pokrywa się 1:1 z istniejącym daniem.
   const wlasneDoDodania = !loadingDania ? wlasneDanieZSzukajki(dania, szukaj, pula) : null
 
-  async function dodajWlasne() {
+  async function dodajWlasne(e) {
+    if (!pozwolNaKlik(e)) return
     const nazwa = wlasneDoDodania
     if (!nazwa) return
     if (wPuli.has(nazwa)) {
@@ -287,7 +315,7 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
                     </div>
                     <button
                       style={s.pulaUsun}
-                      onClick={() => usunZPuli(r.danie)}
+                      onClick={(e) => { if (pozwolNaKlik(e)) usunZPuli(r.danie) }}
                       aria-label={`Usuń ${r.danie}`}
                     >✕</button>
                   </div>
@@ -299,14 +327,17 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
             </button>
           </>
         )}
-      </section>
 
-      {/* Sticky licznik puli */}
-      {!loadingPula && (
-        <div style={s.licznikWrap}>
-          <div style={s.licznik}>W tym tygodniu: {pula.length}</div>
-        </div>
-      )}
+        {/* Sticky licznik puli — `position: relative` na sekcji ogranicza
+            zasięg przyklejenia (CSS sticky) do wysokości TEGO panelu, więc
+            odznaka znika po przewinięciu do listy przepisów poniżej, zamiast
+            wisieć nad jej wierszami przez całe przewijanie strony. */}
+        {!loadingPula && (
+          <div style={s.licznikWrap}>
+            <div style={s.licznik}>W tym tygodniu: {pula.length}</div>
+          </div>
+        )}
+      </section>
 
       {/* Search */}
       <div style={s.searchWrap}>
@@ -381,7 +412,7 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
                     akcja tego ekranu i nie zmieniamy jej. Podgląd przepisu
                     siedzi w osobnym przycisku obok, bo przycisk w przycisku
                     to nieprawidłowy HTML i nieprzewidywalne klikanie. */}
-                <button style={s.wierszGlowny} onClick={() => przelaczDanie(d.Danie)}>
+                <button style={s.wierszGlowny} onClick={(e) => przelaczDanie(d.Danie, e)}>
                   <div style={{ ...s.thumb, background: d.zdjecie ? 'transparent' : getKolor(d.Danie) }}>
                     {d.zdjecie
                       ? <img src={d.zdjecie} alt="" style={s.thumbImg} loading="lazy" />
@@ -469,7 +500,7 @@ function makeS() {
     tytul: { ...ui.h1, fontSize: 30, lineHeight: 1.08, fontWeight: 400 },
     italic: { fontStyle: 'italic', color: t.accent, fontFamily: fonts.serif },
 
-    pulaSekcja: { marginBottom: 18 },
+    pulaSekcja: { marginBottom: 18, position: 'relative' },
     h2: { ...ui.h2, marginBottom: 10 },
     pulaHeader: {
       display: 'flex', justifyContent: 'space-between',
@@ -516,8 +547,10 @@ function makeS() {
       background: t.surfaceAlt, borderRadius: 999, padding: 2,
       flexShrink: 0,
     },
+    // 40×40 — cel dotyku, nie wizualny rozmiar kółka (jak pulaUsun obok).
+    // Poniżej 40 px kciuk regularnie chybiał w sąsiedni element rzędu.
     stepperBtn: {
-      width: 26, height: 26, borderRadius: '50%',
+      width: 40, height: 40, borderRadius: '50%',
       background: t.surface, border: `0.5px solid ${t.border}`,
       color: t.accent, fontFamily: fonts.sans, fontSize: 15, fontWeight: 600,
       cursor: 'pointer', display: 'grid', placeItems: 'center', lineHeight: 1,
@@ -529,7 +562,7 @@ function makeS() {
       fontVariantNumeric: 'tabular-nums',
     },
     pulaUsun: {
-      width: 28, height: 28, borderRadius: '50%',
+      width: 40, height: 40, borderRadius: '50%',
       background: 'none', border: 'none',
       color: t.muteLight, fontSize: 13, cursor: 'pointer',
       display: 'grid', placeItems: 'center', flexShrink: 0,
@@ -571,6 +604,8 @@ function makeS() {
     },
     chip: {
       flexShrink: 0,
+      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+      minHeight: 40, boxSizing: 'border-box',
       padding: '8px 14px', borderRadius: 999,
       background: t.surface, border: `0.5px solid ${t.border}`,
       fontFamily: fonts.sans, fontSize: 13, color: t.text, fontWeight: 500,

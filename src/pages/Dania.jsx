@@ -54,6 +54,15 @@ function getEmoji(nazwa) {
   return '🍽️'
 }
 
+// Odmiana „wpis” po liczbie — jak w ListaZakupow.jsx (etykietaTygodnia), bo
+// samo n>=2 && n<5 myli się przy 22-24, 32-34 itd.
+function odmianaWpis(n) {
+  if (n === 1) return 'wpis'
+  const m10 = n % 10, m100 = n % 100
+  if (m10 >= 2 && m10 <= 4 && !(m100 >= 12 && m100 <= 14)) return 'wpisy'
+  return 'wpisów'
+}
+
 export default function Dania({ onSelect, user, householdId, onDodaj, onBack, refreshKey }) {
   const [wszystkie, setWszystkie] = useState([])
   const [loading, setLoading] = useState(true)
@@ -280,7 +289,7 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
   function renderImg(d) {
     const nazwa = d['Danie']
     if (d.zdjecie) {
-      return <img src={d.zdjecie} alt={nazwa} style={s.img} loading="lazy" />
+      return <img src={d.zdjecie} alt={nazwa} style={{ ...s.img, background: getKolor(nazwa) }} loading="lazy" />
     }
     return (
       <div style={{ ...s.placeholder, background: getKolor(nazwa) }}>
@@ -382,7 +391,7 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
         {/* Liczba wyników + toggle widoku */}
         <div style={s.metaRow}>
           <span style={s.licznik}>
-            {filtrowane.length} {filtrowane.length === 1 ? 'wpis' : (filtrowane.length >= 2 && filtrowane.length < 5 ? 'wpisy' : 'wpisów')} · {aktywneFiltryLabel}
+            {filtrowane.length} {odmianaWpis(filtrowane.length)} · {aktywneFiltryLabel}
           </span>
           <div style={s.metaActions}>
             <button
@@ -493,7 +502,9 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
                       style={s.listStar}
                       onClick={e => { e.stopPropagation(); toggleUlubione(d['Danie']) }}
                       aria-label={d.ulubione ? 'Usuń z ulubionych' : 'Dodaj do ulubionych'}>
-                      <StarIcon filled={d.ulubione} small />
+                      <span style={s.listStarBadge}>
+                        <StarIcon filled={d.ulubione} small />
+                      </span>
                     </button>
                   </div>
                   <div style={s.listInfo}>
@@ -745,19 +756,19 @@ function makeS() {
   },
   cardImgWrap: { position: 'relative', cursor: 'pointer' },
   cardStar: {
-    position: 'absolute', top: 8, left: 8,
+    position: 'absolute', top: 6, left: 6,
     background: t.surface, backdropFilter: 'blur(6px)',
     border: `0.5px solid ${t.border}`,
-    borderRadius: 999, padding: 4,
+    borderRadius: 999, width: 40, height: 40,
     boxShadow: '0 1px 4px rgba(0,0,0,.15)',
     cursor: 'pointer',
     display: 'grid', placeItems: 'center',
   },
   cardMenu: {
-    position: 'absolute', top: 8, right: 8,
+    position: 'absolute', top: 6, right: 6,
     background: t.surface, backdropFilter: 'blur(6px)',
     border: `0.5px solid ${t.border}`,
-    borderRadius: 999, width: 28, height: 28,
+    borderRadius: 999, width: 40, height: 40,
     color: t.text, cursor: 'pointer',
     display: 'grid', placeItems: 'center',
     boxShadow: '0 1px 4px rgba(0,0,0,.15)',
@@ -802,12 +813,19 @@ function makeS() {
     width: 56, height: 56, borderRadius: 12, overflow: 'hidden',
     flexShrink: 0, position: 'relative',
   },
+  // Tapowalny obszar 40×40 (minimum dotykowe), ale widoczna plakietka zostaje
+  // mała jak wcześniej — na 56×56 miniaturce pełne 40px tła zakrywałoby zdjęcie.
   listStar: {
-    position: 'absolute', top: 4, left: 4,
+    position: 'absolute', top: 0, left: 0, width: 40, height: 40,
+    background: 'none', border: 'none', padding: 0,
+    cursor: 'pointer',
+    display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start',
+  },
+  listStarBadge: {
+    margin: 4,
     background: t.surface, backdropFilter: 'blur(6px)',
     border: `0.5px solid ${t.border}`,
     borderRadius: 999, padding: 2,
-    cursor: 'pointer',
     display: 'grid', placeItems: 'center',
   },
   listInfo: { flex: 1, minWidth: 0 },
@@ -822,7 +840,7 @@ function makeS() {
   },
   listMenuBtn: {
     background: 'none', border: 'none', cursor: 'pointer',
-    color: t.muteLight, padding: 8, display: 'grid', placeItems: 'center',
+    color: t.muteLight, width: 40, height: 40, display: 'grid', placeItems: 'center',
     flexShrink: 0,
   },
 
