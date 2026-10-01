@@ -121,6 +121,9 @@ jobs:
           echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/klucz.jks"
           echo "Klucz odtworzony ($(stat -c%s "$RUNNER_TEMP/klucz.jks") bajtów)"
 
+      - name: Upewnij się, że gradlew jest wykonywalny
+        run: chmod +x android/gradlew
+
       - name: Zbuduj AAB
         env:
           ANDROID_KEYSTORE_FILE: ${{ inputs.podpisz && format('{0}/klucz.jks', runner.temp) || '' }}
@@ -147,9 +150,20 @@ jobs:
         if: ${{ inputs.podpisz }}
         run: |
           APK=$(find android -name "*-release.apk" | head -1)
+          if [ -z "$APK" ]; then
+            echo "::error::Nie znalazłem pliku APK — build release nie dał artefaktu."
+            exit 1
+          fi
           echo "Sprawdzam: $APK"
-          # apksigner leży w build-tools; bierzemy najnowsze dostępne
-          APKSIGNER=$(find "$ANDROID_HOME/build-tools" -name apksigner | sort | tail -1)
+
+          # apksigner leży w build-tools. ANDROID_HOME albo ANDROID_SDK_ROOT —
+          # zależy od wersji akcji konfigurującej SDK, więc próbujemy obu.
+          SDK="${ANDROID_HOME:-$ANDROID_SDK_ROOT}"
+          APKSIGNER=$(find "$SDK/build-tools" -name apksigner 2>/dev/null | sort -V | tail -1)
+          if [ -z "$APKSIGNER" ]; then
+            echo "::error::Nie znalazłem apksigner w $SDK/build-tools — nie potwierdzę podpisu."
+            exit 1
+          fi
           "$APKSIGNER" verify --print-certs "$APK"
 
       - name: Usuń klucz z runnera
