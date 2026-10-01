@@ -135,11 +135,23 @@ Helpery SQL: `moj\_household\_id()`, `moj\_email()` — używają JWT pytająceg
 
 
 
+\## Ustalenia produktowe
+
+`USTALENIA.md` — decyzje, które wyglądają na błąd, a są celowe (np. jednostka
+składnika jest opcjonalna). Czytaj PRZED zgłoszeniem albo „naprawieniem"
+czegoś, co wygląda na usterkę. Ustalenie jest nadrzędne wobec własnej oceny.
+Dopisuje je Filip; sam go nie edytuj bez jego słowa.
+
 \## Migracje do wykonania w Supabase
 
 `migracja_promocje_indeks.sql` — indeks na `promo_offers(offer_end_at, source_hash)`.
 BEZ NIEGO promocje ładują się ~30 s, bo każde wejście w listę zakupów skanuje
 całą historię promocji kilka razy. Sam kod tego nie obejdzie.
+
+`supabase/fixes/20260924-kuchnie-i-poziomy.sql` — kraj pochodzenia i poziom
+trudności dla wszystkich 630 dań. Wypełnia TYLKO puste kolumny (`coalesce`),
+więc można odpalać wielokrotnie. Bez tego filtry „kuchnia" i „poziom"
+w Przepisach nie mają czego pokazać.
 
 \## Co ZOSTAŁO ZROBIONE niedawno (nie ruszaj)
 - ✅ \*\*Generowanie przepisów i zdjęć\*\* — `skrypty/generuj-wszystko.mjs` (przepis + zdjęcie), `generuj-przepisy.mjs`, `generuj-obrazy.mjs` + workflow `.github/workflows/generuj-dania.yml` (Actions → „Generuj dania", ręcznie). Przepisy: Claude ze schematem JSON (`output_config.format`), więc nie ma parsowania markdownu. Zdjęcia: Replicate, 4 rotowane style (`style-zdjec.js`) zamiast jednego promptu dla wszystkich dań. Skrypty są wznawialne — po błędzie odpal ponownie. Sekrety w Actions: `ANTHROPIC_KEY`, `REPLICATE_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`. NIE wpisuj kluczy do kodu — stare lokalne `generuj-*.mjs` w katalogu głównym miały je na sztywno i dlatego zostają w `.gitignore`.

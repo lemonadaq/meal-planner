@@ -3,6 +3,13 @@
 Działasz w GitHub Actions bez człowieka. Nikt nie odpowie na pytania, więc decyzje podejmujesz sam, w granicach tej instrukcji.
 Z CLAUDE.md obowiązuje: stack, architektura, konwencje kodu i lista „nie ruszaj”. NIE obowiązują sekcje „Workflow z Filipem” i „Pierwsze co zrób w sesji”.
 
+**Przeczytaj `USTALENIA.md` ZANIM wybierzesz problem.** To decyzje produktowe
+Filipa — rzeczy, które wyglądają na błąd, a są celowe. Ustalenie jest nadrzędne
+wobec Twojej oceny: zachowanie zgodne z ustaleniem NIE jest problemem i nie
+zgłaszasz go, nawet jeśli uważasz inaczej. Jeśli widzisz, że ustalenie prowadzi
+do realnego kłopotu — status `PROPOZYCJA` z opisem, nigdy poprawka wbrew
+zasadzie.
+
 **Nie commitujesz, nie pushujesz, nie tworzysz PR.** Zrobi to workflow na podstawie pliku `agent-out/wynik.md`.
 
 ## Cel
@@ -43,7 +50,9 @@ to task zmarnowany w całości (workflow zakłada wtedy „PRZERWANY" i wyrzuca 
 Lepszy jest wynik niedokończony niż żaden.
 
 1. **Rozpoznanie** (ok. 20 akcji w przeglądarce): zaloguj się i przejdź obszar jak zwykły użytkownik — typowa ścieżka, potem przypadki brzegowe: pusty stan, długie nazwy, podwójne kliknięcie, przycisk wstecz, odświeżenie strony w trakcie. Zrzut `przed-<nazwa>.png`.
-2. **Wybór jednego problemu** według priorytetu:
+2. **Wybór jednego problemu.** Najpierw odrzuć wszystko, co podpada pod
+   `USTALENIA.md` — to nie są problemy. Z reszty wybierz jeden, według
+   priorytetu:
    1. crash, biały ekran, błąd w konsoli
    2. funkcja działa źle (złe przeliczenie, nie zapisuje, nieaktualna lista)
    3. **lista zakupów nie nadaje się do sklepu** — patrz niżej
@@ -95,7 +104,7 @@ Poprawka:
 ## Zakazy
 - Nie ruszaj starych ekranów: `Home.jsx`, `Kalendarz.jsx`, `KonfiguracjaSlotow.jsx`,
   `GeneratorPlanu.jsx`, `generatorPlanu.js`, `useGenerator.js`, `useSloty.js`.
-- Nie ruszaj: `Login.jsx`, `NoweHaslo.jsx`, `ImieGate.jsx`, `Admin.jsx`, `supabase.js`, polityk RLS i schematu bazy (żadnego DDL), Capacitor/`android`/`ios`, `package.json` i zależności, plików `.env*`, `.github/`, `.claude/`, skryptów generujących.
+- Nie ruszaj: `Login.jsx`, `NoweHaslo.jsx`, `ImieGate.jsx`, `Admin.jsx`, `supabase.js`, polityk RLS i schematu bazy (żadnego DDL), Capacitor/`android`/`ios`, `package.json` i zależności, plików `.env*`, `.github/`, `.claude/`, `USTALENIA.md`, skryptów generujących.
 - W bazie: żadnego `DELETE`, `DROP`, `TRUNCATE`, `ALTER`.
 - Zaproszenia do rodziny tylko na adresy `@example.com`.
 - Rzeczy z sekcji „ZOSTAŁO ZROBIONE (nie ruszaj)” w CLAUDE.md zmieniasz tylko wtedy, gdy są bezpośrednim źródłem błędu.
