@@ -8,6 +8,7 @@ import { dopasujPromocje, pobierzAktualnePromocje } from '../promocjeMatch'
 import { uproscNazweSkladnika } from '../nazwySkladnikow'
 import KosztKoszyka from '../components/KosztKoszyka'
 import { pobierzCenyBazowe, wycenKoszyk } from '../cenyBazowe'
+import { useDuzyEkran } from '../useDuzyEkran'
 import { useSloty, kluczDnia } from '../useSloty'
 import {
   normalizujNazweMeta, LYZKI_ML, WAGA_DO_G, OBJ_DO_ML,
@@ -611,6 +612,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
   // wejściu w Koszty — lista nie ma na nie czekać.
   const [zakladka, setZakladka] = useState('lista')
   const [cenyBazowe, setCenyBazowe] = useState(null)
+  const duzyEkran = useDuzyEkran()
   const [bladCen, setBladCen] = useState(null)
 
   const [toast, setToast] = useState(null)
@@ -1918,7 +1920,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     setPokazDodaj(true)
   }
 
-    const s = makeS()
+    const s = makeS(duzyEkran)
   if (loading) return <div style={s.loading}>Generuję listę zakupów…</div>
 
   if (trybSklepu) {
@@ -2036,6 +2038,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
           <>
             <PromoBanner items={doKupienia} />
 
+            <div style={s.katSiatka}>
             {Object.entries(kategorie).map(([katLabel, { items }]) => (
               <section key={katLabel} style={s.katSekcja}>
                 <h3 style={s.katHeader}>{katLabel}</h3>
@@ -2061,6 +2064,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
                 </div>
               </section>
             ))}
+            </div>
 
             {usunieteProdukty.length > 0 && (
               <UsunieteProdukty
@@ -2894,10 +2898,12 @@ function SwipeItem({ item, kupione, onSwipeRight }) {
 }
 
 // ════════════════════════════════════════════════════════════
-function makeS() {
+// `duzy` domyślnie false, bo makeS() wołają też mniejsze komponenty w tym
+// pliku (modale, wiersz pozycji) — one mają zostać bez zmian.
+function makeS(duzy = false) {
   return {
   outer: { background: t.bg, minHeight: '100vh', fontFamily: fonts.sans, position: 'relative' },
-  container: { padding: '20px 20px 32px', maxWidth: 620, margin: '0 auto', boxSizing: 'border-box' },
+  container: { padding: '20px 20px 32px', maxWidth: duzy ? 900 : 620, margin: '0 auto', boxSizing: 'border-box' },
   back: { ...ui.btnText, padding: '0 0 14px', display: 'block' },
 
   headerCard: {
@@ -3060,6 +3066,16 @@ function makeS() {
   },
 
   katSekcja: { marginBottom: 18 },
+  // Na szerokim ekranie kategorie układają się w dwie kolumny. Grid, a nie
+  // `column-count`: każda kategoria zostaje w całości w swojej kolumnie,
+  // a wiersze z gestem przesunięcia (pozycjonowane absolutnie) nie trafiają
+  // do dzielonego kontekstu kolumn CSS.
+  katSiatka: {
+    display: duzy ? 'grid' : 'block',
+    gridTemplateColumns: duzy ? 'repeat(2, 1fr)' : undefined,
+    columnGap: duzy ? 20 : undefined,
+    alignItems: 'start',
+  },
   katHeader: {
     fontFamily: fonts.sans, fontSize: 11, fontWeight: 700,
     letterSpacing: 1.4, textTransform: 'uppercase', color: t.accent,

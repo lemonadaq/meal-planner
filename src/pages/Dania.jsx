@@ -3,6 +3,7 @@ import { supabase } from '../supabase'
 import { t, fonts, ui } from '../theme'
 import Toast from '../components/Toast'
 import { KUCHNIA_LABEL, POZIOM_LABEL, RODZAJ_LABEL } from '../etykiety'
+import { useDuzyEkran } from '../useDuzyEkran'
 
 // Filtry-chipy: 'wszystko' i 'ulubione' to specjalne, reszta to wartości pola `rodzaj`
 const FILTRY = [
@@ -71,6 +72,9 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
   const [ulubioneNaGorze, setUlubioneNaGorze] = useState(() => sessionStorage.getItem('dania_ulubione') !== 'false')
   const [widok, setWidok] = useState(() => sessionStorage.getItem('dania_widok') || 'siatka')
   const pendingScrollRef = useRef(0)
+  // Hook NA GÓRZE komponentu, przed wcześniejszymi `return` — inaczej przy
+  // ładowaniu i po załadowaniu wywoływalibyśmy inną liczbę hooków.
+  const duzyEkran = useDuzyEkran()
 
   // Menu kontekstowe (bottom sheet)
   const [menuDla, setMenuDla] = useState(null) // obiekt dania lub null
@@ -297,7 +301,7 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
       </div>
     )
   }
-    const s = makeS()
+    const s = makeS(duzyEkran)
 
   if (loading) return <div style={s.loading}>Ładowanie przepisów…</div>
 
@@ -622,12 +626,15 @@ const DotsIcon = () => (
   </svg>
 )
 
-function makeS() {
+// Na dużym ekranie szersza kolumna i więcej kart w rzędzie — przy 760 px
+// i dwóch kolumnach monitor stoi w połowie pusty, a lista przepisów robi się
+// niepotrzebnie długa.
+function makeS(duzy = false) {
   return {
   outer: { background: t.bg, minHeight: '100vh', fontFamily: fonts.sans },
   container: {
     padding: '20px 20px 32px',
-    maxWidth: 760, margin: '0 auto', boxSizing: 'border-box',
+    maxWidth: duzy ? 1140 : 760, margin: '0 auto', boxSizing: 'border-box',
   },
   back: { ...ui.btnText, padding: '0 0 14px', display: 'block' },
 
@@ -747,7 +754,7 @@ function makeS() {
   // Grid
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(2, 1fr)',
+    gridTemplateColumns: duzy ? 'repeat(4, 1fr)' : 'repeat(2, 1fr)',
     gap: 12,
   },
   card: {
@@ -800,7 +807,14 @@ function makeS() {
   placeholderEmoji: { fontSize: 42, filter: 'grayscale(.1)' },
 
   // List view
-  listView: { display: 'flex', flexDirection: 'column', gap: 6 },
+  // Grid, nie flex-column: inaczej przy szerokim kontenerze wiersz rozciąga
+  // się na całe 1140 px i widok listy wygląda GORZEJ niż przed zmianą.
+  listView: {
+    display: 'grid',
+    gridTemplateColumns: duzy ? 'repeat(2, 1fr)' : '1fr',
+    gap: 6,
+    columnGap: duzy ? 12 : 6,
+  },
   listItem: {
     display: 'flex', alignItems: 'center', gap: 8,
     ...ui.card, padding: 6,

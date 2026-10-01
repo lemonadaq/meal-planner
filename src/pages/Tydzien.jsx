@@ -8,6 +8,7 @@ import { t, fonts, ui } from '../theme'
 import Toast from '../components/Toast'
 import { RODZAJ_LABEL } from '../etykiety'
 import PodgladPrzepisu from '../components/PodgladPrzepisu'
+import { useDuzyEkran } from '../useDuzyEkran'
 import { formatDataLocal } from '../dataHelpers'
 import { pobierzWszystkieWiersze } from '../pobierzWszystko'
 import { useTydzien, zakresTygodniaLabel, poniedzialekTygodnia, filtrujDania, wlasneDanieZSzukajki } from '../useTydzien'
@@ -61,6 +62,7 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
   const [offset, setOffset] = useState(0)
   // Nazwa dania pokazywanego w podglądzie przepisu (null = zamknięty)
   const [podglad, setPodglad] = useState(null)
+  const duzyEkran = useDuzyEkran()
   const { pula, loading: loadingPula, dodaj, usun, zmienPorcje } = useTydzien(householdId, user, offset, domyslnePorcje)
 
   const [dania, setDania] = useState([])
@@ -222,7 +224,7 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
     setToast({ id: Date.now(), label: `Dodano: ${nazwa}` })
   }
 
-  const s = makeS()
+  const s = makeS(duzyEkran)
 
   return (
     <div style={s.container}>
@@ -466,13 +468,15 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
   )
 }
 
-function makeS() {
+// Na dużym ekranie szersza kolumna i dwa dania w rzędzie — przy 600 px
+// lista kilkuset przepisów to bardzo długie przewijanie, a monitor stoi pusty.
+function makeS(duzy = false) {
   return {
     container: {
       padding: '20px 20px 24px',
       fontFamily: fonts.sans, color: t.text,
       background: t.bg, minHeight: '100vh',
-      maxWidth: 600, margin: '0 auto', boxSizing: 'border-box',
+      maxWidth: duzy ? 1000 : 600, margin: '0 auto', boxSizing: 'border-box',
     },
 
     header: { marginBottom: 14 },
@@ -649,7 +653,13 @@ function makeS() {
       display: 'grid', placeItems: 'center', fontSize: 15, lineHeight: 1,
     },
 
-    lista: { display: 'flex', flexDirection: 'column', gap: 8 },
+    // Grid zamiast flex-column: na szerokim ekranie dwie kolumny, na wąskim
+    // jedna — czyli dokładnie to samo, co było.
+    lista: {
+      display: 'grid',
+      gridTemplateColumns: duzy ? 'repeat(2, 1fr)' : '1fr',
+      gap: 8,
+    },
     wiersz: {
       ...ui.card, padding: '10px 12px',
       display: 'flex', alignItems: 'center', gap: 4,
