@@ -135,6 +135,13 @@ Helpery SQL: `moj\_household\_id()`, `moj\_email()` — używają JWT pytająceg
 
 
 
+\## Ustalenia produktowe
+
+`USTALENIA.md` — decyzje, które wyglądają na błąd, a są celowe (np. jednostka
+składnika jest opcjonalna). Czytaj PRZED zgłoszeniem albo „naprawieniem"
+czegoś, co wygląda na usterkę. Ustalenie jest nadrzędne wobec własnej oceny.
+Dopisuje je Filip; sam go nie edytuj bez jego słowa.
+
 \## Migracje do wykonania w Supabase
 
 `migracja_promocje_indeks.sql` — indeks na `promo_offers(offer_end_at, source_hash)`.
