@@ -58,12 +58,27 @@ Settings → Secrets and variables → Actions:
 | `ANDROID_KEYSTORE_PASSWORD` | hasło do pliku `.jks` |
 | `ANDROID_KEY_ALIAS` | `menuplaner` |
 | `ANDROID_KEY_PASSWORD` | hasło do klucza (zwykle to samo) |
-| `VITE_SUPABASE_URL` | to samo, co w Vercelu |
-| `VITE_SUPABASE_ANON_KEY` | to samo, co w Vercelu |
+| `VITE_SUPABASE_ANON_KEY` | klucz **anon** — ten sam, co w Vercelu |
 
-Dwa ostatnie są konieczne, bo apka natywna nosi bundle webowy w sobie —
-zbudowany bez nich wstanie, ale nie połączy się z bazą. Workflow przerywa
-z błędem, gdy ich brakuje, żeby taka wersja nie trafiła do sklepu.
+Adresu **nie trzeba dodawać osobno**: workflow bierze `VITE_SUPABASE_URL`,
+a gdy go nie ma — istniejący `SUPABASE_URL`, którego używają inne workflow.
+To ta sama wartość.
+
+Klucz anon trzeba dodać, bo takiego sekretu jeszcze nie ma. Apka natywna nosi
+bundle webowy w sobie — zbudowana bez klucza wstanie, ale nie połączy się
+z bazą, a taka wersja trafiłaby do sklepu. Workflow przerywa z błędem.
+
+**Nie podstawiaj pod niego `SUPABASE_SERVICE_ROLE_KEY`.** To jedyny klucz
+Supabase, jaki już leży w sekretach, więc pomyłka jest łatwa — a skutki są
+najgorsze z możliwych: klucz serwisowy omija całe RLS, wszedłby do pliku APK
+i każdy, kto pobierze aplikację ze sklepu, mógłby go z niej wyjąć i czytać
+oraz kasować cudze dane. Workflow to wykrywa (rozpoznaje JWT z rolą
+`service_role` oraz nowszy format `sb_secret_...`) i przerywa build, ale nie
+polegaj na tym — po prostu wklej właściwy klucz.
+
+Klucz anon jest **publiczny z założenia**: jest już w kodzie strony
+menuplaner.pl, więc jego skopiowanie niczego nie ujawnia. Nie jest sekretem
+w sensie bezpieczeństwa, po prostu musi dotrzeć do builda.
 
 ## Krok 3 — budowanie
 

@@ -38,16 +38,48 @@ jobs:
 
       # Bundle webowy wchodzi do APK jako assety — apka natywna nie pobiera
       # strony z sieci, tylko ma ją u siebie. Z sieci idzie wyłącznie Supabase.
+      # Adres bierzemy z VITE_SUPABASE_URL, a gdy go nie ma — z SUPABASE_URL,
+      # którego używają już inne workflow. To ta sama wartość, więc nie ma
+      # sensu kazać jej wpisywać drugi raz.
+      #
+      # Dla klucza żadnego fallbacku NIE MA i to jest celowe: jedyny klucz
+      # Supabase, który tu leży, to SUPABASE_SERVICE_ROLE_KEY — a ten omija
+      # całe RLS. Wszedłby do pliku APK, skąd każdy może go wyjąć, i dałby
+      # obcym pełny dostęp do bazy.
       - name: Zbuduj stronę
         env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || secrets.SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
         run: |
-          if [ -z "$VITE_SUPABASE_URL" ] || [ -z "$VITE_SUPABASE_ANON_KEY" ]; then
-            echo "::error::Brak sekretów VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY."
-            echo "::error::Bez nich apka zbuduje się, ale nie połączy z bazą — i trafiłoby to do sklepu."
+          if [ -z "$VITE_SUPABASE_URL" ]; then
+            echo "::error::Brak adresu Supabase — dodaj sekret VITE_SUPABASE_URL albo SUPABASE_URL."
             exit 1
           fi
+          if [ -z "$VITE_SUPABASE_ANON_KEY" ]; then
+            echo "::error::Brak sekretu VITE_SUPABASE_ANON_KEY."
+            echo "::error::To klucz ANON (publiczny, ten sam co na stronie w Vercelu)."
+            echo "::error::NIE podstawiaj pod niego SUPABASE_SERVICE_ROLE_KEY."
+            exit 1
+          fi
+
+          # Bezpiecznik przed najgorszą możliwą pomyłką w tym workflow.
+          # Klucz serwisowy w pliku APK = pełny dostęp do bazy dla każdego,
+          # kto ten plik pobierze ze sklepu. Rozpoznajemy oba formaty, jakie
+          # Supabase wydaje: JWT z rolą w środku i nowszy `sb_secret_...`.
+          if printf '%s' "$VITE_SUPABASE_ANON_KEY" | grep -q '^sb_secret_'; then
+            echo "::error::To jest klucz SEKRETNY (sb_secret_...), nie anon. Przerywam."
+            exit 1
+          fi
+          ROLA=$(printf '%s' "$VITE_SUPABASE_ANON_KEY" | cut -d. -f2 \
+                 | tr '_-' '/+' | base64 -d 2>/dev/null \
+                 | grep -o '"role" *: *"[^"]*"' | cut -d'"' -f4 || true)
+          if [ "$ROLA" = "service_role" ]; then
+            echo "::error::Pod VITE_SUPABASE_ANON_KEY podstawiono klucz service_role."
+            echo "::error::Ten klucz omija RLS i trafiłby do pliku APK. Przerywam."
+            exit 1
+          fi
+          echo "Klucz Supabase wygląda na anon (rola: ${ROLA:-nierozpoznana})."
+
           npm run build
 
       - name: Testy
