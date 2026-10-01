@@ -117,8 +117,8 @@ export default function Wpis() {
   // Tytuł karty przeglądarki — SPA nie zrobi tego samo, a to on trafia
   // do zakładek i do podglądu linku.
   useEffect(() => {
-    if (wpis?.tytul) document.title = `${wpis.tytul} — Menu planer`
-    return () => { document.title = 'Menu planer' }
+    if (wpis?.tytul) document.title = `${wpis.tytul} — Menu Planer`
+    return () => { document.title = 'Menu Planer' }
   }, [wpis])
 
   return (

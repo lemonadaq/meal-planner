@@ -1,4 +1,8 @@
-\# Smakuje — meal planner dla rodziny
+\# Menu Planer — meal planner dla rodziny
+
+Nazwa widoczna dla użytkownika to **Menu Planer** — tak samo w sklepie Play,
+w `strings.xml`, w `capacitor.config.json` i w `manifest.json`. „Smakuje" to
+nazwa robocza sprzed wydania i nie występuje już nigdzie w kodzie.
 
 
 
