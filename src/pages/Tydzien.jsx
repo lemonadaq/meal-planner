@@ -604,6 +604,8 @@ function makeS() {
     },
     chip: {
       flexShrink: 0,
+      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+      minHeight: 40, boxSizing: 'border-box',
       padding: '8px 14px', borderRadius: 999,
       background: t.surface, border: `0.5px solid ${t.border}`,
       fontFamily: fonts.sans, fontSize: 13, color: t.text, fontWeight: 500,
