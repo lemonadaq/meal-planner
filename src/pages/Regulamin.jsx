@@ -1,13 +1,19 @@
 import { t, fonts } from '../theme'
 
-export default function Regulamin({ onClose }) {
-  return (
-    <div style={s.overlay} onClick={onClose}>
-      <div style={s.sheet} onClick={e => e.stopPropagation()}>
-        <div style={s.header}>
-          <div style={s.tytul}>Regulamin</div>
-          <button style={s.close} onClick={onClose}>✕</button>
-        </div>
+// Dwa tryby renderowania tej samej treści:
+// - modal (z `onClose`) — tak, jak otwiera się to z ekranu logowania,
+// - PEŁNA STRONA (bez `onClose`) — bo Google Play wymaga PUBLICZNEGO adresu
+//   polityki prywatności, a treści zamkniętej w modalu nie da się podlinkować.
+// Treść jest jedna, więc nie rozjedzie się między wersjami.
+export default function Regulamin({ onClose = null }) {
+  const jakoStrona = !onClose
+
+  const tresc = (
+    <>
+      <div style={s.header}>
+        <div style={s.tytul}>Regulamin</div>
+        {!jakoStrona && <button style={s.close} onClick={onClose}>✕</button>}
+      </div>
         <div style={s.tresc}>
           <p style={s.meta}>Obowiązuje od: 1 czerwca 2026 r.<br />Usługa: <strong>menuplaner.pl</strong></p>
 
@@ -37,12 +43,36 @@ export default function Regulamin({ onClose }) {
           <h2 style={s.h2}>§7. Kontakt</h2>
           <p>W sprawach dotyczących regulaminu lub konta prosimy o kontakt: <strong>kontakt@menuplaner.pl</strong></p>
         </div>
+    </>
+  )
+
+  // Jako strona: ta sama treść, ale bez przyciemnionego tła i bez „przyklejenia"
+  // do dołu ekranu — to ma być zwykły, linkowalny dokument.
+  if (jakoStrona) {
+    return (
+      <div style={s.strona}>
+        <div style={{ ...s.sheet, ...s.sheetStrona }}>{tresc}</div>
       </div>
+    )
+  }
+
+  return (
+    <div style={s.overlay} onClick={onClose}>
+      <div style={s.sheet} onClick={e => e.stopPropagation()}>{tresc}</div>
     </div>
   )
 }
 
 const s = {
+  strona: {
+    minHeight: '100vh', background: t.bg,
+    display: 'flex', justifyContent: 'center',
+    padding: '0 16px',
+  },
+  sheetStrona: {
+    borderRadius: 0, maxHeight: 'none',
+    boxShadow: 'none', padding: '28px 22px 48px',
+  },
   overlay: {
     position: 'fixed', inset: 0, zIndex: 2000,
     background: 'rgba(20,15,10,.55)', backdropFilter: 'blur(6px)',

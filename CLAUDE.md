@@ -1,4 +1,8 @@
-\# Smakuje — meal planner dla rodziny
+\# Menu Planer — meal planner dla rodziny
+
+Nazwa widoczna dla użytkownika to **Menu Planer** — tak samo w sklepie Play,
+w `strings.xml`, w `capacitor.config.json` i w `manifest.json`. „Smakuje" to
+nazwa robocza sprzed wydania i nie występuje już nigdzie w kodzie.
 
 
 
@@ -134,6 +138,18 @@ Helpery SQL: `moj\_household\_id()`, `moj\_email()` — używają JWT pytająceg
 12\. PWA offline (Service Worker + cache planu i listy)
 
 
+
+\## Wydanie na Androida
+
+`WYDANIE-ANDROID.md` — jak powstaje `.aab` (workflow „Wydanie Android"
+w Actions) i co trzeba zrobić poza kodem. `SKLEP-PLAY.md` — gotowe teksty
+do Play Console i odpowiedzi do formularza bezpieczeństwa danych.
+
+UWAGA: nowe osobiste konto deweloperskie musi przejść testy zamknięte
+(12 testerów przez 14 dni), zanim dostanie dostęp do produkcji.
+
+Klucz podpisujący i hasła WYŁĄCZNIE z sekretów Actions. `.gitignore` blokuje
+`*.jks`, `*.keystore` i `android/keystore.properties`.
 
 \## Ustalenia produktowe
 

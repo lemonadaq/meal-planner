@@ -1,5 +1,13 @@
 apply plugin: 'com.android.application'
 
+// Klucz podpisujący i hasła przychodzą ze zmiennych środowiskowych, nigdy
+// z repozytorium. W GitHub Actions wstrzykuje je workflow „Wydanie Android"
+// z sekretów; lokalnie wystarczy wyeksportować te same cztery zmienne.
+// Bez nich build release nadal przechodzi — wychodzi tylko niepodpisany
+// artefakt, przydatny do sprawdzenia, czy kod się w ogóle kompiluje.
+def plikKlucza = System.getenv("ANDROID_KEYSTORE_FILE")
+def mamyKlucz = plikKlucza != null && !plikKlucza.isEmpty() && file(plikKlucza).exists()
+
 android {
     namespace = "com.menuplaner.app"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -16,10 +24,27 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        release {
+            if (mamyKlucz) {
+                storeFile file(plikKlucza)
+                storePassword System.getenv("ANDROID_KEYSTORE_PASSWORD")
+                keyAlias System.getenv("ANDROID_KEY_ALIAS")
+                keyPassword System.getenv("ANDROID_KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
+            // minifyEnabled zostaje wyłączone: to WebView ładujący gotowy
+            // bundle z `dist`, więc R8 nie ma tu czego skracać, a potrafi
+            // zepsuć refleksję we wtyczkach Capacitora.
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            if (mamyKlucz) {
+                signingConfig signingConfigs.release
+            }
         }
     }
 }

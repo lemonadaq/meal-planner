@@ -32,8 +32,8 @@ const TRESC = [
 
 export default function OMnie() {
   useEffect(() => {
-    document.title = 'O mnie — Menu planer'
-    return () => { document.title = 'Menu planer' }
+    document.title = 'O mnie — Menu Planer'
+    return () => { document.title = 'Menu Planer' }
   }, [])
 
   return (

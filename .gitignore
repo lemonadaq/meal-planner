@@ -40,3 +40,11 @@ playwright-report/
 /generuj-wszystko.mjs
 /nowe-dania.txt
 /prompty-grafik.json
+
+# Klucz podpisujący aplikację Android — NIGDY do repozytorium.
+# Utrata klucza przesyłania nie jest śmiertelna (Google potrafi go
+# zresetować przy włączonym Play App Signing), ale wyciek pozwala
+# komuś wysłać aktualizację Twojej aplikacji.
+*.keystore
+*.jks
+android/keystore.properties

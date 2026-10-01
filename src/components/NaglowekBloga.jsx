@@ -42,7 +42,7 @@ export default function NaglowekBloga({ wariant = 'glowna' }) {
     <header style={s.naglowek}>
       {wariant === 'glowna' ? (
         <Link to="/blog" style={s.marka}>
-          <span style={s.markaTytul}>Menu planer</span>
+          <span style={s.markaTytul}>Menu Planer</span>
           <span style={s.markaPod}>przepisy i notatki z kuchni</span>
         </Link>
       ) : (
