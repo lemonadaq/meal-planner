@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '../supabase'
-import { t, fonts, ui, avatarBg } from '../theme'
+import { t, fonts, ui, avatarBg, GORA_TRESCI } from '../theme'
 import Toast from '../components/Toast'
 
 const LIMIT_OSOB = 5
@@ -352,6 +352,7 @@ function makeS() {
   return {
   outer: { background: t.bg, minHeight: '100vh', fontFamily: fonts.sans },
   container: { padding: '20px 20px 32px', maxWidth: 600, margin: '0 auto', boxSizing: 'border-box' },
+  paddingTop: GORA_TRESCI,
   back: {
     ...ui.btnText, padding: '0 0 14px',
     display: 'inline-flex', alignItems: 'center', minHeight: 40,

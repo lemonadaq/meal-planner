@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '../supabase'
-import { t, fonts, ui, avatarBg, DOMYSLNY_MOTYW } from '../theme'
+import { t, fonts, ui, avatarBg, DOMYSLNY_MOTYW, GORA_TRESCI } from '../theme'
 
 export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin, onBlog, onRodzina, onSloty, onKalendarz, onHome, jestAdmin }) {
   const pelneImie = user?.user_metadata?.full_name || ''
@@ -211,6 +211,7 @@ function makeS() {
     outer: { background: t.bg, minHeight: '100vh', fontFamily: fonts.sans },
     container: {
       padding: '20px 20px 32px',
+      paddingTop: GORA_TRESCI,
       maxWidth: 600, margin: '0 auto', boxSizing: 'border-box',
     },
     back: {

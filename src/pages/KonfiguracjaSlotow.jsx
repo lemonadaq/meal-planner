@@ -1,6 +1,6 @@
 import { useState, useMemo, useRef } from 'react'
 import { supabase } from '../supabase'
-import { t, fonts, ui } from '../theme'
+import { t, fonts, ui, GORA_TRESCI } from '../theme'
 import Toast from '../components/Toast'
 import {
   useSloty, sanityzuj, nowySlotId, nastepnyKolor,
@@ -549,6 +549,7 @@ const s = {
   outer: { background: t.bg, minHeight: '100vh', fontFamily: fonts.sans, paddingBottom: 80 },
   container: {
     padding: '20px 20px 32px',
+    paddingTop: GORA_TRESCI,
     maxWidth: 600, margin: '0 auto', boxSizing: 'border-box',
   },
   back: { ...ui.btnText, padding: '0 0 14px', display: 'block' },

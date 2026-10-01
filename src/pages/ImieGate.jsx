@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { supabase } from '../supabase'
-import { t, fonts, ui } from '../theme'
+import { t, fonts, ui, PASEK_SYSTEMOWY } from '../theme'
 
 // Pokazywana po zalogowaniu, gdy user nie ma jeszcze imienia
 // (np. rejestracja mailem bez imienia / starsze konta).
@@ -84,6 +84,7 @@ function makeS() {
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       background: `radial-gradient(circle at 30% 0%, ${t.warmSoft} 0%, ${t.bg} 45%, ${t.bg} 100%)`,
       padding: '24px 16px',
+      paddingTop: `calc(24px + ${PASEK_SYSTEMOWY})`,
       fontFamily: fonts.sans,
     },
     card: {

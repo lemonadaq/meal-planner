@@ -141,6 +141,20 @@ function makeUi(isDark) {
   }
 }
 
+// Górny margines treści, który omija pasek systemowy telefonu (zegar, bateria).
+//
+// Android 15 WYMUSZA rysowanie pod paskiem dla aplikacji celujących w API 35+,
+// a my mamy 36 — więc w apce ze sklepu nagłówek wchodził pod zegar. To nie
+// jest błąd układu, tylko brak uwzględnienia wysokości paska.
+//
+// W przeglądarce `env()` daje 0, czyli zostaje samo 20px i nic się nie zmienia.
+// Dolny odpowiednik jest już w NavBarze (`env(safe-area-inset-bottom)`),
+// działa od dawna — to ta sama mechanika, tylko od góry.
+//
+// Wymaga `viewport-fit=cover` w index.html. Jest.
+export const PASEK_SYSTEMOWY = 'env(safe-area-inset-top, 0px)'
+export const GORA_TRESCI = `calc(20px + ${PASEK_SYSTEMOWY})`
+
 export const ui = makeUi(false)
 
 // ─── applyTheme ────────────────────────────────────────────────────────────

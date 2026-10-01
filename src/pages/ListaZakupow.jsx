@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { supabase } from '../supabase'
-import { t, fonts, ui } from '../theme'
+import { t, fonts, ui, GORA_TRESCI } from '../theme'
 import Toast from '../components/Toast'
 import { formatDataLocal, dzisLocal } from '../dataHelpers'
 import { PromoBanner, PromoChip, PromoDetail, StoreDot } from '../components/Promocje'
@@ -2904,6 +2904,7 @@ function makeS(duzy = false) {
   return {
   outer: { background: t.bg, minHeight: '100vh', fontFamily: fonts.sans, position: 'relative' },
   container: { padding: '20px 20px 32px', maxWidth: duzy ? 900 : 620, margin: '0 auto', boxSizing: 'border-box' },
+  paddingTop: GORA_TRESCI,
   back: { ...ui.btnText, padding: '0 0 14px', display: 'block' },
 
   headerCard: {

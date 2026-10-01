@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { supabase } from '../supabase'
-import { t, fonts, ui } from '../theme'
+import { t, fonts, ui, GORA_TRESCI } from '../theme'
 import { kcalZeSkladnikow, etykietaKcal } from '../kcalZeSkladnikow'
 import { pobierzWszystkieWiersze } from '../pobierzWszystko'
 import { parsujIlosc } from '../jednostki'
@@ -540,6 +540,7 @@ function makeS() {
   outer: { background: t.bg, minHeight: '100vh', fontFamily: fonts.sans },
   container: {
     padding: '20px 20px 40px',
+    paddingTop: GORA_TRESCI,
     maxWidth: 620, margin: '0 auto', boxSizing: 'border-box',
   },
   back: { ...ui.btnText, padding: '0 0 14px', display: 'block' },

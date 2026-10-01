@@ -4,7 +4,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { supabase } from '../supabase'
-import { t, fonts, ui } from '../theme'
+import { t, fonts, ui, GORA_TRESCI } from '../theme'
 import Toast from '../components/Toast'
 import { RODZAJ_LABEL } from '../etykiety'
 import PodgladPrzepisu from '../components/PodgladPrzepisu'
@@ -474,6 +474,7 @@ function makeS(duzy = false) {
   return {
     container: {
       padding: '20px 20px 24px',
+      paddingTop: GORA_TRESCI,
       fontFamily: fonts.sans, color: t.text,
       background: t.bg, minHeight: '100vh',
       maxWidth: duzy ? 1000 : 600, margin: '0 auto', boxSizing: 'border-box',

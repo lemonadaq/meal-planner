@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react'
 import { supabase } from '../supabase'
-import { t, fonts, ui } from '../theme'
+import { t, fonts, ui, GORA_TRESCI } from '../theme'
 import { poniedzialekTygodnia, zakresTygodniaLabel, etykietaTygodnia, TYGODNIE_DO_WYBORU } from '../useTydzien'
 import { kcalZeSkladnikow, etykietaKcal } from '../kcalZeSkladnikow'
 
@@ -632,6 +632,7 @@ function makeS() {
   outer: { background: t.bg, minHeight: '100vh', fontFamily: fonts.sans },
   container: {
     padding: '20px 20px 100px',
+    paddingTop: GORA_TRESCI,
     maxWidth: 760, margin: '0 auto', boxSizing: 'border-box',
   },
   topBar: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 },

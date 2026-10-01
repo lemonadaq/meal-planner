@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../supabase'
-import { t, fonts, ui } from '../theme'
+import { t, fonts, ui, GORA_TRESCI } from '../theme'
 
 const TABS_LABEL = {
   home:     'Home',
@@ -428,6 +428,7 @@ const s = {
   outer: { background: t.bg, minHeight: '100vh', fontFamily: fonts.sans },
   container: {
     padding: '20px 20px 40px',
+    paddingTop: GORA_TRESCI,
     maxWidth: 760, margin: '0 auto', boxSizing: 'border-box',
   },
   back: { ...ui.btnText, padding: '0 0 14px', display: 'block' },

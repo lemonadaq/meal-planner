@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { supabase } from '../supabase'
-import { t, fonts, ui, avatarBg } from '../theme'
+import { t, fonts, ui, avatarBg, GORA_TRESCI } from '../theme'
 import Toast from '../components/Toast'
 import { formatDataLocal as formatData } from '../dataHelpers'
 import { useSloty, slotyWDniu, kluczDnia, sanityzuj } from '../useSloty'
@@ -548,6 +548,7 @@ function makeS() {
   return {
   container: {
     padding: '20px 20px 24px',
+    paddingTop: GORA_TRESCI,
     fontFamily: fonts.sans, color: t.text,
     background: t.bg, minHeight: '100vh',
     maxWidth: 600, margin: '0 auto', boxSizing: 'border-box',
