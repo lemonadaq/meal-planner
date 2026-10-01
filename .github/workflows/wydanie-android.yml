@@ -90,7 +90,28 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      - uses: android-actions/setup-android@v3
+      # Celowo BEZ android-actions/setup-android: ta akcja instaluje domyślnie
+      # pakiet `tools`, który Google wycofał z repozytorium SDK, i wywala się
+      # na „Failed to find package 'tools'". Obraz ubuntu-latest i tak ma
+      # Android SDK zainstalowane — wystarczy je wskazać.
+      - name: Wskaż Android SDK
+        run: |
+          SDK="${ANDROID_SDK_ROOT:-${ANDROID_HOME:-/usr/local/lib/android/sdk}}"
+          if [ ! -d "$SDK" ]; then
+            echo "::error::Nie znalazłem Android SDK (szukałem w $SDK)."
+            exit 1
+          fi
+          echo "ANDROID_HOME=$SDK"     >> "$GITHUB_ENV"
+          echo "ANDROID_SDK_ROOT=$SDK" >> "$GITHUB_ENV"
+          echo "Używam SDK: $SDK"
+          ls "$SDK/build-tools" 2>/dev/null | tail -3 || echo "build-tools dociągnie Gradle"
+
+          # Licencje muszą być zaakceptowane, żeby Gradle mógł sam dociągnąć
+          # brakującą wersję build-tools. Na obrazie zwykle już są — to tylko
+          # zabezpieczenie i dlatego błędy są tu wyciszone.
+          yes 2>/dev/null | "$SDK/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null 2>&1 \
+            || yes 2>/dev/null | find "$SDK/cmdline-tools" -name sdkmanager -exec {} --licenses \; >/dev/null 2>&1 \
+            || true
 
       - name: Przenieś bundle do projektu Androida
         run: npx cap sync android
