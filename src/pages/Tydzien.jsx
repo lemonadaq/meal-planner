@@ -484,19 +484,25 @@ function makeS(duzy = false) {
     tydzienNav: {
       display: 'flex', alignItems: 'center', gap: 4, marginBottom: 6,
     },
+    // 40×40 — minimalny sensowny cel dotyku; to jeden z najczęściej klikanych
+    // elementów ekranu (przełączanie tygodni), 28px za łatwo spudłować kciukiem.
     tydzienStrzalka: {
       background: t.surface, border: `0.5px solid ${t.border}`,
-      borderRadius: 999, width: 28, height: 28,
+      borderRadius: 999, width: 40, height: 40,
       display: 'grid', placeItems: 'center',
       fontFamily: fonts.serif, fontSize: 17, lineHeight: 1, color: t.accent,
       cursor: 'pointer', flexShrink: 0, paddingBottom: 2,
     },
+    // nowrap + ellipsis, nie zawijanie — powiększenie przycisków strzałek do
+    // 40px zabiera etykiecie trochę szerokości; długie zakresy (przełom
+    // miesięcy) mają się skracać, a nie rozpychać nagłówek na dwie linie.
     eyebrow: {
       ...ui.eyebrow, fontSize: 11, letterSpacing: 1.2,
       padding: '0 4px', minWidth: 0,
+      whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
     },
     ustawieniaBtn: {
-      width: 34, height: 34, borderRadius: '50%',
+      width: 40, height: 40, borderRadius: '50%',
       background: t.surface, border: `0.5px solid ${t.border}`,
       color: t.mute, cursor: 'pointer',
       display: 'grid', placeItems: 'center', flexShrink: 0,
