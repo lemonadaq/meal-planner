@@ -6,6 +6,11 @@ export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin
   const pelneImie = user?.user_metadata?.full_name || ''
   const imie = pelneImie.split(' ')[0] || user?.email?.split('@')[0] || ''
   const [porcje, setPorcje] = useState(ustawienia?.domyslne_porcje ?? 1)
+  // Trzyma aktualną wartość poza cyklem renderowania — przy szybkich, kolejnych
+  // kliknięciach +/- (np. podwójny tap) `porcje` w domknięciu onClick bywa jeszcze
+  // sprzed poprzedniego kliknięcia, więc drugie kliknięcie liczyłoby od tej samej
+  // starej wartości i jedna zmiana by "przepadała".
+  const porcjeRef = useRef(porcje)
   const [zapisano, setZapisano] = useState(false)
   const [imieEdyt, setImieEdyt] = useState(pelneImie)
   const [imieStan, setImieStan] = useState('idle') // 'idle' | 'saving' | 'done'
@@ -17,7 +22,9 @@ export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin
   const edytujeRef = useRef(false)
 
   useEffect(() => {
-    setPorcje(ustawienia?.domyslne_porcje ?? 1)
+    const nowe = ustawienia?.domyslne_porcje ?? 1
+    setPorcje(nowe)
+    porcjeRef.current = nowe
   }, [ustawienia?.domyslne_porcje])
 
   useEffect(() => {
@@ -40,7 +47,8 @@ export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin
   }
 
   function zmienPorcje(delta) {
-    const nowe = Math.max(0.5, Math.min(20, +(porcje + delta).toFixed(1)))
+    const nowe = Math.max(0.5, Math.min(20, +(porcjeRef.current + delta).toFixed(1)))
+    porcjeRef.current = nowe
     setPorcje(nowe)
     onZapisz({ domyslne_porcje: nowe })
     setZapisano(true)
