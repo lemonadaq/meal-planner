@@ -782,7 +782,7 @@ function makeS() {
     cursor: 'pointer',
   },
   tydzienBtnOn: {
-    background: t.accent, borderColor: t.accent,
+    background: t.accent, border: `0.5px solid ${t.accent}`,
     boxShadow: '0 4px 12px rgba(77,124,77,.3)',
   },
   tydzienBtnTekst: { display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0 },
