@@ -110,6 +110,9 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
   const [edZdjecie, setEdZdjecie] = useState(null)
   const [edZdjeciePlik, setEdZdjeciePlik] = useState(null)
   const [edZdjeciePreview, setEdZdjeciePreview] = useState(null)
+  // Id składników do skasowania — usuwamy z bazy dopiero przy zapisie,
+  // żeby „Anuluj" po kliknięciu ✕ faktycznie cofał usunięcie.
+  const [edUsunieteId, setEdUsunieteId] = useState([])
   const [edRodzaj, setEdRodzaj] = useState('')
   const [edCzas, setEdCzas] = useState('')
   const [edKcal, setEdKcal] = useState('')
@@ -198,6 +201,7 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
     setEdZdjecie(heroZdj || null)
     setEdZdjeciePlik(null)
     setEdZdjeciePreview(null)
+    setEdUsunieteId([])
     setEdPrzepisRaw(przepis.join('\n'))
     setEdRodzaj(skladniki[0]?.rodzaj || '')
     setEdCzas(skladniki[0]?.czas_minuty != null ? String(skladniki[0].czas_minuty) : '')
@@ -291,6 +295,10 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
       )
     })
 
+    edUsunieteId.forEach(id => {
+      operacje.push(supabase.from('dania').delete().eq('id', id))
+    })
+
     const noweSkladniki = edSkladniki.filter(sk => sk._nowy && sk.Skladnik.trim())
     if (noweSkladniki.length > 0) {
       const wzor = skladniki[0] || {}
@@ -312,18 +320,16 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
 
     await Promise.all(operacje)
     sledz?.('edytuj_danie', { danie: aktualnaNazwa, nowe_skladniki: noweSkladniki.length })
-    setEdZdjeciePlik(null); setEdZdjeciePreview(null)
+    setEdZdjeciePlik(null); setEdZdjeciePreview(null); setEdUsunieteId([])
     await pobierz()
     setEdycja(false); setSaving(false)
   }
 
-  async function usunSkladnik(i) {
+  function usunSkladnik(i) {
     const sk = edSkladniki[i]
-    if (sk._nowy || !sk.id) {
-      setEdSkladniki(prev => prev.filter((_, idx) => idx !== i))
-      return
+    if (!sk._nowy && sk.id) {
+      setEdUsunieteId(prev => [...prev, sk.id])
     }
-    await supabase.from('dania').delete().eq('id', sk.id)
     setEdSkladniki(prev => prev.filter((_, idx) => idx !== i))
   }
 
@@ -617,7 +623,7 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
             <button style={{ ...ui.btnPrimary, flex: 1 }} onClick={zapiszZmiany} disabled={saving}>
               {saving ? 'Zapisuję…' : 'Zapisz zmiany'}
             </button>
-            <button style={{ ...ui.btnGhost, padding: '14px 20px' }} onClick={() => { setEdZdjeciePlik(null); setEdZdjeciePreview(null); setEdycja(false) }}>
+            <button style={{ ...ui.btnGhost, padding: '14px 20px' }} onClick={() => { setEdZdjeciePlik(null); setEdZdjeciePreview(null); setEdUsunieteId([]); setEdycja(false) }}>
               Anuluj
             </button>
           </div>
