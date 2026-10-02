@@ -133,6 +133,7 @@ export default function DodajDanie({ onBack, onZapisano }) {
 
   function szukajPodpowiedzi(val) {
     setWybrano(false)
+    setBladSkladnik('')
     setNowyS(prev => ({ ...prev, nazwa: val }))
     if (val.trim().length < 2) { setPodpowiedzi([]); return }
     const filtered = istniejaceSkladniki
@@ -422,14 +423,14 @@ export default function DodajDanie({ onBack, onZapisano }) {
               type="text"
               inputMode="decimal"
               value={nowyS.ilosc}
-              onChange={e => setNowyS(prev => ({ ...prev, ilosc: e.target.value }))}
+              onChange={e => { setBladSkladnik(''); setNowyS(prev => ({ ...prev, ilosc: e.target.value })) }}
             />
             <input
               style={{ ...s.input, flex: 1 }}
               list="jednostki-lista"
               placeholder="jednostka"
               value={nowyS.jednostka}
-              onChange={e => setNowyS(prev => ({ ...prev, jednostka: e.target.value }))}
+              onChange={e => { setBladSkladnik(''); setNowyS(prev => ({ ...prev, jednostka: e.target.value })) }}
             />
             <datalist id="jednostki-lista">
               {JEDNOSTKI.map(j => <option key={j} value={j} />)}
