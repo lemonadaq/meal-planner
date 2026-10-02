@@ -659,7 +659,8 @@ function makeS() {
   btnUsunZdj: {
     position: 'absolute', top: 8, right: 8,
     background: 'rgba(0,0,0,.5)', color: '#fff',
-    border: 'none', borderRadius: 20, padding: '6px 12px',
+    border: 'none', borderRadius: 20, padding: '0 16px', minHeight: 40,
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
     fontFamily: fonts.sans, fontSize: 12, fontWeight: 500, cursor: 'pointer',
   },
   btnDodajZdj: {
