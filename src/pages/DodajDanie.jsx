@@ -176,6 +176,12 @@ export default function DodajDanie({ onBack, onZapisano }) {
     // ilość musi dać się przeliczyć na dodatnią liczbę — inaczej trafia dosłownie
     // na listę zakupów jako "-5 g" albo "abc g"
     if (nowyS.ilosc.trim()) {
+      // sama liczba/ułamek, bez doklejonej jednostki — inaczej "500g" przechodzi
+      // walidację (parseFloat ucina "g"), a na listę zakupów trafia dosłowne
+      // "500g" obok pola Jednostka, czyli zdublowana jednostka ("500g g")
+      if (!/^[\d.,/½¼¾⅓⅔⅛\s]+$/.test(nowyS.ilosc.trim())) {
+        setBladSkladnik('Ilość to tylko liczba — jednostkę wpisz w polu obok'); return
+      }
       const ilosc = parsujIlosc(nowyS.ilosc)
       if (ilosc == null || ilosc <= 0) {
         setBladSkladnik('Ilość musi być liczbą większą od zera'); return
