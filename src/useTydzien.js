@@ -148,14 +148,35 @@ export function useTydzien(householdId, user, offset = 0, domyslnePorcje = 1) {
   }, [pula])
 
   useEffect(() => {
-    // Sprzątanie oczekujących zapisów przy zmianie tygodnia / odmontowaniu —
-    // nie chcemy dopisać porcji do już nieaktualnego tygodnia.
+    // Sprzątanie oczekujących zapisów przy zmianie tygodnia / odmontowaniu
+    // (np. szybkie przełączenie zakładki — Tydzien.jsx renderuje się
+    // warunkowo w App.jsx, więc zmiana zakładki odmontowuje ten hook).
+    // Oczekujący zapis NIE jest porzucany: lecimy z nim do bazy od razu,
+    // z ostatnią wartością porcji i z `tydzien`/`householdId` sprzed tej
+    // zmiany (domknięcie efektu) — inaczej kliknięcie +/- tuż przed
+    // przełączeniem znikało bez śladu i bez zapisu, a po powrocie użytkownik
+    // widział starą wartość porcji jakby jej kliknięcie nigdy nie było.
     const timery = zapisTimeryRef.current
+    const hhId = householdId
+    const tydz = tydzien
     return () => {
-      for (const wpis of timery.values()) clearTimeout(wpis.timer)
+      for (const [danie, wpis] of timery.entries()) {
+        clearTimeout(wpis.timer)
+        const finalna = porcjeRef.current.get(danie)
+        if (hhId && finalna != null) {
+          supabase.from('plan_tygodnia')
+            .update({ porcje: finalna })
+            .eq('household_id', hhId)
+            .eq('tydzien', tydz)
+            .eq('danie', danie)
+            .then(({ error }) => {
+              if (error) console.error('Nie udało się zapisać porcji przy zmianie ekranu:', error)
+            })
+        }
+      }
       timery.clear()
     }
-  }, [tydzien])
+  }, [tydzien, householdId])
 
   async function dodaj(danie) {
     if (!householdId || !user?.id || !danie) return
