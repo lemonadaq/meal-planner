@@ -570,7 +570,7 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
               </p>
             ) : (
               <p style={s.confirmBody}>
-                Usuniecie zostanie potwierdzone — możesz cofnąć tę akcję w ciągu kilku sekund.
+                Usunięcie zostanie potwierdzone — możesz cofnąć tę akcję w ciągu kilku sekund.
               </p>
             )}
             <div style={s.confirmActions}>
