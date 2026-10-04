@@ -2897,7 +2897,7 @@ function SwipeItem({ item, kupione, onSwipeRight }) {
             <strong style={{ color: '#fff', fontWeight: 600 }}>
               {item.ilosc != null
                 ? formatujWage(item.ilosc, item.jednostka)
-                : (item.iloscOryginalna || '')}
+                : (item.iloscOryginalna || '—')}
             </strong>
           </div>
         )}
