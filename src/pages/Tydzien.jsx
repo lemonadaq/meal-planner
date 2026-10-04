@@ -364,7 +364,7 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
         />
         {szukaj && (
           <button style={s.searchClear} onClick={() => setSzukaj('')} aria-label="Wyczyść">
-            ✕
+            <span style={s.searchClearIkona}>✕</span>
           </button>
         )}
       </div>
@@ -611,10 +611,18 @@ function makeS(duzy = false) {
     searchWrap: { position: 'relative', marginBottom: 12 },
     searchIcon: { position: 'absolute', top: '50%', left: 14, transform: 'translateY(-50%)', pointerEvents: 'none' },
     search: { ...ui.input, paddingLeft: 40, height: 44 },
+    // 40×40 — cel dotyku, nie wizualny rozmiar krążka (jak stepperBtn/pulaUsun).
+    // Widoczny krążek zostaje mały (searchClearIkona) i w tym samym miejscu —
+    // `right: 3` zamiast 12 utrzymuje jego środek tam, gdzie był przy 22 px.
     searchClear: {
-      position: 'absolute', top: '50%', right: 12, transform: 'translateY(-50%)',
-      background: t.surfaceAlt, border: 'none', borderRadius: 999,
-      width: 22, height: 22, fontSize: 11, color: t.mute, cursor: 'pointer',
+      position: 'absolute', top: '50%', right: 3, transform: 'translateY(-50%)',
+      background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+      width: 40, height: 40,
+      display: 'grid', placeItems: 'center',
+    },
+    searchClearIkona: {
+      width: 22, height: 22, borderRadius: 999,
+      background: t.surfaceAlt, fontSize: 11, color: t.mute,
       display: 'grid', placeItems: 'center', lineHeight: 1,
     },
 
