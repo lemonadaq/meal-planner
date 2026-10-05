@@ -2507,38 +2507,38 @@ function ItemRow({ item, kupione, onToggle, onLongPress, onEdit, onDelete, onHom
       )}
       {onHome && (
         <button
-          style={s.itemHomeBtn}
+          style={s.itemHomeBtnHit}
           onPointerDown={e => e.stopPropagation()}
           onPointerUp={e => e.stopPropagation()}
           onClick={e => { e.stopPropagation(); onHome() }}
           aria-label={`Mam w domu ${item.skladnik}`}
           title="Mam w domu — ukryj z listy"
         >
-          🏠
+          <span style={s.itemHomeBtn}>🏠</span>
         </button>
       )}
       {onEdit && (
         <button
-          style={s.itemEditBtn}
+          style={s.itemEditBtnHit}
           onPointerDown={e => e.stopPropagation()}
           onPointerUp={e => e.stopPropagation()}
           onClick={e => { e.stopPropagation(); onEdit() }}
           aria-label={`Edytuj ${item.skladnik}`}
           title="Edytuj nazwę / ilość"
         >
-          ✎
+          <span style={s.itemEditBtn}>✎</span>
         </button>
       )}
       {onDelete && (
         <button
-          style={s.itemDeleteBtn}
+          style={s.itemDeleteBtnHit}
           onPointerDown={e => e.stopPropagation()}
           onPointerUp={e => e.stopPropagation()}
           onClick={e => { e.stopPropagation(); onDelete() }}
           aria-label={`Usuń ${item.skladnik}`}
           title="Usuń z listy"
         >
-          ✕
+          <span style={s.itemDeleteBtn}>✕</span>
         </button>
       )}
     </div>
@@ -3134,35 +3134,52 @@ function makeS(duzy = false) {
   },
   itemIlosc: { fontSize: 12, color: t.mute, marginTop: 3, fontVariantNumeric: 'tabular-nums' },
   itemIloscHint: { fontSize: 11, color: t.muteLight || t.mute, fontWeight: 400 },
+  // Hit-area 40×40 (dotykowo), wizualnie kółko 30px bez zmian — ten sam
+  // zabieg co checkboxHit powyżej (padding 5 + ujemny margines -5 = 40-5-5=30).
+  itemHomeBtnHit: {
+    background: 'none', border: 'none', padding: 5, margin: -5,
+    minWidth: 40, minHeight: 40, flexShrink: 0,
+    display: 'grid', placeItems: 'center', cursor: 'pointer',
+    touchAction: 'manipulation',
+  },
+  itemEditBtnHit: {
+    background: 'none', border: 'none', padding: 5, margin: -5,
+    minWidth: 40, minHeight: 40, flexShrink: 0,
+    display: 'grid', placeItems: 'center', cursor: 'pointer',
+    touchAction: 'manipulation',
+  },
+  itemDeleteBtnHit: {
+    background: 'none', border: 'none', padding: 5, margin: -5,
+    minWidth: 40, minHeight: 40, flexShrink: 0,
+    display: 'grid', placeItems: 'center', cursor: 'pointer',
+    touchAction: 'manipulation',
+  },
   itemHomeBtn: {
+    boxSizing: 'border-box',
     width: 30, height: 30, borderRadius: 999,
     border: `1px solid ${t.border}`,
     background: t.surfaceAlt,
     color: t.mute,
     display: 'grid', placeItems: 'center',
     fontFamily: fonts.sans, fontSize: 13, fontWeight: 700,
-    cursor: 'pointer', flexShrink: 0,
-    marginRight: 0,
   },
   itemEditBtn: {
+    boxSizing: 'border-box',
     width: 30, height: 30, borderRadius: 999,
     border: `1px solid ${t.border}`,
     background: t.surfaceAlt,
     color: t.mute,
     display: 'grid', placeItems: 'center',
     fontFamily: fonts.sans, fontSize: 13, fontWeight: 700,
-    cursor: 'pointer', flexShrink: 0,
-    marginRight: 0,
   },
   itemDeleteBtn: {
+    boxSizing: 'border-box',
     width: 30, height: 30, borderRadius: 999,
     border: `1px solid ${t.border}`,
     background: t.surfaceAlt,
     color: t.danger,
     display: 'grid', placeItems: 'center',
     fontFamily: fonts.sans, fontSize: 14, fontWeight: 700,
-    cursor: 'pointer', flexShrink: 0,
-    marginRight: 0,
   },
   podmianaIcon: { fontSize: 11, color: t.warm, fontWeight: 700 },
   tagPowtarzaj: {
