@@ -429,6 +429,10 @@ const SCAL_NAZWY = {
   'mozarella':           'Mozzarella',
   'ser mozarella':       'Mozzarella',
   'ser mozzarella':      'Mozzarella',
+  // „Risotto alla milanese" i „Risotto z owocami morza" nazywają ten sam
+  // składnik w innym szyku słów — bez tego dwie takie pozycje nie sumowały
+  // się w jedną na liście zakupów.
+  'biale wytrawne wino': 'Białe wino wytrawne',
 }
 
 // Sufiksy/prefiksy, które nie rozróżniają produktu na liście zakupów.
