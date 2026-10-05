@@ -301,9 +301,16 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
                 // Danie spoza przepisów (wpisane ręcznie) — nie otwieramy
                 // szczegółów, bo nie ma czego pokazać
                 const wlasne = !loadingDania && !meta
+                // Własne danie nie ma przepisu do pokazania — zwykły
+                // (nieklikalny) div zamiast przycisku, żeby kursor i
+                // zachowanie nie udawały interaktywnego elementu bez akcji.
+                const DanieTag = wlasne ? 'div' : 'button'
                 return (
                   <div key={r.danie} style={s.pulaWiersz}>
-                    <button style={s.pulaDanieBtn} onClick={() => { if (!wlasne) onSelectDanie?.(r.danie) }}>
+                    <DanieTag
+                      style={wlasne ? { ...s.pulaDanieBtn, cursor: 'default' } : s.pulaDanieBtn}
+                      {...(wlasne ? {} : { onClick: () => onSelectDanie?.(r.danie) })}
+                    >
                       <div style={{ ...s.pulaThumb, background: meta?.zdjecie ? 'transparent' : getKolor(r.danie) }}>
                         {meta?.zdjecie
                           ? <img src={meta.zdjecie} alt="" style={s.thumbImg} loading="lazy" />
@@ -313,7 +320,7 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
                         <div style={s.pulaNazwa}>{r.danie}</div>
                         {wlasne && <div style={s.pulaWlasneLabel}>własne · bez przepisu</div>}
                       </div>
-                    </button>
+                    </DanieTag>
                     <div style={s.stepper}>
                       <button
                         style={s.stepperBtn}
