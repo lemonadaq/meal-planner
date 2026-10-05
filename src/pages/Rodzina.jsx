@@ -180,7 +180,7 @@ export default function Rodzina({ user, householdId, onBack, onZmianaHousehold }
         <section style={s.section}>
           <div style={s.sectionHeader}>
             <h2 style={s.sectionTitle}>Członkowie</h2>
-            <span style={s.licznik}>{czlonkowie.length}/{LIMIT_OSOB}</span>
+            <span style={s.licznik}>{totalZajetych}/{LIMIT_OSOB}</span>
           </div>
 
           {czlonkowie.map(c => {
