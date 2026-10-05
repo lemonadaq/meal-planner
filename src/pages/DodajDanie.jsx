@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { supabase } from '../supabase'
 import { t, fonts, ui, GORA_TRESCI } from '../theme'
 import { kcalZeSkladnikow, etykietaKcal } from '../kcalZeSkladnikow'
@@ -70,6 +70,12 @@ export default function DodajDanie({ onBack, onZapisano }) {
   const [notatki, setNotatki] = useState('')
 
   const [skladniki, setSkladniki] = useState([])
+  // Lista składników do sprawdzania duplikatów musi być aktualna w tej samej
+  // klatce — stan Reacta (`skladniki`) odświeża się dopiero przy następnym
+  // renderze, więc szybkie podwójne kliknięcie „+ Dodaj składnik" (np. dotyk
+  // telefonu wykryty jako dwa zdarzenia) widziało dwa razy tę samą, nieodświeżoną
+  // listę i dublowało składnik mimo sprawdzenia duplikatu.
+  const skladnikiRef = useRef([])
   const [istniejaceSkladniki, setIstniejaceSkladniki] = useState([])
   const [metaSkladnikow, setMetaSkladnikow] = useState([])
   const [nowyS, setNowyS] = useState({ nazwa: '', ilosc: '', jednostka: 'g', kategoria: '1_Warzywa i owoce' })
@@ -168,6 +174,7 @@ export default function DodajDanie({ onBack, onZapisano }) {
   function wyczyscFormularz() {
     setRodzaj('obiad'); setNazwa(''); setTyp('samodzielne')
     setCzasMinuty(''); setKcal(''); setPorcjeBazowe('4'); setNotatki('')
+    skladnikiRef.current = []
     setSkladniki([]); setPrzepisRaw('')
     setNowyS({ nazwa: '', ilosc: '', jednostka: 'g', kategoria: '1_Warzywa i owoce' })
     setBlad(''); setBladSkladnik(''); setPodpowiedzi([])
@@ -178,7 +185,7 @@ export default function DodajDanie({ onBack, onZapisano }) {
     const nazwaTrim = nowyS.nazwa.trim()
     if (!nazwaTrim) return
     // trim po obu stronach — inaczej "Cebula" i "Cebula " (spacja na końcu) mijają się jako różne
-    if (skladniki.find(sk => sk.nazwa.toLowerCase() === nazwaTrim.toLowerCase())) {
+    if (skladnikiRef.current.find(sk => sk.nazwa.toLowerCase() === nazwaTrim.toLowerCase())) {
       setBladSkladnik('Ten składnik już jest na liście'); return
     }
     if (!nowyS.ilosc.trim() && nowyS.jednostka !== 'do smaku') {
@@ -198,11 +205,15 @@ export default function DodajDanie({ onBack, onZapisano }) {
         setBladSkladnik('Ilość musi być liczbą większą od zera'); return
       }
     }
-    setSkladniki(prev => [...prev, { ...nowyS, nazwa: nazwaTrim }])
+    skladnikiRef.current = [...skladnikiRef.current, { ...nowyS, nazwa: nazwaTrim }]
+    setSkladniki(skladnikiRef.current)
     setNowyS({ nazwa: '', ilosc: '', jednostka: 'g', kategoria: '1_Warzywa i owoce' })
     setPodpowiedzi([]); setWybrano(false); setBladSkladnik('')
   }
-  function usunSkladnik(i) { setSkladniki(prev => prev.filter((_, idx) => idx !== i)) }
+  function usunSkladnik(i) {
+    skladnikiRef.current = skladnikiRef.current.filter((_, idx) => idx !== i)
+    setSkladniki(skladnikiRef.current)
+  }
 
 
   async function zapiszDanie() {
