@@ -359,8 +359,10 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
         {/* Sticky licznik puli — `position: relative` na sekcji ogranicza
             zasięg przyklejenia (CSS sticky) do wysokości TEGO panelu, więc
             odznaka znika po przewinięciu do listy przepisów poniżej, zamiast
-            wisieć nad jej wierszami przez całe przewijanie strony. */}
-        {!loadingPula && (
+            wisieć nad jej wierszami przez całe przewijanie strony. Tylko przy
+            niepustej puli — przy zerze dubluje nagłówek „(0)” tuż nad pustym
+            stanem, bez żadnej dodatkowej informacji. */}
+        {!loadingPula && pula.length > 0 && (
           <div style={s.licznikWrap}>
             <div style={s.licznik}>W tym tygodniu: {pula.length}</div>
           </div>
