@@ -88,6 +88,17 @@ export default function DodajDanie({ onBack, onZapisano }) {
   const rodzajCfg = RODZAJE.find(r => r.id === rodzaj)
   const pokazTyp = RODZAJE_GLOWNE.includes(rodzaj)
 
+  // Czy jest cokolwiek, co „Wróć” porzuciłoby bez pytania — żeby przypadkowe
+  // stuknięcie (albo gest wstecz na telefonie) nie kasowało w ciszy wpisanych
+  // już składników czy kroków przepisu.
+  function maNiezapisaneDane() {
+    return !!(nazwa.trim() || skladniki.length > 0 || przepisRaw.trim() || notatki.trim() || zdjeciePlik)
+  }
+  function wroc() {
+    if (maNiezapisaneDane() && !confirm('Porzucić wpisane dane? Danie nie zostanie zapisane.')) return
+    onBack()
+  }
+
   useEffect(() => {
     async function pobierzSkladniki() {
       // .limit(10000) nie działa — serwer i tak ucina do 1000; trzeba stronami
@@ -272,7 +283,7 @@ export default function DodajDanie({ onBack, onZapisano }) {
   return (
     <div style={s.outer}>
       <div style={s.container}>
-        <button style={s.back} onClick={onBack}>← Wróć</button>
+        <button style={s.back} onClick={wroc}>← Wróć</button>
 
         <header style={s.header}>
           <div style={s.eyebrow}>NOWY WPIS</div>
