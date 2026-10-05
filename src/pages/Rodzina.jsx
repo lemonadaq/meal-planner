@@ -4,6 +4,7 @@ import { t, fonts, ui, avatarBg, GORA_TRESCI } from '../theme'
 import Toast from '../components/Toast'
 
 const LIMIT_OSOB = 5
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export default function Rodzina({ user, householdId, onBack, onZmianaHousehold }) {
   const [czlonkowie, setCzlonkowie] = useState([])
@@ -62,7 +63,7 @@ export default function Rodzina({ user, householdId, onBack, onZmianaHousehold }
 
   async function wyslijZaproszenie() {
     const email = emailZapr.trim().toLowerCase()
-    if (!email || !email.includes('@')) {
+    if (!email || !EMAIL_REGEX.test(email)) {
       setBladZapr('Wpisz poprawny email')
       return
     }
