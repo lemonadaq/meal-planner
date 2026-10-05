@@ -110,6 +110,11 @@ export default function DodajDanie({ onBack, onZapisano }) {
     onBack()
   }
 
+  function potwierdzWyczyszczenie() {
+    if (maNiezapisaneDane() && !confirm('Wyczyścić formularz? Wpisane dane zostaną utracone.')) return
+    wyczyscFormularz()
+  }
+
   useEffect(() => {
     async function pobierzSkladniki() {
       // .limit(10000) nie działa — serwer i tak ucina do 1000; trzeba stronami
@@ -562,7 +567,7 @@ export default function DodajDanie({ onBack, onZapisano }) {
           <button style={{ ...ui.btnPrimary, flex: 1 }} onClick={zapiszDanie} disabled={saving}>
             {saving ? 'Zapisuję…' : 'Zapisz'}
           </button>
-          <button style={{ ...ui.btnGhost, padding: '14px 18px' }} onClick={wyczyscFormularz}>
+          <button style={{ ...ui.btnGhost, padding: '14px 18px' }} onClick={potwierdzWyczyszczenie}>
             Wyczyść
           </button>
         </div>
