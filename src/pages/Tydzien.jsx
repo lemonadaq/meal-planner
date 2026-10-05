@@ -327,9 +327,16 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
                         aria-label="Więcej porcji"
                       >+</button>
                     </div>
+                    {/* Bez pozwolNaKlik: ten przycisk nie ma problemu "podmienionego
+                        celu", który ten guard chroni — usuwa zawsze dokładnie to
+                        danie, które React w danej chwili tu wyrenderował. Blokowanie
+                        szybkich tapnięć w to samo miejsce tylko przeszkadzało przy
+                        czyszczeniu puli: po usunięciu pierwszej pozycji kolejna
+                        wjeżdża dokładnie w to miejsce i naturalny szybki, powtórny
+                        tap w ten sam punkt ekranu ginął bez śladu. */}
                     <button
                       style={s.pulaUsun}
-                      onClick={(e) => { if (pozwolNaKlik(e)) usunZPuli(r.danie) }}
+                      onClick={() => usunZPuli(r.danie)}
                       aria-label={`Usuń ${r.danie}`}
                     >✕</button>
                   </div>
