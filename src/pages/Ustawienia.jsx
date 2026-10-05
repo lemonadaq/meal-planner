@@ -63,6 +63,20 @@ export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin
     await supabase.auth.signOut()
   }
 
+  // Pole „Imię” (w przeciwieństwie do Motywu i Porcji) wymaga osobnego Zapisz —
+  // bez tego guarda każdy inny przycisk na ekranie cicho kasował wpisaną,
+  // niezapisaną zmianę (ten sam wzorzec błędu co PR #116 w DodajDanie.jsx).
+  function maNiezapisanaZmianeImienia() {
+    const nowe = imieEdyt.trim()
+    return !!nowe && nowe !== pelneImie
+  }
+  function zWyjsciem(fn) {
+    return (...args) => {
+      if (maNiezapisanaZmianeImienia() && !confirm('Porzucić niezapisaną zmianę imienia?')) return
+      fn?.(...args)
+    }
+  }
+
   // s liczymy w ciele komponentu — odświeżą się po zmianie motywu
   const s = makeS()
 
@@ -75,7 +89,7 @@ export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin
   return (
     <div style={s.outer}>
       <div style={s.container}>
-        <button style={s.back} onClick={onBack}>← Wróć</button>
+        <button style={s.back} onClick={zWyjsciem(onBack)}>← Wróć</button>
 
         <header style={s.header}>
           <div style={s.avatar} title={imie}>{imie[0]?.toUpperCase()}</div>
@@ -161,7 +175,7 @@ export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin
             Każdy dzień może mieć inne posiłki — dodaj zupę w niedzielę,
             deser w weekend, drugie śniadanie w soboty. Co tylko chcesz.
           </p>
-          <button style={s.btnRodzina} onClick={onSloty}>
+          <button style={s.btnRodzina} onClick={zWyjsciem(onSloty)}>
             🍽 Edytuj posiłki dnia
           </button>
         </section>
@@ -172,10 +186,10 @@ export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin
             Klasyczny planer z kalendarzem i slotami posiłków. Apka domyślnie
             używa prostszego trybu „Tydzień" — tu wracasz do starego widoku.
           </p>
-          <button style={s.btnRodzina} onClick={onKalendarz}>
+          <button style={s.btnRodzina} onClick={zWyjsciem(onKalendarz)}>
             🗓 Planer kalendarza
           </button>
-          <button style={{ ...s.btnRodzina, marginTop: 8 }} onClick={onHome}>
+          <button style={{ ...s.btnRodzina, marginTop: 8 }} onClick={zWyjsciem(onHome)}>
             🏠 Stary ekran startowy
           </button>
         </section>
@@ -186,7 +200,7 @@ export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin
             Planuj kalendarz i listę zakupów wspólnie z bliskimi.
             Zaproś do 4 osób (rodzina, partner, współlokatorzy).
           </p>
-          <button style={s.btnRodzina} onClick={onRodzina}>
+          <button style={s.btnRodzina} onClick={zWyjsciem(onRodzina)}>
             👨‍👩‍👧 Zarządzaj rodziną
           </button>
         </section>
@@ -195,17 +209,17 @@ export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin
           <section style={s.section}>
             <h2 style={s.sectionTitle}>Admin</h2>
             <p style={s.sectionSub}>Panel analityki — dostępny tylko dla Ciebie.</p>
-            <button style={s.btnAdmin} onClick={onAdmin}>
+            <button style={s.btnAdmin} onClick={zWyjsciem(onAdmin)}>
               📊 Otwórz panel admina
             </button>
-            <button style={{ ...s.btnAdmin, marginTop: 10 }} onClick={onBlog}>
+            <button style={{ ...s.btnAdmin, marginTop: 10 }} onClick={zWyjsciem(onBlog)}>
               📝 Blog — wpisy i publikacja
             </button>
           </section>
         )}
 
         <section style={s.section}>
-          <button style={s.btnWyloguj} onClick={wyloguj}>
+          <button style={s.btnWyloguj} onClick={zWyjsciem(wyloguj)}>
             Wyloguj się
           </button>
         </section>
