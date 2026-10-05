@@ -521,7 +521,9 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
                   </div>
                 </div>
                 <button style={s.listMenuBtn} onClick={() => setMenuDla(d)} aria-label="Menu">
-                  <DotsIcon />
+                  <span style={s.listMenuBadge}>
+                    <DotsIcon />
+                  </span>
                 </button>
               </div>
             ))}
@@ -854,9 +856,18 @@ function makeS(duzy = false) {
     marginTop: 4, flexWrap: 'wrap',
   },
   listMenuBtn: {
-    background: 'none', border: 'none', cursor: 'pointer',
-    color: t.muteLight, width: 40, height: 40, display: 'grid', placeItems: 'center',
+    background: 'none', border: 'none', cursor: 'pointer', padding: 0,
+    width: 40, height: 40, display: 'grid', placeItems: 'center',
     flexShrink: 0,
+  },
+  // Plakietka spójna z gwiazdką obok (listStarBadge) i z „…” w widoku siatki
+  // (cardMenu) — bez niej ikonka ginęła na tle karty (t.muteLight na białym).
+  listMenuBadge: {
+    background: t.surface, border: `0.5px solid ${t.border}`,
+    borderRadius: 999, width: 28, height: 28,
+    color: t.text,
+    display: 'grid', placeItems: 'center',
+    boxShadow: '0 1px 4px rgba(0,0,0,.08)',
   },
 
   empty: {
