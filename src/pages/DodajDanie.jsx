@@ -90,6 +90,11 @@ export default function DodajDanie({ onBack, onZapisano }) {
   const [saving, setSaving] = useState(false)
   const [blad, setBlad] = useState('')
   const [bladSkladnik, setBladSkladnik] = useState('')
+  // Ref, nie tylko stan — przy szybkim podwójnym kliknięciu drugie wywołanie
+  // zdąży wystartować zanim React zaktualizuje `saving` i wyłączy przycisk,
+  // bo w handlerze odczytuje się jeszcze stare domknięcie (`saving === false`).
+  // Ref jest ustawiany synchronicznie, więc realnie blokuje drugie wejście.
+  const savingRef = useRef(false)
 
   const rodzajCfg = RODZAJE.find(r => r.id === rodzaj)
   const pokazTyp = RODZAJE_GLOWNE.includes(rodzaj)
@@ -217,8 +222,10 @@ export default function DodajDanie({ onBack, onZapisano }) {
 
 
   async function zapiszDanie() {
+    if (savingRef.current) return
     if (!nazwa.trim()) { setBlad('Wpisz nazwę'); return }
     if (skladniki.length === 0) { setBlad('Dodaj przynajmniej jeden składnik'); return }
+    savingRef.current = true
     setSaving(true); setBlad('')
 
     // Duplikat — sprawdzamy wszystko w nowej, scalonej tabeli `dania`
@@ -232,7 +239,7 @@ export default function DodajDanie({ onBack, onZapisano }) {
     if (istniejace?.length) {
       const r = RODZAJE.find(x => x.id === istniejace[0].rodzaj)?.label || 'bazie'
       setBlad(`"${nazwa}" już istnieje (${r.toLowerCase()})`)
-      setSaving(false); return
+      savingRef.current = false; setSaving(false); return
     }
 
     // (?!\d) — bez tego "1.5 kg kurczaka…" gubiło "1" (kropka dziesiętna
@@ -250,7 +257,7 @@ export default function DodajDanie({ onBack, onZapisano }) {
         zdjecieUrl = await uploadujZdjecie(zdjeciePlik, slug)
       } catch (e) {
         setBlad('Błąd uploadu zdjęcia: ' + e.message)
-        setSaving(false); return
+        savingRef.current = false; setSaving(false); return
       }
     }
 
@@ -283,7 +290,7 @@ export default function DodajDanie({ onBack, onZapisano }) {
     const { error } = await supabase.from('dania').insert(rows)
     if (error) {
       setBlad('Błąd zapisu: ' + error.message)
-      setSaving(false)
+      savingRef.current = false; setSaving(false)
     } else {
       onZapisano(nazwa)
     }
