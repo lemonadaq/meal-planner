@@ -60,7 +60,7 @@ const RODZAJE = [
 // Rodzaje, które mogą być "z dodatkiem" — dla dodatek/surowka/zupa/deser nie ma sensu
 const RODZAJE_GLOWNE = ['obiad', 'sniadanie', 'kolacja', 'przekaska']
 
-export default function DodajDanie({ onBack, onZapisano }) {
+export default function DodajDanie({ onBack, onZapisano, niezapisaneRef }) {
   const [rodzaj, setRodzaj] = useState('obiad')
   const [nazwa, setNazwa] = useState('')
   const [typ, setTyp] = useState('samodzielne')
@@ -105,6 +105,11 @@ export default function DodajDanie({ onBack, onZapisano }) {
   function maNiezapisaneDane() {
     return !!(nazwa.trim() || skladniki.length > 0 || przepisRaw.trim() || notatki.trim() || zdjeciePlik)
   }
+  // Udostępniamy guard na zewnątrz — przycisk „wstecz” przeglądarki/Androida
+  // zamyka ten ekran z App.jsx (popstate / hardware back), z pominięciem
+  // przycisku „← Wróć" poniżej, więc bez tego ten sam guard nie chroniłby
+  // przed utratą danych na tamtej ścieżce wyjścia.
+  if (niezapisaneRef) niezapisaneRef.current = maNiezapisaneDane
   function wroc() {
     if (maNiezapisaneDane() && !confirm('Porzucić wpisane dane? Danie nie zostanie zapisane.')) return
     onBack()

@@ -102,6 +102,7 @@ function App() {
 
   const navStateRef = useRef({ tab, ekran, wybraneD, dodajDanie })
   const cofnijWApceRef = useRef(null)
+  const dodajDanieNiezapisaneRef = useRef(null)
 
   useEffect(() => {
     navStateRef.current = { tab, ekran, wybraneD, dodajDanie }
@@ -134,6 +135,11 @@ function App() {
     }
 
     if (st.dodajDanie) {
+      // Ten sam guard i ten sam tekst co przycisk „← Wróć" w DodajDanie.jsx —
+      // bez tego „wstecz" przeglądarki/Androida kasowało wpisane dane w ciszy.
+      if (dodajDanieNiezapisaneRef.current?.() && !confirm('Porzucić wpisane dane? Danie nie zostanie zapisane.')) {
+        return true
+      }
       setDodajDanie(false)
       return true
     }
@@ -365,6 +371,7 @@ function App() {
           setDodajDanie(false)
           setDaniasRefresh(r => r + 1)
         }}
+        niezapisaneRef={dodajDanieNiezapisaneRef}
       />
       <ZaproszenieModal user={user} onZaakceptowano={poZaakceptowaniu} />
     </>
