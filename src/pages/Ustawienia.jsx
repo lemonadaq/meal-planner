@@ -77,6 +77,11 @@ export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin
     }
   }
 
+  // Jak w ImieGate.jsx — Enter zapisuje, tak samo jak kliknięcie „Zapisz”.
+  function onImieKeyDown(e) {
+    if (e.key === 'Enter' && imieStan !== 'saving') zapiszImie()
+  }
+
   // s liczymy w ciele komponentu — odświeżą się po zmianie motywu
   const s = makeS()
 
@@ -115,6 +120,7 @@ export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin
               onChange={e => { setImieEdyt(e.target.value); setImieBlad(null) }}
               onFocus={() => { edytujeRef.current = true }}
               onBlur={() => { edytujeRef.current = false }}
+              onKeyDown={onImieKeyDown}
               placeholder="Twoje imię"
               autoComplete="given-name"
             />
