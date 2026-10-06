@@ -87,7 +87,10 @@ function tekstIlosciZItemu(item) {
   // kupowalną ilość surowymi gramami (masła nie da się kupić luzem na gramy).
   if (item.opakowania) return formatujOpakowania(item.opakowania)
   if (item.iloscOryginalna != null && item.iloscOryginalna !== '') return item.iloscOryginalna.toString()
-  if (item.ilosc != null) return `${item.ilosc}${item.jednostka ? ` ${item.jednostka}` : ''}`.trim()
+  // Ten sam formatujWage() co na liście (ItemRow) — inaczej np. „1,5 szt."
+  // (surowa suma z przepisów) w edycji nie zgadzałoby się z „2 szt." widocznymi
+  // na liście (tam zaokrąglonymi w górę), bo sztuk nie da się kupić w połowie.
+  if (item.ilosc != null) return formatujWage(item.ilosc, item.jednostka)
   if (item.jednostka) return item.jednostka.toString()
   return ''
 }
