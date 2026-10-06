@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { supabase } from '../supabase'
 import { t, fonts, ui, avatarBg, DOMYSLNY_MOTYW, GORA_TRESCI } from '../theme'
 
-export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin, onBlog, onRodzina, onSloty, onKalendarz, onHome, jestAdmin }) {
+export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin, onBlog, onRodzina, onSloty, onKalendarz, onHome, jestAdmin, rejestrujStrazWyjscia }) {
   const pelneImie = user?.user_metadata?.full_name || ''
   const imie = pelneImie.split(' ')[0] || user?.email?.split('@')[0] || ''
   const [porcje, setPorcje] = useState(ustawienia?.domyslne_porcje ?? 1)
@@ -76,6 +76,15 @@ export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin
       fn?.(...args)
     }
   }
+
+  // Ten sam guard dla cofnięcia przez wstecz przeglądarki/telefonu — App.jsx
+  // woła zarejestrowaną funkcję, bo ta nawigacja nie przechodzi przez żaden
+  // onClick tutaj (omijała zWyjsciem powyżej).
+  useEffect(() => {
+    rejestrujStrazWyjscia?.(
+      () => !maNiezapisanaZmianeImienia() || confirm('Porzucić niezapisaną zmianę imienia?')
+    )
+  })
 
   // s liczymy w ciele komponentu — odświeżą się po zmianie motywu
   const s = makeS()
