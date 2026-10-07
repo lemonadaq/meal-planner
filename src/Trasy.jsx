@@ -6,58 +6,45 @@
 // cofania w Capacitorze i celowo jej nie ruszamy — dla routera cały planer
 // to jedna trasa `/planer/*`.
 //
-// Aplikacja jest nadrzędna, blog jest dodatkiem, i adresy to odzwierciedlają:
+// BLOG JEST ODCIĘTY. Serwis to planer i tylko planer:
 //
-//   /                 planer dla zalogowanych, blog dla gości (StronaGlowna)
-//   /planer/*         planer, zawsze, z własną bramką logowania
-//   /blog, /blog/…    blog, zawsze — stały adres do wysłania komuś
+//   /                 planer (własna bramka logowania)
+//   /planer/*         planer, ten sam komponent — stary adres nie umiera
 //
-// Blog dostał własną przestrzeń `/blog/*`, żeby dało się go komuś podesłać
-// bez względu na to, czy jest zalogowany. Stare adresy sprzed rozdzielenia
-// przekierowują, więc żaden wysłany wcześniej link nie umiera.
+// Pliki bloga (`pages/Blog.jsx`, `Wpis.jsx`, `OMnie.jsx`, `WpisyAdmin.jsx`,
+// `components/Komentarze*.jsx`, `blog.js`, `komentarze.js`) ZOSTAJĄ w repo,
+// ale nic ich już nie montuje. Decyzja Filipa z 2026-10-06: blog zabierał
+// uwagę, a produktem jest planer. Wejście z powrotem to dopisanie tu tras.
+//
+// Adresy bloga nie przekierowują na „/" ani nigdzie indziej — łapie je
+// reguła `*` na końcu, tak samo jak każdy inny nieznany adres.
 
-import { Routes, Route, Navigate, useParams } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import App from './App.jsx'
-import StronaGlowna from './StronaGlowna.jsx'
-import Blog from './pages/Blog.jsx'
-import Wpis from './pages/Wpis.jsx'
-import OMnie from './pages/OMnie.jsx'
 import PolitykaPrywatnosci from './pages/PolitykaPrywatnosci.jsx'
 import Regulamin from './pages/Regulamin.jsx'
 
-// Stary adres wpisu → nowy, z zachowaniem sluga.
-function PrzekierujWpis() {
-  const { slug } = useParams()
-  return <Navigate to={`/blog/${slug}`} replace />
-}
-
-export default function Trasy({ jestNatywna = false }) {
+export default function Trasy() {
   return (
     <Routes>
-      {/* W apce natywnej nie ma bloga: instalujesz planer, więc planer ma się
-          otworzyć. Capacitor ładuje bundle z „/", stąd przekierowanie. */}
-      <Route path="/" element={jestNatywna ? <Navigate to="/planer" replace /> : <StronaGlowna />} />
-
+      {/* Planer pod „/" bez żadnego rozgałęzienia po sesji — nie ma już bloga,
+          któremu trzeba by ustąpić miejsca, a App ma własną bramkę logowania.
+          Dlatego nie ma tu też `jestNatywna`: Capacitor ładuje bundle z „/"
+          i od razu dostaje to, co ma dostać. */}
+      <Route path="/" element={<App />} />
       <Route path="/planer/*" element={<App />} />
-
-      <Route path="/blog" element={<Blog />} />
-      {/* Statyczny segment wygrywa z `:slug`, więc „o-mnie" nie zostanie
-          potraktowane jak nazwa wpisu. */}
-      <Route path="/blog/o-mnie" element={<OMnie />} />
-      <Route path="/blog/:slug" element={<Wpis />} />
 
       {/* Dokumenty prawne pod stałymi, publicznymi adresami. Google Play
           wymaga podania adresu polityki prywatności w opisie aplikacji,
           a adres musi działać bez logowania. Ten sam komponent renderuje
-          się też jako modal na ekranie logowania — treść jest jedna. */}
+          się też jako modal na ekranie logowania — treść jest jedna.
+          ZOSTAJĄ niezależnie od losów bloga. */}
       <Route path="/polityka-prywatnosci" element={<PolitykaPrywatnosci />} />
       <Route path="/regulamin" element={<Regulamin />} />
 
-      {/* Adresy sprzed rozdzielenia bloga i aplikacji. */}
-      <Route path="/wpis/:slug" element={<PrzekierujWpis />} />
-      <Route path="/o-mnie" element={<Navigate to="/blog/o-mnie" replace />} />
-
-      {/* Nieznany adres wraca na stronę główną, a nie na biały ekran. */}
+      {/* Nieznany adres wraca na planer, a nie na biały ekran. Tędy lecą też
+          stare adresy bloga: /blog, /blog/<slug>, /blog/o-mnie, /wpis/<slug>,
+          /o-mnie. */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )

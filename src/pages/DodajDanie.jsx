@@ -89,6 +89,9 @@ export default function DodajDanie({ onBack, onZapisano }) {
 
   const [saving, setSaving] = useState(false)
   const [blad, setBlad] = useState('')
+  // Danie zapisane, ale zdjęcia nie udało się wgrać. Trzymane osobno od
+  // `blad`, bo to nie błąd zapisu — przepis JEST w bazie.
+  const [zapisBezZdjecia, setZapisBezZdjecia] = useState('')
   const [bladSkladnik, setBladSkladnik] = useState('')
   // Ref, nie tylko stan — przy szybkim podwójnym kliknięciu drugie wywołanie
   // zdąży wystartować zanim React zaktualizuje `saving` i wyłączy przycisk,
@@ -250,14 +253,24 @@ export default function DodajDanie({ onBack, onZapisano }) {
       ? krokiParsed.map((k, i) => `${i + 1}. ${k}`).join('\n')
       : null
 
+    // Zdjęcie jest OPCJONALNE i tak ma się zachowywać również wtedy, gdy
+    // upload padnie. Wcześniej nieudany upload przerywał cały zapis i cały
+    // wpisany przepis przepadał — nazwa, składniki, kroki (issue #106).
+    //
+    // Najczęstsza przyczyna padu to brakująca polityka RLS na
+    // `storage.objects` dla bucketu `dania-zdjecia`. Naprawa jest po stronie
+    // Supabase: `supabase/fixes/20261006-rls-dania-zdjecia.sql`. Dopóki nie
+    // zostanie wykonana, zdjęcia z formularza nie przechodzą — ale przepis
+    // musi się zapisać mimo to.
     let zdjecieUrl = null
+    let uploadPadl = false
     if (zdjeciePlik) {
       try {
         const slug = nazwa.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '').slice(0, 40)
         zdjecieUrl = await uploadujZdjecie(zdjeciePlik, slug)
       } catch (e) {
-        setBlad('Błąd uploadu zdjęcia: ' + e.message)
-        savingRef.current = false; setSaving(false); return
+        console.error('Błąd uploadu zdjęcia — zapisuję danie bez zdjęcia:', e)
+        uploadPadl = true
       }
     }
 
@@ -291,9 +304,19 @@ export default function DodajDanie({ onBack, onZapisano }) {
     if (error) {
       setBlad('Błąd zapisu: ' + error.message)
       savingRef.current = false; setSaving(false)
-    } else {
-      onZapisano(nazwa)
+      return
     }
+
+    // Przepis jest w bazie. Gdy zdjęcie nie przeszło, NIE zamykamy formularza
+    // od razu — inaczej user nie dowiedziałby się, że danie nie ma zdjęcia,
+    // i szukałby go później po galerii.
+    if (uploadPadl) {
+      setZapisBezZdjecia(nazwa.trim())
+      savingRef.current = false; setSaving(false)
+      return
+    }
+
+    onZapisano(nazwa)
   }
 
   const s = makeS()
@@ -558,6 +581,21 @@ export default function DodajDanie({ onBack, onZapisano }) {
 
         {blad && <div style={s.blad}>{blad}</div>}
 
+        {/* Danie zapisane, zdjęcia brak. Osobny panel, nie `blad` — bo to nie
+            porażka zapisu i user nie ma czego poprawiać w formularzu. */}
+        {zapisBezZdjecia && (
+          <div style={s.uwaga}>
+            <strong>„{zapisBezZdjecia}" zapisane.</strong> Nie udało się dodać
+            zdjęcia — przepis jest w bazie bez niego. Zdjęcie dorzucisz później,
+            otwierając danie i wchodząc w edycję.
+            <button
+              style={{ ...ui.btnPrimary, width: '100%', marginTop: 12 }}
+              onClick={() => onZapisano(zapisBezZdjecia)}>
+              Rozumiem
+            </button>
+          </div>
+        )}
+
         <div style={s.bottomRow}>
           <button style={{ ...ui.btnPrimary, flex: 1 }} onClick={zapiszDanie} disabled={saving}>
             {saving ? 'Zapisuję…' : 'Zapisz'}
@@ -712,6 +750,12 @@ function makeS() {
     background: '#FBEAE4', color: '#9B3B23',
     fontFamily: fonts.sans, fontSize: 13.5, fontWeight: 500,
     padding: '10px 14px', borderRadius: 12, marginBottom: 14,
+  },
+  // Ostrzeżenie, nie błąd — żółty, nie czerwony. Zapis się UDAŁ.
+  uwaga: {
+    background: '#FDF3DC', color: '#7A5A14',
+    fontFamily: fonts.sans, fontSize: 13.5, fontWeight: 500,
+    lineHeight: 1.5, padding: '12px 14px', borderRadius: 12, marginBottom: 14,
   },
   bladSkladnik: {
     background: '#FBEAE4', color: '#9B3B23',

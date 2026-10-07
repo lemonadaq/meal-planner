@@ -1,3 +1,7 @@
+// NIEUŻYWANE od 2026-10-06 — blog został odcięty od tras (`Trasy.jsx`).
+// Plik został w repo świadomie, żeby powrót bloga był dopisaniem trasy,
+// a nie odgrzebywaniem z historii gita. Nic tego nie montuje.
+//
 // Blog.jsx
 // Publiczna strona główna — lista opublikowanych wpisów. Bez logowania.
 // Logowanie siedzi w rogu i prowadzi do planera.

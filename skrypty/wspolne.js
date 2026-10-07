@@ -259,6 +259,36 @@ const ZASADY_SKLADNIKOW =
   'nie skraca, bo to inny produkt niż boczek, mięso czy mleko.\n' +
   '- Bez ilości i gramatury w nazwie — od tego są pola `ilosc` i `jednostka`.'
 
+// ── Zasady wyboru jednostki ───────────────────────────────────
+// Enum `jednostka` dopuszcza g/ml/szt/łyżka/łyżeczka/szczypta, ale do tej pory
+// NIC nie mowiło modelowi, co kiedy wybrać. Efekt: model sypał gramami, bo są
+// uniwersalne, i w bazie wylądowała „cebula 150 g" zamiast „cebula 1 szt".
+//
+// Dla listy zakupow to realna różnica: cebuli nie kupuje się na wagę, tylko na
+// sztuki, więc „450 g cebuli" w sklepie trzeba sobie w głowie podzielić.
+// Lista potrafi przeliczyć gramy na sztuki, ale tylko gdy `skladniki_meta` ma
+// dla produktu wagę sztuki — a dla większości warzyw nie ma.
+//
+// UWAGA: to naprawia dania generowane OD TERAZ. Dania już zapisane zostają
+// z gramami, dopóki nie przejdzie się po `skladniki_meta` albo nie przegeneruje
+// ich z `overwrite`.
+const ZASADY_JEDNOSTEK =
+  'Zasady wyboru jednostki (skladniki[].jednostka):\n' +
+  '- Wybierz jednostkę, w której ten produkt KUPUJE SIĘ W SKLEPIE, nie tę, ' +
+  'która jest wygodna do liczenia.\n' +
+  '- `szt` dla wszystkiego, co leży na półce w kawałkach i liczy się na sztuki: ' +
+  'cebula, czosnek (całe główki — ząbki też podawaj jako `szt`), jajko, cytryna, ' +
+  'limonka, papryka, pomidor, ogórek, ziemniak, marchew, cukinia, bakłażan, ' +
+  'awokado, banan, jabłko, pierś z kurczaka, bułka, tortilla, puszka czegokolwiek.\n' +
+  '- `g` dla tego, co waży się albo chodzi w opakowaniach na wagę: mięso mielone, ' +
+  'ryż, makaron, mąka, cukier, ser, masło, kasza, orzechy.\n' +
+  '- `ml` dla płynów w większej ilości: mleko, bulion, śmietana, sos sojowy, piwo.\n' +
+  '- `łyżka` / `łyżeczka` dla małych ilości dodatków: oliwa, ocet, miod, koncentrat, ' +
+  'pasta, musztarda.\n' +
+  '- `szczypta` dla soli, pieprzu i przypraw sypanych na oko.\n' +
+  '- Gdy produkt liczy się na sztuki, a porcja to część sztuki, wpisz ułamek: ' +
+  '`1/2` cebuli, nie `75` gramów.'
+
 // ── Zasady opisu wyglądu — wspólne dla obu ścieżek ────────────────
 // To jest lekarstwo na „ktoś, kto nigdy nie widział tego dania, kazał
 // narysować obrazek". Wcześniej opis powstawał z samej listy składników,
@@ -296,6 +326,7 @@ export async function generujPrzepis(nazwa, rodzaj) {
       'do pół godziny i bez technik, `trudne` to długie wyrastanie, smażenie w głębokim ' +
       'tłuszczu, praca z ciastem albo kilka rzeczy naraz.\n\n' +
       ZASADY_SKLADNIKOW + '\n\n' +
+      ZASADY_JEDNOSTEK + '\n\n' +
       ZASADY_WYGLADU,
     SCHEMAT_PRZEPISU,
   )

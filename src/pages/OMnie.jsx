@@ -1,3 +1,7 @@
+// NIEUŻYWANE od 2026-10-06 — blog został odcięty od tras (`Trasy.jsx`).
+// Plik został w repo świadomie, żeby powrót bloga był dopisaniem trasy,
+// a nie odgrzebywaniem z historii gita. Nic tego nie montuje.
+//
 // OMnie.jsx
 // Strona „O mnie". Tekst jest Filipa — leży tu jako stała, a nie w bazie,
 // bo to jedna strona, która zmienia się raz na rok, a nie treść do zarządzania

@@ -13,6 +13,20 @@
 //
 // Efekt uboczny i pożądany: „białko jajka" z jednego przepisu i „jajka"
 // z drugiego schodzą się w jedną pozycję na liście, zamiast dwóch osobnych.
+//
+// Przekształcenia, w kolejności działania:
+//   nawiasy i alternatywy   „dymka (zielona cebulka)"  → „dymka"
+//   ilość z przodu nazwy    „2 ząbki czosnku"          → „ząbki czosnku"
+//   stan przygotowania      „cebula w kostkę"          → „cebula"
+//   gramatura w nazwie      „pasta gochujang 2 łyżki"  → „pasta gochujang"
+//   część → produkt           „sok z cytryny"            → „cytryna"
+//   zdrobnienie → produkt   „cebulka"                  → „cebula"
+//
+// Czego ta funkcja NIE robi i nie ma robić: nie zamienia produktu na inny
+// produkt. „Natka pietruszki" zostaje natką, bo korzeń pietruszki to coś
+// innego i leży w innym miejscu sklepu. To samo z „zieloną cebulką" — to
+// dymka, nie cebula. Granica jest tu świadoma: czyścimy OPIS, nie podmieniamy
+// TOWARU.
 
 // Słowa opisujące, co masz z produktem ZROBIĆ. Lecą z nazwy, bo to instrukcja.
 // Świadomie NIE ma tu „wędzony", „mielony", „suszony", „kiszony", „konserwowy",
@@ -63,12 +77,118 @@ const FRAZY_PRZYGOTOWANIA = [
 // przepisu. Mapa jest krótka i celowo taka zostaje: to wyjątki, nie reguła.
 const CZESC_NA_PRODUKT = [
   [/^(?:białk[oa]|bialk[oa]|żółtk[oa]|zoltk[oa])\s+(?:z\s+)?jaj\w*$/i, 'jajka'],
-  [/^(?:sok|skórka|skorka|otarta\s+skórka)\s+(?:z\s+|ze\s+)?(cytryny|limonki|pomarańczy|pomaranczy)$/i, null],
 ]
+
+// ── Część produktu → produkt ze sklepu ───────────────────────────────────
+// „sok z cytryny" na liście zakupów jest bezużyteczny: nie ma takiej pozycji
+// na półce i nie dopasuje się do `skladniki_meta` ani do promocji. Kupuje się
+// CYTRYNĘ, a wyciśnięcie soku to krok przepisu — dokładnie ta sama zasada,
+// co „białko jajka" → „jajka" wyżej.
+//
+// Rozbite na dwie listy, bo to dwa niezależne wymiary: CZEGO kawałek
+// („sok", „skórka", „ząbek") i CZEGO dopełniacz („cytryny", „czosnku").
+// Dzięki temu dopisanie jednego owocu załatwia od razu sok, skórkę i miąższ.
+
+// Słowo po „z" stoi w dopełniaczu, a żaden produkt nie nazywa się „cytryny",
+// więc bez tej mapy wyszłaby pozycja w złym przypadku.
+const DOPELNIACZ_NA_MIANOWNIK = {
+  'cytryny': 'cytryna',
+  'limonki': 'limonka',
+  'pomarańczy': 'pomarańcza',
+  'pomaranczy': 'pomarańcza',
+  'grejpfruta': 'grejpfrut',
+  'jabłka': 'jabłko',
+  'jablka': 'jabłko',
+  'czosnku': 'czosnek',
+  'imbiru': 'imbir',
+  'bazylii': 'bazylia',
+  'mięty': 'mięta',
+  'miety': 'mięta',
+  'kolendry': 'kolendra',
+  'koperku': 'koperek',
+  'rozmarynu': 'rozmaryn',
+  'tymianku': 'tymianek',
+  'szałwii': 'szałwia',
+  'szalwii': 'szałwia',
+  // Poniższe nie występują po „soku z…", ale są potrzebne, gdy nazwa miała
+  // z przodu ilość („500 g mąki" → po obcięciu zostaje sam dopełniacz).
+  'mąki': 'mąka',
+  'maki': 'mąka',
+  'mleka': 'mleko',
+  'masła': 'masło',
+  'masla': 'masło',
+  'cukru': 'cukier',
+  'soli': 'sól',
+  'ryżu': 'ryż',
+  'ryzu': 'ryż',
+  'makaronu': 'makaron',
+  'oleju': 'olej',
+  'oliwy': 'oliwa',
+  'śmietany': 'śmietana',
+  'smietany': 'śmietana',
+  'jogurtu': 'jogurt',
+  'sera': 'ser',
+  'wody': 'woda',
+  'bulionu': 'bulion',
+  'ziemniaków': 'ziemniaki',
+  'ziemniakow': 'ziemniaki',
+  'pomidorów': 'pomidory',
+  'pomidorow': 'pomidory',
+  'marchewki': 'marchew',
+}
+
+// Słowa nazywające CZĘŚĆ albo PORCJĘ produktu — same nie są produktem.
+//
+// Celowo NIE ma tu „natka". „Natka pietruszki" i „pietruszka" to w polskim
+// sklepie DWA różne produkty (liście w pęczku kontra korzeń), więc zwinięcie
+// jednego do drugiego wkładałoby do koszyka nie to, co trzeba. Z tego samego
+// powodu nie ma „pietruszki" w mapie dopełniaczy wyżej.
+const CZESCI_PRODUKTU = [
+  'sok', 'soku', 'skórka', 'skorka', 'skórki', 'skorki', 'skóra', 'skora',
+  'otarta skórka', 'otarta skorka', 'starta skórka', 'starta skorka',
+  'miąższ', 'miazsz', 'miąższu', 'miazszu',
+  'ząbek', 'zabek', 'ząbki', 'zabki', 'ząbków', 'zabkow',
+  'liść', 'lisc', 'liście', 'liscie', 'listki', 'listek',
+  'gałązka', 'galazka', 'gałązki', 'galazki',
+  'pęczek', 'peczek', 'garść', 'garsc', 'kawałek', 'kawalek',
+]
+
+// Dopasowuje CAŁĄ nazwę: „<część> [z|ze] <dopełniacz>".
+const CZESC_Z_PRODUKTU = new RegExp(
+  `^(?:${CZESCI_PRODUKTU.join('|')})\\s+(?:z\\s+|ze\\s+)?(${Object.keys(DOPELNIACZ_NA_MIANOWNIK).join('|')})$`,
+  'i'
+)
+
+// ── Zdrobnienia i warianty tej samej rzeczy ──────────────────────────────
+// Na liście zakupów „cebulka" i „cebula" to jedna pozycja. Bez tego przepis
+// pisany zdrobnieniem robił osobną linijkę obok tej z „cebulą".
+//
+// Mapa dopasowuje CAŁĄ nazwę i to jest tu najważniejsze: „zielona cebulka"
+// MUSI się nie dopasować, bo to dymka — inny produkt niż cebula, w innym
+// miejscu sklepu.
+const SYNONIMY = {
+  'cebulka': 'cebula',
+  'cebulki': 'cebula',
+  'marchewka': 'marchew',
+  'marchewki': 'marchew',
+  'ziemniaczki': 'ziemniaki',
+  'pomidorki': 'pomidory',
+  'ogórek zielony': 'ogórek',
+  'ogorek zielony': 'ogórek',
+}
 
 // Gramatura w nazwie — pola `ilosc` i `jednostka` są od tego osobno, a „pasta
 // gochujang 2 łyżki" nie dopasuje się do niczego na liście zakupów.
 const GRAMATURA_W_NAZWIE = /\s+\d+(?:[,.]\d+)?\s*(?:g|kg|ml|l|dag|szt\.?|sztuki?|łyżki?|łyżek|łyżeczki?|łyżeczek|szklanki?|szklanek|opak\.?|puszki?|plastry?|plasterki?)\b.*$/i
+
+// Ilość wpisana NA POCZĄTKU nazwy — „2 ząbki czosnku", „3 jajka".
+// GRAMATURA_W_NAZWIE tego nie łapie, bo wymaga spacji PRZED liczbą.
+//
+// Jednostka jest opcjonalna, ale sama liczba musi być oddzielona spacją od
+// nazwy — inaczej reguła zjadałaby „7up" i „100 wysp". Zostawiamy też
+// wszystko, co ma po liczbie znak procenta („3,2% mleko"), bo to cecha
+// produktu, nie ilość.
+const ILOSC_PRZED_NAZWA = /^\d+(?:[,.]\d+)?\s*(?:g|kg|ml|l|dag|szt\.?|sztuki?|ząb(?:ek|ki|ków)|zab(?:ek|ki|kow)|łyżki?|łyżek|łyżeczki?|łyżeczek|szklanki?|szklanek|opak\.?|puszki?|pęczk[aiu]?|peczk[aiu]?|plastry?|plasterki?)?\s+(?=[^\d\s])/i
 
 /**
  * Sprowadza nazwę składnika do nazwy produktu ze sklepu.
@@ -88,6 +208,15 @@ export function uproscNazweSkladnika(nazwa) {
 
   // „X lub Y" → „X". Zawsze pierwszy wariant, bo jest tym głównym.
   wynik = wynik.replace(ALTERNATYWY, '')
+
+  // Ilość z przodu — ale tylko jeśli po niej zostaje jakaś nazwa. Bez tego
+  // warunku „500 g" (cała nazwa to sama gramatura) robiłoby się pustką.
+  let obcietoIlosc = false
+  const bezIlosci = wynik.replace(ILOSC_PRZED_NAZWA, '')
+  if (bezIlosci.trim() && /[a-ząćęłńóśźż]/i.test(bezIlosci) && bezIlosci !== wynik) {
+    wynik = bezIlosci
+    obcietoIlosc = true
+  }
 
   // Stan przygotowania ucinamy RAZEM z resztą frazy, bo za nim zwykle idzie
   // jeszcze sposób („pokrojona w kostkę", „starty na tarce"). Usunięcie samego
@@ -126,7 +255,33 @@ export function uproscNazweSkladnika(nazwa) {
   for (const [wzorzec, produkt] of CZESC_NA_PRODUKT) {
     if (produkt && wzorzec.test(wynik.trim())) { wynik = produkt; break }
   }
+
+  // Sprzątanie spacji i separatorów MUSI pójść przed dwoma ostatnimi mapami:
+  // obie dopasowują całą nazwę, więc „cebulka " z resztką spacji by się nie
+  // złapało.
   wynik = wynik.replace(/\s+/g, ' ').replace(/^[\s\-–—]+|[\s\-–—.:;]+$/g, '').trim()
+
+  // „sok z cytryny" → „cytryna", „ząbek czosnku" → „czosnek".
+  const czesc = wynik.match(CZESC_Z_PRODUKTU)
+  if (czesc) {
+    const produkt = DOPELNIACZ_NA_MIANOWNIK[czesc[1].toLowerCase()]
+    if (produkt) wynik = produkt
+  }
+
+  // „500 g mąki" → po obcięciu ilości został sam dopełniacz („mąki"), a to nie
+  // jest nazwa produktu. Odpala się WYŁĄCZNIE wtedy, gdy ilość faktycznie
+  // została obcięta — inaczej reguła ruszyłaby nazwy, które i tak są poprawne,
+  // a część dopełniaczy brzmi identycznie jak mianownik liczby mnogiej
+  // („cytryny" to i „soku z cytryny", i „dwie cytryny").
+  if (obcietoIlosc && !wynik.includes(' ')) {
+    const zDopelniacza = DOPELNIACZ_NA_MIANOWNIK[wynik.toLowerCase()]
+    if (zDopelniacza) wynik = zDopelniacza
+  }
+
+  // Zdrobnienie → produkt. Na końcu, żeby złapać też nazwę odkrytą dopiero
+  // po obcięciu frazy przygotowania („cebulka w kostkę" → „cebulka" → „cebula").
+  const synonim = SYNONIMY[wynik.toLowerCase()]
+  if (synonim) wynik = synonim
 
   // Gdyby czyszczenie zjadło wszystko, lepiej oddać oryginał niż pustkę.
   return wynik || String(nazwa ?? '').trim()

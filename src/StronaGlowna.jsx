@@ -1,3 +1,7 @@
+// NIEUŻYWANE od 2026-10-06 — blog został odcięty od tras (`Trasy.jsx`).
+// Plik został w repo świadomie, żeby powrót bloga był dopisaniem trasy,
+// a nie odgrzebywaniem z historii gita. Nic tego nie montuje.
+//
 // Adres główny rozgałęzia się po sesji: domownik dostaje planer, gość bloga.
 //
 // Aplikacja jest nadrzędna — to ona jest produktem, blog jest dodatkiem.

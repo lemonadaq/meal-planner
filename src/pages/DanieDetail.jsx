@@ -101,6 +101,11 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
   const [edycja, setEdycja] = useState(false)
   const [saving, setSaving] = useState(false)
   const [bladZapisu, setBladZapisu] = useState('')
+  // Zmiany zapisane, ale nowego zdjęcia nie udało się wgrać. Osobno od
+  // `bladZapisu`, bo tamten renderuje się TYLKO w trybie edycji — a z edycji
+  // po udanym zapisie wychodzimy, więc komunikat nie miałby gdzie się
+  // pokazać.
+  const [ostrzezenieZdjecia, setOstrzezenieZdjecia] = useState('')
   const [nazwa, setNazwa] = useState(nazwaProp)
 
   const [edNazwa, setEdNazwa] = useState('')
@@ -261,14 +266,25 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
       setNazwa(aktualnaNazwa)
     }
 
-    // Upload zdjęcia przed głównym zapisem
+    // Upload zdjęcia przed głównym zapisem.
+    //
+    // Pad uploadu NIE przerywa zapisu reszty zmian — i tak było wcześniej.
+    // Nowe jest to, że user się o tym DOWIE: do tej pory błąd lądował tylko
+    // w konsoli, więc zdjęcie po prostu nie pojawiało się bez żadnego słowa
+    // wyjaśnienia (issue #106).
+    //
+    // Najczęstsza przyczyna to brakująca polityka RLS na `storage.objects`
+    // dla bucketu `dania-zdjecia` — naprawa w
+    // `supabase/fixes/20261006-rls-dania-zdjecia.sql`.
     let noweZdjecieUrl = edZdjecie ?? null
+    let uploadPadl = false
     if (edZdjeciePlik) {
       try {
         const slug = aktualnaNazwa.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '').slice(0, 40)
         noweZdjecieUrl = await uploadujZdjecie(edZdjeciePlik, slug)
       } catch (e) {
-        console.error('Błąd uploadu zdjęcia:', e)
+        console.error('Błąd uploadu zdjęcia — reszta zmian zapisuje się normalnie:', e)
+        uploadPadl = true
       }
     }
 
@@ -322,6 +338,9 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
     sledz?.('edytuj_danie', { danie: aktualnaNazwa, nowe_skladniki: noweSkladniki.length })
     setEdZdjeciePlik(null); setEdZdjeciePreview(null); setEdUsunieteId([])
     await pobierz()
+    setOstrzezenieZdjecia(uploadPadl
+      ? 'Zmiany zapisane, ale zdjęcia nie udało się wgrać — danie zostało bez niego.'
+      : '')
     setEdycja(false); setSaving(false)
   }
 
@@ -618,6 +637,16 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
           <div style={s.bladZapisu}>{bladZapisu}</div>
         )}
 
+        {/* Poza warunkiem `edycja` — pokazuje się właśnie po wyjściu z edycji. */}
+        {ostrzezenieZdjecia && (
+          <div style={s.uwagaZdjecia}>
+            {ostrzezenieZdjecia}
+            <button style={s.uwagaZamknij} onClick={() => setOstrzezenieZdjecia('')}>
+              Zamknij
+            </button>
+          </div>
+        )}
+
         {edycja && (
           <div style={s.saveRow}>
             <button style={{ ...ui.btnPrimary, flex: 1 }} onClick={zapiszZmiany} disabled={saving}>
@@ -757,6 +786,17 @@ function makeS() {
     padding: '10px 12px', borderRadius: 10, marginTop: 14,
     background: t.surfaceAlt, fontFamily: fonts.sans, fontSize: 12.5, color: t.danger,
     lineHeight: 1.4,
+  },
+  // Ostrzeżenie, nie błąd — zapis się UDAŁ, brakuje tylko zdjęcia.
+  uwagaZdjecia: {
+    padding: '10px 12px', borderRadius: 10, marginTop: 14,
+    background: '#FDF3DC', fontFamily: fonts.sans, fontSize: 12.5, color: '#7A5A14',
+    lineHeight: 1.4,
+  },
+  uwagaZamknij: {
+    display: 'block', marginTop: 8, padding: 0, border: 'none', background: 'none',
+    fontFamily: fonts.sans, fontSize: 12.5, fontWeight: 600, color: '#7A5A14',
+    textDecoration: 'underline', cursor: 'pointer',
   },
   modalOverlay: {
     position: 'fixed', inset: 0, zIndex: 1000,

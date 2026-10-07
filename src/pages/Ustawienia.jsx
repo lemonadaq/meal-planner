@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { supabase } from '../supabase'
 import { t, fonts, ui, avatarBg, DOMYSLNY_MOTYW, GORA_TRESCI } from '../theme'
 
-export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin, onBlog, onRodzina, onSloty, onKalendarz, onHome, jestAdmin }) {
+export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin, onRodzina, onSloty, onKalendarz, onHome, jestAdmin }) {
   const pelneImie = user?.user_metadata?.full_name || ''
   const imie = pelneImie.split(' ')[0] || user?.email?.split('@')[0] || ''
   const [porcje, setPorcje] = useState(ustawienia?.domyslne_porcje ?? 1)
@@ -211,9 +211,6 @@ export default function Ustawienia({ user, ustawienia, onZapisz, onBack, onAdmin
             <p style={s.sectionSub}>Panel analityki — dostępny tylko dla Ciebie.</p>
             <button style={s.btnAdmin} onClick={zWyjsciem(onAdmin)}>
               📊 Otwórz panel admina
-            </button>
-            <button style={{ ...s.btnAdmin, marginTop: 10 }} onClick={zWyjsciem(onBlog)}>
-              📝 Blog — wpisy i publikacja
             </button>
           </section>
         )}

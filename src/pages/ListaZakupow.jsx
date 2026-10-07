@@ -6,6 +6,12 @@ import { formatDataLocal, dzisLocal } from '../dataHelpers'
 import { PromoBanner, PromoChip, PromoDetail, StoreDot } from '../components/Promocje'
 import { dopasujPromocje, pobierzAktualnePromocje } from '../promocjeMatch'
 import { uproscNazweSkladnika } from '../nazwySkladnikow'
+import {
+  SCAL_NAZWY,
+  normalizujDlaScalania,
+  znajdzDuplikatNaLiscie,
+  tekstDuplikatu,
+} from '../duplikatyZakupow'
 import KosztKoszyka from '../components/KosztKoszyka'
 import { pobierzCenyBazowe, wycenKoszyk } from '../cenyBazowe'
 import { useDuzyEkran } from '../useDuzyEkran'
@@ -407,49 +413,40 @@ function formatujWage(ilosc, jednostka) {
 }
 
 // Produkty zakładane domyślnie „w domu" (nie trafiają na listę):
-//  - wszystkie przyprawy (kategoria 7_Przyprawy) — oprócz wina, które się dokupuje,
-//  - stałe spiżarni: olej, oliwa, ocet, cukier, woda (niezależnie od kategorii).
-// W przyszłości „półka/spiżarnia" pozwoli to odznaczać z poziomu apki.
+// stałe spiżarni — olej, oliwa, ocet, cukier, woda. Niezależnie od kategorii,
+// bo to rzeczy, których nikt nie dopisuje do listy przed wyjściem do sklepu.
+//
+// Kiedyś była tu też reguła „cała kategoria 7_Przyprawy jest w domu" (poza
+// winem). Wywalona: chowała z listy także szafran, wanilię, kardamon i gałkę
+// muszkatołową, czyli dokładnie te przyprawy, których w szafce NIE ma.
+// Użytkownik planował risotto alla milanese i nie dowiadywał się, że musi
+// kupić szafran (issue #118).
+//
+// Teraz z przypraw ukrywane są WYŁĄCZNIE sól i pieprz
+// (ZAWSZE_UKRYTE_Z_PRZEPISOW, przez `produktyWDomuSet`). Każda inna przyprawa
+// — oregano i bazylia też — zachowuje się jak zwykły produkt i trafia na
+// listę. Jeśli komuś faktycznie leżą w szafce, odhacza je raz w panelu
+// „Mam w domu" i wtedy znikają na stałe.
+//
+// UWAGA dla następnego czytającego: stała DOMYSLNE_PRODUKTY_W_DOMU (u góry
+// pliku) jest zadeklarowana, ale NIGDZIE nieużywana — martwy kod. Nie szukaj
+// w niej powodu, że coś się chowa albo nie chowa.
 const ZAWSZE_W_DOMU = ['olej', 'oliwa', 'ocet', 'cukier', 'woda']
 
-// Scalenia składników: klucz = normalizujNazweMeta(oryginalna nazwa) → wartość = nazwa kanoniczna.
-// Pozwala łączyć warianty tej samej rzeczy bez zmian w bazie składniki_meta.
-const SCAL_NAZWY = {
-  'ser twarog':          'Twaróg',
-  'twarog poltlusty':    'Twaróg',
-  'twarog':              'Twaróg',
-  'chleb pszenny':       'Chleb',
-  'chleb pszenny kromki':'Chleb',
-  'pieczywo do podania': 'Chleb',
-  'marchewka':           'Marchew',
-  'jogurt naturalny':    'Jogurt naturalny',
-  // W bazie krążą trzy pisownie tego samego sera („skladniki_meta" ma
-  // literówkę w dwóch wpisach, przepisy różnie ją przepisują) — bez tego
-  // trafiały na listę jako dwie osobne pozycje.
-  'mozarella':           'Mozzarella',
-  'ser mozarella':       'Mozzarella',
-  'ser mozzarella':      'Mozzarella',
-  // „Risotto alla milanese" i „Risotto z owocami morza" nazywają ten sam
-  // składnik w innym szyku słów — bez tego dwie takie pozycje nie sumowały
-  // się w jedną na liście zakupów.
-  'biale wytrawne wino': 'Białe wino wytrawne',
-}
+// Scalenia nazw, normalizacja do scalania i rozpoznawanie duplikatu siedzą
+// w `src/duplikatyZakupow.js` — to czyste funkcje, a ten plik eksportuje
+// komponent.
 
-// Sufiksy/prefiksy, które nie rozróżniają produktu na liście zakupów.
-// "Ogórek" i "Ogórek świeży" trafiają do tej samej pozycji — a przepisy
-// piszą ten sam przymiotnik też na początku ("świeża bazylia", "Świeża
-// mięta"), więc bez PREFIKS_RGX te dwie pisownie nie schodziły się w jedną.
-const SUFIKS_RGX = /\s+(swiezy|swieza|swieze|surowy|surowa|surowe|mrozony|mrozona|mrozone)$/
-const PREFIKS_RGX = /^(swiezy|swieza|swieze|surowy|surowa|surowe|mrozony|mrozona|mrozone)\s+/
-function normalizujDlaScalania(normNazwa) {
-  return normNazwa.replace(SUFIKS_RGX, '').replace(PREFIKS_RGX, '').trim()
+// Treść toasta po dodaniu jednego produktu. Formatowanie ilości zostaje
+// tutaj, bo `tekstIlosciZItemu` zależy od opakowań i korekt.
+function toastPoDodaniu(nazwa, duplikat) {
+  if (!duplikat) return `Dodano: ${nazwa}`
+  return tekstDuplikatu(nazwa, tekstIlosciZItemu(duplikat))
 }
 function domyslnieWDomu(item) {
   if (!item) return false
   const n = normalizujNazweMeta(item.skladnik || '')
-  if (ZAWSZE_W_DOMU.some(p => n === p || n.startsWith(p + ' '))) return true
-  if (item.kategoria === '7_Przyprawy') return !n.startsWith('wino')
-  return false
+  return ZAWSZE_W_DOMU.some(p => n === p || n.startsWith(p + ' '))
 }
 
 // Policz ile opakowań kupić.
@@ -1547,7 +1544,10 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
         }
 
         if (data) setCykliczne(prev => prev.some(c => c.id === data.id) ? prev : [...prev, data])
-        pokazToast(`Dodano (co tydzień): ${daneDoZapisu.nazwa}`)
+        const duplikatCykl = duplikatNaLiscie(daneDoZapisu.nazwa)
+        pokazToast(duplikatCykl
+          ? `${toastPoDodaniu(daneDoZapisu.nazwa, duplikatCykl)} (teraz co tydzień)`
+          : `Dodano (co tydzień): ${daneDoZapisu.nazwa}`)
       } else {
         const rekord = {
           ...daneDoZapisu,
@@ -1567,7 +1567,10 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
         }
 
         if (data) setWlasne(prev => [...prev, data])
-        pokazToast(`Dodano: ${daneDoZapisu.nazwa}`)
+        pokazToast(toastPoDodaniu(
+          daneDoZapisu.nazwa,
+          duplikatNaLiscie(daneDoZapisu.nazwa),
+        ))
       }
     }
     setEdycjaWlasnego(null)
@@ -1672,6 +1675,26 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
     })
   }
 
+  // Toast dla szybkiego dodawania. Jeden produkt — pełne zdanie z ilością,
+  // którą Filip już ma na liście. Więcej — sama liczba dodanych plus ile
+  // z nich się dubluje, bo wyliczanie każdego nie zmieści się w toaście.
+  //
+  // `duplikatNaLiscie` czyta listę z renderu, więc jeszcze NIE zawiera tego,
+  // co właśnie wstawiamy — i o to chodzi, inaczej każdy produkt dublowałby
+  // sam siebie.
+  function toastSzybkiegoDodania(dodane = []) {
+    if (dodane.length === 1) {
+      const nazwa = dodane[0].nazwa
+      return toastPoDodaniu(nazwa, duplikatNaLiscie(nazwa))
+    }
+    const dubli = dodane.filter(r => duplikatNaLiscie(r.nazwa)).length
+    const baza = `Dodano ${dodane.length} produktów`
+    if (dubli === 0) return baza
+    return dubli === 1
+      ? `${baza} · 1 już był na liście`
+      : `${baza} · ${dubli} już było na liście`
+  }
+
   async function dodajSzybkieProdukty(tekst) {
     const linie = rozbijSzybkieLinie(tekst)
 
@@ -1726,7 +1749,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
         const ids = new Set(prev.map(w => w.id))
         return [...prev, ...dodane.filter(w => !ids.has(w.id))]
       })
-      pokazToast(dodane.length === 1 ? `Dodano: ${dodane[0].nazwa}` : `Dodano ${dodane.length} produktów`)
+      pokazToast(toastSzybkiegoDodania(dodane))
       return
     }
 
@@ -1738,7 +1761,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
       sledz?.('dodaj_szybki_produkt', { ile: data.length })
     }
 
-    pokazToast(data?.length === 1 ? `Dodano: ${data[0].nazwa}` : `Dodano ${data?.length || rekordy.length} produktów`)
+    pokazToast(toastSzybkiegoDodania(data?.length ? data : rekordy))
   }
 
   async function usunWlasny(item) {
@@ -1874,6 +1897,17 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
   const wszystkieItemyBezPromo = useMemo(() => {
     return [...listaPoProduktachDomowych, ...wlasneJakoItems, ...cyklicneJakoItems]
   }, [listaPoProduktachDomowych, wlasneJakoItems, cyklicneJakoItems])
+
+  // Czy produkt o tej nazwie JUŻ jest na widocznej liście.
+  //
+  // Zadeklarowana TUTAJ, pod `wszystkieItemyBezPromo`, i to jest celowe:
+  // gdy handlery sięgały do tego memo bezpośrednio, kompilator Reacta nie
+  // potrafił zachować memoizacji i zgłaszał `preserve-manual-memoization`.
+  // Deklaracja funkcji jest hoistowana, więc `zapiszWlasny`
+  // i `dodajSzybkieProdukty` wyżej wywołują ją bez problemu.
+  function duplikatNaLiscie(nazwa) {
+    return znajdzDuplikatNaLiscie(nazwa, wszystkieItemyBezPromo)
+  }
 
   // Dopnij promocje do itemów (item.promo = {store, old, now, off, until} | null).
   const wszystkieItemy = useMemo(() => {
