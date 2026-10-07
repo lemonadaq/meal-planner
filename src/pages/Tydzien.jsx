@@ -77,6 +77,13 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
   const [filtry, setFiltry] = useState([])
   const [toast, setToast] = useState(null)
   const [losowanie, setLosowanie] = useState(false)
+  // Synchroniczny strażnik przed podwójnym wywołaniem (ref, nie stan) — jak
+  // `dodawanieWTokuRef` w useTydzien.js. `losowanie` (useState) aktualizuje
+  // się asynchronicznie: dwa kliknięcia w tym samym ticku (realny szybki
+  // double-tap) widzą tę samą, jeszcze nieodświeżoną wartość `false` i obie
+  // przechodzą przez `if (losowanie) return` — bez refa taki double-tap
+  // losował i dodawał do puli DWA dania zamiast jednego.
+  const losowanieWTokuRef = useRef(false)
 
   // Blokada krótkich serii kliknięć W TO SAMO MIEJSCE: dodanie/usunięcie
   // dania zmienia wysokość sekcji „W tym tygodniu”, więc cała reszta ekranu
@@ -157,7 +164,7 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
   // Preferuje dania NIE gotowane ostatnio (kalendarz z 14 dni + pula
   // poprzedniego tygodnia); jak nic nie zostaje — losuje z całej puli.
   async function wylosujDanie() {
-    if (losowanie) return
+    if (losowanieWTokuRef.current) return
     const GLOWNE = ['sniadanie', 'obiad', 'kolacja', 'zupa', 'deser']
     const kandydaci = dania.filter(d => GLOWNE.includes(d.rodzaj) && !wPuli.has(d.Danie))
     if (kandydaci.length === 0) {
@@ -165,6 +172,7 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
       return
     }
 
+    losowanieWTokuRef.current = true
     setLosowanie(true)
     try {
       const dwaTygodnie = new Date()
@@ -194,6 +202,7 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
       console.error('Błąd losowania dania:', err)
       setToast({ id: Date.now(), label: 'Nie udało się wylosować' })
     } finally {
+      losowanieWTokuRef.current = false
       setLosowanie(false)
     }
   }
