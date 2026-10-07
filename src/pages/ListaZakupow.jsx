@@ -1172,14 +1172,18 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
       // Zostały kawałki w nieprzeliczalnych jednostkach (np. „3 szt" bez wagi)
       // — złóż czytelny tekst i wyłącz pojedynczą liczbę/opakowania.
       if (item.nieprzeliczone && item.nieprzeliczone.length) {
-        const fmt = n => Number.isInteger(n) ? String(n) : String(Math.round(n * 100) / 100).replace('.', ',')
         const czesci = []
         if (item.ilosc != null && item.ilosc > 0) czesci.push(formatujWage(item.ilosc, item.bazaJedn))
-        item.nieprzeliczone.forEach(e => czesci.push(
-          ['g', 'kg', 'ml', 'l'].includes(kanonJednostka(e.jedn))
-            ? formatujWage(e.ilosc, e.jedn)
-            : `${fmt(e.ilosc)}${e.jedn ? ` ${e.jedn}` : ''}`.trim()
-        ))
+        item.nieprzeliczone.forEach(e => {
+          if (['g', 'kg', 'ml', 'l'].includes(kanonJednostka(e.jedn))) {
+            czesci.push(formatujWage(e.ilosc, e.jedn))
+            return
+          }
+          // Jednostka policzalna (opak., puszka…) — pół opakowania się nie kupuje,
+          // zaokrąglamy w górę jak przy liczeniu opakowań (policzOpakowania) i sztuk
+          // (formatujOryginalnaIlosc), inaczej lista pokazywała np. „0,5 opak.".
+          czesci.push(`${Math.ceil(e.ilosc)}${e.jedn ? ` ${e.jedn}` : ''}`.trim())
+        })
         if (czesci.length) {
           item.iloscOryginalna = czesci.filter(Boolean).join(' + ')
           item.ilosc = null
