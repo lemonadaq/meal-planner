@@ -2236,9 +2236,13 @@ function MamWDomuModal({ produkty, aktualneProdukty, ukryteProdukty, onClose, on
         norm,
         nazwa: ladna,
         kategoria: item.kategoria,
-        ilosc: item.ilosc != null
-          ? `${item.ilosc} ${item.jednostka || ''}`.trim()
-          : (item.iloscOryginalna || item.jednostka || ''),
+        // Ta sama logika co ItemRow na liście — inaczej „Gruszka" tu pokazywała
+        // surowe „0.5 szt." (z kropką, bez zaokrąglenia), a na liście „1 szt.".
+        ilosc: item.opakowania
+          ? formatujOpakowania(item.opakowania)
+          : item.ilosc != null
+            ? formatujWage(item.ilosc, item.jednostka)
+            : (item.iloscOryginalna || item.jednostka || ''),
       })
     })
     return [...mapa.values()].sort((a, b) => a.nazwa.localeCompare(b.nazwa, 'pl'))
