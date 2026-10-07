@@ -165,13 +165,14 @@ export default function DodajDanie({ onBack, onZapisano }) {
   }
   function wybierzPodpowiedz(sk) {
     setWybrano(true)
-    // zachowujemy ilość, jeśli użytkownik wpisał ją przed wybraniem podpowiedzi —
-    // inaczej podpowiedź po cichu kasowała już wpisaną wartość
+    // zachowujemy ilość, jednostkę i kategorię, jeśli użytkownik ustawił je przed
+    // wybraniem podpowiedzi — inaczej podpowiedź po cichu kasowała już wpisane
+    // wartości (dotyczyło wcześniej tylko ilości, patrz historia tego pliku)
     setNowyS(prev => ({
       nazwa: sk['Składnik'],
       ilosc: prev.ilosc,
-      jednostka: sk['Jednostka'] || 'g',
-      kategoria: sk['Kategoria'] || '1_Warzywa i owoce',
+      jednostka: prev.jednostka !== 'g' ? prev.jednostka : (sk['Jednostka'] || 'g'),
+      kategoria: prev.kategoria !== '1_Warzywa i owoce' ? prev.kategoria : (sk['Kategoria'] || '1_Warzywa i owoce'),
     }))
     setPodpowiedzi([])
   }
