@@ -14,6 +14,12 @@ let timerFlush = null
 async function flush() {
   if (KOLEJKA.length === 0) return
   const paczka = KOLEJKA.splice(0, KOLEJKA.length)
+  // Zdarzenie dorzucone tuż przed wylogowaniem (np. "tab_czas" z czyszczenia
+  // poprzedniego efektu w useTabAnalytics) trafia do kolejki już PO zerwaniu
+  // sesji — insert i tak odrzuci RLS, a przeglądarka i tak zaloguje nieudany
+  // request jako błąd w konsoli, więc sprawdzamy sesję zamiast próbować.
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) return
   try {
     await supabase.from('analytics').insert(paczka)
   } catch (e) {
