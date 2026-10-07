@@ -1080,7 +1080,11 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
 
       // parsujIlosc, nie parseFloat — "1/4 szt." musi dać 0,25, nie 1
       // (2 dania × 1/4 cebuli = 1/2 szt. → 1 na liście, nie 2)
-      const iloscNum = parsujIlosc(ilosc)
+      // „do smaku" jest bezilościowa (tak samo jak w DodajDanie.jsx/DanieDetail.jsx —
+      // formularz dopuszcza puste pole ilości tylko dla tej jednostki), ale walidacja
+      // nie blokuje wpisania przy niej liczby — stąd „Rozmaryn 2 do smaku" na liście.
+      const bezIlosci = (jednostka || '').toString().trim().toLowerCase() === 'do smaku'
+      const iloscNum = bezIlosci ? NaN : parsujIlosc(ilosc)
       let wpis = skladnikiMap[mapaKlucz]
 
       // Pierwsze wystąpienie tej nazwy — załóż pozycję
@@ -1088,7 +1092,7 @@ export default function ListaZakupow({ user, householdId, onBack, domyslnePorcje
         wpis = skladnikiMap[mapaKlucz] = {
           skladnik: kanon,
           ilosc: null,
-          iloscOryginalna: !Number.isFinite(iloscNum) ? ilosc : null,
+          iloscOryginalna: !bezIlosci && !Number.isFinite(iloscNum) ? ilosc : null,
           bazaJedn: ustalJednostkeBazowa(meta, jednostka),
           jednostka: '',
           wagaSztuki: wagaSztukiZMeta(meta),
