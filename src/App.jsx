@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { App as CapApp } from '@capacitor/app'
 import { Browser } from '@capacitor/browser'
 import { supabase } from './supabase'
@@ -102,6 +102,11 @@ function App() {
 
   const navStateRef = useRef({ tab, ekran, wybraneD, dodajDanie })
   const cofnijWApceRef = useRef(null)
+  // Ustawienia.jsx rejestruje tu funkcję, która pyta o niezapisaną zmianę imienia —
+  // bez tego cofnięcie przez wstecz przeglądarki/telefonu omijało to pytanie
+  // (zWyjsciem w Ustawieniach otacza tylko kliknięcia przycisków na ekranie).
+  const ustawieniaStrazRef = useRef(null)
+  const rejestrujStrazUstawien = useCallback(fn => { ustawieniaStrazRef.current = fn }, [])
 
   useEffect(() => {
     navStateRef.current = { tab, ekran, wybraneD, dodajDanie }
@@ -123,6 +128,7 @@ function App() {
     }
 
     if (st.ekran === 'ustawienia') {
+      if (ustawieniaStrazRef.current && !ustawieniaStrazRef.current()) return true
       setEkran(null)
       return true
     }
@@ -260,6 +266,7 @@ function App() {
           onKalendarz={() => setEkran('kalendarz-stary')}
           onHome={() => setEkran('home-stary')}
           jestAdmin={jestAdmin}
+          rejestrujStrazWyjscia={rejestrujStrazUstawien}
         />
         <ZaproszenieModal user={user} onZaakceptowano={poZaakceptowaniu} />
       </>
