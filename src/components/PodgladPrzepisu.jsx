@@ -43,6 +43,44 @@ export default function PodgladPrzepisu({ nazwa, onZamknij, onPelnyPrzepis, wPul
     return () => window.removeEventListener('keydown', naKlawisz)
   }, [onZamknij])
 
+  // Blokada przewijania strony pod okienkiem — bez tego swipe/scroll na
+  // przyciemnionym tle (poza kartą) przewija listę dań pod spodem, a po
+  // zamknięciu użytkownik ląduje w zupełnie innym miejscu listy, mimo że
+  // świadomie jej nie przewijał. `position: fixed` + zapamiętanie scrollY
+  // (jak przy blokadzie dragu w Kalendarz.jsx) — samo `overflow: hidden`
+  // nie wystarcza na telefonie (Safari i tak przewija pod spodem).
+  useEffect(() => {
+    const html = document.documentElement
+    const body = document.body
+    const scrollY = window.scrollY
+    const prev = {
+      htmlOverflow: html.style.overflow,
+      bodyOverflow: body.style.overflow,
+      bodyPosition: body.style.position,
+      bodyTop: body.style.top,
+      bodyLeft: body.style.left,
+      bodyRight: body.style.right,
+      bodyWidth: body.style.width,
+    }
+    html.style.overflow = 'hidden'
+    body.style.overflow = 'hidden'
+    body.style.position = 'fixed'
+    body.style.top = `-${scrollY}px`
+    body.style.left = '0'
+    body.style.right = '0'
+    body.style.width = '100%'
+    return () => {
+      html.style.overflow = prev.htmlOverflow
+      body.style.overflow = prev.bodyOverflow
+      body.style.position = prev.bodyPosition
+      body.style.top = prev.bodyTop
+      body.style.left = prev.bodyLeft
+      body.style.right = prev.bodyRight
+      body.style.width = prev.bodyWidth
+      window.scrollTo(0, scrollY)
+    }
+  }, [])
+
   if (!nazwa) return null
 
   // Dane z POPRZEDNIEGO dania nie mają prawa mignąć pod nową nazwą.
