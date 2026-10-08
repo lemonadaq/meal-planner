@@ -188,3 +188,24 @@ REPLICATE_MODEL=google/nano-banana-2 npm run generuj:obrazy
 Gotowe kształty inputu w `wspolne.js` → `MODELE_OBRAZU`: `flux-2-pro` (domyślny),
 `flux-2-max`, `nano-banana-2`, `imagen-4-ultra`. Inny model dostanie generyczny
 input `{ prompt, aspect_ratio }` — jak wymaga innych pól, dopisz go do mapy.
+
+## `sprawdz-nazwe-pakietu.sh` — nie do generowania, do wydania Androida
+
+Odstaje od reszty katalogu: nie dotyka ani bazy, ani Replicate. Sprawdza, czy
+nazwa pakietu w zbudowanym APK zgadza się z tą, pod którą aplikacja jest
+założona w Play Console (`pl.menuplaner`). Woła go workflow „Wydanie Android"
+tuż po zbudowaniu artefaktów.
+
+```
+bash skrypty/sprawdz-nazwe-pakietu.sh <plik.apk> pl.menuplaner
+bash skrypty/sprawdz-nazwe-pakietu.test.sh     # test na atrapie aapt2
+```
+
+Dlaczego osobny plik i osobny test, skoro to dziesięć linijek: pierwsza wersja
+była wklejona wprost w YAML-u workflow i miała zachłanne `.*name='`. Łapało to
+OSTATNIE wystąpienie `name='` w linii `aapt2 dump badging`, czyli
+`compileSdkVersionCodename='16'` — więc zamiast nazwy pakietu wychodziło „16"
+i wydanie padało na „niezgodnej nazwie" przy poprawnie zbudowanym pliku.
+Wyrażenie jest teraz zakotwiczone na `^package: name='`, a test odtwarza tamto
+wyjście aapt2 jeden do jednego. Nie przenoś tej logiki z powrotem do YAML-a —
+tam nie da się jej odpalić bez palenia całego przebiegu wydania.
