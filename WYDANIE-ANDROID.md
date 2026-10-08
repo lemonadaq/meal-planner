@@ -28,6 +28,36 @@ Koszt konta: **25 USD jednorazowo**.
   środowiskowych; nic tajnego nie leży w repozytorium
 - workflow **Actions → „Wydanie Android"** buduje podpisany `.aab` i `.apk`
 
+## Nazwa pakietu — trzy różne nazwy i tak ma być
+
+W projekcie krążą trzy podobne napisy i **żadnego z nich nie wolno
+„ujednolicić"** do pozostałych:
+
+| Co | Wartość | Po co |
+|---|---|---|
+| `applicationId` (`android/app/build.gradle`) | `pl.menuplaner` | To **jedyna** nazwa, którą widzi Play Console. Musi zgadzać się z aplikacją założoną w konsoli. |
+| `namespace` (`android/app/build.gradle`) | `com.menuplaner.app` | Przestrzeń pakietów Javy — tam fizycznie leży `MainActivity.java`. Play jej nie widzi. Zmiana = przenoszenie pliku. |
+| schemat deep linku (`AndroidManifest.xml`, `strings.xml`) | `com.menuplaner.app` | Adres powrotny logowania Google: `com.menuplaner.app://login-callback`. Jest wpisany w **Supabase** jako dozwolony redirect. |
+
+Dwie rzeczy, które warto wiedzieć, zanim ktoś zacznie to „porządkować":
+
+- **`applicationId` jest nieodwracalny** po pierwszym wydaniu przyjętym przez
+  Play. Potem zmiana nazwy = nowa aplikacja w sklepie, od zera, bez instalacji
+  i ocen.
+- **Zmiana schematu deep linku psuje logowanie Google** w wersji natywnej,
+  dopóki nowy adres nie zostanie dopisany w Supabase → Authentication → URL
+  Configuration → Redirect URLs. Dlatego schemat został stary, mimo że
+  `applicationId` się zmienił.
+
+Zmiana `appId` w `capacitor.config.json` **sama nic nie daje** — ta wartość
+działa tylko przy `npx cap add android`, czyli przy zakładaniu projektu od
+zera. `npx cap sync` nie przepisuje `build.gradle` ani `strings.xml`
+istniejącego projektu (sprawdzone). Liczy się wyłącznie `applicationId`.
+
+Komunikat Play Console o niezgodnej nazwie jest po polsku mylący — mówi
+o „pliku", więc wygląda, jakby chodziło o nazwę pliku `.aab`. Nie chodzi.
+Nazwa pliku nie ma znaczenia.
+
 ## Krok 1 — klucz podpisujący
 
 Klucz robi się RAZ i podpisuje nim wszystkie przyszłe aktualizacje.
@@ -100,8 +130,11 @@ Po przebiegu na dole strony jest artefakt z dwoma plikami:
 - `.apk` — tego **nie** wgrywasz; służy do zainstalowania na własnym telefonie
   i sprawdzenia, zanim cokolwiek wyślesz. AAB-a nie da się zainstalować.
 
-Workflow sam sprawdza na końcu (`apksigner verify`), czy artefakt jest
-faktycznie podpisany.
+Workflow sam sprawdza na końcu dwie rzeczy: czy artefakt jest faktycznie
+podpisany (`apksigner verify`) i czy nazwa pakietu w środku to `pl.menuplaner`
+(`aapt2 dump badging`). Przy niezgodnej nazwie przebieg jest czerwony — lepiej
+to niż odbicie z konsoli po wgraniu. Obie wartości widać w logu przebiegu,
+więc Android Studio do niczego tu nie potrzebne.
 
 ## Krok 4 — zanim wyślesz
 

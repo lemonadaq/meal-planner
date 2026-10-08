@@ -190,6 +190,63 @@ jobs:
           fi
           "$APKSIGNER" verify --print-certs "$APK"
 
+      # Play Console odrzuca AAB, którego `applicationId` nie zgadza się
+      # z nazwą pakietu aplikacji założonej w konsoli — a komunikat o tym jest
+      # po polsku mylący (mówi o „pliku", więc wygląda jakby chodziło o nazwę
+      # pliku .aab; nie chodzi). Sprawdzamy to tutaj, zanim Filip zacznie
+      # wgrywać: lepiej czerwony przebieg niż odbicie z konsoli.
+      #
+      # Czytamy z APK, bo `aapt2 dump badging` radzi sobie z nim pewnie, a oba
+      # artefakty wychodzą z tego samego wariantu Gradle, więc mają tę samą
+      # nazwę pakietu. AAB sprawdzamy dodatkowo, ale bez przerywania — format
+      # manifestu w AAB zależy od wersji aapt2.
+      - name: Sprawdź nazwę pakietu w artefakcie
+        env:
+          # Nazwa, pod którą aplikacja jest założona w Play Console.
+          # Po pierwszym przyjętym wydaniu jest nieodwracalna — jeśli ją tu
+          # zmieniasz, zmień też `applicationId` w android/app/build.gradle.
+          OCZEKIWANA: pl.menuplaner
+        run: |
+          APK=$(find android -name "*-release.apk" | head -1)
+          if [ -z "$APK" ]; then
+            echo "::error::Nie znalazłem pliku APK — nie sprawdzę nazwy pakietu."
+            exit 1
+          fi
+
+          SDK="${ANDROID_HOME:-$ANDROID_SDK_ROOT}"
+          AAPT2=$(find "$SDK/build-tools" -name aapt2 2>/dev/null | sort -V | tail -1)
+          if [ -z "$AAPT2" ]; then
+            echo "::error::Nie znalazłem aapt2 w $SDK/build-tools — nie odczytam nazwy pakietu."
+            exit 1
+          fi
+
+          PAKIET=$("$AAPT2" dump badging "$APK" \
+                   | grep -m1 "^package:" \
+                   | sed -n "s/.*name='\([^']*\)'.*/\1/p")
+          if [ -z "$PAKIET" ]; then
+            echo "::error::aapt2 nie zwrócił nazwy pakietu z $APK."
+            exit 1
+          fi
+
+          echo "Nazwa pakietu w artefakcie: $PAKIET"
+          echo "Play Console oczekuje:      $OCZEKIWANA"
+          if [ "$PAKIET" != "$OCZEKIWANA" ]; then
+            echo "::error::Niezgodna nazwa pakietu — Play Console odrzuci to wgranie."
+            echo "::error::Popraw applicationId w android/app/build.gradle na $OCZEKIWANA."
+            exit 1
+          fi
+          echo "::notice::Nazwa pakietu zgodna: $PAKIET"
+
+          # Kontrola krzyżowa na samym AAB — gdy aapt2 go nie przeczyta,
+          # zostawiamy to bez konsekwencji, bo twardą bramką jest APK powyżej.
+          AAB=$(find android -name "*-release.aab" | head -1)
+          if [ -n "$AAB" ]; then
+            echo "AAB: $AAB"
+            "$AAPT2" dump xmltree --file base/manifest/AndroidManifest.xml "$AAB" 2>/dev/null \
+              | grep -m1 -i "package" \
+              || echo "(aapt2 nie przeczytał manifestu z AAB — pomijam, APK już sprawdzony)"
+          fi
+
       - name: Usuń klucz z runnera
         if: ${{ always() }}
         run: rm -f "$RUNNER_TEMP/klucz.jks"

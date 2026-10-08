@@ -9,10 +9,26 @@ def plikKlucza = System.getenv("ANDROID_KEYSTORE_FILE")
 def mamyKlucz = plikKlucza != null && !plikKlucza.isEmpty() && file(plikKlucza).exists()
 
 android {
+    // UWAGA: w tym pliku krążą TRZY różne nazwy i to jest celowe.
+    //
+    // 1. `namespace` — przestrzeń pakietów Javy. Zostaje `com.menuplaner.app`,
+    //    bo tam fizycznie leży `MainActivity.java`. Zmiana wymagałaby
+    //    przeniesienia pliku, a Play tej nazwy w ogóle nie widzi.
+    // 2. `applicationId` — nazwa, którą czyta Play Console. Musi być
+    //    `pl.menuplaner`, bo pod taką nazwą założona jest aplikacja
+    //    w konsoli; wgranie AAB z inną kończy się odrzuceniem. Po pierwszym
+    //    przyjętym wydaniu jest NIEODWRACALNA.
+    // 3. Schemat deep linku `com.menuplaner.app` w `AndroidManifest.xml` —
+    //    adres powrotny logowania Google (`com.menuplaner.app://login-callback`
+    //    w `src/App.jsx` i `src/pages/Login.jsx`). Jest wpisany w Supabase
+    //    jako dozwolony redirect, więc ZOSTAJE stary. Zmiana tu = logowanie
+    //    Google w apce przestaje działać do czasu poprawki w Supabase.
+    //
+    // Nie „ujednolicaj" ich do jednej wartości.
     namespace = "com.menuplaner.app"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.menuplaner.app"
+        applicationId "pl.menuplaner"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
