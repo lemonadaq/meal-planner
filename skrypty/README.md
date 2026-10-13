@@ -131,6 +131,11 @@ wołane **w locie** przy budowaniu listy w `ListaZakupow.jsx`:
 | `gorzka czekolada do posypania` | `gorzka czekolada` |
 | `kawa espresso (świeżo zaparzona)` | `kawa espresso` |
 | `cebula w kostkę` | `cebula` |
+| `sok z cytryny` | `cytryna` |
+| `ząbek czosnku` | `czosnek` |
+| `liście bazylii` | `bazylia` |
+| `cebulka` | `cebula` |
+| `500 g mąki` | `mąka` |
 
 Efekt uboczny i pożądany: „białko jajka" z jednego przepisu i „jajka"
 z drugiego schodzą się w JEDNĄ pozycję na liście, zamiast dwóch osobnych.
@@ -138,6 +143,12 @@ z drugiego schodzą się w JEDNĄ pozycję na liście, zamiast dwóch osobnych.
 Co **zostaje nietknięte**, bo rozróżnia produkt na półce: `boczek wędzony`,
 `mięso mielone`, `papryka suszona`, `mleko kokosowe`, `ser żółty`,
 `kapusta kiszona`, a także `tuńczyk w oleju` i `szynka w plasterkach`.
+
+Granica jest jedna i ważna: **czyścimy OPIS, nie podmieniamy TOWARU.**
+Dlatego `natka pietruszki` NIE staje się `pietruszką` (liście w pęczku kontra
+korzeń — dwa różne produkty), a `zielona cebulka` NIE staje się `cebulą`
+(to dymka, inne miejsce w sklepie). Mapa zdrobnień dopasowuje całą nazwę
+właśnie po to, żeby tego nie zepsuć.
 
 Frazy przygotowania odróżniamy od nazw produktów **gramatycznie**: instrukcja
 stoi w bierniku (`w kostkę`, `w plastry`, `na drobno` — jak pokroić), produkt
@@ -148,7 +159,33 @@ z apki zaczyna się tam od testu.
 
 Prompt przepisu (`ZASADY_SKLADNIKOW` w `wspolne.js`) nadal prosi o nazwy bez
 nawiasów i bez alternatyw, bo to szum również w przepisie — ale nic tego nie
-egzekwuje przy zapisie i jest to świadome.
+egzekwuje przy zapisie i jest to świadome. Dlatego `uproscNazweSkladnika()`
+musi radzić sobie z tym, co już leży w bazie, a nie zakładać, że prompt
+zadziałał.
+
+## Jednostki: czemu cebula bywa w gramach
+
+Enum `jednostka` w schemacie dopuszcza `g`, `ml`, `szt`, `łyżka`,
+`łyżeczka`, `szczypta`. Długo **nic nie mowiło modelowi, co kiedy wybrać** —
+więc sypał gramami, bo są uniwersalne. W bazie wylądowała `cebula 150 g`
+zamiast `cebula 1 szt`.
+
+Na liście zakupów to realna różnica: cebuli nie kupuje się na wagę, więc
+`450 g cebuli` trzeba sobie w sklepie podzielić w głowie. Lista **potrafi**
+przeliczyć gramy na sztuki (`policzOpakowania()` w `ListaZakupow.jsx`), ale
+tylko gdy `skladniki_meta` ma dla produktu `rozmiar_opakowania` i włączone
+`zaokraglaj` — a dla większości warzyw nie ma.
+
+Reguly wyboru jednostki siedzą w `ZASADY_JEDNOSTEK` w `wspolne.js`: `szt` dla
+tego, co liczy się na sztuki (cebula, czosnek, jajko, cytryna, papryka,
+ziemniak, pierś z kurczaka, puszka), `g` dla tego, co się waży (mięso
+mielone, ryż, mąka, ser), `ml` dla płynów, `łyżka`/`łyżeczka` dla dodatków,
+`szczypta` dla przypraw.
+
+**To naprawia dania generowane OD TERAZ.** Dania już zapisane zostają
+z gramami — żeby je poprawić, trzeba albo uzupełnić `skladniki_meta`
+(wagę sztuki dla warzyw), albo przegenerować przepisy z `overwrite`.
+Prompt sam z siebie nie rusza tego, co leży w bazie.
 
 ## Gdy model uparcie pudłuje
 

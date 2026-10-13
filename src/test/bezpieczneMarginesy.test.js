@@ -32,8 +32,8 @@ describe('env() w ogóle zadziała', () => {
   })
 })
 
-// Lista ekranów, które widać w aplikacji natywnej. Blog jest pominięty
-// celowo — w apce go nie ma, Trasy przekierowują na planer.
+// Lista ekranów, które widać w aplikacji natywnej. Bloga nie ma już w repo,
+// więc nie ma tu czego pomijać — zostały same ekrany planera.
 const EKRANY_NATYWNE = [
   'pages/Tydzien.jsx', 'pages/Dania.jsx', 'pages/ListaZakupow.jsx',
   'pages/DanieDetail.jsx', 'pages/DodajDanie.jsx', 'pages/Ustawienia.jsx',

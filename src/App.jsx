@@ -15,7 +15,6 @@ import Home from './pages/Home'
 import Tydzien from './pages/Tydzien'
 import Ustawienia from './pages/Ustawienia'
 import Admin from './pages/Admin'
-import WpisyAdmin from './pages/WpisyAdmin'
 import Rodzina from './pages/Rodzina'
 import KonfiguracjaSlotow from './pages/KonfiguracjaSlotow'
 import ZaproszenieModal from './components/ZaproszenieModal'
@@ -121,7 +120,7 @@ function App() {
       return true
     }
 
-    if (st.ekran === 'admin' || st.ekran === 'blog' || st.ekran === 'rodzina' || st.ekran === 'sloty'
+    if (st.ekran === 'admin' || st.ekran === 'rodzina' || st.ekran === 'sloty'
       || st.ekran === 'kalendarz-stary' || st.ekran === 'home-stary') {
       setEkran('ustawienia')
       return true
@@ -260,7 +259,6 @@ function App() {
           onZapisz={zapiszUstawienia}
           onBack={() => setEkran(null)}
           onAdmin={() => setEkran('admin')}
-          onBlog={() => setEkran('blog')}
           onRodzina={() => setEkran('rodzina')}
           onSloty={() => setEkran('sloty')}
           onKalendarz={() => setEkran('kalendarz-stary')}
@@ -274,9 +272,6 @@ function App() {
   }
   if (ekran === 'admin') {
     return <Admin onBack={() => setEkran('ustawienia')} />
-  }
-  if (ekran === 'blog') {
-    return <WpisyAdmin user={user} onZamknij={() => setEkran('ustawienia')} />
   }
   if (ekran === 'rodzina') {
     return (

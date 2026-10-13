@@ -25,12 +25,19 @@ nazwa robocza sprzed wydania i nie występuje już nigdzie w kodzie.
 \## Architektura krótko
 
 \- `main.jsx` — montowanie; `Trasy.jsx` — CAŁA mapa adresów serwisu
-\- `StronaGlowna.jsx` — co jest pod `/`: planer dla zalogowanych, blog dla gości
 \- `App.jsx` — root planera, własna nawigacja na stanie Reacta, sesja użytkownika
 
-Adresy: `/` → planer albo blog (po sesji), `/planer/*` → planer zawsze,
-`/blog`, `/blog/<slug>`, `/blog/o-mnie` → blog zawsze. Stare `/wpis/<slug>`
-i `/o-mnie` przekierowują. Aplikacja jest nadrzędna, blog jest dodatkiem.
+Adresy: `/` i `/planer/*` → planer (własna bramka logowania),
+`/polityka-prywatnosci` i `/regulamin` → publicznie, bez sesji (wymóg Google
+Play). Każdy inny adres wraca na `/`.
+
+BLOGA NIE MA. Odcięty 2026-10-06, pliki USUNIĘTE z repo 2026-10-13 (obie
+decyzje Filipa). Nie ma już `pages/Blog.jsx`, `Wpis.jsx`, `OMnie.jsx`,
+`WpisyAdmin.jsx`, `components/Komentarze*.jsx`, `NaglowekBloga.jsx`,
+`blog.js`, `komentarze.js`, `StronaGlowna.jsx` ani migracji `migracja_blog*.sql`.
+Historia siedzi w gicie (`git log -- src/blog.js`), więc nie odtwarzaj ich
+z pamięci. Tabele `wpisy` i `komentarze` oraz bucket `blog-zdjecia` ZOSTAŁY
+w Supabase — nikt ich nie czyta, Filip usunie je ręcznie, jak zechce.
 
 \- `Tydzien.jsx` + `useTydzien.js` — EKRAN STARTOWY: tygodniowa pula dań (tryb "Tydzień") — wybierasz dania na tydzień bez przypisywania do dni, lista zakupów liczy się z puli
 
@@ -47,6 +54,8 @@ i `/o-mnie` przekierowują. Aplikacja jest nadrzędna, blog jest dodatkiem.
 \- `DodajDanie.jsx` — formularz dodawania
 
 \- `ListaZakupow.jsx` — generowana z `kalendarz` + `plan\_tygodnia` (pula tygodnia) + ręczne pozycje
+\- `nazwySkladnikow.js` — nazwa z PRZEPISU → nazwa produktu ZE SKLEPU, w locie, bez ruszania tabeli `dania` („sok z cytryny" → „cytryna", „cebulka w kostkę" → „cebula"). Granica: czyścimy opis, nie podmieniamy towaru — „natka pietruszki" i „zielona cebulka" ZOSTAJĄ
+\- `duplikatyZakupow.js` — rozpoznawanie, że dwie pozycje na liście to ten sam produkt (ostrzeżenie w toaście przy szybkim dodawaniu)
 
 \- `Rodzina.jsx` — household, zaproszenia, członkowie
 
@@ -164,6 +173,14 @@ czegoś, co wygląda na usterkę. Ustalenie jest nadrzędne wobec własnej oceny
 Dopisuje je Filip; sam go nie edytuj bez jego słowa.
 
 \## Migracje do wykonania w Supabase
+
+`supabase/fixes/20261006-rls-dania-zdjecia.sql` — polityki RLS na
+`storage.objects` dla bucketu `dania-zdjecia`. BEZ TEGO wgranie zdjęcia z apki
+pada błędem 403 „new row violates row-level security policy" — i w formularzu,
+i w edycji dania. Zdjęcia, które są w bazie, wstawiły skrypty z `skrypty/`
+kluczem service-role, który omija RLS; zalogowany user nigdy nie miał prawa
+INSERT. Kod już nie gubi wpisanego przepisu, gdy upload padnie, ale samych
+zdjęć nie da się naprawić z kodu (issue #106).
 
 `migracja_promocje_indeks.sql` — indeks na `promo_offers(offer_end_at, source_hash)`.
 BEZ NIEGO promocje ładują się ~30 s, bo każde wejście w listę zakupów skanuje

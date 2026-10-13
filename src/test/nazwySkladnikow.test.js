@@ -162,3 +162,90 @@ describe('uproscNazweSkladnika — zgłoszenia z bazy', () => {
     (nazwa) => { expect(uproscNazweSkladnika(nazwa)).toBe(nazwa) },
   )
 })
+
+// ── Część produktu → produkt ze sklepu ───────────────────────────────────
+// Sedno zgłoszenia Filipa: „jak jest sok z cytryny, to żeby była do kupienia
+// cytryna". Wcześniej reguła na to istniała, ale miała wartość `null` — czyli
+// była zaparkowana i nic nie robiła.
+describe('uproscNazweSkladnika — część produktu staje się produktem', () => {
+  it.each([
+    ['sok z cytryny', 'cytryna'],
+    ['skórka z cytryny', 'cytryna'],
+    ['otarta skórka z cytryny', 'cytryna'],
+    ['starta skórka z cytryny', 'cytryna'],
+    ['sok z limonki', 'limonka'],
+    ['sok z pomarańczy', 'pomarańcza'],
+    ['ząbek czosnku', 'czosnek'],
+    ['ząbki czosnku', 'czosnek'],
+    ['2 ząbki czosnku', 'czosnek'],
+    ['liście bazylii', 'bazylia'],
+    ['garść bazylii', 'bazylia'],
+    ['pęczek koperku', 'koperek'],
+    ['kawałek imbiru', 'imbir'],
+    ['gałązka rozmarynu', 'rozmaryn'],
+  ])('%s → %s', (wejscie, oczekiwane) => {
+    expect(uproscNazweSkladnika(wejscie)).toBe(oczekiwane)
+  })
+
+  // „Natka pietruszki" i „pietruszka" to w sklepie DWA różne produkty:
+  // liście w pęczku kontra korzeń. Zwinięcie jednego do drugiego wkładałoby
+  // do koszyka nie to, co trzeba — dlatego natki świadomie nie ruszamy.
+  it('nie zwija natki pietruszki do pietruszki', () => {
+    expect(uproscNazweSkladnika('natka pietruszki')).toBe('natka pietruszki')
+    expect(uproscNazweSkladnika('pietruszka')).toBe('pietruszka')
+  })
+
+  // „Sok pomidorowy" to produkt, a nie część pomidora — przymiotnik, nie
+  // dopełniacz, więc reguła nie ma się czego złapać.
+  it.each(['sok pomidorowy', 'sok jabłkowy', 'skórka wieprzowa'])(
+    'nie rusza produktu, który tylko brzmi jak część: %s',
+    (nazwa) => { expect(uproscNazweSkladnika(nazwa)).toBe(nazwa) },
+  )
+})
+
+// ── Zdrobnienia ──────────────────────────────────────────────────────────
+describe('uproscNazweSkladnika — zdrobnienie staje się produktem', () => {
+  it.each([
+    ['cebulka', 'cebula'],
+    ['cebulka w kostkę', 'cebula'],
+    ['marchewka', 'marchew'],
+    ['marchewka starta', 'marchew'],
+  ])('%s → %s', (wejscie, oczekiwane) => {
+    expect(uproscNazweSkladnika(wejscie)).toBe(oczekiwane)
+  })
+
+  // NAJWAŻNIEJSZY przypadek w całym pliku: „zielona cebulka" to dymka, czyli
+  // inny produkt niż cebula i w innym miejscu sklepu. Mapa zdrobnień
+  // dopasowuje CAŁĄ nazwę właśnie po to, żeby tego nie zepsuć.
+  it.each(['zielona cebulka', 'cebulka zielona'])(
+    'nie robi cebuli z dymki: %s',
+    (nazwa) => { expect(uproscNazweSkladnika(nazwa)).not.toBe('cebula') },
+  )
+})
+
+// ── Ilość z przodu nazwy ─────────────────────────────────────────────────
+describe('uproscNazweSkladnika — ilość przed nazwą', () => {
+  it.each([
+    ['3 jajka', 'jajka'],
+    ['500 g mąki', 'mąka'],
+    ['0,5 l mleka', 'mleko'],
+    ['1 cebula', 'cebula'],
+    ['2 łyżki oliwy', 'oliwa'],
+  ])('%s → %s', (wejscie, oczekiwane) => {
+    expect(uproscNazweSkladnika(wejscie)).toBe(oczekiwane)
+  })
+
+  // Liczba zrośnięta z nazwą albo będąca cechą produktu zostaje.
+  it.each(['7up', 'mleko 3,2%'])(
+    'nie rusza liczby, która jest częścią nazwy: %s',
+    (nazwa) => { expect(uproscNazweSkladnika(nazwa)).toBe(nazwa) },
+  )
+
+  // Dopełniacz prostujemy TYLKO po obcięciu ilości. „Cytryny" wpisane jako
+  // cała nazwa to równie dobrze mianownik liczby mnogiej („dwie cytryny"),
+  // więc bez ilości z przodu nie ma czego poprawiać.
+  it.each(['cytryny', 'pomidory'])(
+    'nie prostuje nazwy bez ilości z przodu: %s',
+    (nazwa) => { expect(uproscNazweSkladnika(nazwa)).toBe(nazwa) },
+  )
+})

@@ -11,9 +11,9 @@ const jestNatywna = typeof window !== 'undefined' && window.Capacitor?.isNativeP
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
-      <Trasy jestNatywna={jestNatywna} />
+      <Trasy />
       {/* Statystyki Vercela — zbiera tylko odsłony, bez ciasteczek.
-          Własny licznik w bazie zostaje, bo tamten widać w panelu bloga. */}
+          Własny licznik w bazie zostaje — widoczny w panelu admina. */}
       {!jestNatywna && <Analytics />}
     </BrowserRouter>
   </StrictMode>,
