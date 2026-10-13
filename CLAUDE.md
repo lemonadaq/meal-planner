@@ -31,12 +31,13 @@ Adresy: `/` i `/planer/*` → planer (własna bramka logowania),
 `/polityka-prywatnosci` i `/regulamin` → publicznie, bez sesji (wymóg Google
 Play). Każdy inny adres wraca na `/`.
 
-BLOG JEST ODCIĘTY (2026-10-06, decyzja Filipa). Pliki `pages/Blog.jsx`,
-`Wpis.jsx`, `OMnie.jsx`, `WpisyAdmin.jsx`, `components/Komentarze*.jsx`,
-`NaglowekBloga.jsx`, `blog.js`, `komentarze.js` oraz `StronaGlowna.jsx`
-ZOSTAŁY w repo, ale nic ich nie montuje — mają na górze znacznik
-„NIEUŻYWANE od 2026-10-06". Powrót bloga = dopisanie tras w `Trasy.jsx`.
-Nie „naprawiaj" tych plików i nie przywracaj do nich tras bez słowa Filipa.
+BLOGA NIE MA. Odcięty 2026-10-06, pliki USUNIĘTE z repo 2026-10-13 (obie
+decyzje Filipa). Nie ma już `pages/Blog.jsx`, `Wpis.jsx`, `OMnie.jsx`,
+`WpisyAdmin.jsx`, `components/Komentarze*.jsx`, `NaglowekBloga.jsx`,
+`blog.js`, `komentarze.js`, `StronaGlowna.jsx` ani migracji `migracja_blog*.sql`.
+Historia siedzi w gicie (`git log -- src/blog.js`), więc nie odtwarzaj ich
+z pamięci. Tabele `wpisy` i `komentarze` oraz bucket `blog-zdjecia` ZOSTAŁY
+w Supabase — nikt ich nie czyta, Filip usunie je ręcznie, jak zechce.
 
 \- `Tydzien.jsx` + `useTydzien.js` — EKRAN STARTOWY: tygodniowa pula dań (tryb "Tydzień") — wybierasz dania na tydzień bez przypisywania do dni, lista zakupów liczy się z puli
 

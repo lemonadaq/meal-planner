@@ -112,7 +112,7 @@ Zainstaluj `.apk` na telefonie i przejdź:
 2. dodanie dania do tygodnia, wejście w listę zakupów, odhaczenie pozycji
 3. przycisk wstecz na każdej zakładce — w apce natywnej działa inaczej niż
    w przeglądarce
-4. aplikacja ma otworzyć **planer**, nie blog (`jestNatywna` w `Trasy.jsx`)
+4. aplikacja ma otworzyć **planer** od razu pod „/" (`Trasy.jsx`)
 
 ## Krok 5 — testy zamknięte
 

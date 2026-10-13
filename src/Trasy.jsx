@@ -6,17 +6,18 @@
 // cofania w Capacitorze i celowo jej nie ruszamy — dla routera cały planer
 // to jedna trasa `/planer/*`.
 //
-// BLOG JEST ODCIĘTY. Serwis to planer i tylko planer:
+// BLOGA NIE MA. Serwis to planer i tylko planer:
 //
 //   /                 planer (własna bramka logowania)
 //   /planer/*         planer, ten sam komponent — stary adres nie umiera
 //
-// Pliki bloga (`pages/Blog.jsx`, `Wpis.jsx`, `OMnie.jsx`, `WpisyAdmin.jsx`,
-// `components/Komentarze*.jsx`, `blog.js`, `komentarze.js`) ZOSTAJĄ w repo,
-// ale nic ich już nie montuje. Decyzja Filipa z 2026-10-06: blog zabierał
-// uwagę, a produktem jest planer. Wejście z powrotem to dopisanie tu tras.
+// Blog został odcięty 2026-10-06, a jego pliki (`pages/Blog.jsx`, `Wpis.jsx`,
+// `OMnie.jsx`, `WpisyAdmin.jsx`, `components/Komentarze*.jsx`,
+// `NaglowekBloga.jsx`, `blog.js`, `komentarze.js`, `StronaGlowna.jsx`)
+// USUNIĘTE z repo 2026-10-13 — decyzja Filipa. Produktem jest planer.
+// Historia siedzi w gicie, gdyby blog miał kiedyś wrócić.
 //
-// Adresy bloga nie przekierowują na „/" ani nigdzie indziej — łapie je
+// Stare adresy bloga nie przekierowują na „/" osobną regułą — łapie je
 // reguła `*` na końcu, tak samo jak każdy inny nieznany adres.
 
 import { Routes, Route, Navigate } from 'react-router-dom'

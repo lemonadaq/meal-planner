@@ -37,10 +37,10 @@ describe('Trasy — serwis to planer', () => {
   })
 })
 
-// Blog został odcięty 2026-10-06 (decyzja Filipa). Pliki zostały w repo, ale
-// żaden adres ich nie montuje. Ten blok pilnuje, żeby nie wróciły przypadkiem
-// — i żeby stare linki nie dawały białego ekranu.
-describe('Trasy — blog jest odcięty', () => {
+// Blog odcięty 2026-10-06, pliki usunięte z repo 2026-10-13 (decyzja Filipa).
+// Ten blok pilnuje, żeby stare linki — z zakładek, z Google — nie dawały
+// białego ekranu, tylko wracały na planer.
+describe('Trasy — bloga nie ma', () => {
   it.each([
     '/blog',
     '/blog/risotto-z-warzywami',
@@ -59,8 +59,8 @@ describe('Trasy — blog jest odcięty', () => {
 })
 
 // Google Play wymaga adresu polityki prywatności, który działa BEZ logowania.
-// Te dwa dokumenty ZOSTAJĄ niezależnie od losów bloga — to wymóg sklepu,
-// nie część bloga.
+// Te dwa dokumenty ZOSTAJĄ po usunięciu bloga — to wymóg sklepu, nigdy nie
+// były częścią bloga.
 describe('Trasy — dokumenty prawne pod publicznym adresem', () => {
   it('polityka prywatności ma własny adres', () => {
     otworz('/polityka-prywatnosci')
