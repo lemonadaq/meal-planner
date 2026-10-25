@@ -6,6 +6,7 @@
 import { createClient } from '@supabase/supabase-js'
 import Anthropic from '@anthropic-ai/sdk'
 import { opisReczny, wskazowkaPrzepisu } from './opisy-reczne.js'
+import { czyscSkladnik, scalPowtorki, budujSlownik, tekstSlownika } from './slownik.js'
 
 // ── Klucze ────────────────────────────────────────────────────────
 // Główne nazwy = te, które są w GitHub Secrets. Standardowe nazwy SDK
@@ -210,13 +211,19 @@ const SCHEMAT_PRZEPISU = {
 
 // Eksportowane, bo korzysta z tego też uzupelnij-kuchnie.mjs — ta sama
 // ścieżka do Claude'a ze schematem, bez duplikowania obsługi odmów i retry.
-export async function pytajClaudeSchematem(tresc, schemat) {
+// `blokSystemowy` to stały kontekst na cały przebieg — słownik składników albo
+// lista dań, których nie proponować. Idzie jako prompt systemowy z cache'em,
+// więc przy 200 daniach płacimy za niego raz, a nie 200 razy.
+export async function pytajClaudeSchematem(tresc, schemat, { blokSystemowy = '' } = {}) {
   const odpowiedz = await ponow('Claude', () =>
     klientAnthropic().messages.create({
       model: MODEL_TEKST,
       max_tokens: 8000,
       // Proste generowanie strukturalne — niski effort tnie koszt bez straty jakości.
       output_config: { effort: 'low', format: { type: 'json_schema', schema: schemat } },
+      ...(blokSystemowy
+        ? { system: [{ type: 'text', text: blokSystemowy, cache_control: { type: 'ephemeral' } }] }
+        : {}),
       messages: [{ role: 'user', content: tresc }],
     }),
   )
@@ -306,7 +313,7 @@ const ZASADY_WYGLADU =
   '(przyprawy w farszu, bulion, tłuszcz do smażenia).\n' +
   '- Nie opisuj stylu zdjęcia, światła, tła ani naczynia — to jest ustawiane osobno.'
 
-export async function generujPrzepis(nazwa, rodzaj) {
+export async function generujPrzepis(nazwa, rodzaj, { blokSystemowy = '' } = {}) {
   // Wskazówka z opisy-reczne.js idzie PRZED zasadami ogólnymi i mówi wprost,
   // czym to danie ma być — inaczej model robi swoją wersję zamiast tej z domu.
   const wskazowka = wskazowkaPrzepisu(nazwa)
@@ -329,6 +336,7 @@ export async function generujPrzepis(nazwa, rodzaj) {
       ZASADY_JEDNOSTEK + '\n\n' +
       ZASADY_WYGLADU,
     SCHEMAT_PRZEPISU,
+    { blokSystemowy },
   )
 
   // Liczebności nie da się wymusić schematem (patrz komentarz wyżej), więc
@@ -477,7 +485,12 @@ export function wczytajDania(tekst) {
 }
 
 // Wiersze do wstawienia — format 1:1 z formularzem DodajDanie.jsx.
-export function zbudujWiersze(nazwa, rodzaj, przepis) {
+//
+// `slownik` (z budujSlownik(), opcjonalny) ujednolica składniki ze stanem bazy:
+// podmienia pisownię na tę, która już tam jest, i przelicza jednostkę, gdy ten
+// sam produkt jest tam liczony inaczej. Bez słownika zostaje samo sprzątanie
+// (nawiasy, alternatywy, „garstka" w polu ilości).
+export function zbudujWiersze(nazwa, rodzaj, przepis, slownik = null) {
   const tekstKrokow = przepis.kroki.map((k, i) => `${i + 1}. ${k}`).join('\n')
   const wspolne = {
     'Danie': nazwa,
@@ -490,7 +503,9 @@ export function zbudujWiersze(nazwa, rodzaj, przepis) {
     'porcje_bazowe': PORCJE_BAZOWE,
     'notatki': null,
   }
-  return przepis.skladniki.map(s => ({
+  const skladniki = scalPowtorki(przepis.skladniki.map(s => czyscSkladnik(s, slownik)))
+
+  return skladniki.map(s => ({
     ...wspolne,
     'Składnik': s.nazwa,
     'Ilość na 1 porcję': s.ilosc || '-',
@@ -498,4 +513,99 @@ export function zbudujWiersze(nazwa, rodzaj, przepis) {
     'Kategoria': s.kategoria,
     'TYP': null,
   }))
+}
+
+// ── Słownik składników z bazy ─────────────────────────────────────
+// Czytamy WSZYSTKIE wiersze `dania` (wiersz na składnik, ~2500+), więc przez
+// pobierzWszystkieWiersze — inaczej PostgREST obcina do 1000 i słownik opisuje
+// losowy kawałek bazy. `skladniki_meta` dochodzi po wagę sztuki, żeby dało się
+// przeliczyć „150 g cebuli" na „1 szt".
+export async function pobierzSlownikSkladnikow() {
+  const wiersze = await pobierzWszystkieWiersze(() =>
+    supabase.from('dania').select('"Składnik", "Jednostka"'))
+  const { data: meta, error } = await supabase.from('skladniki_meta').select('*')
+  if (error) throw error
+
+  const slownik = budujSlownik(wiersze, meta || [])
+  return { slownik, tekst: tekstSlownika(slownik) }
+}
+
+// Nazwy dań, które już są w bazie — do odsiewania dubli i do promptu.
+export async function pobierzNazwyDan() {
+  const wiersze = await pobierzWszystkieWiersze(() =>
+    supabase.from('dania').select('"Danie", rodzaj'))
+  const nazwy = new Map()
+  for (const w of wiersze) {
+    const nazwa = w['Danie']?.trim()
+    if (nazwa && !nazwy.has(nazwa)) nazwy.set(nazwa, w.rodzaj || '')
+  }
+  return [...nazwy.entries()].map(([nazwa, rodzaj]) => ({ nazwa, rodzaj }))
+}
+
+// ── Claude: propozycje nowych dań ─────────────────────────────────
+// Tryb `auto`: Filip podaje liczbę dań, a lista nazw ma się wymyślić sama —
+// z pilnowaniem, żeby nie proponować tego, co w bazie już jest.
+//
+// Nazwy dań z bazy idą w `blokSystemowy` (z cache'em), bo przy kilkunastu
+// zapytaniach ta sama lista 600+ nazw w każdym z nich to wyrzucone pieniądze.
+export async function proponujDania({ kuchnia, rodzaje, blokSystemowy = '', unikaj = [] }) {
+  const rozbicie = Object.entries(rodzaje).filter(([, ile]) => ile > 0)
+  const ile = rozbicie.reduce((s, [, n]) => s + n, 0)
+  if (!ile) return []
+
+  const schemat = {
+    type: 'object',
+    properties: {
+      dania: {
+        type: 'array',
+        items: {
+          type: 'object',
+          properties: {
+            nazwa: {
+              type: 'string',
+              description: 'Nazwa dania po polsku, tak jak mówi się o nim w domu. ' +
+                'Bez cudzysłowów, bez opisu, bez nazwy kuchni w nawiasie',
+            },
+            rodzaj: { type: 'string', enum: rozbicie.map(([r]) => r) },
+            kuchnia: { type: 'string', enum: KUCHNIE },
+          },
+          required: ['nazwa', 'rodzaj', 'kuchnia'],
+          additionalProperties: false,
+        },
+        description: `Dokładnie ${ile} dań`,
+      },
+    },
+    required: ['dania'],
+    additionalProperties: false,
+  }
+
+  const { dania } = await pytajClaudeSchematem(
+    `Układasz listę dań do domowej aplikacji z przepisami (polska rodzina, ` +
+      `gotowanie po pracy).\n\n` +
+      `Zaproponuj ${ile} dań kuchni „${kuchnia}”, w takim rozbiciu:\n` +
+      rozbicie.map(([r, n]) => `- ${r}: ${n}`).join('\n') + '\n\n' +
+      'Zasady:\n' +
+      '- Dania ROZPOZNAWALNE i realne do ugotowania w domu — klasyka tej kuchni ' +
+      'i jej codzienne potrawy, nie wymysły i nie restauracyjne kompozycje.\n' +
+      '- Nazwa po polsku, w formie, w jakiej danie jest znane w Polsce. Nazwę ' +
+      'oryginalną zostaw tylko wtedy, gdy to pod nią danie jest znane ' +
+      '(„carbonara", „ratatouille", „gulasz").\n' +
+      '- ŻADNEGO dania z listy „JUŻ W BAZIE" ani jego odmiany pod inną nazwą. ' +
+      'Jeśli w bazie jest „Spaghetti carbonara", to „Carbonara z boczkiem" też ' +
+      'jest dublem.\n' +
+      '- Każda nazwa inna co do DANIA, nie co do słowa: nie dawaj pięciu wariantów ' +
+      'tej samej zapiekanki.\n' +
+      '- `rodzaj` zgodnie z rozbiciem wyżej. `deser` to też ciasta i ciastka, ' +
+      '`surowka` to surówki i sałatki podawane jako dodatek, `kolacja` to coś ' +
+      'ciepłego albo porządna kanapka, `sniadanie` to realne śniadanie, nie deser.\n' +
+      '- `kuchnia` to kraj pochodzenia dania; przy daniu bez wyraźnego rodowodu ' +
+      'wpisz miedzynarodowa.\n' +
+      (unikaj.length
+        ? `\nTych nazw też nie proponuj (już je dziś zaproponowałeś):\n` +
+          unikaj.map(n => `- ${n}`).join('\n') + '\n'
+        : ''),
+    schemat,
+    { blokSystemowy },
+  )
+  return dania || []
 }

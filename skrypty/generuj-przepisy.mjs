@@ -17,7 +17,7 @@
 import { readFileSync, existsSync } from 'fs'
 import {
   sprawdzKlucze, supabase, pauza, wczytajDania, zbudujWiersze,
-  generujPrzepis, utworzStraznika, MODEL_TEKST,
+  generujPrzepis, utworzStraznika, pobierzSlownikSkladnikow, MODEL_TEKST,
 } from './wspolne.js'
 
 sprawdzKlucze(['SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'ANTHROPIC_KEY'])
@@ -41,8 +41,12 @@ async function main() {
     dania = dania.slice(0, LIMIT)
   }
 
+  // Słownik składników z bazy — nowe przepisy mają nazywać produkty tak,
+  // jak już są nazwane, a nie wnosić trzeciej pisowni tego samego.
+  const { slownik, tekst: blokSystemowy } = await pobierzSlownikSkladnikow()
+
   console.log(
-    `Dania: ${dania.length} | model: ${MODEL_TEKST}` +
+    `Dania: ${dania.length} | model: ${MODEL_TEKST} | słownik składników: ${slownik.size}` +
     (NADPISZ ? ' | NADPISYWANIE istniejących przepisów' : '') + '\n',
   )
 
@@ -61,8 +65,8 @@ async function main() {
         continue
       }
 
-      const przepis = await generujPrzepis(nazwa, rodzaj)
-      const wiersze = zbudujWiersze(nazwa, rodzaj, przepis)
+      const przepis = await generujPrzepis(nazwa, rodzaj, { blokSystemowy })
+      const wiersze = zbudujWiersze(nazwa, rodzaj, przepis, slownik)
 
       // Przenosimy to, czego przepis nie odtworzy: gwiazdkę i zdjęcie.
       if (istnieje?.length) {
