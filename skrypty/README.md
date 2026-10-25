@@ -165,6 +165,28 @@ słownik, co `auto`, więc nazwy i jednostki ujednolicają się ze stanem bazy.
 
 Dania, które w bazie już są, są pomijane — plik można odpalać wielokrotnie.
 
+### Co leży w `skrypty/dania`
+
+Siedem paczek, razem **200 dań** napisanych w rozmowie z Claude'em w październiku
+2026, kiedy na koncie Anthropic skończyły się kredyty:
+
+| plik | dań | zawartość |
+| --- | --- | --- |
+| `paczka-01.json` | 25 | Francja (klasyka) + polska klasyka domowa |
+| `paczka-02.json` | 28 | Włochy, Grecja, Hiszpania, Niemcy, Węgry |
+| `paczka-03.json` | 31 | USA, Meksyk, Bliski Wschód — dużo kolacji i śniadań |
+| `paczka-04.json` | 37 | Francja, Włochy, Polska — wypieki i dodatki |
+| `paczka-05.json` | 38 | Polska, Turcja, Bliski Wschód, Ukraina |
+| `paczka-06.json` | 21 | Włochy + polskie obiady i śniadania |
+| `paczka-07.json` | 20 | desery, dodatki, reszta kierunków |
+
+Przekąsek nie ma — to ustalenie Filipa. Nazwy były sprawdzane przeciw
+**świeżej** liście z bazy (`LISTA_DAN.md` po trybie `lista`) tą samą miarą,
+którą liczy `npm run duble`, a potem jeszcze raz ręcznie: automat porównuje
+NAZWY, więc „Pollo alla cacciatora" i „Kurczak alla cacciatora" przechodzą
+mu przez sito, choć to jedno danie. Kilkanaście takich par wypadło dopiero
+na ręcznym przejrzeniu.
+
 ## Słownik składników
 
 Model dostaje czystą kartkę przy każdym daniu, więc ten sam produkt wraca
