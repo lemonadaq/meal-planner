@@ -50,6 +50,11 @@ Lokalnie działają też standardowe nazwy SDK (`ANTHROPIC_API_KEY`,
 > `.github/workflows/generuj-dania.yml` jest na gałęzi domyślnej (`main`).
 > Dopóki siedzi tylko na branchu, przycisku „Run workflow" nie będzie.
 
+> **Nie ustawiaj dwóch przebiegów w kolejce.** Oba workflowy generujące dania
+> siedzą w jednej grupie `concurrency` (piszą do tej samej tabeli), a GitHub
+> trzyma w grupie tylko JEDEN przebieg oczekujący: nowszy kasuje starszego,
+> jeszcze przed startem. Jeden przebieg naraz, kolejny po jego zakończeniu.
+
 ## Lokalnie
 
 ```bash
