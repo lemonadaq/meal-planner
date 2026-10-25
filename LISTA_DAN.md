@@ -1,10 +1,10 @@
 # Lista dań — Menu Planer
 
-Stan bazy `dania` na 2026-09-10 (539 dań) — nazwa, rodzaj, czas
+Stan bazy `dania` na 2026-10-25 (630 dań) — nazwa, rodzaj, czas
 przyrządzania, kcal na 1 porcję. Do przeglądu przy wymyślaniu nowych dań
 (unikanie dubli) i jako punkt odniesienia.
 
-Rozkład: obiad 131, kolacja 94, przekaska 90, deser 75, sniadanie 57, zupa 55, surowka 37.
+Rozkład: obiad 163, przekaska 104, kolacja 101, deser 83, zupa 67, sniadanie 61, surowka 44, dodatek 7.
 
 Odświeżenie listy: **Actions → „Generuj dania" → tryb `lista`, zaznacz
 `zapisz_liste`**. Workflow przepisze ten plik i zacommituje zmianę.
@@ -26,13 +26,16 @@ order by "Danie";
 | Arancini z ryżu                                       | przekaska | 45       | 520  |
 | Babka piaskowa                                        | deser     | 75       | 320  |
 | Bajgle z serkiem i ogórkiem                           | sniadanie | 10       | 390  |
+| Bakłażan duszony w gochujangu                         | obiad     | 30       | 420  |
 | Bakłażan w panko                                      | przekaska | 30       | 700  |
+| Bakłażan w sosie yuxiang                              | obiad     | 35       | 420  |
 | Banany smażone z miodem i cynamonem                   | deser     | 15       | 340  |
 | Banany w cieście naleśnikowym                         | przekaska | 20       | 520  |
 | Barszcz biały z białą kiełbasą                        | zupa      | 50       | 520  |
 | Barszcz czerwony                                      | zupa      | 90       | 150  |
 | Barszcz ukraiński                                     | zupa      | 60       | 280  |
 | Beza Pavlova z owocami                                | deser     | 100      | 320  |
+| Bibimbap z tofu                                       | obiad     | 35       | 620  |
 | Bibimbap z wołowiną                                   | obiad     | 40       | 650  |
 | Bigos                                                 | obiad     | 180      | 560  |
 | Bitki wołowe w sosie własnym                          | obiad     | 90       | 300  |
@@ -46,9 +49,15 @@ order by "Danie";
 | Bruschetta z mozzarellą i rukolą                      | kolacja   | 15       | 420  |
 | Bruschetta z pieczarkami                              | przekaska | 20       | 320  |
 | Bruschetta z pomidorami i bazylią                     | przekaska | 15       | 470  |
+| Budae jjigae z parówkami i tofu                       | kolacja   | 30       | 620  |
 | Budyń czekoladowy                                     | deser     | 15       | 410  |
+| Budyń mango z tapioką                                 | deser     | 25       | 320  |
 | Budyń waniliowy z owocami                             | deser     | 20       | 380  |
+| Bulgogi wieprzowe w gochujangu                        | obiad     | 35       | 620  |
+| Bulgogi wołowe                                        | obiad     | 40       | 620  |
+| Bułeczki bao z nadzieniem wieprzowym                  | przekaska | 150      | 540  |
 | Bułeczki jak z Maka                                   | obiad     | 10       | 350  |
+| Bungeoppang z pastą z czerwonej fasoli                | deser     | 40       | 320  |
 | Buraczki                                              | surowka   | 60       | 40   |
 | Burger wołowy                                         | obiad     | 30       | 950  |
 | Burgery z soczewicy                                   | obiad     | 40       | 520  |
@@ -66,15 +75,21 @@ order by "Danie";
 | Chałka z masłem i miodem                              | sniadanie | 10       | 430  |
 | Chia pudding z mango                                  | deser     | 240      | 660  |
 | Chilli con carne                                      | obiad     | 60       | 860  |
+| Chińska zupa pikantno kwaśna                          | zupa      | 30       | 280  |
 | Chipsy z buraka                                       | przekaska | 40       | 150  |
 | Chipsy z jarmużu                                      | przekaska | 25       | 150  |
 | Chipsy z tortilli z dipem jogurtowym                  | przekaska | 20       | 600  |
 | Chleb w jajku                                         | sniadanie | 10       | 350  |
 | Chłodnik litewski                                     | zupa      | 20       | 370  |
 | Chłodnik ogórkowy z koperkiem                         | zupa      | 15       | 180  |
+| Chow fun z wołowiną                                   | obiad     | 30       | 650  |
+| Chow mein z kurczakiem                                | obiad     | 30       | 620  |
 | Chrupiąca ciecierzyca z piekarnika                    | przekaska | 40       | 240  |
+| Chrupiące chili w oleju                               | dodatek   | 30       | 180  |
 | Chrupiące kąski z kurczaka                            | przekaska | 30       | 600  |
+| Chrupiące wontony smażone                             | przekaska | 40       | 420  |
 | Ciambellone                                           | deser     | 60       | 390  |
+| Ciasteczka z wróżbą                                   | deser     | 40       | 180  |
 | Ciasto czekoladowe z wiśniami                         | deser     | 60       | 420  |
 | Ciasto drożdżowe z kruszonką                          | deser     | 120      | 390  |
 | Ciasto francuskie z jabłkiem i cynamonem              | deser     | 35       | 640  |
@@ -99,6 +114,7 @@ order by "Danie";
 | Dorsz w sosie cytrynowym                              | obiad     | 30       | 420  |
 | Dorsz z piekarnika                                    | obiad     | 35       | 280  |
 | Duszona wołowina z warzywami korzeniowymi             | obiad     | 120      | 520  |
+| Duszone żeberka wołowe po koreańsku                   | obiad     | 150      | 720  |
 | Falafel z sosem tahini                                | kolacja   | 40       | 580  |
 | Farfalle z łososiem i groszkiem                       | obiad     | 25       | 610  |
 | Farinata z ciecierzycy                                | kolacja   | 50       | 420  |
@@ -116,12 +132,14 @@ order by "Danie";
 | Frittata z ziemniakami i cebulą                       | sniadanie | 30       | 450  |
 | Fritto misto z owoców morza                           | przekaska | 30       | 540  |
 | Frytki z batatów                                      | przekaska | 40       | 320  |
+| Frytki z majonezem gochujang                          | przekaska | 30       | 610  |
 | Galaretka z owocami                                   | deser     | 15       | 220  |
 | Gazpacho                                              | zupa      | 20       | 230  |
 | Gelato pistacjowe                                     | deser     | 40       | 390  |
 | Gnocchi alla sorrentina                               | obiad     | 30       | 610  |
 | Gnocchi z masłem, czosnkiem i parmezanem              | kolacja   | 20       | 740  |
 | Gnocchi z sosem pomidorowym i mozzarellą              | kolacja   | 25       | 610  |
+| Gochujang jjigae z cukinią                            | zupa      | 25       | 320  |
 | Gofrowe kąski                                         | przekaska | 25       | 530  |
 | Gofry na słono z serem i szynką                       | sniadanie | 25       | 580  |
 | Gofry z owocami i bitą śmietaną                       | deser     | 30       | 620  |
@@ -139,6 +157,7 @@ order by "Danie";
 | Gulasz z indyka z papryką                             | obiad     | 45       | 420  |
 | Gulaszowa                                             | zupa      | 75       | 500  |
 | Gyros domowy z sosem czosnkowym                       | obiad     | 60       | 480  |
+| Hotteok z cynamonem                                   | deser     | 90       | 320  |
 | Huevos Rancheros                                      | sniadanie | 25       | 700  |
 | Hummus z pieczonym burakiem                           | przekaska | 50       | 270  |
 | Indyk pieczony z warzywami                            | obiad     | 75       | 480  |
@@ -158,15 +177,19 @@ order by "Danie";
 | Jajka przepiórcze w panierce                          | przekaska | 30       | 320  |
 | Jajka sadzone z boczkiem                              | sniadanie | 10       | 450  |
 | Jajka sadzone z ziemniakami z patelni i mizerią       | kolacja   | 30       | 690  |
+| Jajka smażone z pomidorami po chińsku                 | kolacja   | 15       | 390  |
 | Jajka w koszulce na grzance                           | sniadanie | 15       | 390  |
 | Jajka w majonezie ze szczypiorkiem                    | przekaska | 15       | 360  |
 | Jajka z papryką                                       | obiad     | 15       | 350  |
 | Jajka zapiekane w awokado                             | sniadanie | 25       | 390  |
+| Japchae z wołowiną                                    | obiad     | 35       | 620  |
 | Jarzynowa                                             | zupa      | 45       | 260  |
 | Jogurt grecki z miodem i orzechami                    | deser     | 5        | 580  |
 | Kaczka pieczona z jabłkami                            | obiad     | 150      | 720  |
+| Kaczka po pekińsku                                    | obiad     | 150      | 720  |
 | Kalafior marynowany z oliwkami                        | surowka   | 20       | 180  |
 | Kalafiorowa                                           | zupa      | 40       | 370  |
+| Kalmary w sosie gochujang                             | obiad     | 25       | 430  |
 | Kanapki na ciepło z mozzarellą, pomidorem i szynką    | kolacja   | 15       | 470  |
 | Kanapki z jajkiem                                     | sniadanie | 15       | 480  |
 | Kanapki z łososiem i twarożkiem                       | kolacja   | 10       | 370  |
@@ -186,6 +209,10 @@ order by "Danie";
 | Kasza manna na mleku                                  | sniadanie | 12       | 320  |
 | Kasza manna z sokiem malinowym                        | deser     | 15       | 360  |
 | Kaszka kukurydziana z owocami                         | sniadanie | 15       | 380  |
+| Kiełki sojowe z sezamem                               | surowka   | 15       | 180  |
+| Kimbap warzywny                                       | przekaska | 35       | 420  |
+| Kimbap z tuńczykiem                                   | przekaska | 30       | 480  |
+| Kimchi jjigae z wieprzowiną                           | zupa      | 35       | 520  |
 | Kisiel owocowy                                        | deser     | 20       | 260  |
 | Klopsiki szwedzkie w sosie śmietanowym                | obiad     | 45       | 680  |
 | Klopsiki w sosie pomidorowym                          | obiad     | 45       | 520  |
@@ -194,6 +221,11 @@ order by "Danie";
 | Koktajl bananowo-truskawkowy                          | deser     | 10       | 380  |
 | Koktajl owocowy z jogurtem                            | deser     | 10       | 370  |
 | Kopytka z cebulką                                     | obiad     | 60       | 700  |
+| Koreańska owsianka ryżowa z kurczakiem                | sniadanie | 50       | 420  |
+| Koreańska zupa z wodorostów                           | zupa      | 25       | 180  |
+| Koreański gulasz z kurczaka i ziemniaków              | obiad     | 50       | 620  |
+| Koreański omlet parowany                              | sniadanie | 20       | 210  |
+| Koreańskie kluski sujebi w bulionie                   | zupa      | 40       | 430  |
 | Koreczki                                              | przekaska | 15       | 250  |
 | Kotlet de volaille                                    | obiad     | 40       | 650  |
 | Kotlet schabowy                                       | obiad     | 45       | 500  |
@@ -212,6 +244,7 @@ order by "Danie";
 | Krem ze szparagów                                     | zupa      | 30       | 260  |
 | Kremówka                                              | deser     | 60       | 480  |
 | Krewetki smażone z czosnkiem                          | przekaska | 15       | 260  |
+| Krewetki w sosie chili po chińsku                     | obiad     | 25       | 410  |
 | Krewetki w sosie czosnkowym z makaronem               | obiad     | 25       | 610  |
 | Krokiety z kapustą kiszoną i grzybami                 | obiad     | 90       | 450  |
 | Krokiety z mięsem                                     | obiad     | 60       | 620  |
@@ -223,20 +256,29 @@ order by "Danie";
 | Kulki owsiane z masłem orzechowym i miodem            | deser     | 20       | 360  |
 | Kulki serowe w panierce                               | przekaska | 30       | 700  |
 | Kurczak curry z ryżem                                 | kolacja   | 35       | 740  |
+| Kurczak dakgalbi z warzywami                          | obiad     | 35       | 540  |
+| Kurczak generała Tso                                  | obiad     | 40       | 620  |
+| Kurczak gong bao z orzeszkami                         | obiad     | 30       | 620  |
 | Kurczak pieczony w całości                            | obiad     | 100      | 620  |
 | Kurczak po chińsku                                    | obiad     | 50       | 380  |
 | Kurczak tikka masala                                  | obiad     | 45       | 610  |
 | Kurczak w panko                                       | przekaska | 30       | 650  |
 | Kurczak w sosie słodko-kwaśnym                        | obiad     | 35       | 540  |
+| Kurczak w sosie sojowo czosnkowym po koreańsku        | obiad     | 30       | 610  |
+| Kurczak z imbirem i dymką                             | obiad     | 25       | 470  |
 | Kuskus z kurczakiem i warzywami                       | kolacja   | 30       | 700  |
 | Kwaśnica                                              | zupa      | 90       | 420  |
 | Lasagne Bolognese                                     | obiad     | 90       | 750  |
 | Lasagne warzywna                                      | obiad     | 70       | 540  |
 | Leczo                                                 | obiad     | 40       | 250  |
+| Lo mein z wołowiną                                    | obiad     | 30       | 620  |
 | Lody domowe waniliowe                                 | deser     | 240      | 490  |
 | Lody z jogurtu i owoców                               | deser     | 240      | 340  |
 | Łosoś pieczony z koperkiem                            | obiad     | 30       | 520  |
+| Makaron dan dan z mielonym mięsem                     | obiad     | 30       | 720  |
+| Makaron jajangmyeon w sosie z czarnej fasoli          | obiad     | 35       | 720  |
 | Makaron na zimno z pomidorkami i mozzarellą           | kolacja   | 20       | 520  |
+| Makaron ramyeon z gochujangiem                        | kolacja   | 15       | 610  |
 | Makaron z brokułami i czosnkiem                       | kolacja   | 25       | 520  |
 | Makaron z kiełbasą, cebulą i passatą                  | kolacja   | 25       | 900  |
 | Makaron z kiełbaską i sosem pieczarkowym              | obiad     | 25       | 780  |
@@ -251,8 +293,13 @@ order by "Danie";
 | Makaron z warzywami w sosie serowym                   | obiad     | 30       | 470  |
 | Makaron zapiekany z czterema serami                   | obiad     | 40       | 780  |
 | Makowiec rolowany                                     | deser     | 120      | 450  |
+| Mapo tofu z mielonym mięsem                           | obiad     | 30       | 560  |
+| Marchewka z sezamem po koreańsku                      | surowka   | 15       | 180  |
 | Maritozzo                                             | deser     | 150      | 480  |
 | Marry me chicken gnocchi                              | obiad     | 40       | 520  |
+| Marynata gochujang do wieprzowiny                     | dodatek   | 10       | 95   |
+| Marynowana kapusta pekińska po chińsku                | surowka   | 20       | 95   |
+| Marynowana rzodkiew do kimbapu                        | dodatek   | 15       | 45   |
 | Marynowane grzyby po włosku                           | surowka   | 25       | 180  |
 | Mazurek z masą krówkową                               | deser     | 90       | 420  |
 | Migdały prażone z papryką                             | przekaska | 15       | 670  |
@@ -266,6 +313,7 @@ order by "Danie";
 | Mini szaszłyki z kurczaka                             | przekaska | 35       | 260  |
 | Mini tortille                                         | przekaska | 20       | 470  |
 | Mini zapiekanki z pieczarkami                         | przekaska | 25       | 590  |
+| Miodowe ciasteczka yakgwa                             | deser     | 60       | 330  |
 | Mizeria                                               | surowka   | 15       | 70   |
 | Moussaka z bakłażanem                                 | obiad     | 80       | 620  |
 | Mozzarella sticks                                     | przekaska | 30       | 600  |
@@ -283,6 +331,7 @@ order by "Danie";
 | Naleśniki z mięsem zapiekane                          | obiad     | 60       | 650  |
 | Naleśniki z pieczarkami i serem                       | kolacja   | 40       | 560  |
 | Naleśniki ze szpinakiem i fetą                        | kolacja   | 30       | 520  |
+| Napój ryżowy sikhye                                   | deser     | 300      | 180  |
 | Nuggetsy domowe                                       | przekaska | 30       | 550  |
 | Ogórkowa                                              | zupa      | 60       | 400  |
 | Oliwki nadziewane mięsem w panierce                   | przekaska | 40       | 330  |
@@ -300,6 +349,7 @@ order by "Danie";
 | Owsianka nocna                                        | sniadanie | 480      | 450  |
 | Owsianka z jabłkiem i orzechami                       | sniadanie | 15       | 420  |
 | Pad thai z kurczakiem                                 | obiad     | 30       | 620  |
+| Pajeon z dymką                                        | przekaska | 25       | 420  |
 | Paluszki serowe z sezamem                             | przekaska | 35       | 330  |
 | Paluszki z ciasta francuskiego z szynką               | przekaska | 25       | 620  |
 | Pancakes amerykańskie z syropem klonowym              | sniadanie | 25       | 540  |
@@ -326,6 +376,7 @@ order by "Danie";
 | Pasta z awokado i jajka                               | sniadanie | 10       | 310  |
 | Pasta z makreli wędzonej                              | sniadanie | 10       | 530  |
 | Pasta z pieczonego bakłażana                          | przekaska | 50       | 210  |
+| Patbingsu z kruszonym lodem                           | deser     | 20       | 420  |
 | Pączki domowe                                         | deser     | 150      | 320  |
 | Penne all'arrabbiata                                  | obiad     | 25       | 540  |
 | Piadina roll z mortadelą                              | przekaska | 15       | 520  |
@@ -343,6 +394,9 @@ order by "Danie";
 | Pierogi ruskie                                        | obiad     | 90       | 640  |
 | Pierogi z kapustą i grzybami                          | obiad     | 90       | 520  |
 | Pierogi z mięsem                                      | obiad     | 120      | 640  |
+| Pierożki dim sum na parze                             | przekaska | 60       | 380  |
+| Pierożki jiaozi z wieprzowiną                         | przekaska | 70       | 480  |
+| Pierożki mandu z warzywami                            | przekaska | 45       | 320  |
 | Pizza bianca z rozmarynem                             | kolacja   | 90       | 620  |
 | Pizza domowa                                          | obiad     | 120      | 760  |
 | Pizza margherita                                      | obiad     | 90       | 780  |
@@ -353,7 +407,9 @@ order by "Danie";
 | Placki bananowe z „chrupką”                           | sniadanie | 20       | 590  |
 | Placki bananowe z jogurtem i owocami                  | deser     | 20       | 550  |
 | Placki owsiane z jogurtem                             | sniadanie | 20       | 420  |
+| Placki z cukinii po koreańsku                         | przekaska | 25       | 320  |
 | Placki z cukinii z sosem jogurtowym                   | kolacja   | 30       | 380  |
+| Placki z dymką po chińsku                             | kolacja   | 35       | 420  |
 | Placki z kaszy jaglanej                               | kolacja   | 35       | 420  |
 | Placki ziemniaczane mini                              | przekaska | 30       | 380  |
 | Placki ziemniaczane z sosem czosnkowym                | kolacja   | 40       | 730  |
@@ -395,12 +451,17 @@ order by "Danie";
 | Roladki z cukinii z serkiem                           | przekaska | 30       | 330  |
 | Roladki z szynki i serka                              | przekaska | 15       | 280  |
 | Roladki z tortilli ze szpinakiem                      | przekaska | 20       | 320  |
+| Rolowany omlet koreański z warzywami                  | sniadanie | 20       | 290  |
 | Rosół                                                 | zupa      | 150      | 430  |
+| Rosół samgyetang z kurczakiem i żeń-szeniem           | zupa      | 90       | 620  |
 | Ryba po grecku                                        | obiad     | 60       | 350  |
 | Ryba w sosie musztardowym                             | obiad     | 30       | 420  |
+| Ryż jaśminowy na parze                                | dodatek   | 25       | 230  |
 | Ryż na mleku z cynamonem i jabłkiem                   | deser     | 30       | 490  |
+| Ryż smażony po kantońsku                              | kolacja   | 20       | 540  |
 | Ryż smażony z jajkiem, kurczakiem i warzywami         | kolacja   | 25       | 620  |
 | Ryż smażony z krewetkami                              | obiad     | 25       | 520  |
+| Ryż z jajkiem i masłem po koreańsku                   | sniadanie | 15       | 610  |
 | Ryż z warzywami stir-fry                              | kolacja   | 25       | 520  |
 | Ryż z warzywami w sosie curry                         | kolacja   | 30       | 520  |
 | Saltimbocca alla romana                               | obiad     | 25       | 480  |
@@ -428,7 +489,10 @@ order by "Danie";
 | Sałatka z kukurydzy, papryki i fasoli                 | surowka   | 15       | 260  |
 | Sałatka z kurczakiem curry                            | kolacja   | 25       | 430  |
 | Sałatka z kurczakiem, fetą i grzankami                | kolacja   | 25       | 640  |
+| Sałatka z makaronem szklanym                          | surowka   | 25       | 320  |
 | Sałatka z ogórka i pomidora ze śmietaną               | surowka   | 10       | 140  |
+| Sałatka z ogórka po syczuańsku                        | surowka   | 15       | 110  |
+| Sałatka z ogórka w sosie gochujang                    | surowka   | 15       | 110  |
 | Sałatka z papryki i cebuli marynowanej                | surowka   | 20       | 120  |
 | Sałatka z pieczoną dynią i fetą                       | kolacja   | 40       | 420  |
 | Sałatka z pieczonym kurczakiem i awokado              | kolacja   | 30       | 520  |
@@ -452,10 +516,16 @@ order by "Danie";
 | Sernik pieczony z rodzynkami                          | deser     | 90       | 420  |
 | Shakshuka z jajkami i pomidorami                      | kolacja   | 25       | 470  |
 | Skrzydełka BBQ                                        | przekaska | 50       | 620  |
+| Skrzydełka w glazurze gochujang                       | przekaska | 50       | 540  |
+| Skrzydełka w sosie sojowo miodowym                    | przekaska | 55       | 520  |
 | Słupki warzywne z hummusem                            | przekaska | 15       | 330  |
+| Smażone banany w cieście                              | deser     | 20       | 420  |
+| Smażony ryż z kimchi i gochujangiem                   | obiad     | 20       | 560  |
 | Smoothie bowl z owocami i granolą                     | deser     | 10       | 550  |
 | Smoothie zielone ze szpinakiem i bananem              | sniadanie | 7        | 290  |
 | Sorbet truskawkowy                                    | deser     | 240      | 270  |
+| Sos słodko kwaśny domowy                              | dodatek   | 15       | 110  |
+| Sos ssamjang do mięsa                                 | dodatek   | 10       | 95   |
 | Spaghetti Aglio e Olio                                | obiad     | 20       | 380  |
 | Spaghetti alla puttanesca                             | obiad     | 25       | 580  |
 | Spaghetti bolognese                                   | obiad     | 90       | 600  |
@@ -466,6 +536,7 @@ order by "Danie";
 | Stek z kalafiora                                      | obiad     | 35       | 200  |
 | Stir-fry z wołowiną                                   | obiad     | 40       | 350  |
 | Stracciatella alla romana                             | zupa      | 15       | 230  |
+| Sundubu jjigae z miękkim tofu                         | zupa      | 30       | 420  |
 | Surówka z białej kapusty i ananasa                    | surowka   | 15       | 150  |
 | Surówka z brokułów z rodzynkami                       | surowka   | 15       | 230  |
 | Surówka z buraka i chrzanu                            | surowka   | 15       | 110  |
@@ -488,6 +559,7 @@ order by "Danie";
 | Szaszłyki z kurczaka i warzyw                         | obiad     | 45       | 410  |
 | Szczawiowa z jajkiem                                  | zupa      | 40       | 320  |
 | Sznycel wiedeński                                     | obiad     | 30       | 650  |
+| Szpinak z sezamem po koreańsku                        | surowka   | 15       | 110  |
 | Szybkie leczo z kiełbasą i papryką                    | kolacja   | 30       | 650  |
 | Śliwki w boczku                                       | przekaska | 30       | 280  |
 | Tacos z mięsem mielonym i warzywami                   | kolacja   | 30       | 850  |
@@ -499,6 +571,9 @@ order by "Danie";
 | Tarta ze szpinakiem i ricottą                         | kolacja   | 60       | 480  |
 | Tartinki z serkiem i łososiem                         | przekaska | 10       | 320  |
 | Tiramisu                                              | deser     | 30       | 600  |
+| Tofu duszone w sosie sojowym po koreańsku             | obiad     | 25       | 390  |
+| Tofu smażone w sosie gochujang                        | przekaska | 20       | 330  |
+| Tofu smażone z warzywami po chińsku                   | kolacja   | 25       | 420  |
 | Tofu w sosie teriyaki                                 | obiad     | 30       | 520  |
 | Tom kha z kurczakiem                                  | zupa      | 35       | 480  |
 | Torta caprese                                         | deser     | 60       | 480  |
@@ -511,13 +586,20 @@ order by "Danie";
 | Tortilla zapiekana z tuńczykiem                       | kolacja   | 25       | 540  |
 | Tosty francuskie na słodko                            | deser     | 15       | 460  |
 | Tosty francuskie na słono                             | przekaska | 15       | 470  |
+| Tosty koreańskie z jajkiem i kapustą                  | kolacja   | 20       | 560  |
 | Tosty z serem i szynką                                | sniadanie | 10       | 530  |
 | Tramezzini z tuńczykiem                               | kolacja   | 15       | 430  |
 | Trofie z pesto i ziemniakami                          | obiad     | 30       | 610  |
+| Tteokbokki z owocami morza                            | obiad     | 25       | 540  |
+| Tteokbokki z serem                                    | obiad     | 25       | 620  |
 | Twarożek z rzodkiewką i szczypiorkiem                 | sniadanie | 10       | 290  |
 | Vitello tonnato                                       | kolacja   | 40       | 480  |
 | Wątróbka drobiowa z cebulą                            | obiad     | 30       | 420  |
+| Wieprzowina gu lao rou                                | obiad     | 45       | 620  |
+| Wieprzowina w sosie gochujang                         | obiad     | 30       | 620  |
 | Włoski omlet z pomidorami i bazylią                   | sniadanie | 15       | 390  |
+| Wołowina w sosie ostrygowym                           | obiad     | 30       | 520  |
+| Wołowina z brokułami po chińsku                       | obiad     | 30       | 480  |
 | Wrap z falafelem i hummusem                           | kolacja   | 25       | 610  |
 | Wrap z jajkiem, bekonem i sałatą                      | kolacja   | 15       | 660  |
 | Wrap z kurczakiem i warzywami                         | kolacja   | 20       | 580  |
@@ -534,6 +616,9 @@ order by "Danie";
 | Zapiekanka z kalafiora                                | kolacja   | 50       | 430  |
 | Zapiekanka ziemniaczana z mięsem mielonym             | obiad     | 70       | 650  |
 | Zapiekanki                                            | obiad     | 30       | 600  |
+| Ziemniaki duszone w sosie sojowym                     | dodatek   | 30       | 230  |
+| Zimny makaron bibim guksu                             | obiad     | 20       | 520  |
+| Zimny makaron naengmyeon w bulionie                   | obiad     | 30       | 480  |
 | Zrazy wołowe zawijane                                 | obiad     | 110      | 580  |
 | Zupa cukiniowa z serkiem topionym                     | zupa      | 30       | 240  |
 | Zupa cytrynowa                                        | zupa      | 40       | 330  |
@@ -545,6 +630,7 @@ order by "Danie";
 | Zupa krem z batatów                                   | kolacja   | 40       | 600  |
 | Zupa krem z brokułem i cukinią                        | zupa      | 30       | 330  |
 | Zupa krem z pomidorów z grzankami                     | kolacja   | 30       | 430  |
+| Zupa kukurydziana z kurczakiem                        | zupa      | 35       | 420  |
 | Zupa marchewkowo-imbirowa                             | zupa      | 35       | 210  |
 | Zupa miso z tofu                                      | kolacja   | 20       | 170  |
 | Zupa neapolitańska                                    | zupa      | 40       | 320  |
@@ -553,10 +639,15 @@ order by "Danie";
 | Zupa ramen z kurczakiem                               | zupa      | 40       | 620  |
 | Zupa rybna                                            | zupa      | 45       | 320  |
 | Zupa selerowa z grzankami                             | zupa      | 40       | 320  |
+| Zupa tteokguk z plackami ryżowymi                     | zupa      | 35       | 480  |
+| Zupa wonton z pierożkami                              | zupa      | 50       | 420  |
 | Zupa z ciecierzycy i pomidorów                        | zupa      | 35       | 390  |
+| Zupa z kiełków sojowych po koreańsku                  | zupa      | 25       | 180  |
+| Zupa z makaronem i wołowiną po chińsku                | zupa      | 35       | 520  |
 | Zupa z orkiszem i warzywami                           | zupa      | 45       | 320  |
 | Zupa z soczewicy czerwonej                            | zupa      | 35       | 390  |
 | Zupa ziemniaczana z boczkiem                          | zupa      | 40       | 420  |
 | Zuppa toscana z jarmużem i kiełbasą                   | zupa      | 40       | 520  |
 | Żeberka pieczone w miodzie i musztardzie              | obiad     | 120      | 660  |
+| Żeberka w sosie hoisin                                | przekaska | 110      | 620  |
 | Żur                                                   | zupa      | 60       | 450  |
