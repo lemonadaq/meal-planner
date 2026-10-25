@@ -1,0 +1,531 @@
+[
+  {
+    "nazwa": "Risotto z cytryną i parmezanem",
+    "rodzaj": "obiad",
+    "kuchnia": "wloska",
+    "poziom": "srednie",
+    "czas_minuty": 40,
+    "kcal": 480,
+    "skladniki": [
+      { "nazwa": "ryż arborio", "ilosc": "80", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "bulion warzywny", "ilosc": "250", "jednostka": "ml", "kategoria": "8_Inne" },
+      { "nazwa": "parmezan", "ilosc": "30", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "cytryny", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "masło", "ilosc": "20", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "szalotka", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "wino białe", "ilosc": "40", "jednostka": "ml", "kategoria": "8_Inne" }
+    ],
+    "kroki": [
+      "Zeszklij szalotkę na połowie masła, wsyp ryż i mieszaj minutę, aż brzegi ziaren zrobią się szkliste.",
+      "Wlej wino i odparuj do suchości.",
+      "Dolewaj gorący bulion po jednej chochli, mieszając i czekając, aż ryż go wypije. Razem 18 minut.",
+      "Zdejmij z ognia, wmieszaj zimne masło, parmezan, skórkę i sok z cytryny.",
+      "Przykryj na 2 minuty i przemieszaj. Risotto ma spływać z łyżki, nie stać słupkiem."
+    ],
+    "opis_wizualny": "A creamy pale yellow risotto spread flat in a shallow bowl, loose enough to settle level. Grated cheese and fine strips of lemon zest sit on top. The grains are visible but bound in a glossy sauce."
+  },
+  {
+    "nazwa": "Spaghetti z klopsikami",
+    "rodzaj": "obiad",
+    "kuchnia": "wloska",
+    "poziom": "latwe",
+    "czas_minuty": 50,
+    "kcal": 620,
+    "skladniki": [
+      { "nazwa": "spaghetti", "ilosc": "90", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "mięso mielone wołowe", "ilosc": "110", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "pomidory z puszki", "ilosc": "150", "jednostka": "g", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "bułka tarta", "ilosc": "1", "jednostka": "łyżka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "jajka", "ilosc": "1/4", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "czosnek", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "parmezan", "ilosc": "20", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "bazylia", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "oliwa z oliwek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" }
+    ],
+    "kroki": [
+      "Wymieszaj mięso z bułką tartą, jajkiem, czosnkiem, solą i pieprzem. Formuj kulki wielkości orzecha.",
+      "Obsmaż klopsiki na oliwie ze wszystkich stron i wyjmij.",
+      "Na tej patelni podsmaż czosnek, wlej pomidory i gotuj sos 15 minut.",
+      "Włóż klopsiki do sosu i duś 15 minut pod przykryciem.",
+      "Ugotuj spaghetti al dente i wymieszaj z częścią sosu.",
+      "Nałóż makaron, na wierzch klopsiki z sosem, posyp parmezanem i bazylią."
+    ],
+    "opis_wizualny": "A nest of spaghetti with several browned meatballs sitting on top in a thick red tomato sauce. The sauce coats the pasta underneath and pools slightly. Grated cheese and torn basil finish the plate."
+  },
+  {
+    "nazwa": "Lasagne ze szpinakiem i ricottą",
+    "rodzaj": "obiad",
+    "kuchnia": "wloska",
+    "poziom": "srednie",
+    "czas_minuty": 80,
+    "kcal": 560,
+    "skladniki": [
+      { "nazwa": "makaron lasagne", "ilosc": "70", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "szpinak", "ilosc": "150", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "ricotta", "ilosc": "100", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "mleko", "ilosc": "120", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "masło", "ilosc": "15", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "mąka pszenna", "ilosc": "15", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "parmezan", "ilosc": "25", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "czosnek", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "gałka muszkatołowa", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Podduś szpinak z czosnkiem, ostudź i ODCIŚNIJ — mokry farsz rozmiękczy makaron.",
+      "Wymieszaj szpinak z ricottą, dopraw solą, pieprzem i gałką muszkatołową.",
+      "Zrób beszamel z masła, mąki i mleka, gotuj do zgęstnienia.",
+      "Układaj warstwami: beszamel, płaty makaronu, farsz, i tak trzy razy.",
+      "Posyp parmezanem i piecz 40 minut w 180 stopniach pod folią, ostatnie 10 minut bez.",
+      "Odstaw na 15 minut przed krojeniem."
+    ],
+    "opis_wizualny": "A square portion of baked lasagne standing on a plate, showing layers of pale pasta sheets, dark green spinach-ricotta filling and white béchamel. The top is browned and bubbled with melted cheese. The layers hold together in the cut."
+  },
+  {
+    "nazwa": "Panzerotto pieczone z mozzarellą",
+    "rodzaj": "kolacja",
+    "kuchnia": "wloska",
+    "poziom": "srednie",
+    "czas_minuty": 90,
+    "kcal": 520,
+    "skladniki": [
+      { "nazwa": "mąka pszenna", "ilosc": "90", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "drożdże świeże", "ilosc": "4", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "mozzarella", "ilosc": "60", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "pomidory z puszki", "ilosc": "70", "jednostka": "g", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "oliwa z oliwek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "oregano", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "szynka", "ilosc": "30", "jednostka": "g", "kategoria": "2_Mięso i ryby" }
+    ],
+    "kroki": [
+      "Zagnieć ciasto z mąki, drożdży, 55 ml wody, oliwy i soli. Odstaw na godzinę.",
+      "Odciśnij mozzarellę z serwatki i pokrój w kostkę, pomidory odsącz.",
+      "Rozwałkuj placki, na połowie każdego ułóż ser, pomidory, szynkę i oregano.",
+      "Złóż na pół i zlep brzegi, dociskając widelcem — inaczej ser wypłynie.",
+      "Posmaruj oliwą i piecz 20 minut w 220 stopniach, aż się zrumienią."
+    ],
+    "opis_wizualny": "Half-moon baked pies with a puffed, golden crimped edge, one broken open showing stretchy melted cheese and red sauce inside. The tops are shiny with oil and marked with a few darker blisters."
+  },
+  {
+    "nazwa": "Panna cotta kawowa",
+    "rodzaj": "deser",
+    "kuchnia": "wloska",
+    "poziom": "latwe",
+    "czas_minuty": 30,
+    "kcal": 320,
+    "skladniki": [
+      { "nazwa": "śmietana 30%", "ilosc": "120", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "mleko", "ilosc": "50", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "cukier", "ilosc": "20", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "żelatyna", "ilosc": "3", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "kawa espresso", "ilosc": "30", "jednostka": "ml", "kategoria": "8_Inne" },
+      { "nazwa": "gorzka czekolada", "ilosc": "10", "jednostka": "g", "kategoria": "5_Produkty sypkie" }
+    ],
+    "kroki": [
+      "Namocz żelatynę w dwóch łyżkach zimnej wody na 10 minut.",
+      "Podgrzej śmietanę z mlekiem i cukrem, nie doprowadzając do wrzenia.",
+      "Zdejmij z ognia, wlej kawę i rozpuść w tym odciśniętą żelatynę.",
+      "Przelej do pucharków i wstaw do lodówki na 4 godziny.",
+      "Przed podaniem zetrzyj na wierzch czekoladę."
+    ],
+    "opis_wizualny": "A set cream dessert in a glass, light coffee-beige in colour with a smooth flat top and a faint wobble. Dark chocolate shavings are scattered over. The sides show the dessert pulling very slightly from the glass."
+  },
+  {
+    "nazwa": "Sorbet z cytryny i bazylii",
+    "rodzaj": "deser",
+    "kuchnia": "wloska",
+    "poziom": "latwe",
+    "czas_minuty": 25,
+    "kcal": 150,
+    "skladniki": [
+      { "nazwa": "cytryny", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "cukier", "ilosc": "35", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "bazylia", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "białko jajka", "ilosc": "1/4", "jednostka": "szt", "kategoria": "3_Nabiał" }
+    ],
+    "kroki": [
+      "Zagotuj 80 ml wody z cukrem i liśćmi bazylii, odstaw na 15 minut i przecedź.",
+      "Wlej sok z cytryny i skórkę, wymieszaj z syropem.",
+      "Wstaw do zamrażalnika i mieszaj widelcem co 30 minut, przez 3 godziny.",
+      "Przy ostatnim mieszaniu wmieszaj ubite białko — od niego sorbet jest lekki, a nie zbity w lód.",
+      "Podawaj w schłodzonych pucharkach."
+    ],
+    "opis_wizualny": "Pale yellow sorbet scooped into a chilled glass, its surface granular and frosty with visible ice crystals. A small basil leaf sits on top. A little melt runs at the base of the scoop."
+  },
+  {
+    "nazwa": "Tarta z pomidorkami i ricottą",
+    "rodzaj": "kolacja",
+    "kuchnia": "wloska",
+    "poziom": "latwe",
+    "czas_minuty": 50,
+    "kcal": 450,
+    "skladniki": [
+      { "nazwa": "ciasto francuskie", "ilosc": "80", "jednostka": "g", "kategoria": "4_Pieczywo" },
+      { "nazwa": "ricotta", "ilosc": "80", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "pomidorki koktajlowe", "ilosc": "8", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "parmezan", "ilosc": "15", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "oliwa z oliwek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "bazylia", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "czosnek", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Rozłóż ciasto na blasze i nakłuj widelcem, zostawiając nienakłuty brzeg na 2 cm.",
+      "Wymieszaj ricottę z parmezanem, czosnkiem, solą i pieprzem i rozsmaruj po środku.",
+      "Ułóż przepołowione pomidorki przekrojem do góry i skrop oliwą.",
+      "Piecz 25 minut w 200 stopniach, aż brzeg wyrośnie i się zrumieni.",
+      "Posyp bazylią po wyjęciu z piekarnika."
+    ],
+    "opis_wizualny": "A rectangular puff pastry tart with a risen golden border, spread with white ricotta and covered in roasted cherry tomato halves that have shrunk and caramelised. Basil leaves are scattered on top, with oil shining on the tomatoes."
+  },
+  {
+    "nazwa": "Gnocchi z gorgonzolą i orzechami",
+    "rodzaj": "obiad",
+    "kuchnia": "wloska",
+    "poziom": "latwe",
+    "czas_minuty": 25,
+    "kcal": 580,
+    "skladniki": [
+      { "nazwa": "gnocchi", "ilosc": "150", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "ser gorgonzola", "ilosc": "50", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "śmietana 30%", "ilosc": "50", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "orzechy włoskie", "ilosc": "20", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "masło", "ilosc": "10", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "szałwia", "ilosc": "3", "jednostka": "szt", "kategoria": "7_Przyprawy" },
+      { "nazwa": "pieprz", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Ugotuj gnocchi — są gotowe, gdy wypłyną, zwykle po 2 minutach.",
+      "W rondlu rozpuść gorgonzolę ze śmietaną na małym ogniu, mieszając.",
+      "Na masle podpraż szałwię i orzechy, aż zapachną.",
+      "Wrzuć gnocchi do sosu serowego i przemieszaj.",
+      "Posyp orzechami z szałwią i grubo mielonym pieprzem."
+    ],
+    "opis_wizualny": "Small potato dumplings coated in a thick, pale blue-cheese sauce, piled in a shallow bowl, with walnut pieces and dark crisp sage leaves on top. The sauce is opaque and clings heavily, with black pepper visible."
+  },
+  {
+    "nazwa": "Omlet z cukinią i miętą",
+    "rodzaj": "sniadanie",
+    "kuchnia": "wloska",
+    "poziom": "latwe",
+    "czas_minuty": 20,
+    "kcal": 320,
+    "skladniki": [
+      { "nazwa": "jajka", "ilosc": "2", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "cukinia", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "mięta", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "parmezan", "ilosc": "20", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "oliwa z oliwek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "pieprz", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Zetrzyj cukinię na grubych oczkach, posól i odciśnij z wody.",
+      "Podsmaż ją na oliwie 4 minuty, aż odparuje.",
+      "Rozkłóć jajka z parmezanem, posiekaną miętą i pieprzem.",
+      "Wylej masę na cukinię i smaż na małym ogniu 5 minut.",
+      "Przykryj na 2 minuty, aż wierzch się zetnie, i złóż omlet na pół."
+    ],
+    "opis_wizualny": "A folded omelette flecked green with grated courgette and mint, pale yellow with lightly browned patches on the underside. Grated cheese is melted into the surface. Served on a plate with a sprig of mint beside."
+  },
+  {
+    "nazwa": "Chłodnik z arbuza i fety",
+    "rodzaj": "zupa",
+    "kuchnia": "miedzynarodowa",
+    "poziom": "latwe",
+    "czas_minuty": 20,
+    "kcal": 220,
+    "skladniki": [
+      { "nazwa": "arbuz", "ilosc": "250", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "ser feta", "ilosc": "40", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "ogórek", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "mięta", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "sok z limonki", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "oliwa z oliwek", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "8_Inne" }
+    ],
+    "kroki": [
+      "Usuń z arbuza pestki i zmiksuj go z połową ogórka i sokiem z limonki.",
+      "Wstaw do lodówki na godzinę — ta zupa musi być naprawdę zimna.",
+      "Resztę ogórka pokrój w drobną kostkę.",
+      "Rozlej chłodnik do misek, posyp ogórkiem, pokruszoną fetą i miętą.",
+      "Skrop oliwą i dopraw pieprzem. Sól zwykle nie jest potrzebna, feta ją wnosi."
+    ],
+    "opis_wizualny": "A bright pink cold soup in a bowl, smooth and slightly frothy at the surface, with cubes of cucumber, crumbled white cheese and mint leaves floating in the centre. Drops of olive oil sit on the surface."
+  },
+  {
+    "nazwa": "Sałatka z komosą i granatem",
+    "rodzaj": "surowka",
+    "kuchnia": "bliskowschodnia",
+    "poziom": "latwe",
+    "czas_minuty": 30,
+    "kcal": 300,
+    "skladniki": [
+      { "nazwa": "komosa ryżowa", "ilosc": "50", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "granat", "ilosc": "1/4", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "natka pietruszki", "ilosc": "2", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "orzechy włoskie", "ilosc": "15", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "oliwa z oliwek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "sok z cytryny", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "dymka", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Przepłucz komosę na sitku — bez tego będzie gorzkawa — i ugotuj 15 minut.",
+      "Rozluźnij ziarna widelcem i ostudź.",
+      "Wyłup pestki granatu, posiekaj natkę i dymkę.",
+      "Wymieszaj wszystko z oliwą i sokiem z cytryny, dopraw solą i pieprzem.",
+      "Posyp orzechami przed podaniem."
+    ],
+    "opis_wizualny": "A light grain salad of small pale quinoa seeds dotted with bright red pomegranate arils, chopped parsley and spring onion rings, with walnut pieces on top. The grains look dry and separate, the pomegranate glossy."
+  },
+  {
+    "nazwa": "Placki jaglane z jabłkiem",
+    "rodzaj": "sniadanie",
+    "kuchnia": "polska",
+    "poziom": "latwe",
+    "czas_minuty": 35,
+    "kcal": 340,
+    "skladniki": [
+      { "nazwa": "kasza jaglana", "ilosc": "50", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "jabłka", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "jajka", "ilosc": "1/2", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "mąka pszenna", "ilosc": "20", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "cynamon", "ilosc": "1/2", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "masło", "ilosc": "10", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "jogurt naturalny", "ilosc": "2", "jednostka": "łyżka", "kategoria": "3_Nabiał" },
+      { "nazwa": "miód", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "8_Inne" }
+    ],
+    "kroki": [
+      "Ugotuj kaszę na gęsto i ostudź — najlepiej użyć kaszy z poprzedniego dnia.",
+      "Zetrzyj jabłko na grubych oczkach i odciśnij z soku.",
+      "Wymieszaj kaszę z jabłkiem, jajkiem, mąką i cynamonem.",
+      "Nakładaj łyżką na masło i smaż po 3 minuty z każdej strony, spłaszczając placki.",
+      "Podawaj z jogurtem i miodem."
+    ],
+    "opis_wizualny": "Thick pale golden pancakes with visibly grainy texture and shreds of apple, stacked on a plate. A spoon of white yogurt and a trickle of honey sit on top. The edges are slightly ragged and browned."
+  },
+  {
+    "nazwa": "Gofry z twarogiem",
+    "rodzaj": "sniadanie",
+    "kuchnia": "polska",
+    "poziom": "latwe",
+    "czas_minuty": 25,
+    "kcal": 400,
+    "skladniki": [
+      { "nazwa": "mąka pszenna", "ilosc": "50", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "twaróg", "ilosc": "80", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "jajka", "ilosc": "1", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "mleko", "ilosc": "50", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "proszek do pieczenia", "ilosc": "1/2", "jednostka": "łyżeczka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "cukier", "ilosc": "1", "jednostka": "łyżka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "masło", "ilosc": "15", "jednostka": "g", "kategoria": "3_Nabiał" }
+    ],
+    "kroki": [
+      "Rozetrzyj twaróg z żółtkiem, mlekiem i cukrem na gładko.",
+      "Wmieszaj mąkę z proszkiem i roztopione masło.",
+      "Ubij białko na sztywno i wmieszaj delikatnie — gofry będą lekkie zamiast gumowych.",
+      "Piecz w rozgrzanej gofrownicy po 4 minuty, aż się zrumienią.",
+      "Podawaj z owocami albo samym cukrem pudrem."
+    ],
+    "opis_wizualny": "Golden waffles with deep square pockets, crisp at the edges and paler in the hollows, stacked on a plate. Icing sugar collects in the squares. One is broken to show a soft, slightly moist interior."
+  },
+  {
+    "nazwa": "Tosty z masłem orzechowym i bananem",
+    "rodzaj": "sniadanie",
+    "kuchnia": "amerykanska",
+    "poziom": "latwe",
+    "czas_minuty": 10,
+    "kcal": 420,
+    "skladniki": [
+      { "nazwa": "chleb tostowy", "ilosc": "2", "jednostka": "szt", "kategoria": "4_Pieczywo" },
+      { "nazwa": "masło orzechowe", "ilosc": "2", "jednostka": "łyżka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "banany", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "miód", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "8_Inne" },
+      { "nazwa": "cynamon", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" },
+      { "nazwa": "orzechy laskowe", "ilosc": "10", "jednostka": "g", "kategoria": "5_Produkty sypkie" }
+    ],
+    "kroki": [
+      "Podpiecz kromki w tosterze na złoto.",
+      "Rozsmaruj masło orzechowe na ciepłym pieczywie, żeby się rozpuściło.",
+      "Ułóż plasterki banana, lekko je dociskając.",
+      "Skrop miodem, posyp cynamonem i posiekanymi orzechami."
+    ],
+    "opis_wizualny": "Two slices of toast spread with brown peanut butter and covered in overlapping banana rounds, drizzled with honey and sprinkled with chopped nuts and cinnamon. The toast edges are crisp and visibly browned."
+  },
+  {
+    "nazwa": "Jajka sadzone na szpinaku",
+    "rodzaj": "sniadanie",
+    "kuchnia": "miedzynarodowa",
+    "poziom": "latwe",
+    "czas_minuty": 20,
+    "kcal": 340,
+    "skladniki": [
+      { "nazwa": "jajka", "ilosc": "2", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "szpinak", "ilosc": "120", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "czosnek", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "śmietana 18%", "ilosc": "2", "jednostka": "łyżka", "kategoria": "3_Nabiał" },
+      { "nazwa": "masło", "ilosc": "10", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "pieczywo", "ilosc": "1", "jednostka": "szt", "kategoria": "4_Pieczywo" },
+      { "nazwa": "gałka muszkatołowa", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Rozpuść masło, wrzuć czosnek i szpinak, duś 3 minuty, aż zwiędnie.",
+      "Wlej śmietanę, dopraw solą, pieprzem i gałką muszkatołową, odparuj nadmiar płynu.",
+      "Zrób w szpinaku dwa wgłębienia i wbij w nie jajka.",
+      "Przykryj patelnię i trzymaj na małym ogniu 5 minut — białko ma być ścięte, żółtko płynne.",
+      "Podawaj z grzanką do maczania."
+    ],
+    "opis_wizualny": "Two fried eggs with set whites and whole glossy yolks nestled in a bed of dark creamed spinach in a small pan. The spinach is wet-looking and deep green. A slice of toasted bread leans at the edge."
+  },
+  {
+    "nazwa": "Bułki śniadaniowe z dyni",
+    "rodzaj": "sniadanie",
+    "kuchnia": "miedzynarodowa",
+    "poziom": "srednie",
+    "czas_minuty": 120,
+    "kcal": 290,
+    "skladniki": [
+      { "nazwa": "mąka pszenna", "ilosc": "80", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "dynia", "ilosc": "80", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "drożdże świeże", "ilosc": "6", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "mleko", "ilosc": "30", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "masło", "ilosc": "15", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "cukier", "ilosc": "1", "jednostka": "łyżka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "pestki dyni", "ilosc": "10", "jednostka": "g", "kategoria": "5_Produkty sypkie" }
+    ],
+    "kroki": [
+      "Upiecz dynię 25 minut w 200 stopniach i rozgnieć na puree. Ostudź.",
+      "Zrób rozczyn z drożdży, ciepłego mleka i łyżeczki cukru.",
+      "Zagnieć ciasto z mąki, puree, rozczynu, masła i soli. Wyrabiaj 10 minut.",
+      "Odstaw na godzinę, podziel na bułki i uformuj kulki.",
+      "Posmaruj mlekiem, posyp pestkami i odstaw na 30 minut.",
+      "Piecz 20 minut w 190 stopniach."
+    ],
+    "opis_wizualny": "Round rolls with a warm orange-tinted crumb and a golden-brown crust, topped with green pumpkin seeds. One is torn open, showing a soft, slightly yellow interior. They sit close together on a tray."
+  },
+  {
+    "nazwa": "Kopytka z sosem grzybowym",
+    "rodzaj": "obiad",
+    "kuchnia": "polska",
+    "poziom": "srednie",
+    "czas_minuty": 60,
+    "kcal": 470,
+    "skladniki": [
+      { "nazwa": "ziemniaki", "ilosc": "3", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "mąka pszenna", "ilosc": "50", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "jajka", "ilosc": "1/4", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "pieczarki", "ilosc": "120", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "śmietana 18%", "ilosc": "50", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "masło", "ilosc": "15", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "natka pietruszki", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Ugotuj ziemniaki, przeciśnij przez praskę i ostudź.",
+      "Dodaj mąkę i jajko, zagnieć szybko — długie wyrabianie robi kopytka gumowymi.",
+      "Uformuj wałki, spłaszcz je i pokrój po skosie w romby.",
+      "Gotuj partiami 2 minuty od wypłynięcia.",
+      "Podsmaż pieczarki z cebulą na masle, aż odparują, wlej śmietanę i zagotuj.",
+      "Połącz z kopytkami i posyp natką."
+    ],
+    "opis_wizualny": "Diamond-shaped potato dumplings in a shallow bowl under a creamy beige mushroom sauce with visible slices of browned mushroom and onion. The dumplings are pale and slightly glossy. Parsley is scattered on top."
+  },
+  {
+    "nazwa": "Pierogi z soczewicą i szpinakiem",
+    "rodzaj": "obiad",
+    "kuchnia": "polska",
+    "poziom": "trudne",
+    "czas_minuty": 80,
+    "kcal": 420,
+    "skladniki": [
+      { "nazwa": "mąka pszenna", "ilosc": "80", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "soczewica czerwona", "ilosc": "50", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "szpinak", "ilosc": "80", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "czosnek", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "olej", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "kumin", "ilosc": "1/2", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Ugotuj soczewicę 15 minut, aż wypije wodę i zrobi się gęsta.",
+      "Podsmaż cebulę z czosnkiem, dodaj szpinak i odparuj, potem wmieszaj soczewicę i kumin. Dopraw mocno.",
+      "Zagnieć ciasto z mąki, 45 ml gorącej wody i szczypty soli. Wyrabiaj 8 minut i odstaw pod ściereczką.",
+      "Rozwałkuj, wykrój krążki, nałóż farsz i zlep brzegi.",
+      "Gotuj 3 minuty od wypłynięcia. Podawaj z podsmażoną cebulką."
+    ],
+    "opis_wizualny": "Boiled half-moon dumplings with crimped edges, slightly translucent dough showing a dark filling, topped with fried onion. One is cut open revealing a dense orange-green lentil and spinach mixture."
+  },
+  {
+    "nazwa": "Karp pieczony w śmietanie",
+    "rodzaj": "obiad",
+    "kuchnia": "polska",
+    "poziom": "srednie",
+    "czas_minuty": 70,
+    "kcal": 480,
+    "skladniki": [
+      { "nazwa": "karp", "ilosc": "200", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "śmietana 18%", "ilosc": "80", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "cebula", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "mąka pszenna", "ilosc": "2", "jednostka": "łyżka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "masło", "ilosc": "15", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "majeranek", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "sok z cytryny", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Dzwonka karpia skrop sokiem z cytryny, osól i odstaw na 30 minut.",
+      "Osusz rybę, obtocz w mące i obsmaż na masle po 2 minuty z każdej strony.",
+      "Ułóż w naczyniu na podsmażonej cebuli, posyp majerankiem.",
+      "Zalej śmietaną i piecz 30 minut w 180 stopniach.",
+      "Polej sosem z naczynia przed podaniem."
+    ],
+    "opis_wizualny": "Pieces of fish baked in a shallow dish under a thickened pale cream sauce with soft onion, the edges of the fish lightly browned where they rose above the sauce. The sauce has reduced and set around them. Marjoram flecks the surface."
+  },
+  {
+    "nazwa": "Krokiety ziemniaczane z serem",
+    "rodzaj": "kolacja",
+    "kuchnia": "polska",
+    "poziom": "srednie",
+    "czas_minuty": 50,
+    "kcal": 440,
+    "skladniki": [
+      { "nazwa": "ziemniaki", "ilosc": "3", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "ser żółty", "ilosc": "40", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "jajka", "ilosc": "1/2", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "bułka tarta", "ilosc": "4", "jednostka": "łyżka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "mąka pszenna", "ilosc": "1", "jednostka": "łyżka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "szczypiorek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "olej", "ilosc": "3", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "gałka muszkatołowa", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Ugotuj ziemniaki, przeciśnij przez praskę i ostudź całkowicie.",
+      "Wymieszaj z mąką, szczypiorkiem, solą i gałką muszkatołową.",
+      "Formuj wałeczki, w środek każdego wciśnij kostkę sera i zalep.",
+      "Obtocz w jajku i bułce tartej.",
+      "Smaż na rozgrzanym oleju po 3 minuty z każdej strony, obracając ostrożnie."
+    ],
+    "opis_wizualny": "Golden breaded potato croquettes, oblong and crisp, one broken open with melted cheese stretching from the centre. They lie on a plate with a little oil sheen and flecks of chives visible in the pale interior."
+  },
+  {
+    "nazwa": "Placki z kaszy gryczanej i cukinii",
+    "rodzaj": "kolacja",
+    "kuchnia": "polska",
+    "poziom": "latwe",
+    "czas_minuty": 40,
+    "kcal": 320,
+    "skladniki": [
+      { "nazwa": "kasza gryczana", "ilosc": "50", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "cukinia", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "jajka", "ilosc": "1", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "mąka pszenna", "ilosc": "20", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "czosnek", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "koperek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "olej", "ilosc": "2", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "jogurt naturalny", "ilosc": "2", "jednostka": "łyżka", "kategoria": "3_Nabiał" }
+    ],
+    "kroki": [
+      "Ugotuj kaszę i ostudź. Najlepiej sprawdza się ta z poprzedniego dnia.",
+      "Zetrzyj cukinię, posól i odciśnij z wody — inaczej placki się rozlecą.",
+      "Wymieszaj kaszę, cukinię, jajko, mąkę, czosnek i koperek.",
+      "Nakładaj łyżką na rozgrzany olej i spłaszczaj.",
+      "Smaż po 3 minuty z każdej strony. Podawaj z jogurtem."
+    ],
+    "opis_wizualny": "Flat brown-speckled fritters with visible buckwheat grains and green courgette shreds, fried to a crisp uneven edge. Stacked on a plate with a spoon of white yogurt and dill on top."
+  }
+]
