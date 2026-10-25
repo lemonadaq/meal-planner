@@ -18,6 +18,7 @@
     "promo:ceny": "node ceny-bazowe.mjs",
     "kuchnie": "node skrypty/uzupelnij-kuchnie.mjs",
     "generuj:auto": "node skrypty/generuj-auto.mjs",
+    "import": "node skrypty/importuj-dania.mjs",
     "generuj:wszystko": "node skrypty/generuj-wszystko.mjs",
     "generuj:przepisy": "node skrypty/generuj-przepisy.mjs",
     "generuj:obrazy": "node skrypty/generuj-obrazy.mjs",

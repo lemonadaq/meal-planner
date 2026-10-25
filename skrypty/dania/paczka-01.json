@@ -1,0 +1,632 @@
+[
+  {
+    "nazwa": "Quiche lorraine",
+    "rodzaj": "obiad",
+    "kuchnia": "francuska",
+    "poziom": "srednie",
+    "czas_minuty": 70,
+    "kcal": 520,
+    "skladniki": [
+      { "nazwa": "mąka pszenna", "ilosc": "50", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "masło", "ilosc": "30", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "boczek wędzony", "ilosc": "60", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "jajka", "ilosc": "3/4", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "śmietana 30%", "ilosc": "60", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "ser żółty", "ilosc": "30", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "gałka muszkatołowa", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" },
+      { "nazwa": "pieprz", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Zagnieć mąkę z zimnym masłem, szczyptą soli i łyżką zimnej wody. Schowaj ciasto do lodówki na 30 minut.",
+      "Rozwałkuj ciasto i wyłóż nim formę, nakłuj spód widelcem i podpiecz 15 minut w 190 stopniach.",
+      "Podsmaż pokrojony boczek bez tłuszczu, aż się zrumieni, i odsącz go z nadmiaru tłuszczu.",
+      "Rozmieszaj jajka ze śmietaną, dopraw pieprzem i gałką muszkatołową.",
+      "Na podpieczonym spodzie rozłóż boczek i starty ser, zalej masą jajeczną.",
+      "Piecz 30 minut w 180 stopniach, aż wierzch się zetnie i zrumieni. Podawaj letnie."
+    ],
+    "opis_wizualny": "A round open tart with a golden-brown pastry rim, cut into wedges so the filling is visible. The set custard is pale yellow and slightly puffed, speckled with browned bacon pieces and melted cheese on top. The surface is uneven and lightly blistered, not smooth."
+  },
+  {
+    "nazwa": "Coq au vin",
+    "rodzaj": "obiad",
+    "kuchnia": "francuska",
+    "poziom": "trudne",
+    "czas_minuty": 110,
+    "kcal": 610,
+    "skladniki": [
+      { "nazwa": "udko z kurczaka", "ilosc": "1", "jednostka": "szt", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "boczek wędzony", "ilosc": "40", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "wino czerwone", "ilosc": "120", "jednostka": "ml", "kategoria": "8_Inne" },
+      { "nazwa": "szalotka", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "pieczarki", "ilosc": "80", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "marchew", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "czosnek", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "koncentrat pomidorowy", "ilosc": "1", "jednostka": "łyżka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "liść laurowy", "ilosc": "1", "jednostka": "szt", "kategoria": "7_Przyprawy" },
+      { "nazwa": "tymianek", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Obsmaż kurczaka ze wszystkich stron na rozgrzanym garnku, aż skóra się zrumieni, i odłóż.",
+      "Na tym samym tłuszczu podsmaż boczek, szalotki i marchew, dodaj czosnek i koncentrat.",
+      "Wlej wino, zagotuj i zeskrob z dna wszystko, co się przypiekło.",
+      "Włóż kurczaka z powrotem, dodaj liść laurowy i tymianek, duś pod przykryciem 50 minut.",
+      "Pieczarki podsmaż osobno na złoto i wrzuć do garnka na ostatnie 10 minut.",
+      "Odkryj garnek i odparuj sos, aż zgęstnieje i zrobi się ciemny i błyszczący."
+    ],
+    "opis_wizualny": "Bone-in chicken pieces in a deep, glossy dark burgundy sauce, the skin browned but softened by the braise. Around the meat sit whole small onions, browned mushroom caps and carrot chunks. The sauce is thick enough to coat, pooling at the bottom of a shallow bowl."
+  },
+  {
+    "nazwa": "Boeuf bourguignon",
+    "rodzaj": "obiad",
+    "kuchnia": "francuska",
+    "poziom": "trudne",
+    "czas_minuty": 180,
+    "kcal": 580,
+    "skladniki": [
+      { "nazwa": "łopatka wołowa", "ilosc": "150", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "boczek wędzony", "ilosc": "30", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "wino czerwone", "ilosc": "100", "jednostka": "ml", "kategoria": "8_Inne" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "marchew", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "pieczarki", "ilosc": "70", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "mąka pszenna", "ilosc": "1", "jednostka": "łyżka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "bulion wołowy", "ilosc": "100", "jednostka": "ml", "kategoria": "8_Inne" },
+      { "nazwa": "czosnek", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "tymianek", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Pokrój wołowinę w dużą kostkę, osusz ją i obsmaż partiami na mocno rozgrzanym garnku.",
+      "Dodaj boczek, cebulę i marchew, smaż do zrumienienia, potem wsyp mąkę i wymieszaj.",
+      "Wlej wino i bulion, dodaj czosnek i tymianek, zagotuj.",
+      "Duś pod przykryciem 2 godziny na małym ogniu, aż mięso będzie się rozpadać pod widelcem.",
+      "Pieczarki zrumień na patelni i dodaj na ostatnie 15 minut duszenia.",
+      "Dopraw solą i pieprzem, podawaj z ziemniakami albo kluskami."
+    ],
+    "opis_wizualny": "Large chunks of beef falling apart in a dark, almost mahogany sauce, with carrot rounds, browned mushrooms and soft onion. The sauce is thick and clinging, not watery, with a faint sheen of fat on top. Served in a shallow bowl, the meat heaped rather than arranged."
+  },
+  {
+    "nazwa": "Ratatouille",
+    "rodzaj": "obiad",
+    "kuchnia": "francuska",
+    "poziom": "latwe",
+    "czas_minuty": 55,
+    "kcal": 220,
+    "skladniki": [
+      { "nazwa": "bakłażan", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "cukinia", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "papryka", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "pomidory z puszki", "ilosc": "100", "jednostka": "g", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "czosnek", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "oliwa z oliwek", "ilosc": "2", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "zioła provence", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Pokrój bakłażana, cukinię i paprykę w grubą kostkę, cebulę w piórka.",
+      "Podsmaż osobno bakłażana na oliwie, aż zmięknie i się zrumieni, i przełóż do garnka.",
+      "Na tej samej patelni zeszklij cebulę z papryką i czosnkiem, dorzuć cukinię.",
+      "Przełóż wszystko do garnka, dodaj pomidory i zioła, duś 25 minut bez przykrycia.",
+      "Dopraw solą i pieprzem. Smakuje lepiej po odstawieniu na kilkanaście minut."
+    ],
+    "opis_wizualny": "A rustic stew of soft vegetable chunks in a reduced tomato sauce: purple-skinned aubergine cubes, green courgette, strips of red pepper, all still holding their shape. The sauce is deep red and glossy with olive oil, collected around the vegetables. Served spooned into a bowl, uneven and homely."
+  },
+  {
+    "nazwa": "Gratin dauphinois",
+    "rodzaj": "obiad",
+    "kuchnia": "francuska",
+    "poziom": "latwe",
+    "czas_minuty": 80,
+    "kcal": 430,
+    "skladniki": [
+      { "nazwa": "ziemniaki", "ilosc": "3", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "śmietana 30%", "ilosc": "80", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "mleko", "ilosc": "80", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "czosnek", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "masło", "ilosc": "1", "jednostka": "łyżka", "kategoria": "3_Nabiał" },
+      { "nazwa": "gałka muszkatołowa", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" },
+      { "nazwa": "ser żółty", "ilosc": "25", "jednostka": "g", "kategoria": "3_Nabiał" }
+    ],
+    "kroki": [
+      "Pokrój ziemniaki w cienkie plastry, najlepiej na mandolinie. Nie myj ich po pokrojeniu — skrobia zagęszcza sos.",
+      "Natrzyj naczynie przekrojonym czosnkiem i wysmaruj masłem.",
+      "Zagotuj mleko ze śmietaną, dopraw solą, pieprzem i gałką muszkatołową.",
+      "Układaj ziemniaki warstwami, zalewając je sosem, i posyp wierzch startym serem.",
+      "Piecz 60 minut w 170 stopniach, aż wierzch będzie złoty, a nóż wchodził bez oporu."
+    ],
+    "opis_wizualny": "Thin potato slices baked in layers until the top is deep golden and blistered, the edges darker and crisped where the cream caught the dish. A cut portion shows soft, cream-soaked layers holding together in a slab. The cream has thickened around the potatoes rather than remaining liquid."
+  },
+  {
+    "nazwa": "Tartiflette",
+    "rodzaj": "obiad",
+    "kuchnia": "francuska",
+    "poziom": "latwe",
+    "czas_minuty": 60,
+    "kcal": 650,
+    "skladniki": [
+      { "nazwa": "ziemniaki", "ilosc": "3", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "boczek wędzony", "ilosc": "70", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "ser camembert", "ilosc": "60", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "śmietana 18%", "ilosc": "50", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "wino białe", "ilosc": "30", "jednostka": "ml", "kategoria": "8_Inne" },
+      { "nazwa": "pieprz", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Ugotuj ziemniaki w mundurkach, ostudź i pokrój w grube plastry.",
+      "Podsmaż boczek z cebulą, wlej wino i odparuj do połowy.",
+      "Wymieszaj ziemniaki z boczkiem i śmietaną, przełóż do naczynia do zapiekania.",
+      "Ser pokrój na pół wzdłuż i ułóż na wierzchu skórką do góry.",
+      "Zapiekaj 25 minut w 200 stopniach, aż ser się rozpuści i zacznie bąbelkować."
+    ],
+    "opis_wizualny": "A baked dish of thick potato slices and bacon, covered by melted rind-on cheese that has slumped and browned in patches. The cheese is bubbling at the edges and the potatoes beneath are glistening and cream-coated. Served straight from the dish, scooped rather than sliced."
+  },
+  {
+    "nazwa": "Hachis parmentier",
+    "rodzaj": "obiad",
+    "kuchnia": "francuska",
+    "poziom": "srednie",
+    "czas_minuty": 75,
+    "kcal": 520,
+    "skladniki": [
+      { "nazwa": "mięso mielone wołowe", "ilosc": "120", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "ziemniaki", "ilosc": "3", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "marchew", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "koncentrat pomidorowy", "ilosc": "1", "jednostka": "łyżka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "masło", "ilosc": "15", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "mleko", "ilosc": "40", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "ser żółty", "ilosc": "20", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "tymianek", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Ugotuj ziemniaki, odcedź i ubij z masłem i mlekiem na gęste puree.",
+      "Podsmaż cebulę z marchewką, dodaj mięso i smaż, rozbijając je łyżką.",
+      "Dodaj koncentrat i tymianek, podlej wodą i duś 15 minut, aż sos zgęstnieje.",
+      "Przełóż mięso do naczynia, przykryj puree i porysuj wierzch widelcem.",
+      "Posyp serem i zapiekaj 25 minut w 200 stopniach, aż wierzch się zrumieni."
+    ],
+    "opis_wizualny": "A baked casserole with a mashed potato top that has been forked into ridges and browned to gold on the peaks. A served portion shows a clear two-layer cut: dark minced meat below, pale potato above. The meat layer is moist and holds together, not runny."
+  },
+  {
+    "nazwa": "Blanquette de veau",
+    "rodzaj": "obiad",
+    "kuchnia": "francuska",
+    "poziom": "trudne",
+    "czas_minuty": 120,
+    "kcal": 540,
+    "skladniki": [
+      { "nazwa": "łopatka cielęca", "ilosc": "150", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "marchew", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "por", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "pieczarki", "ilosc": "70", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "masło", "ilosc": "15", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "mąka pszenna", "ilosc": "1", "jednostka": "łyżka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "śmietana 30%", "ilosc": "50", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "żółtka", "ilosc": "1/2", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "sok z cytryny", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Zalej cielęcinę zimną wodą, zagotuj i zbierz szumowiny — mięsa NIE obsmażamy, sos ma zostać biały.",
+      "Dodaj marchew i por, gotuj na małym ogniu 90 minut, aż mięso zmięknie. Wywar zachowaj.",
+      "Na masle zasmaż mąkę, nie rumieniąc jej, i rozprowadź dwiema szklankami wywaru.",
+      "Dodaj podsmażone pieczarki i gotuj sos 10 minut, aż zgęstnieje.",
+      "Rozmieszaj żółtko ze śmietaną, zahartuj łyżką gorącego sosu i wlej do garnka — już bez gotowania.",
+      "Dopraw sokiem z cytryny, solą i pieprzem, połącz z mięsem i warzywami."
+    ],
+    "opis_wizualny": "Pale chunks of veal and carrot in an ivory-white, velvety sauce with whole mushroom caps. Nothing is browned: the meat is light grey-beige and the sauce coats it opaquely. Served in a shallow bowl, often with white rice at the side."
+  },
+  {
+    "nazwa": "Moules marinière",
+    "rodzaj": "obiad",
+    "kuchnia": "francuska",
+    "poziom": "latwe",
+    "czas_minuty": 30,
+    "kcal": 320,
+    "skladniki": [
+      { "nazwa": "małże", "ilosc": "300", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "wino białe", "ilosc": "80", "jednostka": "ml", "kategoria": "8_Inne" },
+      { "nazwa": "szalotka", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "czosnek", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "masło", "ilosc": "15", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "śmietana 30%", "ilosc": "30", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "natka pietruszki", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Przebierz małże, wyrzuć otwarte i pęknięte, opłucz pozostałe w zimnej wodzie.",
+      "Zeszklij szalotkę z czosnkiem na masle w dużym garnku.",
+      "Wlej wino, zagotuj, wrzuć małże i przykryj garnek.",
+      "Gotuj 5 minut, potrząsając garnkiem, aż muszle się otworzą. Zamknięte wyrzuć.",
+      "Wlej śmietanę, zagotuj sos i posyp wszystko natką. Podawaj z pieczywem do maczania."
+    ],
+    "opis_wizualny": "A heap of open black-shelled mussels filling a bowl, the orange flesh visible inside each shell. A thin, pale broth with specks of shallot and chopped parsley pools at the bottom. Empty half-shells sit on top of the pile; a piece of bread rests at the side."
+  },
+  {
+    "nazwa": "Bouillabaisse",
+    "rodzaj": "zupa",
+    "kuchnia": "francuska",
+    "poziom": "trudne",
+    "czas_minuty": 90,
+    "kcal": 420,
+    "skladniki": [
+      { "nazwa": "dorsz", "ilosc": "100", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "krewetki", "ilosc": "50", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "pomidory z puszki", "ilosc": "120", "jednostka": "g", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "fenkuł", "ilosc": "1/4", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "ziemniaki", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "czosnek", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "szafran", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" },
+      { "nazwa": "oliwa z oliwek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" }
+    ],
+    "kroki": [
+      "Zeszklij na oliwie cebulę, fenkuł i czosnek, nie rumieniąc ich.",
+      "Dodaj pomidory i szafran, wlej litr wody, gotuj 20 minut.",
+      "Wrzuć ziemniaki pokrojone w grube plastry i gotuj kolejne 15 minut.",
+      "Włóż rybę pokrojoną w duże kawałki, gotuj 6 minut, na koniec dodaj krewetki na 2 minuty.",
+      "Dopraw solą i pieprzem. Podawaj z grzanką natartą czosnkiem."
+    ],
+    "opis_wizualny": "A deep orange-red fish soup in a wide bowl, with big flakes of white fish and pink prawns sitting above the surface. Slices of potato and strands of fennel are visible in the broth, which is thin but intensely coloured by saffron. A garlic-rubbed toast leans on the rim."
+  },
+  {
+    "nazwa": "Vichyssoise",
+    "rodzaj": "zupa",
+    "kuchnia": "francuska",
+    "poziom": "latwe",
+    "czas_minuty": 45,
+    "kcal": 280,
+    "skladniki": [
+      { "nazwa": "por", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "ziemniaki", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "masło", "ilosc": "15", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "bulion warzywny", "ilosc": "250", "jednostka": "ml", "kategoria": "8_Inne" },
+      { "nazwa": "śmietana 30%", "ilosc": "50", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "szczypiorek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "pieprz biały", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Pokrój białą część pora w półplasterki i duś na masle 10 minut, nie rumieniąc.",
+      "Dodaj ziemniaki w kostce i bulion, gotuj 20 minut do miękkości.",
+      "Zmiksuj zupę na gładki krem i przetrzyj przez sito, jeśli ma być bardzo aksamitna.",
+      "Wmieszaj śmietanę, dopraw solą i białym pieprzem.",
+      "Wstaw do lodówki na 3 godziny — tę zupę je się zimną. Posyp szczypiorkiem przed podaniem."
+    ],
+    "opis_wizualny": "A smooth, thick cream soup of a pale ivory colour, served cold in a shallow bowl. The surface is matte and even, with a swirl of cream and finely chopped chives scattered over the centre. No visible chunks of vegetable."
+  },
+  {
+    "nazwa": "Salade lyonnaise",
+    "rodzaj": "kolacja",
+    "kuchnia": "francuska",
+    "poziom": "srednie",
+    "czas_minuty": 25,
+    "kcal": 390,
+    "skladniki": [
+      { "nazwa": "sałata", "ilosc": "60", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "boczek wędzony", "ilosc": "50", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "jajka", "ilosc": "1", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "bagietka", "ilosc": "1/4", "jednostka": "szt", "kategoria": "4_Pieczywo" },
+      { "nazwa": "musztarda Dijon", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "oliwa z oliwek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "ocet winny", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "8_Inne" }
+    ],
+    "kroki": [
+      "Podsmaż boczek w kostce, a na wytopionym tłuszczu zrumień grzanki z bagietki.",
+      "Zrób dressing: musztarda, ocet, oliwa, sól i pieprz — rozkłóć widelcem.",
+      "Zagotuj wodę z łyżką octu, zakręć wir i wbij jajko. Gotuj 3 minuty na jajko w koszulce.",
+      "Sałatę wymieszaj z dressingiem, przełóż na talerz, rozsyp boczek i grzanki.",
+      "Na wierzch połóż jajko i posyp je pieprzem. Żółtko ma wypłynąć po przekrojeniu."
+    ],
+    "opis_wizualny": "A plate of leafy green salad topped with a single poached egg, its white loosely gathered and the yolk visibly ready to run. Cubes of browned bacon and toasted bread cubes are scattered through the leaves. The dressing leaves the leaves shiny rather than wet."
+  },
+  {
+    "nazwa": "Tarte tatin",
+    "rodzaj": "deser",
+    "kuchnia": "francuska",
+    "poziom": "srednie",
+    "czas_minuty": 70,
+    "kcal": 420,
+    "skladniki": [
+      { "nazwa": "jabłka", "ilosc": "1 1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "cukier", "ilosc": "40", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "masło", "ilosc": "25", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "ciasto francuskie", "ilosc": "70", "jednostka": "g", "kategoria": "4_Pieczywo" },
+      { "nazwa": "cynamon", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Rozpuść cukier na patelni bez mieszania, aż zrobi się karmelem, i wmieszaj masło.",
+      "Obrane jabłka pokrój na grube cząstki i ułóż ciasno na karmelu, zaokrągloną stroną do dołu.",
+      "Smaż 10 minut, aż jabłka puszczą sok i wejdą w karmel.",
+      "Przykryj wszystko ciastem francuskim, podwijając brzegi do środka patelni.",
+      "Piecz 30 minut w 190 stopniach, odstaw na 5 minut i odwróć na talerz — ciastem do dołu."
+    ],
+    "opis_wizualny": "An upside-down apple tart turned out onto a plate: tightly packed apple wedges on top, deep amber and glossy with caramel, sitting on a browned pastry base. Caramel has run down the sides and pooled on the plate. The apples hold their shape but look soft and collapsed at the edges."
+  },
+  {
+    "nazwa": "Clafoutis z czereśniami",
+    "rodzaj": "deser",
+    "kuchnia": "francuska",
+    "poziom": "latwe",
+    "czas_minuty": 50,
+    "kcal": 290,
+    "skladniki": [
+      { "nazwa": "czereśnie", "ilosc": "120", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "jajka", "ilosc": "1", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "mleko", "ilosc": "80", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "mąka pszenna", "ilosc": "25", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "cukier", "ilosc": "20", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "masło", "ilosc": "10", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "cukier waniliowy", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "5_Produkty sypkie" }
+    ],
+    "kroki": [
+      "Wysmaruj naczynie masłem i obsyp cukrem, rozsyp na dnie czereśnie.",
+      "Rozmieszaj jajka z cukrem, dodaj mąkę i mleko — ciasto ma być płynne jak na naleśniki.",
+      "Zalej owoce ciastem, nie mieszając.",
+      "Piecz 35 minut w 180 stopniach, aż masa się zetnie i napuszy.",
+      "Podawaj letnie, posypane cukrem pudrem. Po ostudzeniu placek osiada i to normalne."
+    ],
+    "opis_wizualny": "A baked batter pudding in a shallow dish, pale golden and puffed at the edges, dipping in the middle. Dark red cherries are half-submerged in the set custard, their tops showing. A dusting of icing sugar sits unevenly over the surface."
+  },
+  {
+    "nazwa": "Mousse au chocolat",
+    "rodzaj": "deser",
+    "kuchnia": "francuska",
+    "poziom": "srednie",
+    "czas_minuty": 30,
+    "kcal": 340,
+    "skladniki": [
+      { "nazwa": "gorzka czekolada", "ilosc": "50", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "jajka", "ilosc": "1", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "cukier", "ilosc": "10", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "masło", "ilosc": "10", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "sól", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Rozpuść czekoladę z masłem w kąpieli wodnej i odstaw do przestudzenia.",
+      "Oddziel żółtka od białek. Żółtka wmieszaj do czekolady.",
+      "Ubij białka ze szczyptą soli na sztywno, pod koniec dodaj cukier.",
+      "Wmieszaj pianę do czekolady w trzech partiach, delikatnie, od dołu do góry.",
+      "Przełóż do pucharków i wstaw do lodówki na minimum 3 godziny."
+    ],
+    "opis_wizualny": "A dark brown chocolate mousse served in a small glass, the surface soft and matte with a spoon mark left in it. The texture is airy and holds peaks rather than being liquid. A few chocolate shavings rest on top."
+  },
+  {
+    "nazwa": "Madeleinki",
+    "rodzaj": "deser",
+    "kuchnia": "francuska",
+    "poziom": "srednie",
+    "czas_minuty": 45,
+    "kcal": 230,
+    "skladniki": [
+      { "nazwa": "mąka pszenna", "ilosc": "35", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "masło", "ilosc": "30", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "jajka", "ilosc": "1", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "cukier", "ilosc": "25", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "proszek do pieczenia", "ilosc": "1/2", "jednostka": "łyżeczka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "skórka z cytryny", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Rozpuść masło i odstaw, żeby przestygło.",
+      "Ubij jajka z cukrem na jasną, puszystą masę.",
+      "Wmieszaj mąkę z proszkiem i skórkę z cytryny, na końcu masło.",
+      "Wstaw ciasto do lodówki na 30 minut — zimne ciasto daje charakterystyczny garbek.",
+      "Nałóż ciasto do wysmarowanych foremek do 3/4 wysokości i piecz 12 minut w 200 stopniach."
+    ],
+    "opis_wizualny": "Small shell-shaped sponge cakes, golden at the ridged edges and paler in the middle, each with a raised bump on the flat side. They sit in a loose pile with the ribbed shell pattern facing up. The crumb at a broken edge is fine and yellow."
+  },
+  {
+    "nazwa": "Croissanty z szynką i serem",
+    "rodzaj": "sniadanie",
+    "kuchnia": "francuska",
+    "poziom": "latwe",
+    "czas_minuty": 20,
+    "kcal": 450,
+    "skladniki": [
+      { "nazwa": "croissant", "ilosc": "1", "jednostka": "szt", "kategoria": "4_Pieczywo" },
+      { "nazwa": "szynka", "ilosc": "40", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "ser żółty", "ilosc": "30", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "musztarda Dijon", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "masło", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "3_Nabiał" }
+    ],
+    "kroki": [
+      "Przekrój croissanta wzdłuż, nie do końca, i posmaż wnętrze masłem z musztardą.",
+      "Włóż szynkę i ser, dociśnij połówki.",
+      "Zapiekaj 8 minut w 190 stopniach, aż ser się rozpuści i wypłynie na boki.",
+      "Podawaj od razu, póki wierzch jest chrupiący."
+    ],
+    "opis_wizualny": "A split, baked croissant with ham and melted cheese spilling from the opening, the cheese browned where it touched the tray. The outside is flaky and deep golden with visible layers at the ends. Served warm on a plate, slightly squashed from pressing."
+  },
+  {
+    "nazwa": "Knedle ze śliwkami",
+    "rodzaj": "deser",
+    "kuchnia": "polska",
+    "poziom": "srednie",
+    "czas_minuty": 60,
+    "kcal": 380,
+    "skladniki": [
+      { "nazwa": "ziemniaki", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "mąka pszenna", "ilosc": "50", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "mąka ziemniaczana", "ilosc": "15", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "jajka", "ilosc": "1/4", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "śliwki", "ilosc": "3", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "masło", "ilosc": "15", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "bułka tarta", "ilosc": "1", "jednostka": "łyżka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "cukier", "ilosc": "1", "jednostka": "łyżka", "kategoria": "5_Produkty sypkie" }
+    ],
+    "kroki": [
+      "Ugotuj ziemniaki, przepuść przez praskę i ostudź całkowicie.",
+      "Zagnieć z mąkami i jajkiem zwarte ciasto. Im krócej wyrabiasz, tym lżejsze knedle.",
+      "Rozpłaszcz kawałek ciasta na dłoni, włóż wydrylowaną śliwkę i zalep dokładnie.",
+      "Wrzucaj na osolony wrzątek i gotuj 8 minut od wypłynięcia.",
+      "Podsmaż bułkę tartą na masle i obsyp nią knedle, posyp cukrem."
+    ],
+    "opis_wizualny": "Round dumplings the size of a plum, pale and slightly glossy from boiling, coated in golden toasted breadcrumbs with melted butter. One is cut open to show the whole dark plum inside and purple juice running onto the plate. Sugar is dusted over the top."
+  },
+  {
+    "nazwa": "Jagodzianki z kruszonką",
+    "rodzaj": "deser",
+    "kuchnia": "polska",
+    "poziom": "trudne",
+    "czas_minuty": 150,
+    "kcal": 340,
+    "skladniki": [
+      { "nazwa": "mąka pszenna", "ilosc": "80", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "mleko", "ilosc": "40", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "drożdże świeże", "ilosc": "8", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "cukier", "ilosc": "20", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "masło", "ilosc": "20", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "jajka", "ilosc": "1/2", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "jagody", "ilosc": "80", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "mąka ziemniaczana", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "5_Produkty sypkie" }
+    ],
+    "kroki": [
+      "Rozpuść drożdże w ciepłym mleku z łyżeczką cukru i odstaw na 10 minut.",
+      "Zagnieć ciasto z mąki, rozczynu, jajka, cukru i miękkiego masła. Wyrabiaj 10 minut, aż będzie gładkie.",
+      "Odstaw do wyrośnięcia na godzinę, aż podwoi objętość.",
+      "Jagody obsyp mąką ziemniaczaną — nie puszczą tyle soku. Zalep je w kulkach z ciasta, szwem do dołu.",
+      "Zrób kruszonkę z masła, mąki i cukru, obsyp bułki i odstaw je na 30 minut.",
+      "Piecz 20 minut w 180 stopniach, aż będą złote."
+    ],
+    "opis_wizualny": "Soft round yeast buns, golden on top and thickly covered with pale crumble pieces. One is torn open, showing a white fluffy crumb and a pocket of dark purple blueberries that have stained the dough around them. The buns sit close together, their sides pale where they touched while baking."
+  },
+  {
+    "nazwa": "Potrawka z kurczaka",
+    "rodzaj": "obiad",
+    "kuchnia": "polska",
+    "poziom": "latwe",
+    "czas_minuty": 60,
+    "kcal": 420,
+    "skladniki": [
+      { "nazwa": "udko z kurczaka", "ilosc": "1", "jednostka": "szt", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "marchew", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "pietruszka korzeń", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "por", "ilosc": "1/4", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "śmietana 18%", "ilosc": "40", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "mąka pszenna", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "koperek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "liść laurowy", "ilosc": "1", "jednostka": "szt", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Zalej kurczaka wodą, dodaj liść laurowy i gotuj 40 minut z warzywami pokrojonymi w kostkę.",
+      "Wyjmij mięso, obierz z kości i porwij na kawałki.",
+      "Rozmieszaj mąkę ze śmietaną, zahartuj gorącym wywarem i wlej do garnka.",
+      "Zagotuj sos, włóż mięso z powrotem i dopraw solą i pieprzem.",
+      "Posyp koperkiem. Podawaj z ryżem albo ziemniakami."
+    ],
+    "opis_wizualny": "Shredded chicken and soft carrot and parsnip cubes in a pale, creamy sauce, served in a shallow bowl. The sauce is light beige and opaque, thick enough to coat but still loose. Chopped dill is scattered over the top; nothing is browned."
+  },
+  {
+    "nazwa": "Kapusta zasmażana",
+    "rodzaj": "dodatek",
+    "kuchnia": "polska",
+    "poziom": "latwe",
+    "czas_minuty": 40,
+    "kcal": 180,
+    "skladniki": [
+      { "nazwa": "kapusta kiszona", "ilosc": "150", "jednostka": "g", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "boczek wędzony", "ilosc": "30", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "mąka pszenna", "ilosc": "1", "jednostka": "łyżka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "liść laurowy", "ilosc": "1", "jednostka": "szt", "kategoria": "7_Przyprawy" },
+      { "nazwa": "kminek", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Odciśnij kapustę, posiekaj i zalej wodą do połowy wysokości. Dodaj liść laurowy i kminek.",
+      "Duś 25 minut pod przykryciem, aż zmięknie.",
+      "Podsmaż boczek z cebulą, wsyp mąkę i zrób jasną zasmażkę.",
+      "Wmieszaj zasmażkę do kapusty i gotuj jeszcze 5 minut, aż zgęstnieje.",
+      "Dopraw solą, pieprzem i szczyptą cukru, jeśli kapusta jest bardzo kwaśna."
+    ],
+    "opis_wizualny": "Shredded sauerkraut cooked down to a soft, glossy tangle, light brown from the roux, with small pieces of browned bacon and onion mixed through. It is moist but not soupy, holding its shape when spooned onto a plate. A bay leaf sits on top."
+  },
+  {
+    "nazwa": "Ćwikła z chrzanem",
+    "rodzaj": "surowka",
+    "kuchnia": "polska",
+    "poziom": "latwe",
+    "czas_minuty": 60,
+    "kcal": 70,
+    "skladniki": [
+      { "nazwa": "buraki", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "chrzan tarty", "ilosc": "1", "jednostka": "łyżka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "ocet winny", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "8_Inne" },
+      { "nazwa": "cukier", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "sól", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Ugotuj buraki w skórce 45 minut, aż będą miękkie, i ostudź.",
+      "Obierz je i zetrzyj na tarce o drobnych oczkach.",
+      "Wymieszaj z chrzanem, octem, cukrem i solą.",
+      "Odstaw na godzinę do lodówki, żeby smaki się połączyły. Dopraw jeszcze raz przed podaniem."
+    ],
+    "opis_wizualny": "A mound of finely grated beetroot, deep crimson and moist, flecked with white horseradish. The texture is fine and uniform, not chunky, and a little dark pink juice collects at the base. Served in a small bowl."
+  },
+  {
+    "nazwa": "Sałatka ziemniaczana z ogórkiem kiszonym",
+    "rodzaj": "surowka",
+    "kuchnia": "polska",
+    "poziom": "latwe",
+    "czas_minuty": 40,
+    "kcal": 230,
+    "skladniki": [
+      { "nazwa": "ziemniaki", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "ogórek kiszony", "ilosc": "1", "jednostka": "szt", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "cebula", "ilosc": "1/4", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "majonez", "ilosc": "1", "jednostka": "łyżka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "jogurt naturalny", "ilosc": "1", "jednostka": "łyżka", "kategoria": "3_Nabiał" },
+      { "nazwa": "musztarda", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "szczypiorek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Ugotuj ziemniaki w mundurkach, ostudź i pokrój w kostkę.",
+      "Ogórki i cebulę posiekaj drobno.",
+      "Rozmieszaj majonez z jogurtem i musztardą, dopraw solą i pieprzem.",
+      "Połącz wszystko delikatnie, żeby nie rozbić ziemniaków.",
+      "Posyp szczypiorkiem i odstaw na 30 minut do lodówki."
+    ],
+    "opis_wizualny": "Cubes of boiled potato in a thick pale dressing, with visible pieces of pickled cucumber and finely chopped onion. The cubes are distinct and lightly coated rather than mashed together. Chopped chives are scattered over the top of the mound."
+  },
+  {
+    "nazwa": "Surówka z marchewki i jabłka",
+    "rodzaj": "surowka",
+    "kuchnia": "polska",
+    "poziom": "latwe",
+    "czas_minuty": 15,
+    "kcal": 120,
+    "skladniki": [
+      { "nazwa": "marchew", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "jabłka", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "śmietana 18%", "ilosc": "1", "jednostka": "łyżka", "kategoria": "3_Nabiał" },
+      { "nazwa": "sok z cytryny", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "cukier", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "5_Produkty sypkie" }
+    ],
+    "kroki": [
+      "Zetrzyj marchewkę i jabłko na tarce o grubych oczkach.",
+      "Skrop sokiem z cytryny, żeby jabłko nie ściemniało.",
+      "Wymieszaj ze śmietaną i cukrem, dopraw szczyptą soli.",
+      "Podawaj od razu — surówka szybko puszcza sok."
+    ],
+    "opis_wizualny": "A mound of coarsely grated carrot and apple, bright orange with paler apple strands running through it, lightly bound by cream. The strands stay loose and separate rather than forming a paste. A little liquid gathers at the bottom of the bowl."
+  },
+  {
+    "nazwa": "Pierogi z truskawkami",
+    "rodzaj": "deser",
+    "kuchnia": "polska",
+    "poziom": "srednie",
+    "czas_minuty": 70,
+    "kcal": 340,
+    "skladniki": [
+      { "nazwa": "mąka pszenna", "ilosc": "70", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "truskawki", "ilosc": "120", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "cukier", "ilosc": "1", "jednostka": "łyżka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "śmietana 18%", "ilosc": "2", "jednostka": "łyżka", "kategoria": "3_Nabiał" },
+      { "nazwa": "masło", "ilosc": "10", "jednostka": "g", "kategoria": "3_Nabiał" }
+    ],
+    "kroki": [
+      "Zagnieć ciasto z mąki, szczypty soli i gorącej wody. Wyrabiaj 5 minut i odstaw pod ściereczką na 20 minut.",
+      "Rozwałkuj cienko i wykrój krążki szklanką.",
+      "Na każdy krążek połóż truskawkę i szczyptę cukru, zalep brzegi dokładnie.",
+      "Gotuj partiami na osolonym wrzątku 3 minuty od wypłynięcia.",
+      "Przełóż na masło, podawaj ze śmietaną i cukrem."
+    ],
+    "opis_wizualny": "Boiled half-moon dumplings with a thin, slightly translucent dough through which the red strawberry filling shows. They sit in a shallow bowl with melted butter, a spoon of sour cream on top and pink juice leaking from one that has split. The edges are crimped and uneven."
+  }
+]

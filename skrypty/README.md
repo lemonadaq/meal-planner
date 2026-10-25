@@ -127,6 +127,44 @@ to, co dodał pierwszy, więc nie powtórzą dań.
 gotową linijkę do wklejenia w pole **dania**. Koszt to kilka zapytań
 tekstowych, zero zdjęć.
 
+## Tryb `import` — gdy na Anthropic nie ma kredytów
+
+Generowanie przepisów chodzi na kluczu Anthropic, a ten potrzebuje kredytów.
+Baza (Supabase) i zdjęcia (Replicate) mają własne klucze i działają od tego
+niezależnie — sprawdzisz to trybem `klucze`.
+
+Dlatego jest druga droga: przepis pisze człowiek albo Claude w rozmowie,
+ląduje w pliku `skrypty/dania/paczka-NN.json`, a skrypt tylko wstawia go do
+bazy i dorabia zdjęcie. **Ani jednego zapytania do Anthropic.**
+
+```bash
+npm run import                       # wszystkie paczki z skrypty/dania/
+PLIKI=paczka-01.json npm run import  # jedna paczka
+LIMIT=5 npm run import               # bezpiecznik na koszty zdjęć
+BEZ_ZDJEC=1 npm run import           # sam zapis do bazy
+```
+
+W akcji: tryb `import`, a pole **dania** to nazwy plików (puste = wszystkie).
+
+Format pliku to **dokładnie to**, co w trybie `auto` zwraca Claude — tablica
+obiektów z polami `nazwa`, `rodzaj`, `kuchnia`, `poziom`, `czas_minuty`,
+`kcal`, `skladniki[]` (nazwa, ilosc, jednostka, kategoria), `kroki[]`,
+`opis_wizualny`. Dzięki temu jedna droga jest zamienna z drugą bez
+przepisywania czegokolwiek.
+
+Dwie rzeczy, o których łatwo zapomnieć przy pisaniu ręcznym:
+
+- **ilości są NA JEDNĄ PORCJĘ**, nie na całość (`porcje_bazowe` to 4),
+- **`opis_wizualny` po angielsku** — to z niego powstaje prompt zdjęcia; bez
+  niego skrypt musiałby zapytać Claude'a, czyli to, czego ten tryb unika.
+
+Walidacja (`import-dan.js`) sprawdza przed zapisem rodzaj, kuchnię, poziom,
+jednostki i kategorie. Jedno złe danie zatrzymuje CAŁY plik — lepiej stanąć
+na literówce, niż wstawić pół paczki. Składniki przechodzą przez ten sam
+słownik, co `auto`, więc nazwy i jednostki ujednolicają się ze stanem bazy.
+
+Dania, które w bazie już są, są pomijane — plik można odpalać wielokrotnie.
+
 ## Słownik składników
 
 Model dostaje czystą kartkę przy każdym daniu, więc ten sam produkt wraca

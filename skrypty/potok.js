@@ -6,6 +6,11 @@
 // `auto` (generuj-auto.mjs), który nazwy dań wymyśla sam. Jedna kopia tej
 // logiki, nie dwie — inaczej poprawka w jednym trybie omija drugi.
 //
+// Danie może przyjść z GOTOWYM przepisem (pole `przepis`) — tak działa tryb
+// `import`, gdy przepis napisał człowiek albo Claude w rozmowie. Wtedy nie
+// ma ani jednego zapytania do Anthropic, a zdjęcie i tak powstaje, bo
+// Replicate chodzi na osobnym kluczu.
+//
 // Potok jest WZNAWIALNY:
 //   - danie z przepisem I zdjęciem  → pomijane
 //   - danie z przepisem bez zdjęcia → dogenerowywane samo zdjęcie
@@ -26,7 +31,7 @@ export async function przetworzDania(dania, { slownik = null, blokSystemowy = ''
   let nowe = 0, tylkoZdjecie = 0, pominiete = 0, bledy = 0
   const straznik = utworzStraznika()
 
-  for (const { nazwa, rodzaj } of dania) {
+  for (const { nazwa, rodzaj, przepis: gotowy } of dania) {
     try {
       // select('*') — kolumny są mixed-case i ze spacjami, bezpieczniej wziąć wszystko
       const { data: istnieje, error } = await supabase.from('dania').select('*').eq('Danie', nazwa)
@@ -54,7 +59,10 @@ export async function przetworzDania(dania, { slownik = null, blokSystemowy = ''
             jednostka: r['Jednostka'] || '',
           }))
         const przepisTekst = istnieje.find(r => r['Przepis']?.trim())?.['Przepis'] || ''
-        const opis = await generujOpisWizualny(nazwa, skladniki, przepisTekst)
+        // Gotowy opis z pliku oszczędza zapytanie — i jest jedynym wyjściem,
+        // gdy na Anthropic nie ma kredytów.
+        const opis = gotowy?.opis_wizualny
+          || await generujOpisWizualny(nazwa, skladniki, przepisTekst)
 
         process.stdout.write('obraz... ')
         await wgrajZdjecie(nazwa, zbudujPromptObrazu(nazwa, rodzaj, opis), istnieje.map(r => r.id))
@@ -66,7 +74,7 @@ export async function przetworzDania(dania, { slownik = null, blokSystemowy = ''
 
       // ── B: nowe danie — przepis + zdjęcie ──
       process.stdout.write(`⏳ ${nazwa} [${styl.id}] — przepis... `)
-      const przepis = await generujPrzepis(nazwa, rodzaj, { blokSystemowy })
+      const przepis = gotowy || await generujPrzepis(nazwa, rodzaj, { blokSystemowy })
       const wiersze = zbudujWiersze(nazwa, rodzaj, przepis, slownik)
 
       const { data: wstawione, error: bladInsert } = await supabase

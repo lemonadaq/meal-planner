@@ -69,6 +69,7 @@ w Supabase — nikt ich nie czyta, Filip usunie je ręcznie, jak zechce.
 - `skrypty/` — generowanie przepisów (Claude) i zdjęć (Replicate) prosto do bazy; odpalane ręcznie z GitHub Actions („Generuj dania") albo `npm run generuj:*`. Klucze WYŁĄCZNIE z env/secrets. Style zdjęć i ich rotacja: `skrypty/style-zdjec.js`. Szczegóły: `skrypty/README.md`
   - tryb `auto` — podajesz w akcji LICZBĘ dań (pole `ile`), nazwy wymyśla Claude z rozkładem na kuchnie i rodzaje (`propozycje.js`), duble odsiewa `podobienstwo.js`, a potem leci standardowy potok przepis → zdjęcie (`potok.js`). `przekaska` nie jest generowana
   - tryb `propozycje` — same nazwy do przejrzenia, nic nie zapisuje; tryb `klucze` — sprawdza, czy klucze i kredyty działają
+  - tryb `import` — przepisy z plików `skrypty/dania/*.json` (format 1:1 z odpowiedzią Claude'a) do bazy + zdjęcia, BEZ ani jednego zapytania do Anthropic. Droga na czas, gdy na koncie Anthropic nie ma kredytów, a Replicate i Supabase działają
   - `slownik.js` — składniki nowych dań są ujednolicane ze stanem bazy (pisownia + jednostka, `150 g cebuli` → `1 szt`). Granica jak w `nazwySkladnikow.js`: ujednolicamy pisownię, nie podmieniamy towaru
 
 \- `useHousehold.js` — hook do pobierania household\_id

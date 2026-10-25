@@ -15,6 +15,7 @@ on:
         options:
           - auto       # sam wymyśla `ile` nowych dań + przepis + zdjęcie
           - propozycje # tylko wymyśla nazwy i wypisuje je — nic nie zapisuje
+          - import     # gotowe przepisy z skrypty/dania/*.json + zdjęcia (BEZ Anthropic)
           - wszystko   # przepis + zdjęcie dla dań z listy
           - przepisy   # same przepisy, bez zdjęć (bez kosztów Replicate)
           - obrazy     # zdjęcia dla dań, które są już w bazie bez zdjęcia
@@ -28,7 +29,7 @@ on:
         required: false
         default: ""
       dania:
-        description: "Lista dań, po średniku: Bigos|obiad; Żurek|zupa (tryb 'obrazy' — puste = wszystkie bez zdjęcia; tryb 'auto' — rozkład kuchni, np. polska:3, wloska:1)"
+        description: "Lista dań: Bigos|obiad; Żurek|zupa ('obrazy' — puste = wszystkie bez zdjęcia; 'auto' — rozkład kuchni, np. polska:3, wloska:1; 'import' — nazwy plików JSON, puste = wszystkie)"
         type: string
         required: false
         default: ""
@@ -125,12 +126,12 @@ jobs:
             if [ -z "${!zmienna}" ]; then echo "::error::brak sekretu $zmienna"; brakuje=1; fi
           done
           # tryb 'lista' tylko czyta bazę — nie potrzebuje ani Claude'a, ani Replicate
-          case "${{ inputs.tryb }}" in lista|usun) potrzebnyClaude=0 ;; *) potrzebnyClaude=1 ;; esac
+          case "${{ inputs.tryb }}" in lista|usun|import) potrzebnyClaude=0 ;; *) potrzebnyClaude=1 ;; esac
           if [ "$potrzebnyClaude" = 1 ] && [ -z "$ANTHROPIC_KEY" ]; then
             echo "::error::brak sekretu ANTHROPIC_KEY"; brakuje=1
           fi
           case "${{ inputs.tryb }}" in
-            wszystko|obrazy|auto)
+            wszystko|obrazy|auto|import)
               if [ -z "$REPLICATE_KEY" ]; then echo "::error::brak sekretu REPLICATE_KEY"; brakuje=1; fi ;;
           esac
           exit $brakuje
@@ -140,6 +141,7 @@ jobs:
           case "${{ inputs.tryb }}" in
             auto)     node skrypty/generuj-auto.mjs ;;
             propozycje) TYLKO_PROPOZYCJE=1 node skrypty/generuj-auto.mjs ;;
+            import)   node skrypty/importuj-dania.mjs ;;
             klucze)   node skrypty/sprawdz-klucze.mjs ;;
             wszystko) node skrypty/generuj-wszystko.mjs ;;
             przepisy) node skrypty/generuj-przepisy.mjs ;;
