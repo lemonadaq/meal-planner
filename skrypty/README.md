@@ -234,6 +234,32 @@ Actions → `ANTHROPIC_KEY` → Update secret. Do kodu kluczy nie wpisujemy
 nigdy — `.gitignore` blokuje stare lokalne `generuj-*.mjs` właśnie dlatego,
 że miały je na sztywno.
 
+### Nie, `CLAUDE_CODE_OAUTH_TOKEN` tego nie zastąpi
+
+W sekretach jest drugi token od Anthropica: `CLAUDE_CODE_OAUTH_TOKEN`, ten,
+którym chodzi agent QA (`agent.yml` → `claude-code-action`). Pytanie wraca
+regularnie, więc odpowiedź jest w kodzie, a nie w czyjejś opinii: tryb
+`klucze` odpytuje nim API i wypisuje, co dostał. Dostaje `401 invalid
+x-api-key`, bo to token **subskrypcji Claude Code**, a nie klucz do
+`api.anthropic.com` — inna brama, inne rozliczenie.
+
+Przepisanie go w `ANTHROPIC_KEY` nie zadziała i nie o to w nim chodzi.
+Tokenem subskrypcji można natomiast napisać przepisy **agentem**, i to jest
+ta sama droga, którą chodzi agent QA: workflow **„Dania agentem"**
+(`.github/workflows/dania-agentem.yml`). Claude Code pisze tam paczkę JSON,
+workflow ją waliduje, commituje i wrzuca trybem `import` razem ze zdjęciami.
+Zero zapytań do API Anthropica.
+
+```
+Actions → „Dania agentem" → Run workflow
+  ile       = ile dań napisać (do 25 na przebieg)
+  wytyczne  = opcjonalnie: „kuchnia grecka, same kolacje i surówki"
+  importuj  = zaznaczone: od razu do bazy i ze zdjęciami
+```
+
+Limit jest nie na kredyty, a na okna subskrypcji — tak samo jak u agenta QA
+(patrz komentarz w `agent.yml`), więc nie puszczaj tego równolegle z nim.
+
 Model tekstowy można podmienić bez ruszania kodu: `ANTHROPIC_MODEL`
 (np. `claude-sonnet-5-5`, tańszy od Opusa przy generowaniu przepisów).
 

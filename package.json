@@ -25,7 +25,8 @@
     "lista": "node skrypty/lista.mjs",
     "duble": "node skrypty/duble.mjs",
     "usun": "node skrypty/usun.mjs",
-    "sprawdz:klucze": "node skrypty/sprawdz-klucze.mjs"
+    "sprawdz:klucze": "node skrypty/sprawdz-klucze.mjs",
+    "sprawdz:nazwy": "node skrypty/sprawdz-nazwy.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.124.0",

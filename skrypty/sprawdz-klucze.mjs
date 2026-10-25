@@ -25,6 +25,11 @@ const KLUCZE = {
   REPLICATE_KEY: process.env.REPLICATE_KEY || process.env.REPLICATE_API_TOKEN,
 }
 
+// Token subskrypcji Claude Code — ten, którym chodzi agent QA (agent.yml).
+// Sprawdzamy go OSOBNO i tylko informacyjnie: nie jest kluczem API i nie
+// wchodzi do wyniku ogólnego.
+const TOKEN_SUBSKRYPCJI = process.env.CLAUDE_CODE_OAUTH_TOKEN
+
 const wyniki = []
 const zglos = (nazwa, ok, szczegol) => {
   wyniki.push({ nazwa, ok })
@@ -88,11 +93,41 @@ async function sprawdzReplicate() {
   }
 }
 
+// Pytanie wraca co kilka tygodni: „skoro agent chodzi na tokenie z sekretów,
+// to czemu skrypt nie może?". Odpowiedź nie jest opinią, tylko odpowiedzią
+// API — więc ją pokazujemy, zamiast tłumaczyć w komentarzu.
+async function sprawdzTokenSubskrypcji() {
+  if (!TOKEN_SUBSKRYPCJI) {
+    console.log('ℹ CLAUDE_CODE_OAUTH_TOKEN nie podany — pomijam sprawdzenie')
+    return
+  }
+  try {
+    const klient = new Anthropic({ apiKey: TOKEN_SUBSKRYPCJI })
+    await klient.messages.create({
+      model: MODEL_TEKST,
+      max_tokens: 1,
+      messages: [{ role: 'user', content: 'ok' }],
+    })
+    console.log('ℹ CLAUDE_CODE_OAUTH_TOKEN zadziałał jako klucz API — zaskakujące,')
+    console.log('   ale to NADAL token subskrypcji Claude Code, a nie klucz API.')
+    console.log('   Nie karmimy nim skryptów: do generowania wsadowego służy')
+    console.log('   workflow „Dania agentem", gdzie token idzie do claude-code-action.')
+  } catch (e) {
+    const tresc = e?.error?.error?.message || e?.message || String(e)
+    console.log(`ℹ CLAUDE_CODE_OAUTH_TOKEN jako klucz API: ${e?.status || '?'} — ${tresc}`)
+    console.log('   Tak ma być: to token subskrypcji Claude Code, nie klucz do')
+    console.log('   api.anthropic.com. Przepisanie go w ANTHROPIC_KEY nic nie da.')
+    console.log('   Dania bez kredytów: workflow „Dania agentem" (tryb `import`).')
+  }
+}
+
 async function main() {
   console.log('Sprawdzam klucze — nic nie generuję.\n')
   await sprawdzSupabase()
   await sprawdzAnthropic()
   await sprawdzReplicate()
+  console.log('')
+  await sprawdzTokenSubskrypcji()
 
   const padly = wyniki.filter(w => !w.ok)
   console.log('')

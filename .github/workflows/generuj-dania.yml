@@ -89,6 +89,9 @@ jobs:
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
       ANTHROPIC_KEY: ${{ secrets.ANTHROPIC_KEY }}
       REPLICATE_KEY: ${{ secrets.REPLICATE_KEY }}
+      # Tylko do trybu `klucze`: sprawdzamy, co api.anthropic.com mówi na token
+      # subskrypcji agenta. Żaden skrypt generujący go nie czyta.
+      CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
       DANIA: ${{ inputs.dania }}
       LIMIT: ${{ inputs.limit }}
       ILE: ${{ inputs.ile }}
