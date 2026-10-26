@@ -116,4 +116,14 @@ export function wypiszPodsumowanie({ nowe, tylkoZdjecie, pominiete, bledy }, { b
   console.log(`Pominięte (były już):   ${pominiete}`)
   console.log(`Błędy:                  ${bledy}`)
   if (bledy > 0) console.log('\nOdpal ponownie — skrypt dokończy tylko to, czego brakuje.')
+
+  // Zero nowych przy samych pominięciach wygląda w logu jak sukces, a znaczy
+  // „lista była z poprzedniej paczki". Mówimy to wprost, bo inaczej wychodzi
+  // przebieg zielony i bez efektu (run 40275904955).
+  if (!nowe && !tylkoZdjecie && pominiete) {
+    console.log(`\nŻADNE danie nie zostało dodane: wszystkie ${pominiete} z listy już są w bazie.`)
+    console.log('Jeśli chciałeś NOWE dania — ta lista jest nieaktualna. Tryb `auto`')
+    console.log('wymyśla nazwy sam (pole `ile`), tryb `import` bierze gotowe')
+    console.log('przepisy z skrypty/dania/*.json, bez zapytań do Anthropica.')
+  }
 }

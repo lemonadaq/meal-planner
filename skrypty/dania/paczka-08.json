@@ -1,0 +1,667 @@
+[
+  {
+    "nazwa": "Katsu curry z kurczakiem",
+    "rodzaj": "obiad",
+    "kuchnia": "japonska",
+    "poziom": "srednie",
+    "czas_minuty": 50,
+    "kcal": 680,
+    "skladniki": [
+      { "nazwa": "pierś z kurczaka", "ilosc": "150", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "panko", "ilosc": "40", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "jajka", "ilosc": "1/2", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "mąka pszenna", "ilosc": "2", "jednostka": "łyżka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "ryż", "ilosc": "80", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "marchew", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "curry", "ilosc": "1", "jednostka": "łyżka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "olej", "ilosc": "3", "jednostka": "łyżka", "kategoria": "8_Inne" }
+    ],
+    "kroki": [
+      "Rozbij pierś tłuczkiem na równą grubość, osól i obtocz w mące, jajku i panko.",
+      "Zeszklij cebulę z marchewką, wsyp curry i łyżkę mąki, przesmaż chwilę.",
+      "Wlej 250 ml wody i gotuj sos 15 minut, aż zgęstnieje jak gęsta śmietana.",
+      "Smaż kotlet na rozgrzanym oleju po 4 minuty z każdej strony, odsącz na kratce.",
+      "Pokrój kotlet w paski NA DESCE i przełóż na ryż, dopiero potem polej sosem — panko ma zostać chrupiące."
+    ],
+    "opis_wizualny": "A breaded chicken cutlet sliced into thick strips, the coating pale golden and visibly crunchy, laid beside a mound of white rice. A thick brown curry sauce is poured over part of the plate, deliberately leaving the crust dry. Soft onion and carrot pieces show in the sauce."
+  },
+  {
+    "nazwa": "Tonkatsu",
+    "rodzaj": "obiad",
+    "kuchnia": "japonska",
+    "poziom": "latwe",
+    "czas_minuty": 35,
+    "kcal": 620,
+    "skladniki": [
+      { "nazwa": "schab", "ilosc": "160", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "panko", "ilosc": "40", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "jajka", "ilosc": "1/2", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "mąka pszenna", "ilosc": "2", "jednostka": "łyżka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "kapusta pekińska", "ilosc": "80", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "ketchup", "ilosc": "1", "jednostka": "łyżka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "sos sojowy", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "olej", "ilosc": "4", "jednostka": "łyżka", "kategoria": "8_Inne" }
+    ],
+    "kroki": [
+      "Natnij tłuszcz na brzegu schabu w kilku miejscach — bez tego kotlet się wywinie na patelni.",
+      "Rozbij mięso na centymetr, osól i opieprz.",
+      "Obtocz w mące, jajku i panko, dociskając okruchy dłonią.",
+      "Smaż na średnim ogniu po 4 minuty z każdej strony, aż panierka będzie złota.",
+      "Zmieszaj ketchup z sosem sojowym na sos tonkatsu. Podawaj z poszatkowaną kapustą."
+    ],
+    "opis_wizualny": "A thick pork cutlet in crunchy pale-gold panko crumbs, sliced into wide strips that lean apart to show juicy white meat inside. A heap of finely shredded raw cabbage sits beside it, with dark brown sauce drizzled over the meat."
+  },
+  {
+    "nazwa": "Oyakodon",
+    "rodzaj": "obiad",
+    "kuchnia": "japonska",
+    "poziom": "latwe",
+    "czas_minuty": 25,
+    "kcal": 540,
+    "skladniki": [
+      { "nazwa": "udko z kurczaka", "ilosc": "130", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "jajka", "ilosc": "2", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "ryż", "ilosc": "80", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "sos sojowy", "ilosc": "2", "jednostka": "łyżka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "cukier", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "dymka", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Ugotuj ryż. Kurczaka pokrój w kawałki na dwa kęsy.",
+      "Na patelni zagotuj 100 ml wody z sosem sojowym i cukrem, wrzuć cebulę w piórka.",
+      "Dodaj kurczaka i gotuj 8 minut na średnim ogniu.",
+      "Rozkłóć jajka NIEDOKŁADNIE — mają zostać smugi białka — i wlej po całej patelni.",
+      "Przykryj i zdejmij z ognia po 90 sekundach. Jajko ma być ledwo ścięte, jeszcze lejące.",
+      "Zsuń całość na ryż razem z sosem i posyp dymką."
+    ],
+    "opis_wizualny": "A bowl of white rice topped with chicken pieces and softly set egg that has run into the rice in pale yellow curds and streaks. The whole top looks glossy and wet from the soy broth, with soft onion strands and green spring onion rings scattered over."
+  },
+  {
+    "nazwa": "Okonomiyaki",
+    "rodzaj": "kolacja",
+    "kuchnia": "japonska",
+    "poziom": "srednie",
+    "czas_minuty": 35,
+    "kcal": 520,
+    "skladniki": [
+      { "nazwa": "kapusta pekińska", "ilosc": "150", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "mąka pszenna", "ilosc": "60", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "jajka", "ilosc": "1", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "boczek wędzony", "ilosc": "40", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "majonez", "ilosc": "1", "jednostka": "łyżka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "ketchup", "ilosc": "1", "jednostka": "łyżka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "sos sojowy", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "dymka", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Poszatkuj kapustę w cienkie wstążki — to ona jest tu głównym składnikiem, nie ciasto.",
+      "Rozmieszaj mąkę z jajkiem i 50 ml wody na gęste ciasto, wmieszaj kapustę.",
+      "Wyłóż masę na patelnię, uformuj gruby placek i ułóż na wierzchu plastry boczku.",
+      "Smaż 7 minut pod przykryciem, obróć boczkiem do dołu i smaż kolejne 6 minut.",
+      "Zmieszaj ketchup z sosem sojowym, posmaruj placek, polej zygzakami majonezu i posyp dymką."
+    ],
+    "opis_wizualny": "A thick savoury pancake the size of a saucer, browned and uneven on top, with crisp bacon strips pressed into the surface. Brown sauce is brushed over it and white mayonnaise drizzled in zigzag lines, with green onion scattered on top. Shredded cabbage is visible at the torn edge."
+  },
+  {
+    "nazwa": "Udon z wołowiną i warzywami",
+    "rodzaj": "obiad",
+    "kuchnia": "japonska",
+    "poziom": "latwe",
+    "czas_minuty": 30,
+    "kcal": 580,
+    "skladniki": [
+      { "nazwa": "makaron udon", "ilosc": "150", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "rozbratel wołowy", "ilosc": "120", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "kapusta pekińska", "ilosc": "70", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "marchew", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "sos sojowy", "ilosc": "2", "jednostka": "łyżka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "sos ostrygowy", "ilosc": "1", "jednostka": "łyżka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "imbir", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "olej", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" }
+    ],
+    "kroki": [
+      "Pokrój wołowinę w cienkie paski przez włókna i zamarynuj w łyżce sosu sojowego.",
+      "Ugotuj udon minutę krócej niż na opakowaniu i przelej zimną wodą.",
+      "Rozgrzej patelnię do oporu i obsmaż mięso 2 minuty, potem wyjmij.",
+      "Wrzuć marchew, kapustę i imbir, smaż 3 minuty — warzywa mają zostać jędrne.",
+      "Dodaj makaron, mięso i resztę sosów, mieszaj minutę na mocnym ogniu."
+    ],
+    "opis_wizualny": "Thick white wheat noodles glossed brown with sauce, tangled with strips of browned beef, carrot batons and wilted cabbage in a wok-style pan. The noodles are fat and slippery-looking, with a few darker seared spots on the meat."
+  },
+  {
+    "nazwa": "Ramen tonkotsu z boczkiem",
+    "rodzaj": "zupa",
+    "kuchnia": "japonska",
+    "poziom": "trudne",
+    "czas_minuty": 90,
+    "kcal": 650,
+    "skladniki": [
+      { "nazwa": "makaron ramen", "ilosc": "80", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "boczek wędzony", "ilosc": "80", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "jajka", "ilosc": "1", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "bulion drobiowy", "ilosc": "350", "jednostka": "ml", "kategoria": "8_Inne" },
+      { "nazwa": "mleko", "ilosc": "60", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "pasta miso", "ilosc": "1", "jednostka": "łyżka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "czosnek", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "dymka", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "sos sojowy", "ilosc": "1", "jednostka": "łyżka", "kategoria": "6_Konserwy i słoiki" }
+    ],
+    "kroki": [
+      "Gotuj jajko 6,5 minuty, przelej zimną wodą i zamarynuj w sosie sojowym z wodą na godzinę.",
+      "Zwiń boczek w rulon, obsmaż ze wszystkich stron i duś 40 minut w bulionie z czosnkiem.",
+      "Wyjmij boczek, do bulionu wmieszaj miso i mleko — od mleka wywar robi się mętny i kremowy jak tonkotsu.",
+      "Ugotuj makaron OSOBNO, w wodzie, i odcedź. Gotowany w bulionie zmętniłby go skrobią.",
+      "Nalej bulion, włóż makaron, plastry boczku i przekrojone jajko.",
+      "Posyp dymką. Żółtko ma zostać ciemne i wilgotne w środku."
+    ],
+    "opis_wizualny": "A deep bowl of cloudy, pale brown broth with a nest of curly noodles, topped with rolled slices of braised pork, a halved soft egg with a dark jammy yolk, and green onion rings. A sheen of fat floats on the surface."
+  },
+  {
+    "nazwa": "Tamagoyaki",
+    "rodzaj": "sniadanie",
+    "kuchnia": "japonska",
+    "poziom": "srednie",
+    "czas_minuty": 15,
+    "kcal": 230,
+    "skladniki": [
+      { "nazwa": "jajka", "ilosc": "2", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "sos sojowy", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "cukier", "ilosc": "1/2", "jednostka": "łyżeczka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "olej", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "8_Inne" },
+      { "nazwa": "dymka", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Rozkłóć jajka z sosem sojowym i cukrem i PRZECEDŹ przez sitko — omlet będzie gładki, bez pasm białka.",
+      "Rozgrzej patelnię na średnim ogniu i cienko ją natłuść.",
+      "Wlej trzecią część masy, a gdy się prawie zetnie, zwiń ją w rulon na jeden brzeg patelni.",
+      "Wlej kolejną porcję, podnieś rulon, żeby masa weszła pod niego, i zwiń dalej.",
+      "Powtórz z resztą, zdejmij i pokrój w grube plastry. Posyp dymką."
+    ],
+    "opis_wizualny": "A rolled yellow omelette cut into thick slices that stand upright, each showing concentric layers in cross-section. The surface is smooth and barely browned, pale yellow. Green onion is sprinkled over the slices."
+  },
+  {
+    "nazwa": "Pho bo",
+    "rodzaj": "zupa",
+    "kuchnia": "wietnamska",
+    "poziom": "trudne",
+    "czas_minuty": 150,
+    "kcal": 480,
+    "skladniki": [
+      { "nazwa": "szponder wołowy", "ilosc": "150", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "makaron ryżowy", "ilosc": "70", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "cebula", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "imbir", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "anyż gwiaździsty", "ilosc": "2", "jednostka": "szt", "kategoria": "7_Przyprawy" },
+      { "nazwa": "cynamon", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" },
+      { "nazwa": "sos rybny", "ilosc": "1", "jednostka": "łyżka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "kiełki sojowe", "ilosc": "40", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "kolendra", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "limonka", "ilosc": "1/4", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Przypiecz przekrojoną cebulę i imbir na suchej patelni, aż poczernieją — to one dają bulionowi kolor i głębię.",
+      "Zalej mięso zimną wodą, zagotuj, zbierz szumowiny i zlej pierwszą wodę.",
+      "Nalej litr świeżej wody, dodaj cebulę, imbir, anyż i cynamon, gotuj 2 godziny bez bulgotania.",
+      "Przecedź bulion i dopraw sosem rybnym. Mięso pokrój w cienkie plastry.",
+      "Makaron zalej wrzątkiem na 5 minut i rozłóż w miskach.",
+      "Zalej gorącym bulionem, ułóż mięso, kiełki i kolendrę. Limonka do wyciśnięcia przy stole."
+    ],
+    "opis_wizualny": "A large bowl of clear amber broth with flat rice noodles beneath the surface and thin slices of beef laid on top, their edges greying in the hot liquid. Bean sprouts, coriander leaves and a lime wedge sit at one side of the bowl."
+  },
+  {
+    "nazwa": "Banh mi z kurczakiem",
+    "rodzaj": "kolacja",
+    "kuchnia": "wietnamska",
+    "poziom": "latwe",
+    "czas_minuty": 40,
+    "kcal": 540,
+    "skladniki": [
+      { "nazwa": "bagietka", "ilosc": "1/2", "jednostka": "szt", "kategoria": "4_Pieczywo" },
+      { "nazwa": "pierś z kurczaka", "ilosc": "120", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "marchew", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "rzodkiew biała", "ilosc": "60", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "ocet ryżowy", "ilosc": "2", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "majonez", "ilosc": "1", "jednostka": "łyżka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "sos rybny", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "kolendra", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "papryczka chili", "ilosc": "1/4", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Zetrzyj marchew i rzodkiew w słupki, zalej octem z łyżeczką cukru i soli. Odstaw na 30 minut.",
+      "Kurczaka zamarynuj w sosie rybnym z czosnkiem i usmaż na mocnym ogniu, potem pokrój w paski.",
+      "Przekrój bagietkę i podpiecz ją, żeby skórka chrupiała, a środek został miękki.",
+      "Posmaruj wnętrze majonezem, włóż mięso i ODCIŚNIĘTE warzywa z zalewy.",
+      "Dodaj kolendrę i chili. Jedz od razu, póki pieczywo chrupie."
+    ],
+    "opis_wizualny": "A crusty split baguette packed with strips of browned chicken, orange and white pickled vegetable matchsticks, coriander sprigs and red chilli rings poking out. The bread is golden and cracked on top, the filling overflowing at both ends."
+  },
+  {
+    "nazwa": "Bun cha z wieprzowiną",
+    "rodzaj": "obiad",
+    "kuchnia": "wietnamska",
+    "poziom": "srednie",
+    "czas_minuty": 50,
+    "kcal": 560,
+    "skladniki": [
+      { "nazwa": "karkówka", "ilosc": "140", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "makaron ryżowy", "ilosc": "70", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "sos rybny", "ilosc": "2", "jednostka": "łyżka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "cukier", "ilosc": "1", "jednostka": "łyżka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "limonka", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "czosnek", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "sałata", "ilosc": "50", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "mięta", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "marchew", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Pokrój karkówkę w cienkie plastry i zamarynuj w łyżce sosu rybnego, czosnku i łyżeczce cukru. Odstaw na 30 minut.",
+      "Zrób sos: łyżka sosu rybnego, łyżka cukru, sok z limonki, 4 łyżki wody, czosnek i marchewka w słupkach.",
+      "Ugotuj makaron ryżowy i przelej zimną wodą, żeby się nie kleił.",
+      "Smaż mięso na patelni grillowej, aż brzegi się przypieką — ma być miejscami ciemne.",
+      "Podaj osobno: makaron, mięso, sałatę i miętę, a sos w miseczce do maczania i polewania."
+    ],
+    "opis_wizualny": "A plate with a nest of cold white rice noodles, a pile of charred grilled pork slices, and fresh lettuce and mint leaves at the side. A small bowl of thin brown dipping sauce with carrot shreds sits next to it. Everything is kept separate, not mixed."
+  },
+  {
+    "nazwa": "Dal z czerwonej soczewicy",
+    "rodzaj": "obiad",
+    "kuchnia": "indyjska",
+    "poziom": "latwe",
+    "czas_minuty": 40,
+    "kcal": 420,
+    "skladniki": [
+      { "nazwa": "soczewica czerwona", "ilosc": "80", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "pomidory z puszki", "ilosc": "80", "jednostka": "g", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "czosnek", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "imbir", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "kumin", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "kurkuma", "ilosc": "1/2", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "garam masala", "ilosc": "1/2", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "masło klarowane", "ilosc": "1", "jednostka": "łyżka", "kategoria": "3_Nabiał" },
+      { "nazwa": "kolendra", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Opłucz soczewicę i gotuj ją w 300 ml wody z kurkumą 20 minut, aż się rozpadnie.",
+      "Na masle klarowanym usmaż kumin, aż zacznie strzelać, potem cebulę, czosnek i imbir.",
+      "Dodaj pomidory i smaż 5 minut, aż stracą surowy smak.",
+      "Przelej zasmażkę do soczewicy — to jest tadka i od niej dal ma smak.",
+      "Dopraw garam masalą i solą, gotuj 5 minut i posyp kolendrą."
+    ],
+    "opis_wizualny": "A thick yellow-orange lentil stew, coarse rather than smooth, in a bowl with a darker swirl of spiced onion and tomato on top. A pool of clarified butter shines on the surface, with coriander leaves scattered over."
+  },
+  {
+    "nazwa": "Palak paneer",
+    "rodzaj": "obiad",
+    "kuchnia": "indyjska",
+    "poziom": "srednie",
+    "czas_minuty": 45,
+    "kcal": 480,
+    "skladniki": [
+      { "nazwa": "ser paneer", "ilosc": "100", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "szpinak", "ilosc": "200", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "czosnek", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "imbir", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "śmietana 18%", "ilosc": "40", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "garam masala", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "kumin", "ilosc": "1/2", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "masło klarowane", "ilosc": "1", "jednostka": "łyżka", "kategoria": "3_Nabiał" }
+    ],
+    "kroki": [
+      "Wrzuć szpinak na 2 minuty do wrzątku i natychmiast do zimnej wody — zostanie intensywnie zielony.",
+      "Zmiksuj go z odrobiną wody na gęstą pastę.",
+      "Podsmaż paneer w kostkach na masle, aż złapie złote plamy, i odłóż.",
+      "Na tym tłuszczu zeszklij cebulę z czosnkiem i imbirem, dodaj kumin i garam masalę.",
+      "Wlej szpinak, gotuj 5 minut, wmieszaj śmietanę, dopraw solą.",
+      "Włóż paneer i podgrzej minutę. Dłuższe gotowanie w sosie robi go gumowym."
+    ],
+    "opis_wizualny": "A deep green spinach purée in a bowl with cubes of white cheese sitting in it, some with golden-brown toasted faces. A swirl of cream is drawn across the surface. The sauce is thick and clings to the cheese."
+  },
+  {
+    "nazwa": "Biryani z kurczakiem",
+    "rodzaj": "obiad",
+    "kuchnia": "indyjska",
+    "poziom": "trudne",
+    "czas_minuty": 80,
+    "kcal": 620,
+    "skladniki": [
+      { "nazwa": "ryż basmati", "ilosc": "90", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "udko z kurczaka", "ilosc": "150", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "jogurt naturalny", "ilosc": "3", "jednostka": "łyżka", "kategoria": "3_Nabiał" },
+      { "nazwa": "cebula", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "garam masala", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "kurkuma", "ilosc": "1/2", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "imbir", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "masło klarowane", "ilosc": "2", "jednostka": "łyżka", "kategoria": "3_Nabiał" },
+      { "nazwa": "kolendra", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "szafran", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Zamarynuj kurczaka w jogurcie z przyprawami, imbirem i czosnkiem na godzinę.",
+      "Usmaż cebulę w piórkach na masle na ciemny brąz i odłóż połowę do posypania.",
+      "Ugotuj ryż w osolonej wodzie tylko do POŁOWY miękkości — dojdzie na parze — i odcedź.",
+      "W garnku ułóż kurczaka z marynatą, na nim ryż, polej masłem i szafranem rozpuszczonym w łyżce mleka.",
+      "Przykryj szczelnie i trzymaj 25 minut na najmniejszym ogniu. Nie mieszaj.",
+      "Rozkopuj delikatnie widelcem, posyp cebulą i kolendrą."
+    ],
+    "opis_wizualny": "A mound of long-grain rice in patches of white, yellow and orange, with pieces of dark braised chicken half-buried in it. Crisp fried onion strands and coriander sit on top. The grains stay separate and dry-looking."
+  },
+  {
+    "nazwa": "Aloo gobi",
+    "rodzaj": "dodatek",
+    "kuchnia": "indyjska",
+    "poziom": "latwe",
+    "czas_minuty": 40,
+    "kcal": 280,
+    "skladniki": [
+      { "nazwa": "kalafior", "ilosc": "200", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "ziemniaki", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "kumin", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "kurkuma", "ilosc": "1/2", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "imbir", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "olej", "ilosc": "2", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "kolendra", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Pokrój ziemniaki i kalafior w duże kawałki, podobnej wielkości.",
+      "Rozgrzej olej, wrzuć kumin i czekaj, aż zacznie pachnieć — kilka sekund.",
+      "Dodaj cebulę, imbir i kurkumę, przesmaż minutę.",
+      "Wrzuć warzywa, wymieszaj, podlej 50 ml wody i duś pod przykryciem 20 minut.",
+      "Zdejmij pokrywkę i smaż jeszcze 5 minut, aż woda odparuje, a brzegi się przypieką. Posyp kolendrą."
+    ],
+    "opis_wizualny": "Chunks of potato and cauliflower stained yellow with turmeric, browned at the edges and dry rather than saucy, piled in a bowl. Cumin seeds and coriander leaves are visible on the surface."
+  },
+  {
+    "nazwa": "Naan z czosnkiem",
+    "rodzaj": "dodatek",
+    "kuchnia": "indyjska",
+    "poziom": "srednie",
+    "czas_minuty": 90,
+    "kcal": 290,
+    "skladniki": [
+      { "nazwa": "mąka pszenna", "ilosc": "80", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "jogurt naturalny", "ilosc": "2", "jednostka": "łyżka", "kategoria": "3_Nabiał" },
+      { "nazwa": "drożdże świeże", "ilosc": "4", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "masło", "ilosc": "15", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "czosnek", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "natka pietruszki", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "cukier", "ilosc": "1/2", "jednostka": "łyżeczka", "kategoria": "5_Produkty sypkie" }
+    ],
+    "kroki": [
+      "Rozpuść drożdże w 30 ml ciepłej wody z cukrem, odstaw na 10 minut.",
+      "Zagnieć ciasto z mąki, jogurtu, rozczynu i soli. Wyrabiaj 8 minut i odstaw na godzinę.",
+      "Rozciągnij kawałki ciasta w podłużne placki, grube na pół centymetra.",
+      "Rozgrzej suchą patelnię DO OPORU i piecz placki po 2 minuty z każdej strony — mają się nadmuchać i złapać czarne plamy.",
+      "Posmaruj masłem z przeciśniętym czosnkiem i posyp natką."
+    ],
+    "opis_wizualny": "A teardrop-shaped flatbread with large puffed bubbles, charred black in spots and pale between them, glistening with melted garlic butter. Chopped green herbs stick to the surface. It lies folded loosely on a board."
+  },
+  {
+    "nazwa": "Raita ogórkowa",
+    "rodzaj": "dodatek",
+    "kuchnia": "indyjska",
+    "poziom": "latwe",
+    "czas_minuty": 15,
+    "kcal": 90,
+    "skladniki": [
+      { "nazwa": "jogurt naturalny", "ilosc": "120", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "ogórek", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "kumin", "ilosc": "1/2", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "kolendra", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "mięta", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "sól", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Upraż kumin na suchej patelni 30 sekund i rozetrzyj — prażony pachnie zupełnie inaczej niż z torebki.",
+      "Zetrzyj ogórka na grubych oczkach i odciśnij z wody.",
+      "Wymieszaj jogurt z ogórkiem, kuminem, posiekaną miętą i kolendrą.",
+      "Dopraw solą i wstaw do lodówki na 20 minut. Podawaj do ostrych dań."
+    ],
+    "opis_wizualny": "A small bowl of thick white yogurt flecked with pale green grated cucumber and chopped herbs, with a dusting of brown ground cumin on top. The surface holds a spoon mark; a little watery liquid gathers at the rim."
+  },
+  {
+    "nazwa": "Green curry z kurczakiem",
+    "rodzaj": "obiad",
+    "kuchnia": "tajska",
+    "poziom": "latwe",
+    "czas_minuty": 35,
+    "kcal": 560,
+    "skladniki": [
+      { "nazwa": "pierś z kurczaka", "ilosc": "140", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "mleko kokosowe", "ilosc": "150", "jednostka": "ml", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "pasta curry zielona", "ilosc": "1", "jednostka": "łyżka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "bakłażan", "ilosc": "1/4", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "fasolka szparagowa", "ilosc": "60", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "sos rybny", "ilosc": "1", "jednostka": "łyżka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "bazylia", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "ryż jaśminowy", "ilosc": "80", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "limonka", "ilosc": "1/4", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Odlej z puszki gęstą śmietankę kokosową z góry i podsmaż na niej pastę curry 2 minuty, aż zacznie pachnieć i puści olej.",
+      "Dodaj kurczaka w kawałkach i obtocz w paście.",
+      "Wlej resztę mleka kokosowego, dodaj bakłażana i fasolkę, gotuj 12 minut.",
+      "Dopraw sosem rybnym i sokiem z limonki, wrzuć bazylię i zdejmij z ognia.",
+      "Podawaj z ryżem jaśminowym."
+    ],
+    "opis_wizualny": "A pale green coconut curry in a bowl, with chunks of chicken, aubergine and whole green beans, a film of green-tinged oil on the surface. Basil leaves float on top. White rice is served beside it in a separate mound."
+  },
+  {
+    "nazwa": "Massaman z wołowiną",
+    "rodzaj": "obiad",
+    "kuchnia": "tajska",
+    "poziom": "srednie",
+    "czas_minuty": 110,
+    "kcal": 620,
+    "skladniki": [
+      { "nazwa": "łopatka wołowa", "ilosc": "150", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "mleko kokosowe", "ilosc": "150", "jednostka": "ml", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "pasta curry massaman", "ilosc": "1", "jednostka": "łyżka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "ziemniaki", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "orzeszki ziemne", "ilosc": "20", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "sos rybny", "ilosc": "1", "jednostka": "łyżka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "cukier trzcinowy", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "cynamon", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Podsmaż pastę massaman na łyżce gęstego mleka kokosowego, aż zapachnie.",
+      "Dodaj wołowinę w kostce i obsmaż ze wszystkich stron.",
+      "Wlej resztę mleka kokosowego i 150 ml wody, dodaj cynamon i duś 70 minut.",
+      "Dodaj ziemniaki, cebulę i orzeszki, gotuj kolejne 25 minut.",
+      "Dopraw sosem rybnym i cukrem — to curry ma być łagodne i lekko słodkie, nie ostre."
+    ],
+    "opis_wizualny": "A mild brown-orange coconut curry with large tender beef chunks, whole potato pieces and peanuts, in a thick sauce with visible oil separation at the edge. Served in a bowl, the potatoes pale against the darker sauce."
+  },
+  {
+    "nazwa": "Som tam",
+    "rodzaj": "surowka",
+    "kuchnia": "tajska",
+    "poziom": "latwe",
+    "czas_minuty": 20,
+    "kcal": 180,
+    "skladniki": [
+      { "nazwa": "papaja zielona", "ilosc": "150", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "pomidorki koktajlowe", "ilosc": "4", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "fasolka szparagowa", "ilosc": "30", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "orzeszki ziemne", "ilosc": "15", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "sos rybny", "ilosc": "1", "jednostka": "łyżka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "limonka", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "cukier trzcinowy", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "papryczka chili", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "czosnek", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Zetrzyj papaję w długie cienkie słupki. Jeśli nie masz zielonej papai, weź twardą białą rzodkiew albo marchew.",
+      "Rozetrzyj w moździerzu czosnek z chili, dodaj cukier, sos rybny i sok z limonki.",
+      "Wrzuć fasolkę i pomidorki, rozbij je lekko tłuczkiem, żeby puściły sok.",
+      "Dodaj papaję i MIESZAJ ugniatając, nie krusząc — słupki mają zostać całe, ale nasiąknąć sosem.",
+      "Posyp prażonymi orzeszkami. Podawaj od razu."
+    ],
+    "opis_wizualny": "A tangle of pale green shredded papaya in a shallow bowl, wet with dressing, mixed with crushed cherry tomato halves, green bean pieces and red chilli. Crushed peanuts are scattered over the top and liquid pools at the bottom."
+  },
+  {
+    "nazwa": "Pad see ew z wołowiną",
+    "rodzaj": "obiad",
+    "kuchnia": "tajska",
+    "poziom": "latwe",
+    "czas_minuty": 30,
+    "kcal": 600,
+    "skladniki": [
+      { "nazwa": "makaron ryżowy", "ilosc": "100", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "rozbratel wołowy", "ilosc": "120", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "brokuł", "ilosc": "80", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "jajka", "ilosc": "1", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "sos sojowy ciemny", "ilosc": "1", "jednostka": "łyżka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "sos ostrygowy", "ilosc": "1", "jednostka": "łyżka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "czosnek", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "olej", "ilosc": "2", "jednostka": "łyżka", "kategoria": "8_Inne" }
+    ],
+    "kroki": [
+      "Zalej szeroki makaron ryżowy wrzątkiem na 8 minut i odcedź.",
+      "Rozgrzej patelnię maksymalnie — to danie żyje z wysokiej temperatury.",
+      "Obsmaż wołowinę w paskach 90 sekund i zsuń na brzeg patelni.",
+      "Wbij jajko, rozmieszaj, dodaj czosnek i brokuł, smaż 2 minuty.",
+      "Dodaj makaron i oba sosy, mieszaj szeroką łopatką minutę — część makaronu ma się przypiec."
+    ],
+    "opis_wizualny": "Wide flat rice noodles stained dark brown by soy sauce, with charred patches, tossed with strips of beef, broccoli florets and ribbons of scrambled egg. The noodles look slippery and clumped, served heaped on a plate."
+  },
+  {
+    "nazwa": "Tagine z kurczakiem i cytryną",
+    "rodzaj": "obiad",
+    "kuchnia": "afrykanska",
+    "poziom": "srednie",
+    "czas_minuty": 80,
+    "kcal": 520,
+    "skladniki": [
+      { "nazwa": "udko z kurczaka", "ilosc": "160", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "cytryny", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "oliwki zielone", "ilosc": "8", "jednostka": "szt", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "cebula", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "czosnek", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "kurkuma", "ilosc": "1/2", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "imbir", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "kolendra", "ilosc": "2", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "oliwa z oliwek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" }
+    ],
+    "kroki": [
+      "Obsmaż kurczaka na oliwie skórą do dołu, aż się zrumieni, i wyjmij.",
+      "Zeszklij cebulę z czosnkiem, dodaj kurkumę i imbir.",
+      "Włóż mięso, wlej 150 ml wody i duś pod przykryciem 50 minut.",
+      "Dodaj plastry cytryny ze skórką i oliwki, duś 10 minut — skórka ma zmięknąć i oddać gorycz sosowi.",
+      "Odparuj sos do połowy i posyp kolendrą. Podawaj z kuskusem."
+    ],
+    "opis_wizualny": "Chicken thighs in a shallow earthenware dish, in a yellow-tinged sauce with soft onion, green olives and translucent lemon slices. The skin is browned, the sauce reduced and glossy. Coriander is scattered thickly over the top."
+  },
+  {
+    "nazwa": "Zaalouk",
+    "rodzaj": "surowka",
+    "kuchnia": "afrykanska",
+    "poziom": "latwe",
+    "czas_minuty": 45,
+    "kcal": 190,
+    "skladniki": [
+      { "nazwa": "bakłażan", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "pomidory", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "czosnek", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "oliwa z oliwek", "ilosc": "2", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "kumin", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "papryka słodka", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "kolendra", "ilosc": "2", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "sok z cytryny", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Upiecz bakłażana w całości 30 minut w 220 stopniach, aż skórka zwiotczeje.",
+      "Wydrąż miąższ łyżką i posiekaj go — pieczony ma zupełnie inny smak niż duszony.",
+      "Na oliwie podsmaż czosnek, dodaj obrane, posiekane pomidory, kumin i paprykę.",
+      "Gotuj 15 minut, aż sos zgęstnieje, potem dodaj bakłażana i gotuj kolejne 10.",
+      "Dopraw solą i sokiem z cytryny, wmieszaj kolendrę. Podawaj letnie albo zimne, z pieczywem."
+    ],
+    "opis_wizualny": "A coarse, soft spread of collapsed aubergine and tomato, deep brick-red with olive oil pooling on top, served in a shallow bowl. The texture is rough with visible strands of aubergine. Coriander is mixed through and scattered on top."
+  },
+  {
+    "nazwa": "Harira",
+    "rodzaj": "zupa",
+    "kuchnia": "afrykanska",
+    "poziom": "latwe",
+    "czas_minuty": 60,
+    "kcal": 380,
+    "skladniki": [
+      { "nazwa": "ciecierzyca z puszki", "ilosc": "100", "jednostka": "g", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "soczewica zielona", "ilosc": "40", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "pomidory z puszki", "ilosc": "150", "jednostka": "g", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "makaron nitki", "ilosc": "25", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "seler naciowy", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "kurkuma", "ilosc": "1/2", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "cynamon", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" },
+      { "nazwa": "natka pietruszki", "ilosc": "2", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "sok z cytryny", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Zeszklij cebulę z selerem, dodaj kurkumę i cynamon.",
+      "Wlej pomidory i 400 ml wody, wsyp soczewicę, gotuj 25 minut.",
+      "Dodaj ciecierzycę i makaron, gotuj kolejne 10 minut.",
+      "Dopraw solą, pieprzem i sokiem z cytryny — kwas jest tu obowiązkowy, bez niego zupa jest płaska.",
+      "Wsyp natkę na koniec, już po zdjęciu z ognia."
+    ],
+    "opis_wizualny": "A thick red-brown soup crowded with chickpeas, lentils and short noodles, with celery and herb flecks throughout. The liquid is cloudy and slightly starchy. Chopped parsley and a lemon wedge sit at the side of the bowl."
+  },
+  {
+    "nazwa": "Chili sin carne",
+    "rodzaj": "obiad",
+    "kuchnia": "meksykanska",
+    "poziom": "latwe",
+    "czas_minuty": 45,
+    "kcal": 420,
+    "skladniki": [
+      { "nazwa": "fasola czerwona z puszki", "ilosc": "120", "jednostka": "g", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "soczewica zielona", "ilosc": "50", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "pomidory z puszki", "ilosc": "150", "jednostka": "g", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "papryka", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "kukurydza z puszki", "ilosc": "50", "jednostka": "g", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "kumin", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "papryka ostra", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" },
+      { "nazwa": "kakao", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "5_Produkty sypkie" }
+    ],
+    "kroki": [
+      "Ugotuj soczewicę 20 minut w osolonej wodzie i odcedź.",
+      "Podsmaż cebulę z papryką, dodaj kumin i ostrą paprykę.",
+      "Wlej pomidory, dodaj fasolę, kukurydzę i soczewicę, podlej 100 ml wody.",
+      "Wsyp łyżeczkę kakao — daje głębię, której bez mięsa brakuje, i nie czuć go jako kakao.",
+      "Duś 20 minut, aż zgęstnieje. Dopraw solą. Podawaj z ryżem albo pieczywem."
+    ],
+    "opis_wizualny": "A thick dark red stew of kidney beans, lentils, sweetcorn and pepper strips, chunky and holding its shape on a spoon. Served in a bowl, it looks glossy rather than watery, with a few paler corn kernels standing out."
+  },
+  {
+    "nazwa": "Pieczone bataty z guacamole",
+    "rodzaj": "kolacja",
+    "kuchnia": "meksykanska",
+    "poziom": "latwe",
+    "czas_minuty": 50,
+    "kcal": 450,
+    "skladniki": [
+      { "nazwa": "bataty", "ilosc": "250", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "awokado", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "limonka", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "cebula czerwona", "ilosc": "1/4", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "pomidory", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "kolendra", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "oliwa z oliwek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "papryka ostra", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Pokrój bataty w grube talarki, wymieszaj z oliwą, solą i ostrą papryką.",
+      "Piecz 35 minut w 210 stopniach, przewracając raz, aż brzegi się przypieką.",
+      "Rozgnieć awokado widelcem — ma zostać z grudkami, nie być pastą.",
+      "Wmieszaj posiekaną cebulę, pomidora, kolendrę i sok z limonki, dopraw solą.",
+      "Podawaj talarki z guacamole na wierzchu albo obok, do maczania."
+    ],
+    "opis_wizualny": "Thick orange sweet potato rounds with dark caramelised edges, arranged on a plate with a mound of chunky pale green guacamole beside them. Red onion and tomato pieces show in the dip, with coriander on top."
+  }
+]

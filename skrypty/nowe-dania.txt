@@ -9,71 +9,16 @@
 # Puste linie i linie zaczynające się od # są pomijane.
 # Dania, które już są w bazie, zostaną pominięte przy generowaniu.
 #
-# ── PACZKA 5: kuchnia chińska, 37 dań ──
+# ── CELOWO PUSTE ──
 #
-# Filip prosił o „makaron chiński z kurczakiem jak padthai". Pad thai jest
-# tajski, nie chiński — chińskim odpowiednikiem smażonego makaronu jest
-# CHOW MEIN (makaron smażony na chrupko) i LO MEIN (miękki, mieszany z sosem).
-# Oba są tu na początku listy. Gdyby Filip chciał jednak samego pad thaia,
-# to osobna paczka tajska.
+# Ten plik jest listą REZERWOWĄ: tryb `wszystko` i `przepisy` czytają go,
+# gdy pole `dania` w akcji zostanie puste. Dopóki leżała tu stara paczka,
+# puste pole `dania` znaczyło „przerób jeszcze raz 37 dań, które już są
+# w bazie" — przebieg kończył się sukcesem i zerem dodanych dań
+# (run 40275904955). Dlatego plik zostaje pusty.
 #
-# W bazie chińszczyzny prawie nie było: „Kurczak po chińsku", „Kurczak
-# w sosie słodko-kwaśnym", „Spring rolls (sajgonki)" i dwa smażone ryże.
-# Ta lista ich nie powtarza — sprawdzone tą samą logiką co `npm run duble`,
-# zestawiając ją z wszystkimi 539 daniami bazy.
-#
-# Nazwy trzymają styl bazy: bez myślników, chińska nazwa tam, gdzie jest
-# tożsamością dania (chow mein, mapo tofu, gong bao, dan dan), polski opis
-# tam, gdzie sama nazwa nic nie mówi.
-
-
-# ── OBIADY (14) ──
-Chow mein z kurczakiem|obiad
-Lo mein z wołowiną|obiad
-Kurczak gong bao z orzeszkami|obiad
-Kurczak generała Tso|obiad
-Wołowina w sosie ostrygowym|obiad
-Wołowina z brokułami po chińsku|obiad
-Wieprzowina gu lao rou|obiad
-Mapo tofu z mielonym mięsem|obiad
-Makaron dan dan z mielonym mięsem|obiad
-Kaczka po pekińsku|obiad
-Chow fun z wołowiną|obiad
-Kurczak z imbirem i dymką|obiad
-Krewetki w sosie chili po chińsku|obiad
-Bakłażan w sosie yuxiang|obiad
-
-# ── ZUPY (4) ──
-Zupa wonton z pierożkami|zupa
-Chińska zupa pikantno kwaśna|zupa
-Zupa kukurydziana z kurczakiem|zupa
-Zupa z makaronem i wołowiną po chińsku|zupa
-
-# ── PRZEKĄSKI (6) ──
-Pierożki jiaozi z wieprzowiną|przekaska
-Pierożki dim sum na parze|przekaska
-Bułeczki bao z nadzieniem wieprzowym|przekaska
-Żeberka w sosie hoisin|przekaska
-Skrzydełka w sosie sojowo miodowym|przekaska
-Chrupiące wontony smażone|przekaska
-
-# ── KOLACJE (4) ──
-Jajka smażone z pomidorami po chińsku|kolacja
-Ryż smażony po kantońsku|kolacja
-Placki z dymką po chińsku|kolacja
-Tofu smażone z warzywami po chińsku|kolacja
-
-# ── SURÓWKI (3) ──
-Sałatka z ogórka po syczuańsku|surowka
-Sałatka z makaronem szklanym|surowka
-Marynowana kapusta pekińska po chińsku|surowka
-
-# ── DODATKI (3) ──
-Sos słodko kwaśny domowy|dodatek
-Ryż jaśminowy na parze|dodatek
-Chrupiące chili w oleju|dodatek
-
-# ── DESERY (3) ──
-Smażone banany w cieście|deser
-Ciasteczka z wróżbą|deser
-Budyń mango z tapioką|deser
+# Chcesz NOWE dania?
+#   tryb `auto`   — podajesz liczbę, nazwy wymyśla Claude (potrzebne kredyty)
+#   tryb `import` — gotowe przepisy z skrypty/dania/*.json (bez Anthropica)
+# Chcesz przerobić konkretną listę? Wpisz ją w pole `dania` w akcji:
+#   Bigos|obiad; Żurek|zupa

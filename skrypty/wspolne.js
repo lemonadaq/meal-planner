@@ -464,7 +464,18 @@ export async function wgrajZdjecie(nazwa, promptObrazu, ids) {
 export function wczytajDania(tekst) {
   const dania = []
   const bledy = []
-  for (const linia of tekst.split(/[\r\n;]+/)) {
+
+  // Komentarze odrzucamy PER LINIA i dopiero potem dzielimy po średnikach.
+  // Odwrotna kolejność (jeden split po `[\r\n;]`) rozcinała komentarz
+  // zawierający średnik i brała jego drugą połowę za danie — linijka
+  // „# Bigos|obiad; Żurek|zupa" w pliku z listą dopisywała do przebiegu
+  // widmowy „Żurek".
+  const pozycje = tekst.split(/[\r\n]+/)
+    .map(l => l.trim())
+    .filter(l => l && !l.startsWith('#'))
+    .flatMap(l => l.split(';'))
+
+  for (const linia of pozycje) {
     const czysta = linia.trim()
     if (!czysta || czysta.startsWith('#')) continue
     const [nazwa, rodzajSurowy] = czysta.split('|').map(x => x.trim())

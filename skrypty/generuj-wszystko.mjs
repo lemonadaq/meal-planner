@@ -43,10 +43,21 @@ const PLIK_DAN = 'skrypty/nowe-dania.txt'
 const LIMIT = parseInt(process.env.LIMIT || '0', 10)
 
 function wczytajListe() {
-  if (process.env.DANIA?.trim()) return wczytajDania(process.env.DANIA)
-  if (existsSync(PLIK_DAN)) return wczytajDania(readFileSync(PLIK_DAN, 'utf-8'))
-  console.error(`Brak listy dań — ustaw DANIA albo utwórz ${PLIK_DAN}`)
-  process.exit(1)
+  const lista = process.env.DANIA?.trim()
+    ? wczytajDania(process.env.DANIA)
+    : (existsSync(PLIK_DAN) ? wczytajDania(readFileSync(PLIK_DAN, 'utf-8')) : [])
+
+  // Pusta lista to NIE jest przebieg na zero dań — to pomyłka w wejściu
+  // i trzeba o niej powiedzieć, zamiast kończyć sukcesem bez efektu.
+  if (!lista.length) {
+    console.error('Lista dań jest PUSTA — nie ma czego generować.')
+    console.error(`Wpisz dania w pole \`dania\` w akcji (albo w ${PLIK_DAN}):`)
+    console.error('  Bigos|obiad; Żurek|zupa')
+    console.error('Chcesz, żeby nazwy wymyśliły się same? Tryb `auto` (pole `ile`).')
+    console.error('Chcesz gotowe przepisy bez kredytów na Anthropic? Tryb `import`.')
+    process.exit(1)
+  }
+  return lista
 }
 
 async function main() {

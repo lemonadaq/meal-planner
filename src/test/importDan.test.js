@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { readFileSync, readdirSync } from 'fs'
 import { sprawdzDanie, wczytajPlik } from '../../skrypty/import-dan.js'
+import { wczytajDania } from '../../skrypty/wspolne.js'
 
 // Tryb `import` wstawia do bazy to, co stoi w pliku — bez modelu, który
 // pilnowałby schematu. Walidacja jest więc jedyną barierą między literówką
@@ -97,5 +98,42 @@ describe('paczki w skrypty/dania', () => {
     const rodzaje = pliki.flatMap(p =>
       wczytajPlik(readFileSync(`skrypty/dania/${p}`, 'utf-8'), p).map(d => d.rodzaj))
     expect(rodzaje).not.toContain('przekaska')
+  })
+})
+
+// ── Lista dań z pola `dania` albo z pliku rezerwowego ─────────────
+// Pole w akcji jest jednolinijkowe, więc dania podaje się po średniku.
+// Plik rezerwowy ma komentarze — i tu był błąd: średnik w komentarzu
+// rozcinał go i druga połowa wchodziła do przebiegu jako danie.
+describe('wczytajDania', () => {
+  it('czyta dania po średniku z jednej linii', () => {
+    expect(wczytajDania('Bigos|obiad; Żurek|zupa')).toEqual([
+      { nazwa: 'Bigos', rodzaj: 'obiad' },
+      { nazwa: 'Żurek', rodzaj: 'zupa' },
+    ])
+  })
+
+  it('czyta dania z wielu linii', () => {
+    expect(wczytajDania('Bigos|obiad\nŻurek|zupa')).toHaveLength(2)
+  })
+
+  it('NIE bierze dania z komentarza ze średnikiem', () => {
+    expect(wczytajDania('# przykład: Bigos|obiad; Żurek|zupa')).toEqual([])
+  })
+
+  it('pomija puste linie i komentarze', () => {
+    expect(wczytajDania('# naglowek\n\nBigos|obiad\n\n# stopka')).toEqual([
+      { nazwa: 'Bigos', rodzaj: 'obiad' },
+    ])
+  })
+
+  it('brak rodzaju znaczy obiad', () => {
+    expect(wczytajDania('Bigos')).toEqual([{ nazwa: 'Bigos', rodzaj: 'obiad' }])
+  })
+
+  it('plik rezerwowy w repo jest pusty — żadnego dania', () => {
+    // Dopóki leżała w nim stara paczka, puste pole `dania` w akcji znaczyło
+    // „przerób 37 dań, które już są w bazie" (run 40275904955).
+    expect(wczytajDania(readFileSync('skrypty/nowe-dania.txt', 'utf-8'))).toEqual([])
   })
 })

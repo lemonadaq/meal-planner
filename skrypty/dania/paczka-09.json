@@ -1,0 +1,642 @@
+[
+  {
+    "nazwa": "Caldo verde",
+    "rodzaj": "zupa",
+    "kuchnia": "miedzynarodowa",
+    "poziom": "latwe",
+    "czas_minuty": 45,
+    "kcal": 380,
+    "skladniki": [
+      { "nazwa": "ziemniaki", "ilosc": "3", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "jarmuż", "ilosc": "70", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "chorizo", "ilosc": "50", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "czosnek", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "oliwa z oliwek", "ilosc": "2", "jednostka": "łyżka", "kategoria": "8_Inne" }
+    ],
+    "kroki": [
+      "Ugotuj ziemniaki z cebulą i czosnkiem w 400 ml osolonej wody do miękkości.",
+      "Zmiksuj je na gładki krem razem z wywarem i wlej oliwę.",
+      "Jarmuż pokrój w BARDZO cienkie wstążki — w tej zupie to znak rozpoznawczy.",
+      "Wrzuć go do gotującego się kremu i gotuj tylko 5 minut, żeby został zielony.",
+      "Podsmaż plasterki chorizo i ułóż na wierzchu razem z wytopionym czerwonym tłuszczem."
+    ],
+    "opis_wizualny": "A pale creamy potato soup with fine dark green shreds of kale suspended through it, topped with a few browned chorizo coins. Red-orange oil from the sausage marbles the surface. Served in a wide bowl."
+  },
+  {
+    "nazwa": "Bacalhau a Bras",
+    "rodzaj": "obiad",
+    "kuchnia": "miedzynarodowa",
+    "poziom": "srednie",
+    "czas_minuty": 50,
+    "kcal": 620,
+    "skladniki": [
+      { "nazwa": "dorsz", "ilosc": "150", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "ziemniaki", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "jajka", "ilosc": "2", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "cebula", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "oliwki czarne", "ilosc": "6", "jednostka": "szt", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "oliwa z oliwek", "ilosc": "3", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "natka pietruszki", "ilosc": "2", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "czosnek", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Pokrój ziemniaki w cienkie zapałki i usmaż na oliwie na chrupko, odsącz na papierze.",
+      "Ugotuj dorsza 8 minut w osolonej wodzie, ostudź i rozdrobnij na włókna, usuwając ości.",
+      "Na oliwie zeszklij cebulę w piórkach z czosnkiem, dodaj rybę i przesmaż.",
+      "Wsyp ziemniaki i wymieszaj.",
+      "Wlej rozkłócone jajka i mieszaj 30 SEKUND na małym ogniu — mają spiąć danie, a nie ściąć się w jajecznicę.",
+      "Zdejmij z ognia, posyp natką i oliwkami."
+    ],
+    "opis_wizualny": "A tangle of thin crisp potato straws, white flakes of fish and softly set egg binding it all together, pale gold with darker fried edges. Black olives and plenty of chopped parsley sit on top. Served heaped on a plate."
+  },
+  {
+    "nazwa": "Pasteis de nata",
+    "rodzaj": "deser",
+    "kuchnia": "miedzynarodowa",
+    "poziom": "trudne",
+    "czas_minuty": 70,
+    "kcal": 290,
+    "skladniki": [
+      { "nazwa": "ciasto francuskie", "ilosc": "80", "jednostka": "g", "kategoria": "4_Pieczywo" },
+      { "nazwa": "mleko", "ilosc": "100", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "żółtka", "ilosc": "2", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "cukier", "ilosc": "40", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "mąka pszenna", "ilosc": "1", "jednostka": "łyżka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "cynamon", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" },
+      { "nazwa": "skórka z cytryny", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Zwiń ciasto francuskie w ciasny rulon i pokrój na centymetrowe krążki.",
+      "Każdy krążek wciśnij w foremkę do muffinek i rozciągnij palcami po ściankach — tak powstają te charakterystyczne warstwy.",
+      "Zagotuj mleko ze skórką z cytryny, rozmieszaj z mąką i cukrem, wlej na żółtka i zagęść krem.",
+      "Wlej krem do foremek do 3/4 wysokości.",
+      "Piecz 15 minut w MAKSYMALNEJ temperaturze (240-250 stopni) — wierzch musi złapać czarne plamy, inaczej to nie te babeczki.",
+      "Studź 10 minut i posyp cynamonem."
+    ],
+    "opis_wizualny": "Small tartlets with flaky, layered pastry shells and a yellow custard filling blistered dark brown and almost black in spots on top. The custard is slightly domed and wobbly. They sit in a row, dusted with cinnamon."
+  },
+  {
+    "nazwa": "Feijoada",
+    "rodzaj": "obiad",
+    "kuchnia": "miedzynarodowa",
+    "poziom": "srednie",
+    "czas_minuty": 120,
+    "kcal": 680,
+    "skladniki": [
+      { "nazwa": "fasola czarna z puszki", "ilosc": "150", "jednostka": "g", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "boczek wędzony", "ilosc": "50", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "kiełbasa", "ilosc": "60", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "karkówka", "ilosc": "100", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "cebula", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "czosnek", "ilosc": "3", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "liść laurowy", "ilosc": "2", "jednostka": "szt", "kategoria": "7_Przyprawy" },
+      { "nazwa": "pomarańcze", "ilosc": "1/4", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "ryż", "ilosc": "70", "jednostka": "g", "kategoria": "5_Produkty sypkie" }
+    ],
+    "kroki": [
+      "Wytop boczek, obsmaż na nim karkówkę w kostce i kiełbasę, wyjmij mięsa.",
+      "Zeszklij cebulę z czosnkiem, wróć mięso do garnka.",
+      "Dodaj fasolę z zalewą, liście laurowe i 200 ml wody, duś 80 minut pod przykryciem.",
+      "Rozgnieć łyżką część fasoli o ściankę garnka — tak gulasz gęstnieje, bez mąki.",
+      "Dopraw solą i pieprzem. Podawaj z ryżem i cząstkami pomarańczy, które przecinają tłustość."
+    ],
+    "opis_wizualny": "A very dark, almost black bean stew with chunks of pork, sausage coins and bacon half-submerged, thick enough to mound on a plate. Served beside white rice with orange segments at the edge of the plate."
+  },
+  {
+    "nazwa": "Moqueca z dorsza",
+    "rodzaj": "obiad",
+    "kuchnia": "miedzynarodowa",
+    "poziom": "latwe",
+    "czas_minuty": 40,
+    "kcal": 480,
+    "skladniki": [
+      { "nazwa": "dorsz", "ilosc": "180", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "mleko kokosowe", "ilosc": "120", "jednostka": "ml", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "papryka", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "pomidory", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "limonka", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "kolendra", "ilosc": "2", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "papryka słodka", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "oliwa z oliwek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" }
+    ],
+    "kroki": [
+      "Pokrój rybę na duże kawałki, skrop sokiem z limonki, osól i odstaw na 15 minut.",
+      "W szerokim garnku ułóż WARSTWAMI cebulę, paprykę i pomidory w krążkach.",
+      "Na warzywach połóż rybę, posyp słodką papryką.",
+      "Zalej mlekiem kokosowym, skrop oliwą i gotuj pod przykryciem 15 minut BEZ MIESZANIA — ryba ma zostać w kawałkach.",
+      "Posyp kolendrą i podawaj wprost z garnka, z ryżem."
+    ],
+    "opis_wizualny": "Large white fish pieces sitting on rings of red pepper, tomato and onion in a pale orange coconut broth, in a shallow pot. The fish is just opaque and holding together. Coriander covers the top and oil glistens on the surface."
+  },
+  {
+    "nazwa": "Empanadas z mięsem",
+    "rodzaj": "kolacja",
+    "kuchnia": "miedzynarodowa",
+    "poziom": "srednie",
+    "czas_minuty": 70,
+    "kcal": 520,
+    "skladniki": [
+      { "nazwa": "mąka pszenna", "ilosc": "90", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "masło", "ilosc": "35", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "mięso mielone wołowe", "ilosc": "100", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "jajka", "ilosc": "1/2", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "oliwki zielone", "ilosc": "6", "jednostka": "szt", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "kumin", "ilosc": "1/2", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "papryka słodka", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Zagnieć ciasto z mąki, zimnego masła, szczypty soli i 30 ml zimnej wody. Schłodź 30 minut.",
+      "Podsmaż cebulę, dodaj mięso, kumin i paprykę, smaż 10 minut i ostudź CAŁKOWICIE.",
+      "Wmieszaj do farszu posiekane oliwki i połowę jajka na twardo.",
+      "Wykrój krążki, nałóż farsz, złóż na pół i zlep brzegi, podwijając je skręconym rantem.",
+      "Posmaruj rozkłóconym jajkiem i piecz 25 minut w 200 stopniach."
+    ],
+    "opis_wizualny": "Half-moon pastries with a twisted, rope-like crimped edge, baked to a glossy deep gold, one broken open to show dark minced meat with olive and egg pieces. They sit on a board, three or four together."
+  },
+  {
+    "nazwa": "Ceviche z dorsza",
+    "rodzaj": "kolacja",
+    "kuchnia": "miedzynarodowa",
+    "poziom": "srednie",
+    "czas_minuty": 30,
+    "kcal": 260,
+    "skladniki": [
+      { "nazwa": "dorsz", "ilosc": "150", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "limonka", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "cebula czerwona", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "papryczka chili", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "kolendra", "ilosc": "2", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "bataty", "ilosc": "100", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "sól", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Użyj BARDZO świeżej ryby — tu się jej nie gotuje. Jeśli masz wątpliwości, weź mrożoną, rozmrożoną w lodówce.",
+      "Pokrój filet w centymetrową kostkę, usuwając wszystkie ości.",
+      "Zalej sokiem z limonek tak, żeby ryba była przykryta, dodaj sól i trzymaj 15 minut w lodówce — zbrzegu zbieleje.",
+      "Ugotuj batata i pokrój w grube talarki.",
+      "Odcedź część soku, wmieszaj cebulę w cienkich piórkach, chili i kolendrę.",
+      "Podawaj od razu, z batatem obok. Po godzinie ryba staje się gumowa."
+    ],
+    "opis_wizualny": "Cubes of white fish turned opaque at the edges, sitting in a cloudy lime marinade with thin red onion slivers, chilli rings and coriander. Slices of cooked orange sweet potato are arranged beside it in a shallow bowl."
+  },
+  {
+    "nazwa": "Khachapuri",
+    "rodzaj": "kolacja",
+    "kuchnia": "miedzynarodowa",
+    "poziom": "srednie",
+    "czas_minuty": 100,
+    "kcal": 620,
+    "skladniki": [
+      { "nazwa": "mąka pszenna", "ilosc": "90", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "drożdże świeże", "ilosc": "5", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "mleko", "ilosc": "50", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "ser feta", "ilosc": "60", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "mozzarella", "ilosc": "50", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "jajka", "ilosc": "1", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "masło", "ilosc": "15", "jednostka": "g", "kategoria": "3_Nabiał" }
+    ],
+    "kroki": [
+      "Zagnieć ciasto z mąki, drożdży rozpuszczonych w ciepłym mleku i szczypty soli. Odstaw na godzinę.",
+      "Rozciągnij ciasto w owal, brzegi zwiń w dwa grube wałki i zlep końce — ma wyjść łódka.",
+      "Wypełnij środek pokruszoną fetą i startą mozzarellą.",
+      "Piecz 15 minut w 230 stopniach, aż ser się rozpuści, a brzegi zbrązowieją.",
+      "Wyjmij, zrób w serze wgłębienie i wbij jajko, dopiecz 4 minuty — żółtko ma zostać płynne.",
+      "Połóż masło na gorącym serze i rozmieszaj wszystko widelcem przy jedzeniu."
+    ],
+    "opis_wizualny": "A boat-shaped bread with high browned edges, filled with molten bubbling cheese and a whole raw-looking egg yolk sitting in the middle, with a knob of butter melting beside it. The crust is deep golden and blistered."
+  },
+  {
+    "nazwa": "Shepherd's pie",
+    "rodzaj": "obiad",
+    "kuchnia": "miedzynarodowa",
+    "poziom": "srednie",
+    "czas_minuty": 75,
+    "kcal": 560,
+    "skladniki": [
+      { "nazwa": "mięso mielone jagnięce", "ilosc": "120", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "ziemniaki", "ilosc": "3", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "marchew", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "groszek zielony", "ilosc": "40", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "koncentrat pomidorowy", "ilosc": "1", "jednostka": "łyżka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "sos Worcestershire", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "masło", "ilosc": "20", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "mleko", "ilosc": "40", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "tymianek", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Ugotuj ziemniaki i ubij z masłem i mlekiem na gęste puree, dopraw solą.",
+      "Podsmaż cebulę z marchewką, dodaj mięso i rozbijaj je łyżką, aż się zrumieni.",
+      "Wmieszaj koncentrat, sos Worcestershire i tymianek, podlej 100 ml wody i duś 20 minut.",
+      "Dodaj groszek, przełóż farsz do naczynia i wyrównaj.",
+      "Nałóż puree, porysuj widelcem i piecz 30 minut w 200 stopniach, aż grzbiety się przypieką."
+    ],
+    "opis_wizualny": "A baked dish with a forked potato top, the ridges browned to gold against paler valleys, and a dark meat and vegetable layer visible where a portion has been lifted out. Peas and carrot pieces show in the filling."
+  },
+  {
+    "nazwa": "Fish and chips",
+    "rodzaj": "obiad",
+    "kuchnia": "miedzynarodowa",
+    "poziom": "srednie",
+    "czas_minuty": 50,
+    "kcal": 720,
+    "skladniki": [
+      { "nazwa": "dorsz", "ilosc": "160", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "ziemniaki", "ilosc": "3", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "mąka pszenna", "ilosc": "50", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "piwo", "ilosc": "80", "jednostka": "ml", "kategoria": "8_Inne" },
+      { "nazwa": "olej", "ilosc": "300", "jednostka": "ml", "kategoria": "8_Inne" },
+      { "nazwa": "ocet winny", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "groszek zielony", "ilosc": "60", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "proszek do pieczenia", "ilosc": "1/2", "jednostka": "łyżeczka", "kategoria": "5_Produkty sypkie" }
+    ],
+    "kroki": [
+      "Pokrój ziemniaki w grube frytki i smaż w 150 stopniach 6 minut, nie rumieniąc. Wyjmij i ostudź.",
+      "Rozmieszaj mąkę z proszkiem i ZIMNYM piwem — ciasto ma być gęste jak śmietana i użyte od razu.",
+      "Rozgrzej olej do 190 stopni, zanurz osuszoną rybę w cieście i smaż 6 minut.",
+      "Podsmaż frytki drugi raz, 3 minuty, aż będą ciemnozłote i chrupiące.",
+      "Ugotuj groszek i rozgnieć go widelcem. Rybę skrop octem i podawaj od razu."
+    ],
+    "opis_wizualny": "A thick piece of fish in a puffed, craggy golden batter, broken open to show white flakes inside, with a pile of chunky chips beside it and a spoonful of coarse green mashed peas. Everything sits on paper, with a lemon wedge."
+  },
+  {
+    "nazwa": "Placki z batata",
+    "rodzaj": "sniadanie",
+    "kuchnia": "miedzynarodowa",
+    "poziom": "latwe",
+    "czas_minuty": 30,
+    "kcal": 360,
+    "skladniki": [
+      { "nazwa": "bataty", "ilosc": "200", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "jajka", "ilosc": "1", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "mąka pszenna", "ilosc": "30", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "cebula", "ilosc": "1/4", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "jogurt naturalny", "ilosc": "2", "jednostka": "łyżka", "kategoria": "3_Nabiał" },
+      { "nazwa": "szczypiorek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "olej", "ilosc": "2", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "papryka słodka", "ilosc": "1/2", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Zetrzyj bataty na grubych oczkach i ODCIŚNIJ z soku — inaczej placki się nie zetną.",
+      "Wymieszaj z jajkiem, mąką, startą cebulą i papryką, dopraw solą.",
+      "Nakładaj łyżką na rozgrzany olej i spłaszczaj na cienkie placki.",
+      "Smaż po 3 minuty z każdej strony, aż brzegi się przypieką.",
+      "Podawaj z jogurtem i szczypiorkiem."
+    ],
+    "opis_wizualny": "Orange-flecked fritters with ragged crisp edges, stacked on a plate, their surfaces uneven with visible shreds of sweet potato. A spoon of white yogurt sits on top with chopped chives scattered over."
+  },
+  {
+    "nazwa": "Jogurt z pieczoną gruszką i orzechami",
+    "rodzaj": "sniadanie",
+    "kuchnia": "miedzynarodowa",
+    "poziom": "latwe",
+    "czas_minuty": 35,
+    "kcal": 320,
+    "skladniki": [
+      { "nazwa": "gruszka", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "jogurt grecki", "ilosc": "150", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "orzechy włoskie", "ilosc": "20", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "miód", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "cynamon", "ilosc": "1/2", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "masło", "ilosc": "5", "jednostka": "g", "kategoria": "3_Nabiał" }
+    ],
+    "kroki": [
+      "Przekrój gruszkę, wydrąż gniazda nasienne i ułóż przekrojem do góry w naczyniu.",
+      "Posmaruj masłem, skrop miodem i posyp cynamonem.",
+      "Piecz 25 minut w 190 stopniach, aż zmięknie i zacznie się karmelizować.",
+      "Podpraż orzechy na suchej patelni i posiekaj.",
+      "Nałóż jogurt do miski, połóż ciepłą gruszkę, posyp orzechami i polej sokiem z naczynia."
+    ],
+    "opis_wizualny": "A bowl of thick white yogurt with a roasted pear half on top, its cut face golden and glossy with caramelised honey. Chopped walnuts are scattered over and a thin amber syrup runs into the yogurt."
+  },
+  {
+    "nazwa": "Sałatka z selera naciowego i winogron",
+    "rodzaj": "surowka",
+    "kuchnia": "miedzynarodowa",
+    "poziom": "latwe",
+    "czas_minuty": 15,
+    "kcal": 210,
+    "skladniki": [
+      { "nazwa": "seler naciowy", "ilosc": "3", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "winogrona", "ilosc": "80", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "orzechy włoskie", "ilosc": "20", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "jogurt naturalny", "ilosc": "2", "jednostka": "łyżka", "kategoria": "3_Nabiał" },
+      { "nazwa": "majonez", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "sok z cytryny", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "ser gorgonzola", "ilosc": "20", "jednostka": "g", "kategoria": "3_Nabiał" }
+    ],
+    "kroki": [
+      "Pokrój seler w cienkie półksiężyce, winogrona na połówki.",
+      "Rozmieszaj jogurt z majonezem i sokiem z cytryny.",
+      "Połącz wszystko, dopraw pieprzem — sól zwykle nie jest potrzebna, ser ją wnosi.",
+      "Posyp pokruszonym serem i orzechami przed podaniem."
+    ],
+    "opis_wizualny": "Crisp pale green celery crescents and halved grapes in a light creamy dressing, with crumbled blue cheese and walnut pieces on top. The pieces stay distinct and glossy, served mounded in a bowl."
+  },
+  {
+    "nazwa": "Tarta z truskawkami",
+    "rodzaj": "deser",
+    "kuchnia": "francuska",
+    "poziom": "srednie",
+    "czas_minuty": 80,
+    "kcal": 360,
+    "skladniki": [
+      { "nazwa": "mąka pszenna", "ilosc": "50", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "masło", "ilosc": "35", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "cukier puder", "ilosc": "15", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "truskawki", "ilosc": "150", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "mleko", "ilosc": "100", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "żółtka", "ilosc": "1", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "cukier", "ilosc": "20", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "mąka ziemniaczana", "ilosc": "1", "jednostka": "łyżka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "cukier waniliowy", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "5_Produkty sypkie" }
+    ],
+    "kroki": [
+      "Zagnieć kruche ciasto z mąki, zimnego masła, cukru pudru i żółtka. Schłodź 30 minut.",
+      "Wyłóż formę, nakłuj spód, obciąż papierem z fasolą i piecz 20 minut w 180 stopniach.",
+      "Zagęść krem z mleka, cukru, mąki ziemniaczanej i cukru waniliowego, ostudź POD FOLIĄ dotykającą kremu.",
+      "Rozsmaruj krem na całkowicie zimnym spodzie.",
+      "Ułóż truskawki przekrojem do dołu, ciasno jedna przy drugiej.",
+      "Podawaj w dniu złożenia — spód szybko mięknie od owoców."
+    ],
+    "opis_wizualny": "A tart with a crisp pale shortcrust shell, filled with pale yellow custard and completely covered by halved strawberries placed cut-side down in neat rings. The berries are deep red and shiny. A dusting of icing sugar on the crust edge."
+  },
+  {
+    "nazwa": "Łazanki z kapustą i boczkiem",
+    "rodzaj": "obiad",
+    "kuchnia": "polska",
+    "poziom": "latwe",
+    "czas_minuty": 45,
+    "kcal": 560,
+    "skladniki": [
+      { "nazwa": "makaron łazanki", "ilosc": "90", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "kapusta kiszona", "ilosc": "150", "jednostka": "g", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "boczek wędzony", "ilosc": "60", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "kiełbasa", "ilosc": "50", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "pieczarki", "ilosc": "60", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "majeranek", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "liść laurowy", "ilosc": "1", "jednostka": "szt", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Odciśnij kapustę, posiekaj i duś 25 minut z liściem laurowym w niewielkiej ilości wody.",
+      "Wytop boczek, dodaj kiełbasę, cebulę i pieczarki, smaż do zrumienienia.",
+      "Ugotuj łazanki al dente.",
+      "Połącz kapustę z mięsem i makaronem na patelni, dopraw majerankiem, solą i pieprzem.",
+      "Smaż razem 5 minut, mieszając — część makaronu ma złapać przypieczenia."
+    ],
+    "opis_wizualny": "Square pasta pieces tangled with soft golden-brown sauerkraut, cubes of bacon, sausage coins and mushroom slices, fried together so some edges are browned. Served heaped in a bowl, dry rather than saucy."
+  },
+  {
+    "nazwa": "Pierogi z kaszą gryczaną i twarogiem",
+    "rodzaj": "obiad",
+    "kuchnia": "polska",
+    "poziom": "trudne",
+    "czas_minuty": 80,
+    "kcal": 480,
+    "skladniki": [
+      { "nazwa": "mąka pszenna", "ilosc": "80", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "kasza gryczana", "ilosc": "50", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "twaróg", "ilosc": "80", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "cebula", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "boczek wędzony", "ilosc": "30", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "masło", "ilosc": "15", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "pieprz", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Ugotuj kaszę na sypko i ostudź.",
+      "Podsmaż połowę cebuli na masle i wymieszaj z kaszą i rozdrobnionym twarogiem. Dopraw MOCNO solą i pieprzem.",
+      "Zagnieć ciasto z mąki, 45 ml gorącej wody i szczypty soli, wyrabiaj 8 minut i odstaw pod ściereczką na 20 minut.",
+      "Rozwałkuj, wykrój krążki, nałóż farsz i zalep brzegi, wyciskając powietrze.",
+      "Gotuj 3 minuty od wypłynięcia.",
+      "Podawaj ze skwarkami z boczku i resztą cebuli, podsmażoną na złoto."
+    ],
+    "opis_wizualny": "Boiled half-moon dumplings with thick crimped edges, glossy from butter, topped with golden fried onion and bacon bits. One is cut open showing a dark brown buckwheat and curd filling."
+  },
+  {
+    "nazwa": "Kaszanka pieczona z jabłkami",
+    "rodzaj": "obiad",
+    "kuchnia": "polska",
+    "poziom": "latwe",
+    "czas_minuty": 45,
+    "kcal": 620,
+    "skladniki": [
+      { "nazwa": "kaszanka", "ilosc": "180", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "jabłka", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "cebula", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "majeranek", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "smalec", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "ziemniaki", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "pieprz", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Pokrój kaszankę w grube krążki, nie zdejmując osłonki — inaczej rozpadnie się na patelni.",
+      "Ułóż w naczyniu natłuszczonym smalcem, obłóż cebulą w piórkach i jabłkiem w cząstkach.",
+      "Posyp majerankiem i pieprzem.",
+      "Piecz 30 minut w 200 stopniach, aż krążki się przypieką, a jabłka rozpadną.",
+      "Podawaj z ugotowanymi ziemniakami, polane sosem z naczynia."
+    ],
+    "opis_wizualny": "Thick dark rounds of blood sausage baked until split and crusted, among collapsed apple wedges and browned onion in a roasting dish. Juices have darkened at the bottom. Boiled potatoes sit alongside on the plate."
+  },
+  {
+    "nazwa": "Boczek pieczony z ziemniakami",
+    "rodzaj": "obiad",
+    "kuchnia": "polska",
+    "poziom": "latwe",
+    "czas_minuty": 130,
+    "kcal": 700,
+    "skladniki": [
+      { "nazwa": "boczek surowy", "ilosc": "180", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "ziemniaki", "ilosc": "3", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "czosnek", "ilosc": "3", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "majeranek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "kminek", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "papryka słodka", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "liść laurowy", "ilosc": "2", "jednostka": "szt", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Natnij skórę boczku w kratkę i natrzyj mięso solą, czosnkiem, majerankiem, kminkiem i papryką.",
+      "Zostaw w lodówce na noc, jeśli masz czas — wtedy przyprawy wejdą w mięso.",
+      "Piecz 90 minut w 160 stopniach, skórą do góry, podlewając wodą co pół godziny.",
+      "Obłóż boczek ziemniakami w ćwiartkach i podkręć piekarnik na 220 stopni.",
+      "Piecz jeszcze 25 minut, aż skóra zrobi się chrupiąca, a ziemniaki się zrumienią.",
+      "Odstaw na 10 minut przed krojeniem."
+    ],
+    "opis_wizualny": "A slab of roast pork belly with crackling scored into squares, deep brown and blistered on top, sliced to show layers of meat and fat. Roast potato quarters sit around it in the dark pan juices."
+  },
+  {
+    "nazwa": "Zacierki na mleku",
+    "rodzaj": "sniadanie",
+    "kuchnia": "polska",
+    "poziom": "latwe",
+    "czas_minuty": 20,
+    "kcal": 330,
+    "skladniki": [
+      { "nazwa": "mąka pszenna", "ilosc": "50", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "jajka", "ilosc": "1/4", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "mleko", "ilosc": "300", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "masło", "ilosc": "10", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "cukier", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "sól", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Wsyp mąkę do miski, dodaj jajko i rozetrzyj palcami na drobne grudki wielkości ryżu.",
+      "Przesyp zacierki na sitko i strzep nadmiar mąki, żeby mleko nie zrobiło się kleiste.",
+      "Zagotuj mleko z cukrem i szczyptą soli.",
+      "Wsyp zacierki, mieszając, i gotuj 5 minut na małym ogniu.",
+      "Dodaj masło przed podaniem. Zacierki gęstnieją, więc jedz od razu."
+    ],
+    "opis_wizualny": "A bowl of hot milk thick with small irregular dough crumbs the size of rice grains, pale and swollen. A pat of butter melts into a yellow pool on the surface. The whole dish is creamy white."
+  },
+  {
+    "nazwa": "Kluski z makiem",
+    "rodzaj": "deser",
+    "kuchnia": "polska",
+    "poziom": "latwe",
+    "czas_minuty": 30,
+    "kcal": 420,
+    "skladniki": [
+      { "nazwa": "makaron nitki", "ilosc": "80", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "mak", "ilosc": "50", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "miód", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "cukier", "ilosc": "1", "jednostka": "łyżka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "masło", "ilosc": "15", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "rodzynki", "ilosc": "20", "jednostka": "g", "kategoria": "5_Produkty sypkie" }
+    ],
+    "kroki": [
+      "Zalej mak wrzątkiem i odstaw na 20 minut, potem odcedź.",
+      "Zmiel go dwukrotnie w młynku albo blenderem — niezmielony mak nie oddaje smaku.",
+      "Rozgrzej masło, wrzuć mak, miód, cukier i rodzynki, przesmaż 3 minuty.",
+      "Ugotuj makaron i odcedź.",
+      "Wymieszaj z makiem i podawaj od razu, na ciepło."
+    ],
+    "opis_wizualny": "Thin noodles coated in a dark grey-black ground poppy seed mixture, glossy from butter and honey, with dark raisins through it. Served in a bowl, the noodles clump together and the colour is almost uniformly dark."
+  },
+  {
+    "nazwa": "Makaron z truskawkami",
+    "rodzaj": "deser",
+    "kuchnia": "polska",
+    "poziom": "latwe",
+    "czas_minuty": 20,
+    "kcal": 380,
+    "skladniki": [
+      { "nazwa": "makaron", "ilosc": "80", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "truskawki", "ilosc": "150", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "śmietana 18%", "ilosc": "60", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "cukier", "ilosc": "1", "jednostka": "łyżka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "masło", "ilosc": "10", "jednostka": "g", "kategoria": "3_Nabiał" }
+    ],
+    "kroki": [
+      "Zmiksuj połowę truskawek z cukrem na mus, resztę pokrój na połówki.",
+      "Ugotuj makaron, odcedź i przelej masłem.",
+      "Wymieszaj makaron z musem truskawkowym.",
+      "Dodaj połówki owoców i śmietanę, wymieszaj delikatnie.",
+      "Podawaj od razu — ciepły makaron z zimną śmietaną to cała istota tego dania."
+    ],
+    "opis_wizualny": "Pasta tinted pink by crushed strawberries, with whole berry halves mixed through and a white swirl of cream not fully stirred in. Served in a bowl, glossy and slightly runny at the bottom."
+  },
+  {
+    "nazwa": "Rogale świętomarcińskie",
+    "rodzaj": "deser",
+    "kuchnia": "polska",
+    "poziom": "trudne",
+    "czas_minuty": 180,
+    "kcal": 450,
+    "skladniki": [
+      { "nazwa": "ciasto francuskie", "ilosc": "100", "jednostka": "g", "kategoria": "4_Pieczywo" },
+      { "nazwa": "mak", "ilosc": "40", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "orzechy włoskie", "ilosc": "25", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "rodzynki", "ilosc": "20", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "cukier", "ilosc": "30", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "jajka", "ilosc": "1/2", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "cukier puder", "ilosc": "30", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "skórka z pomarańczy", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Zaparz mak wrzątkiem, odcedź i zmiel dwukrotnie.",
+      "Wymieszaj mak z cukrem, posiekanymi orzechami, rodzynkami, skórką z pomarańczy i połową jajka.",
+      "Pokrój ciasto na trójkąty o podstawie 12 cm.",
+      "Nałóż farsz przy podstawie i zwiń w rogalik, zaginając końce do środka.",
+      "Posmaruj jajkiem i piecz 25 minut w 190 stopniach.",
+      "Polej lukrem z cukru pudru z wodą i posyp orzechami, póki lukier jest mokry."
+    ],
+    "opis_wizualny": "Crescent-shaped pastries with flaky golden layers, drizzled with white icing and sprinkled with chopped nuts. One is broken open to show a dense dark poppy seed filling spiralled inside."
+  },
+  {
+    "nazwa": "Śledź w oleju z cebulą",
+    "rodzaj": "kolacja",
+    "kuchnia": "polska",
+    "poziom": "latwe",
+    "czas_minuty": 20,
+    "kcal": 420,
+    "skladniki": [
+      { "nazwa": "śledź matias", "ilosc": "120", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "cebula", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "olej", "ilosc": "3", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "ziele angielskie", "ilosc": "3", "jednostka": "szt", "kategoria": "7_Przyprawy" },
+      { "nazwa": "liść laurowy", "ilosc": "1", "jednostka": "szt", "kategoria": "7_Przyprawy" },
+      { "nazwa": "pieprz", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" },
+      { "nazwa": "pieczywo", "ilosc": "1", "jednostka": "szt", "kategoria": "4_Pieczywo" }
+    ],
+    "kroki": [
+      "Wymocz filety w zimnej wodzie 2 godziny, zmieniając wodę raz, i osusz.",
+      "Pokrój śledzie w dzwonka, cebulę w cienkie piórka.",
+      "Układaj w słoiku warstwami: śledź, cebula, ziele angielskie, liść laurowy.",
+      "Zalej olejem tak, żeby wszystko było przykryte.",
+      "Trzymaj w lodówce minimum 12 godzin. Podawaj z chlebem i ziemniakami."
+    ],
+    "opis_wizualny": "Pieces of dark silvery herring layered with translucent onion rings in a jar or shallow dish, submerged in clear oil with whole allspice berries and a bay leaf visible. A slice of dark bread lies beside it."
+  },
+  {
+    "nazwa": "Krem z pietruszki",
+    "rodzaj": "zupa",
+    "kuchnia": "polska",
+    "poziom": "latwe",
+    "czas_minuty": 40,
+    "kcal": 280,
+    "skladniki": [
+      { "nazwa": "pietruszka korzeń", "ilosc": "250", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "ziemniaki", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "bulion warzywny", "ilosc": "250", "jednostka": "ml", "kategoria": "8_Inne" },
+      { "nazwa": "śmietana 30%", "ilosc": "40", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "masło", "ilosc": "15", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "natka pietruszki", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "gałka muszkatołowa", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Zeszklij cebulę na masle, nie rumieniąc jej.",
+      "Dodaj pietruszkę i ziemniaka w kostce, zalej bulionem.",
+      "Gotuj 25 minut, aż warzywa będą całkiem miękkie.",
+      "Zmiksuj na gładki krem, wmieszaj śmietanę i gałkę muszkatołową.",
+      "Dopraw solą i pieprzem, posyp natką. Pasują do tego grzanki."
+    ],
+    "opis_wizualny": "A smooth, thick ivory-white cream soup in a bowl, with a swirl of cream on the surface and chopped parsley scattered in the middle. No vegetable pieces are visible; the texture looks velvety."
+  },
+  {
+    "nazwa": "Surówka z rzodkiewki i ogórka",
+    "rodzaj": "surowka",
+    "kuchnia": "polska",
+    "poziom": "latwe",
+    "czas_minuty": 15,
+    "kcal": 120,
+    "skladniki": [
+      { "nazwa": "rzodkiewka", "ilosc": "6", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "ogórek", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "śmietana 18%", "ilosc": "2", "jednostka": "łyżka", "kategoria": "3_Nabiał" },
+      { "nazwa": "szczypiorek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "sok z cytryny", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "sól", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Pokrój rzodkiewki i ogórka w cienkie plasterki.",
+      "Posól i odstaw na 10 minut, potem odlej wodę, którą puszczą.",
+      "Wymieszaj ze śmietaną, sokiem z cytryny i szczypiorkiem.",
+      "Dopraw pieprzem i podawaj od razu."
+    ],
+    "opis_wizualny": "Thin pink-rimmed radish slices and pale cucumber rounds in a light cream dressing, served in a small bowl. Chopped chives are scattered over. A little watery dressing collects at the bottom."
+  }
+]
