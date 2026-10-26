@@ -280,6 +280,15 @@ bramki, wszystkie maszynowe:
 Dopiero po tych trzech workflow commituje i importuje. Przy pisaniu własnej
 paczki ręcznie warto odpalić punkty 2 i 3 u siebie — to te same komendy.
 
+**Skąd PR-y od workflow.** `main` ma regułę „Changes must be made through
+a pull request", więc push bota leci w `GH013` — tak padł drugi przebieg
+agenta, już PO napisaniu poprawnej paczki (run 40282972301). Oba workflowy
+commitują teraz przez `skrypty/wypchnij-zmiany.sh`: najpierw próbują wypchnąć
+prosto na gałąź, a gdy reguła je odbije, zakładają gałąź i otwierają PR-a.
+Dania i tak idą do bazy w tym samym przebiegu — PR dotyczy tylko plików
+w repo. Nowa paczka trafia też do artefaktu przebiegu, żeby nie przepadła,
+gdy padnie któryś z dalszych kroków.
+
 Model tekstowy można podmienić bez ruszania kodu: `ANTHROPIC_MODEL`
 (np. `claude-sonnet-5-5`, tańszy od Opusa przy generowaniu przepisów).
 
