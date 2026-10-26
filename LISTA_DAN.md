@@ -1,10 +1,10 @@
 # Lista dań — Menu Planer
 
-Stan bazy `dania` na 2026-10-25 (830 dań) — nazwa, rodzaj, czas
+Stan bazy `dania` na 2026-10-26 (880 dań) — nazwa, rodzaj, czas
 przyrządzania, kcal na 1 porcję. Do przeglądu przy wymyślaniu nowych dań
 (unikanie dubli) i jako punkt odniesienia.
 
-Rozkład: obiad 237, kolacja 128, deser 119, przekaska 104, zupa 82, sniadanie 80, surowka 58, dodatek 22.
+Rozkład: obiad 259, kolacja 135, deser 124, przekaska 104, zupa 87, sniadanie 84, surowka 62, dodatek 25.
 
 Odświeżenie listy: **Actions → „Generuj dania" → tryb `lista`, zaznacz
 `zapisz_liste`**. Workflow przepisze ten plik i zacommituje zmianę.
@@ -22,11 +22,13 @@ order by "Danie";
 | danie                                                 | rodzaj    | czas_min | kcal |
 | ----------------------------------------------------- | --------- | -------- | ---- |
 | Affogato al caffè                                     | deser     | 5        | 230  |
+| Aloo gobi                                             | dodatek   | 40       | 280  |
 | Amaretti                                              | deser     | 40       | 260  |
 | Apfelstrudel                                          | deser     | 70       | 360  |
 | Arancini z ryżu                                       | przekaska | 45       | 520  |
 | Babka marmurkowa                                      | deser     | 75       | 350  |
 | Babka piaskowa                                        | deser     | 75       | 320  |
+| Bacalhau a Bras                                       | obiad     | 50       | 620  |
 | Bajgle z serkiem i ogórkiem                           | sniadanie | 10       | 390  |
 | Baklava                                               | deser     | 90       | 420  |
 | Bakłażan duszony w gochujangu                         | obiad     | 30       | 420  |
@@ -36,6 +38,7 @@ order by "Danie";
 | Banana bread                                          | deser     | 70       | 320  |
 | Banany smażone z miodem i cynamonem                   | deser     | 15       | 340  |
 | Banany w cieście naleśnikowym                         | przekaska | 20       | 520  |
+| Banh mi z kurczakiem                                  | kolacja   | 40       | 540  |
 | Barszcz biały z białą kiełbasą                        | zupa      | 50       | 520  |
 | Barszcz czerwony                                      | zupa      | 90       | 150  |
 | Barszcz ukraiński                                     | zupa      | 60       | 280  |
@@ -44,10 +47,12 @@ order by "Danie";
 | Bibimbap z tofu                                       | obiad     | 35       | 620  |
 | Bibimbap z wołowiną                                   | obiad     | 40       | 650  |
 | Bigos                                                 | obiad     | 180      | 560  |
+| Biryani z kurczakiem                                  | obiad     | 80       | 620  |
 | Bistecca alla pizzaiola                               | obiad     | 40       | 420  |
 | Bitki wołowe w sosie własnym                          | obiad     | 90       | 300  |
 | Blanquette de veau                                    | obiad     | 120      | 540  |
 | Bocconcini w oliwie z ziołami                         | przekaska | 10       | 320  |
+| Boczek pieczony z ziemniakami                         | obiad     | 130      | 700  |
 | Boeuf bourguignon                                     | obiad     | 180      | 580  |
 | Boeuf Strogonow                                       | obiad     | 45       | 620  |
 | Bomboloni                                             | deser     | 40       | 420  |
@@ -72,12 +77,14 @@ order by "Danie";
 | Bułeczki cynamonowe                                   | deser     | 150      | 390  |
 | Bułeczki jak z Maka                                   | obiad     | 10       | 350  |
 | Bułki śniadaniowe z dyni                              | sniadanie | 120      | 290  |
+| Bun cha z wieprzowiną                                 | obiad     | 50       | 560  |
 | Bungeoppang z pastą z czerwonej fasoli                | deser     | 40       | 320  |
 | Buraczki                                              | surowka   | 60       | 40   |
 | Burger wołowy                                         | obiad     | 30       | 950  |
 | Burgery z soczewicy                                   | obiad     | 40       | 520  |
 | Burrito z mieloną wołowiną                            | obiad     | 40       | 610  |
 | Butter Chicken                                        | obiad     | 40       | 700  |
+| Caldo verde                                           | zupa      | 45       | 380  |
 | Calzone z szynką i ricottą                            | obiad     | 45       | 720  |
 | Camembert pieczony z żurawiną                         | przekaska | 25       | 550  |
 | Cannelloni ze szpinakiem i ricottą                    | obiad     | 60       | 620  |
@@ -87,10 +94,12 @@ order by "Danie";
 | Carpaccio wołowe z rukolą                             | kolacja   | 20       | 330  |
 | Carpaccio z buraka na grzankach                       | przekaska | 25       | 590  |
 | Cebulowa (po francusku)                               | zupa      | 60       | 450  |
+| Ceviche z dorsza                                      | kolacja   | 30       | 260  |
 | Chałka drożdżowa                                      | deser     | 130      | 280  |
 | Chałka z masłem i miodem                              | sniadanie | 10       | 430  |
 | Chia pudding z mango                                  | deser     | 240      | 660  |
 | Chilaquiles z jajkiem                                 | sniadanie | 25       | 480  |
+| Chili sin carne                                       | obiad     | 45       | 420  |
 | Chilli con carne                                      | obiad     | 60       | 860  |
 | Chińska zupa pikantno kwaśna                          | zupa      | 30       | 280  |
 | Chipsy z buraka                                       | przekaska | 40       | 150  |
@@ -138,6 +147,7 @@ order by "Danie";
 | Czebureki z mięsem                                    | obiad     | 60       | 560  |
 | Ćwikła z chrzanem                                     | surowka   | 60       | 70   |
 | Daktyle z masłem orzechowym                           | przekaska | 10       | 460  |
+| Dal z czerwonej soczewicy                             | obiad     | 40       | 420  |
 | Deser lodowy z gorącymi malinami                      | deser     | 15       | 420  |
 | Deser z mascarpone, herbatnikami i owocami            | deser     | 20       | 600  |
 | Deska serów i wędlin                                  | przekaska | 20       | 650  |
@@ -149,6 +159,7 @@ order by "Danie";
 | Duszona wołowina z warzywami korzeniowymi             | obiad     | 120      | 520  |
 | Duszone żeberka wołowe po koreańsku                   | obiad     | 150      | 720  |
 | Eklerki z kremem                                      | deser     | 90       | 340  |
+| Empanadas z mięsem                                    | kolacja   | 70       | 520  |
 | Enchiladas z kurczakiem                               | obiad     | 60       | 580  |
 | Endywia zapiekana z szynką                            | obiad     | 50       | 420  |
 | English breakfast                                     | sniadanie | 30       | 720  |
@@ -164,9 +175,11 @@ order by "Danie";
 | Faszerowane papryczki serkiem                         | przekaska | 20       | 230  |
 | Fattoush                                              | surowka   | 25       | 260  |
 | Faworki                                               | deser     | 60       | 420  |
+| Feijoada                                              | obiad     | 120      | 680  |
 | Fette biscottate z dżemem i masłem                    | sniadanie | 5        | 330  |
 | Fettuccine Alfredo                                    | obiad     | 20       | 780  |
 | Filet z indyka w sosie grzybowym                      | obiad     | 40       | 420  |
+| Fish and chips                                        | obiad     | 50       | 720  |
 | Flaki                                                 | zupa      | 180      | 300  |
 | Flammekueche z boczkiem                               | kolacja   | 50       | 520  |
 | Flan karmelowy                                        | deser     | 80       | 300  |
@@ -197,6 +210,7 @@ order by "Danie";
 | Granita cytrynowa                                     | deser     | 20       | 150  |
 | Granola domowa z orzechami                            | sniadanie | 35       | 380  |
 | Gratin dauphinois                                     | obiad     | 80       | 430  |
+| Green curry z kurczakiem                              | obiad     | 35       | 560  |
 | Grissini z szynką parmeńską                           | przekaska | 45       | 320  |
 | Grochówka                                             | zupa      | 120      | 550  |
 | Grzanki czosnkowe z serem                             | przekaska | 15       | 650  |
@@ -211,6 +225,7 @@ order by "Danie";
 | Gulaszowa                                             | zupa      | 75       | 500  |
 | Gyros domowy z sosem czosnkowym                       | obiad     | 60       | 480  |
 | Hachis parmentier                                     | obiad     | 75       | 520  |
+| Harira                                                | zupa      | 60       | 380  |
 | Hotteok z cynamonem                                   | deser     | 90       | 320  |
 | Huevos Rancheros                                      | sniadanie | 25       | 700  |
 | Hummus z pieczonym burakiem                           | przekaska | 50       | 270  |
@@ -248,6 +263,7 @@ order by "Danie";
 | Japchae z wołowiną                                    | obiad     | 35       | 620  |
 | Jarzynowa                                             | zupa      | 45       | 260  |
 | Jogurt grecki z miodem i orzechami                    | deser     | 5        | 580  |
+| Jogurt z pieczoną gruszką i orzechami                 | sniadanie | 35       | 320  |
 | Kaczka pieczona z jabłkami                            | obiad     | 150      | 720  |
 | Kaczka po pekińsku                                    | obiad     | 150      | 720  |
 | Kalafior marynowany z oliwkami                        | surowka   | 20       | 180  |
@@ -277,7 +293,10 @@ order by "Danie";
 | Kasza gryczana z grzybami                             | obiad     | 40       | 390  |
 | Kasza manna na mleku                                  | sniadanie | 12       | 320  |
 | Kasza manna z sokiem malinowym                        | deser     | 15       | 360  |
+| Kaszanka pieczona z jabłkami                          | obiad     | 45       | 620  |
 | Kaszka kukurydziana z owocami                         | sniadanie | 15       | 380  |
+| Katsu curry z kurczakiem                              | obiad     | 50       | 680  |
+| Khachapuri                                            | kolacja   | 100      | 620  |
 | Kiełki sojowe z sezamem                               | surowka   | 15       | 180  |
 | Kimbap warzywny                                       | przekaska | 35       | 420  |
 | Kimbap z tuńczykiem                                   | przekaska | 30       | 480  |
@@ -287,6 +306,7 @@ order by "Danie";
 | Klopsiki w sosie pomidorowym                          | obiad     | 45       | 520  |
 | Kluski kładzione                                      | dodatek   | 25       | 230  |
 | Kluski lane na mleku                                  | sniadanie | 15       | 420  |
+| Kluski z makiem                                       | deser     | 30       | 420  |
 | Kluski z serem i skwarkami                            | obiad     | 25       | 540  |
 | Knedle ze śliwkami                                    | deser     | 60       | 380  |
 | Köfte z jogurtem                                      | obiad     | 40       | 480  |
@@ -318,6 +338,7 @@ order by "Danie";
 | Krem z karczochów                                     | zupa      | 30       | 290  |
 | Krem z mascarpone i kajmaku                           | deser     | 15       | 550  |
 | Krem z pieczonej papryki                              | zupa      | 50       | 240  |
+| Krem z pietruszki                                     | zupa      | 40       | 280  |
 | Krem z selera z chipsami z boczku                     | zupa      | 45       | 320  |
 | Krem z zielonego groszku z miętą                      | zupa      | 25       | 280  |
 | Krem ze szparagów                                     | zupa      | 30       | 260  |
@@ -360,6 +381,7 @@ order by "Danie";
 | Lo mein z wołowiną                                    | obiad     | 30       | 620  |
 | Lody domowe waniliowe                                 | deser     | 240      | 490  |
 | Lody z jogurtu i owoców                               | deser     | 240      | 340  |
+| Łazanki z kapustą i boczkiem                          | obiad     | 45       | 560  |
 | Łosoś pieczony z koperkiem                            | obiad     | 30       | 520  |
 | Łosoś w sosie teriyaki                                | obiad     | 30       | 480  |
 | Mac and cheese                                        | obiad     | 40       | 620  |
@@ -379,6 +401,7 @@ order by "Danie";
 | Makaron z pesto, kurczakiem i pomidorkami             | kolacja   | 25       | 800  |
 | Makaron z pomidorami, czosnkiem i parmezanem          | kolacja   | 20       | 680  |
 | Makaron z serem, boczkiem i cebulką                   | kolacja   | 25       | 800  |
+| Makaron z truskawkami                                 | deser     | 20       | 380  |
 | Makaron z tuńczykiem i kaparami                       | obiad     | 25       | 620  |
 | Makaron z warzywami w sosie serowym                   | obiad     | 30       | 470  |
 | Makaron zapiekany z czterema serami                   | obiad     | 40       | 780  |
@@ -392,6 +415,7 @@ order by "Danie";
 | Marynowana kapusta pekińska po chińsku                | surowka   | 20       | 95   |
 | Marynowana rzodkiew do kimbapu                        | dodatek   | 15       | 45   |
 | Marynowane grzyby po włosku                           | surowka   | 25       | 180  |
+| Massaman z wołowiną                                   | obiad     | 110      | 620  |
 | Mazurek z masą krówkową                               | deser     | 90       | 420  |
 | Menemen                                               | sniadanie | 25       | 340  |
 | Migdały prażone z papryką                             | przekaska | 15       | 670  |
@@ -409,6 +433,7 @@ order by "Danie";
 | Miodowe ciasteczka yakgwa                             | deser     | 60       | 330  |
 | Mizeria                                               | surowka   | 15       | 70   |
 | Modra kapusta na ciepło                               | dodatek   | 45       | 160  |
+| Moqueca z dorsza                                      | obiad     | 40       | 480  |
 | Moules marinière                                      | obiad     | 30       | 320  |
 | Moussaka z bakłażanem                                 | obiad     | 80       | 620  |
 | Mousse au chocolat                                    | deser     | 30       | 340  |
@@ -419,6 +444,7 @@ order by "Danie";
 | Mus czekoladowy z banana i kakao                      | deser     | 10       | 170  |
 | Mus jabłkowy z cynamonem                              | deser     | 30       | 160  |
 | Musli z jogurtem i owocami                            | sniadanie | 10       | 420  |
+| Naan z czosnkiem                                      | dodatek   | 90       | 290  |
 | Nachos z guacamole i salsą                            | przekaska | 20       | 520  |
 | Nachosy z sosem serowym                               | przekaska | 15       | 700  |
 | Naleśniki crêpes Suzette (pomarańczowe)*              | sniadanie | 30       | 760  |
@@ -435,6 +461,7 @@ order by "Danie";
 | Navarin jagnięcy                                      | obiad     | 130      | 560  |
 | Nuggetsy domowe                                       | przekaska | 30       | 550  |
 | Ogórkowa                                              | zupa      | 60       | 400  |
+| Okonomiyaki                                           | kolacja   | 35       | 520  |
 | Oliwki nadziewane mięsem w panierce                   | przekaska | 40       | 330  |
 | Omlet                                                 | sniadanie | 10       | 350  |
 | Omlet biszkoptowy z dżemem                            | sniadanie | 15       | 390  |
@@ -451,10 +478,13 @@ order by "Danie";
 | Owsianka kakaowa z bananem                            | deser     | 10       | 500  |
 | Owsianka nocna                                        | sniadanie | 480      | 450  |
 | Owsianka z jabłkiem i orzechami                       | sniadanie | 15       | 420  |
+| Oyakodon                                              | obiad     | 25       | 540  |
+| Pad see ew z wołowiną                                 | obiad     | 30       | 600  |
 | Pad thai z kurczakiem                                 | obiad     | 30       | 620  |
 | Paella z kurczakiem i owocami morza                   | obiad     | 60       | 580  |
 | Pain au chocolat                                      | sniadanie | 30       | 390  |
 | Pajeon z dymką                                        | przekaska | 25       | 420  |
+| Palak paneer                                          | obiad     | 45       | 480  |
 | Paluszki serowe z sezamem                             | przekaska | 35       | 330  |
 | Paluszki z ciasta francuskiego z szynką               | przekaska | 25       | 620  |
 | Pancakes amerykańskie z syropem klonowym              | sniadanie | 25       | 540  |
@@ -486,6 +516,7 @@ order by "Danie";
 | Pasta z awokado i jajka                               | sniadanie | 10       | 310  |
 | Pasta z makreli wędzonej                              | sniadanie | 10       | 530  |
 | Pasta z pieczonego bakłażana                          | przekaska | 50       | 210  |
+| Pasteis de nata                                       | deser     | 70       | 290  |
 | Pastiera napoletana                                   | deser     | 120      | 420  |
 | Pastitsio                                             | obiad     | 95       | 620  |
 | Pasztet drobiowy pieczony                             | kolacja   | 110      | 340  |
@@ -495,6 +526,7 @@ order by "Danie";
 | Penne all'arrabbiata                                  | obiad     | 25       | 540  |
 | Peperonata                                            | dodatek   | 45       | 180  |
 | Philly cheesesteak                                    | kolacja   | 30       | 650  |
+| Pho bo                                                | zupa      | 150      | 480  |
 | Piadina roll z mortadelą                              | przekaska | 15       | 520  |
 | Piadina z szynką i rukolą                             | kolacja   | 25       | 560  |
 | Piccata z kurczaka z cytryną                          | obiad     | 30       | 520  |
@@ -504,6 +536,7 @@ order by "Danie";
 | Pieczeń wieprzowa w sosie własnym                     | obiad     | 120      | 520  |
 | Pieczona owsianka                                     | sniadanie | 45       | 650  |
 | Pieczone bataty z dipem                               | przekaska | 40       | 390  |
+| Pieczone bataty z guacamole                           | kolacja   | 50       | 450  |
 | Pieczone jajka z chorizo                              | sniadanie | 30       | 450  |
 | Pieczone pieczarki z serem                            | przekaska | 30       | 320  |
 | Pieczone udka kurczaka                                | obiad     | 70       | 350  |
@@ -514,6 +547,7 @@ order by "Danie";
 | Pierogi leniwe                                        | obiad     | 30       | 520  |
 | Pierogi ruskie                                        | obiad     | 90       | 640  |
 | Pierogi z kapustą i grzybami                          | obiad     | 90       | 520  |
+| Pierogi z kaszą gryczaną i twarogiem                  | obiad     | 80       | 480  |
 | Pierogi z mięsem                                      | obiad     | 120      | 640  |
 | Pierogi z soczewicą i szpinakiem                      | obiad     | 80       | 420  |
 | Pierogi z truskawkami                                 | deser     | 70       | 340  |
@@ -537,6 +571,7 @@ order by "Danie";
 | Placki bananowe z jogurtem i owocami                  | deser     | 20       | 550  |
 | Placki jaglane z jabłkiem                             | sniadanie | 35       | 340  |
 | Placki owsiane z jogurtem                             | sniadanie | 20       | 420  |
+| Placki z batata                                       | sniadanie | 30       | 360  |
 | Placki z cukinii po koreańsku                         | przekaska | 25       | 320  |
 | Placki z cukinii z sosem jogurtowym                   | kolacja   | 30       | 380  |
 | Placki z dymką po chińsku                             | kolacja   | 35       | 420  |
@@ -575,6 +610,8 @@ order by "Danie";
 | Quesadilla z szarpaną wieprzowiną                     | obiad     | 180      | 710  |
 | Quiche lorraine                                       | obiad     | 70       | 520  |
 | Racuchy z jabłkami                                    | deser     | 30       | 650  |
+| Raita ogórkowa                                        | dodatek   | 15       | 90   |
+| Ramen tonkotsu z boczkiem                             | zupa      | 90       | 650  |
 | Ratatouille                                           | obiad     | 55       | 220  |
 | Ravioli z ricottą i szpinakiem                        | obiad     | 60       | 620  |
 | Reuben sandwich                                       | kolacja   | 20       | 590  |
@@ -588,6 +625,7 @@ order by "Danie";
 | Risotto z grzybami leśnymi                            | obiad     | 40       | 540  |
 | Risotto z owocami morza                               | obiad     | 35       | 560  |
 | Risotto z warzywami                                   | obiad     | 40       | 350  |
+| Rogale świętomarcińskie                               | deser     | 180      | 450  |
 | Rogaliki z marmoladą                                  | deser     | 90       | 380  |
 | Rolada biszkoptowa z dżemem                           | deser     | 40       | 290  |
 | Rolada z kurczaka ze szpinakiem                       | obiad     | 60       | 420  |
@@ -657,6 +695,7 @@ order by "Danie";
 | Sałatka z roszponki i gruszki                         | surowka   | 15       | 320  |
 | Sałatka z rukoli, pomidorków i parmezanu              | surowka   | 10       | 240  |
 | Sałatka z selera naciowego i orzechów włoskich        | surowka   | 15       | 290  |
+| Sałatka z selera naciowego i winogron                 | surowka   | 15       | 210  |
 | Sałatka z soczewicą i pieczonym batatem               | kolacja   | 40       | 480  |
 | Sałatka z tortellini i pesto                          | kolacja   | 20       | 520  |
 | Sałatka z tuńczykiem i jajkiem                        | kolacja   | 15       | 370  |
@@ -676,6 +715,7 @@ order by "Danie";
 | Sernik z rabarbarem                                   | deser     | 110      | 390  |
 | Shakshuka z jajkami i pomidorami                      | kolacja   | 25       | 470  |
 | Shawarma z kurczaka                                   | obiad     | 45       | 540  |
+| Shepherd's pie                                        | obiad     | 75       | 560  |
 | Skrzydełka BBQ                                        | przekaska | 50       | 620  |
 | Skrzydełka w glazurze gochujang                       | przekaska | 50       | 540  |
 | Skrzydełka w sosie sojowo miodowym                    | przekaska | 55       | 520  |
@@ -687,6 +727,7 @@ order by "Danie";
 | Smoothie bowl z owocami i granolą                     | deser     | 10       | 550  |
 | Smoothie zielone ze szpinakiem i bananem              | sniadanie | 7        | 290  |
 | Sole meunière                                         | obiad     | 25       | 420  |
+| Som tam                                               | surowka   | 20       | 180  |
 | Sopa de tortilla                                      | zupa      | 40       | 350  |
 | Sorbet truskawkowy                                    | deser     | 240      | 270  |
 | Sorbet z cytryny i bazylii                            | deser     | 25       | 150  |
@@ -725,6 +766,7 @@ order by "Danie";
 | Surówka z ogórka kiszonego i cebuli                   | surowka   | 10       | 95   |
 | Surówka z pora i jabłka                               | surowka   | 15       | 180  |
 | Surówka z rzepy i marchewki                           | surowka   | 15       | 120  |
+| Surówka z rzodkiewki i ogórka                         | surowka   | 15       | 120  |
 | Surówka z rzodkiewki i szczypiorku                    | surowka   | 10       | 95   |
 | Surówka z selera i jabłka                             | surowka   | 15       | 180  |
 | Surówka z selera i rodzynek                           | surowka   | 15       | 170  |
@@ -736,18 +778,22 @@ order by "Danie";
 | Sznycel wiedeński                                     | obiad     | 30       | 650  |
 | Szpinak z sezamem po koreańsku                        | surowka   | 15       | 110  |
 | Szybkie leczo z kiełbasą i papryką                    | kolacja   | 30       | 650  |
+| Śledź w oleju z cebulą                                | kolacja   | 20       | 420  |
 | Śledź w śmietanie z jabłkiem                          | kolacja   | 20       | 380  |
 | Śliwki w boczku                                       | przekaska | 30       | 280  |
 | Tabbouleh                                             | surowka   | 30       | 210  |
 | Tacos z mięsem mielonym i warzywami                   | kolacja   | 30       | 850  |
+| Tagine z kurczakiem i cytryną                         | obiad     | 80       | 520  |
 | Tagliatelle z boczniakami                             | obiad     | 30       | 450  |
 | Tagliatelle z polędwicą wołową                        | obiad     | 35       | 550  |
+| Tamagoyaki                                            | sniadanie | 15       | 230  |
 | Tapenada z oliwek                                     | przekaska | 10       | 210  |
 | Taralli                                               | przekaska | 60       | 320  |
 | Tarta cebulowa z tymiankiem                           | kolacja   | 70       | 460  |
 | Tarta cytrynowa                                       | deser     | 80       | 370  |
 | Tarta warzywna                                        | kolacja   | 60       | 880  |
 | Tarta z pomidorkami i ricottą                         | kolacja   | 50       | 450  |
+| Tarta z truskawkami                                   | deser     | 80       | 360  |
 | Tarta ze szparagami i jajkiem                         | kolacja   | 55       | 460  |
 | Tarta ze szpinakiem i ricottą                         | kolacja   | 60       | 480  |
 | Tarte tatin                                           | deser     | 70       | 420  |
@@ -760,6 +806,7 @@ order by "Danie";
 | Tofu smażone z warzywami po chińsku                   | kolacja   | 25       | 420  |
 | Tofu w sosie teriyaki                                 | obiad     | 30       | 520  |
 | Tom kha z kurczakiem                                  | zupa      | 35       | 480  |
+| Tonkatsu                                              | obiad     | 35       | 620  |
 | Torta caprese                                         | deser     | 60       | 480  |
 | Torta della nonna                                     | deser     | 90       | 460  |
 | Torta di mele                                         | deser     | 65       | 310  |
@@ -785,6 +832,7 @@ order by "Danie";
 | Twarożek z rzodkiewką i szczypiorkiem                 | sniadanie | 10       | 290  |
 | Tzatziki                                              | dodatek   | 15       | 110  |
 | Udka w sosie BBQ                                      | obiad     | 60       | 540  |
+| Udon z wołowiną i warzywami                           | obiad     | 30       | 580  |
 | Uszka z grzybami                                      | dodatek   | 80       | 260  |
 | Vichyssoise                                           | zupa      | 45       | 280  |
 | Vitello tonnato                                       | kolacja   | 40       | 480  |
@@ -799,7 +847,9 @@ order by "Danie";
 | Wrap z jajkiem, bekonem i sałatą                      | kolacja   | 15       | 660  |
 | Wrap z kurczakiem i warzywami                         | kolacja   | 20       | 580  |
 | Wrap z mięsem mielonym, serem i warzywami             | kolacja   | 25       | 900  |
+| Zaalouk                                               | surowka   | 45       | 190  |
 | Zabaglione                                            | deser     | 15       | 260  |
+| Zacierki na mleku                                     | sniadanie | 20       | 330  |
 | Zalewajka                                             | zupa      | 45       | 380  |
 | Zapiekane bagietki z serem, pieczarkami i szynką      | kolacja   | 25       | 700  |
 | Zapiekane bataty z fetą                               | kolacja   | 55       | 420  |
