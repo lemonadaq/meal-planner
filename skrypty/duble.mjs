@@ -9,28 +9,17 @@
 //
 //   npm run duble
 //
-// JAK TO DZIAŁA: nazwa → zbiór znaczących słów (bez „z", „i", „na"...),
-// każde skrócone do 5 znaków bez ogonków, żeby „serem" i „ser" albo
-// „naleśniki" i „naleśnik" wpadły w to samo. Potem dwa testy:
-//   1. zawieranie — wszystkie słowa krótszej nazwy są w dłuższej
-//   2. podobieństwo Jaccarda — ile słów wspólnych do wszystkich
+// Miara podobieństwa nazw siedzi w podobienstwo.js — tego samego używa
+// tryb `auto` do odsiewania propozycji, które w bazie już są.
 //
 // OGRANICZENIE: porównywane są NAZWY, nie składniki. Dwa dania o zupełnie
 // różnych nazwach i identycznym przepisie tu nie wyjdą.
 
 import { readFileSync } from 'fs'
+import { tokeny, podzbior, jaccard } from './podobienstwo.js'
 
 const PLIK = 'LISTA_DAN.md'
 const PROG = parseFloat(process.env.PROG || '0.6')
-
-const STOP = new Set(['z', 'ze', 'i', 'w', 'we', 'na', 'do', 'po', 'od', 'a', 'o', 'bez', 'pod', 'nad', 'jak'])
-
-const rdzen = s => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
-  .replace(/ł/g, 'l').replace(/[^a-z0-9]/g, '').slice(0, 5)
-
-const tokeny = nazwa => new Set(
-  nazwa.toLowerCase().split(/[^\p{L}\p{N}]+/u)
-    .filter(w => w && !STOP.has(w)).map(rdzen).filter(Boolean))
 
 function wczytaj() {
   return readFileSync(PLIK, 'utf-8').split('\n')
@@ -38,14 +27,6 @@ function wczytaj() {
     .map(l => l.split('|').slice(1, 3).map(x => x.trim()))
     .filter(([n]) => n && n !== 'danie')
     .map(([nazwa, rodzaj]) => ({ nazwa, rodzaj, t: tokeny(nazwa) }))
-}
-
-const podzbior = (a, b) => [...a].every(x => b.has(x))
-
-function jaccard(a, b) {
-  let wspolne = 0
-  for (const x of a) if (b.has(x)) wspolne++
-  return wspolne / (a.size + b.size - wspolne)
 }
 
 function wypisz(tytul, pary) {

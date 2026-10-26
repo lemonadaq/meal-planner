@@ -1,0 +1,510 @@
+[
+  {
+    "nazwa": "Sernik z rabarbarem",
+    "rodzaj": "deser",
+    "kuchnia": "polska",
+    "poziom": "srednie",
+    "czas_minuty": 110,
+    "kcal": 390,
+    "skladniki": [
+      { "nazwa": "twaróg sernikowy", "ilosc": "150", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "rabarbar", "ilosc": "80", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "mąka pszenna", "ilosc": "40", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "masło", "ilosc": "30", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "jajka", "ilosc": "1", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "cukier", "ilosc": "40", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "budyń waniliowy", "ilosc": "10", "jednostka": "g", "kategoria": "5_Produkty sypkie" }
+    ],
+    "kroki": [
+      "Pokrój rabarbar w centymetrowe kawałki, posyp łyżką cukru i odstaw na 20 minut, potem odsącz sok.",
+      "Zagnieć kruchy spód z mąki, masła, łyżki cukru i żółtka. Wyłóż nim formę i podpiecz 15 minut w 180 stopniach.",
+      "Zmiksuj twaróg z resztą cukru, jajkiem i budyniem.",
+      "Wyłóż masę na spód, na wierzchu rozłóż rabarbar i lekko go wciśnij.",
+      "Piecz 50 minut w 170 stopniach, potem studź przy uchylonych drzwiczkach."
+    ],
+    "opis_wizualny": "A square slice of baked cheesecake with a pale shortcrust base and creamy white filling, pink-red rhubarb pieces sunk into the surface. The top is matte with a few cracks; the rhubarb has softened and bled faint pink streaks."
+  },
+  {
+    "nazwa": "Ciasto z morelami i migdałami",
+    "rodzaj": "deser",
+    "kuchnia": "polska",
+    "poziom": "latwe",
+    "czas_minuty": 70,
+    "kcal": 340,
+    "skladniki": [
+      { "nazwa": "morele", "ilosc": "3", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "mąka pszenna", "ilosc": "50", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "masło", "ilosc": "40", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "cukier", "ilosc": "35", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "jajka", "ilosc": "1", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "migdały", "ilosc": "20", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "proszek do pieczenia", "ilosc": "1/2", "jednostka": "łyżeczka", "kategoria": "5_Produkty sypkie" }
+    ],
+    "kroki": [
+      "Utrzyj masło z cukrem, dodaj jajko i ucieraj dalej.",
+      "Wmieszaj mąkę z proszkiem i połowę zmielonych migdałów.",
+      "Przelej ciasto do formy, na wierzchu ułóż połówki moreli przekrojem do góry.",
+      "Posyp płatkami migdałów i resztą migdałów.",
+      "Piecz 45 minut w 175 stopniach. Owoce osiądą w ciasto i puszczą sok."
+    ],
+    "opis_wizualny": "A low cake with apricot halves pressed into the surface, their cut faces orange and slightly caramelised, surrounded by golden crumb and toasted almond flakes. A cut slice shows moist batter beneath the fruit."
+  },
+  {
+    "nazwa": "Muffinki jagodowe",
+    "rodzaj": "deser",
+    "kuchnia": "amerykanska",
+    "poziom": "latwe",
+    "czas_minuty": 40,
+    "kcal": 290,
+    "skladniki": [
+      { "nazwa": "mąka pszenna", "ilosc": "55", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "jagody", "ilosc": "50", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "cukier", "ilosc": "30", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "jajka", "ilosc": "1/2", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "maślanka", "ilosc": "50", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "olej", "ilosc": "2", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "proszek do pieczenia", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "5_Produkty sypkie" }
+    ],
+    "kroki": [
+      "Wymieszaj suche składniki w jednej misce, mokre w drugiej.",
+      "Połącz je KILKOMA ruchami — ciasto ma zostać grudkowate, inaczej muffinki wyjdą gumowe.",
+      "Jagody obsyp łyżką mąki i wmieszaj na końcu, żeby nie opadły na dno.",
+      "Nałóż ciasto do foremek do 3/4 wysokości.",
+      "Piecz 20 minut w 190 stopniach. Patyczek ma wychodzić suchy."
+    ],
+    "opis_wizualny": "Domed muffins with cracked golden tops, dark blueberries visible just under the surface and bleeding purple into the crumb. One is unwrapped and broken open showing a moist yellow interior studded with fruit."
+  },
+  {
+    "nazwa": "Budyń chałwowy",
+    "rodzaj": "deser",
+    "kuchnia": "polska",
+    "poziom": "latwe",
+    "czas_minuty": 20,
+    "kcal": 280,
+    "skladniki": [
+      { "nazwa": "mleko", "ilosc": "200", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "chałwa", "ilosc": "40", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "mąka ziemniaczana", "ilosc": "1", "jednostka": "łyżka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "żółtka", "ilosc": "1/2", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "cukier", "ilosc": "1", "jednostka": "łyżka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "sezam", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "5_Produkty sypkie" }
+    ],
+    "kroki": [
+      "Zagotuj 150 ml mleka z pokruszoną chałwą, mieszając, aż się rozpuści.",
+      "Rozmieszaj mąkę ziemniaczaną i żółtko w zimnym mleku z cukrem.",
+      "Wlej mieszankę do gorącego mleka, cały czas mieszając.",
+      "Gotuj minutę, aż budyń zgęstnieje i zacznie bąbelkować.",
+      "Przelej do pucharków, posyp prażonym sezamem i ostudź."
+    ],
+    "opis_wizualny": "A thick beige pudding set in a glass, matte surface with a spoon track across it, sprinkled with toasted sesame seeds. The colour is uniform light tan and the texture looks dense and smooth."
+  },
+  {
+    "nazwa": "Ciasteczka owsiane z rodzynkami",
+    "rodzaj": "deser",
+    "kuchnia": "amerykanska",
+    "poziom": "latwe",
+    "czas_minuty": 35,
+    "kcal": 240,
+    "skladniki": [
+      { "nazwa": "płatki owsiane", "ilosc": "50", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "mąka pszenna", "ilosc": "25", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "masło", "ilosc": "30", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "cukier", "ilosc": "25", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "jajka", "ilosc": "1/4", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "rodzynki", "ilosc": "20", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "cynamon", "ilosc": "1/2", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "soda", "ilosc": "1/4", "jednostka": "łyżeczka", "kategoria": "5_Produkty sypkie" }
+    ],
+    "kroki": [
+      "Utrzyj miękkie masło z cukrem, dodaj jajko.",
+      "Wmieszaj płatki, mąkę, sodę, cynamon i rodzynki.",
+      "Odstaw ciasto na 15 minut, żeby płatki wchłonęły wilgoć.",
+      "Nakładaj łyżką na blachę, zostawiając odstępy — ciasteczka się rozpłyną.",
+      "Piecz 12 minut w 180 stopniach. Wyjmij, gdy brzegi są złote, a środek jeszcze miękki."
+    ],
+    "opis_wizualny": "Flat round cookies with rough, cracked surfaces, golden at the edges and paler in the middle, visible oat flakes and dark raisins throughout. They lie slightly overlapping on a cooling rack."
+  },
+  {
+    "nazwa": "Pizza z salami i oliwkami",
+    "rodzaj": "obiad",
+    "kuchnia": "wloska",
+    "poziom": "srednie",
+    "czas_minuty": 100,
+    "kcal": 640,
+    "skladniki": [
+      { "nazwa": "mąka pszenna", "ilosc": "90", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "drożdże świeże", "ilosc": "3", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "pomidory z puszki", "ilosc": "80", "jednostka": "g", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "mozzarella", "ilosc": "60", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "salami", "ilosc": "40", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "oliwki czarne", "ilosc": "8", "jednostka": "szt", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "oliwa z oliwek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "oregano", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Zagnieć ciasto z mąki, drożdży, 55 ml wody, soli i oliwy, wyrabiaj 10 minut.",
+      "Odstaw na godzinę, aż podwoi objętość.",
+      "Rozgnieć pomidory widelcem, dopraw solą i oregano. Sosu NIE gotujemy.",
+      "Rozciągnij ciasto rękami, rozsmaruj sos, rozłóż mozzarellę.",
+      "Piecz 7 minut w maksymalnej temperaturze na rozgrzanej blasze.",
+      "Dołóż salami i oliwki i dopiecz 2 minuty — salami nie zdąży się wysuszyć."
+    ],
+    "opis_wizualny": "A round pizza with a blistered risen crust, red sauce and melted cheese, topped with curled rounds of salami whose edges have cupped and crisped, and whole black olives. Oregano flecks the cheese."
+  },
+  {
+    "nazwa": "Tortilla z kurczakiem i mango",
+    "rodzaj": "kolacja",
+    "kuchnia": "meksykanska",
+    "poziom": "latwe",
+    "czas_minuty": 30,
+    "kcal": 480,
+    "skladniki": [
+      { "nazwa": "tortilla", "ilosc": "2", "jednostka": "szt", "kategoria": "4_Pieczywo" },
+      { "nazwa": "pierś z kurczaka", "ilosc": "120", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "mango", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "cebula czerwona", "ilosc": "1/4", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "kolendra", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "sok z limonki", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "jogurt naturalny", "ilosc": "2", "jednostka": "łyżka", "kategoria": "3_Nabiał" },
+      { "nazwa": "papryka ostra", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Pokrój kurczaka w paski, dopraw solą i ostrą papryką, usmaż na mocnym ogniu.",
+      "Pokrój mango w kostkę, wymieszaj z cebulą, kolendrą i sokiem z limonki na salsę.",
+      "Podgrzej tortille na suchej patelni.",
+      "Nałóż kurczaka, salsę z mango i łyżkę jogurtu.",
+      "Zawiń, podwijając dolny brzeg, żeby farsz nie wypadał."
+    ],
+    "opis_wizualny": "A folded wheat wrap filled with browned chicken strips, bright yellow mango cubes, red onion and coriander, with white yogurt visible at the opening. The tortilla shows light scorch marks from the pan."
+  },
+  {
+    "nazwa": "Udka w sosie BBQ",
+    "rodzaj": "obiad",
+    "kuchnia": "amerykanska",
+    "poziom": "latwe",
+    "czas_minuty": 60,
+    "kcal": 540,
+    "skladniki": [
+      { "nazwa": "udko z kurczaka", "ilosc": "2", "jednostka": "szt", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "ketchup", "ilosc": "2", "jednostka": "łyżka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "miód", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "sos sojowy", "ilosc": "1", "jednostka": "łyżka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "musztarda", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "papryka słodka", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "czosnek", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "ocet winny", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "8_Inne" }
+    ],
+    "kroki": [
+      "Wymieszaj ketchup, miód, sos sojowy, musztardę, ocet, czosnek i paprykę na sos.",
+      "Natrzyj udka solą i połową sosu, odstaw na 30 minut.",
+      "Piecz 35 minut w 200 stopniach, skórą do góry.",
+      "Posmaruj resztą sosu i dopiecz 10 minut, aż glazura zrobi się lepka i ciemna.",
+      "Polej sosem z blachy przed podaniem."
+    ],
+    "opis_wizualny": "Chicken thighs with a sticky, dark red-brown glaze that has caramelised and charred in spots, glossy and thick on the skin. Sauce has pooled and darkened on the tray. The meat looks juicy where it has pulled from the bone."
+  },
+  {
+    "nazwa": "Łosoś w sosie teriyaki",
+    "rodzaj": "obiad",
+    "kuchnia": "japonska",
+    "poziom": "latwe",
+    "czas_minuty": 30,
+    "kcal": 480,
+    "skladniki": [
+      { "nazwa": "łosoś", "ilosc": "150", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "sos sojowy", "ilosc": "2", "jednostka": "łyżka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "miód", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "imbir", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "czosnek", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "ryż", "ilosc": "70", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "sezam", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "dymka", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Ugotuj ryż na sypko.",
+      "Zagotuj sos sojowy z miodem, startym imbirem i czosnkiem, redukuj 3 minuty do konsystencji syropu.",
+      "Osusz łososia i smaż skórą do dołu 4 minuty, potem obróć na 2 minuty.",
+      "Zmniejsz ogień, wlej sos i polewaj nim rybę łyżką przez minutę.",
+      "Podawaj na ryżu, posypane sezamem i dymką."
+    ],
+    "opis_wizualny": "A salmon fillet with crisp skin, glazed in a dark glossy soy-honey sauce that coats the top and pools around it on a bed of white rice. Sesame seeds and green onion rings are scattered over. The flesh shows pink layers where flaked."
+  },
+  {
+    "nazwa": "Pieczone warzywa z fetą i ziołami",
+    "rodzaj": "dodatek",
+    "kuchnia": "grecka",
+    "poziom": "latwe",
+    "czas_minuty": 50,
+    "kcal": 280,
+    "skladniki": [
+      { "nazwa": "cukinia", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "papryka", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "bakłażan", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "cebula czerwona", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "ser feta", "ilosc": "40", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "oliwa z oliwek", "ilosc": "2", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "oregano", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "czosnek", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Pokrój warzywa w grube kawałki — drobne wyschną, zamiast się upiec.",
+      "Wymieszaj je z oliwą, czosnkiem, oregano i solą.",
+      "Rozłóż na blasze w JEDNEJ warstwie, inaczej będą się dusić, a nie piec.",
+      "Piecz 35 minut w 220 stopniach, mieszając raz w połowie.",
+      "Pokrusz fetę na gorące warzywa i wstaw na 5 minut z powrotem."
+    ],
+    "opis_wizualny": "A tray of roasted vegetable chunks with charred edges — green courgette, red pepper, purple-skinned aubergine and onion — topped with crumbled white cheese softening from the heat. Oil and darkened juices collect on the tray."
+  },
+  {
+    "nazwa": "Tarta ze szparagami i jajkiem",
+    "rodzaj": "kolacja",
+    "kuchnia": "francuska",
+    "poziom": "latwe",
+    "czas_minuty": 55,
+    "kcal": 460,
+    "skladniki": [
+      { "nazwa": "ciasto francuskie", "ilosc": "80", "jednostka": "g", "kategoria": "4_Pieczywo" },
+      { "nazwa": "szparagi", "ilosc": "120", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "jajka", "ilosc": "1", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "śmietana 30%", "ilosc": "50", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "parmezan", "ilosc": "20", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "szynka", "ilosc": "30", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "pieprz", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Odłam twarde końce szparagów i blanszuj je 3 minuty, potem przelej zimną wodą.",
+      "Wyłóż formę ciastem, nakłuj spód i podpiecz 10 minut w 200 stopniach.",
+      "Rozmieszaj śmietanę z połową jajka i parmezanem, dopraw pieprzem.",
+      "Ułóż szparagi i szynkę na spodzie, zalej masą.",
+      "W środek wbij pozostałe jajko i piecz 20 minut w 190 stopniach — żółtko ma zostać miękkie."
+    ],
+    "opis_wizualny": "An open tart with a puffed golden rim, green asparagus spears laid in parallel over a thin set custard, with a whole egg baked in the centre, its yolk still glossy. Grated cheese has browned in patches."
+  },
+  {
+    "nazwa": "Risotto z groszkiem i miętą",
+    "rodzaj": "obiad",
+    "kuchnia": "wloska",
+    "poziom": "srednie",
+    "czas_minuty": 40,
+    "kcal": 460,
+    "skladniki": [
+      { "nazwa": "ryż arborio", "ilosc": "80", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "groszek zielony", "ilosc": "70", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "mięta", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "bulion warzywny", "ilosc": "250", "jednostka": "ml", "kategoria": "8_Inne" },
+      { "nazwa": "parmezan", "ilosc": "25", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "masło", "ilosc": "20", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "szalotka", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Zeszklij szalotkę na masle, wsyp ryż i mieszaj minutę.",
+      "Dolewaj gorący bulion chochla po chochli, mieszając, przez 16 minut.",
+      "Dodaj groszek na ostatnie 4 minuty — dłużej straci kolor.",
+      "Zdejmij z ognia, wmieszaj parmezan, resztę masła i posiekaną miętę.",
+      "Odstaw pod przykryciem na 2 minuty i przemieszaj przed podaniem."
+    ],
+    "opis_wizualny": "A creamy risotto with bright green peas dotted through it, spread level in a shallow bowl. Mint leaves and grated cheese sit on top. The rice is bound in a glossy sauce, pale with a green tint."
+  },
+  {
+    "nazwa": "Krem z selera z chipsami z boczku",
+    "rodzaj": "zupa",
+    "kuchnia": "polska",
+    "poziom": "latwe",
+    "czas_minuty": 45,
+    "kcal": 320,
+    "skladniki": [
+      { "nazwa": "seler korzeniowy", "ilosc": "200", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "ziemniaki", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "boczek wędzony", "ilosc": "40", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "bulion warzywny", "ilosc": "250", "jednostka": "ml", "kategoria": "8_Inne" },
+      { "nazwa": "śmietana 30%", "ilosc": "40", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "masło", "ilosc": "15", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "gałka muszkatołowa", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Podsmaż cebulę na masle, dodaj selera i ziemniaka w kostce.",
+      "Zalej bulionem i gotuj 25 minut do miękkości.",
+      "Zmiksuj na gładki krem, wmieszaj śmietanę i gałkę muszkatołową.",
+      "Boczek pokrój w cienkie plasterki i wysusz na patelni na chrupko.",
+      "Nalej zupę, połóż chipsy z boczku na wierzchu i polej łyżką tłuszczu z patelni."
+    ],
+    "opis_wizualny": "A smooth ivory cream soup in a bowl with crisp curled bacon slices standing on top and a few drops of bacon fat on the surface. The soup is thick and matte, with no visible vegetable pieces."
+  },
+  {
+    "nazwa": "Kalafior pieczony w całości",
+    "rodzaj": "dodatek",
+    "kuchnia": "miedzynarodowa",
+    "poziom": "latwe",
+    "czas_minuty": 70,
+    "kcal": 250,
+    "skladniki": [
+      { "nazwa": "kalafior", "ilosc": "300", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "jogurt grecki", "ilosc": "3", "jednostka": "łyżka", "kategoria": "3_Nabiał" },
+      { "nazwa": "oliwa z oliwek", "ilosc": "2", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "czosnek", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "kumin", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "papryka słodka", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "natka pietruszki", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Odetnij liście i wytnij głąb od spodu, zostawiając różę całą.",
+      "Gotuj kalafior 8 minut w osolonej wodzie i dobrze osusz.",
+      "Wymieszaj jogurt z oliwą, czosnkiem, kuminem i papryką i obsmaruj nim całą różę.",
+      "Piecz 45 minut w 200 stopniach, aż wierzch będzie ciemnozłoty.",
+      "Posyp natką i podawaj w całości, do dzielenia na talerzu."
+    ],
+    "opis_wizualny": "A whole roasted cauliflower head sitting upright, its surface coated in a spiced yogurt crust that has browned deeply to orange-brown with darker patches. Chopped parsley is scattered over. The florets are visible through the coating."
+  },
+  {
+    "nazwa": "Brokuł z masłem i bułką tartą",
+    "rodzaj": "dodatek",
+    "kuchnia": "polska",
+    "poziom": "latwe",
+    "czas_minuty": 20,
+    "kcal": 180,
+    "skladniki": [
+      { "nazwa": "brokuł", "ilosc": "200", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "masło", "ilosc": "20", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "bułka tarta", "ilosc": "2", "jednostka": "łyżka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "jajka", "ilosc": "1/2", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "sól", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Podziel brokuł na różyczki i gotuj 5 minut w osolonej wodzie.",
+      "Odcedź i przelej zimną wodą, żeby został zielony i jędrny.",
+      "Ugotuj jajko na twardo i posiekaj je drobno.",
+      "Rozpuść masło, wsyp bułkę tartą i smaż, mieszając, aż się zrumieni.",
+      "Polej brokuł masłem z bułką i posyp jajkiem."
+    ],
+    "opis_wizualny": "Bright green broccoli florets arranged on a plate, covered with golden toasted breadcrumbs in butter and sprinkled with finely chopped hard-boiled egg. Crumbs have fallen around the base."
+  },
+  {
+    "nazwa": "Pieczarki faszerowane kaszą",
+    "rodzaj": "kolacja",
+    "kuchnia": "polska",
+    "poziom": "latwe",
+    "czas_minuty": 45,
+    "kcal": 310,
+    "skladniki": [
+      { "nazwa": "pieczarki", "ilosc": "6", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "kasza gryczana", "ilosc": "40", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "ser żółty", "ilosc": "30", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "natka pietruszki", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "masło", "ilosc": "15", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "majeranek", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Ugotuj kaszę na sypko.",
+      "Wykręć nóżki z pieczarek i posiekaj je, kapelusze zostaw całe.",
+      "Podsmaż cebulę z nóżkami na masle, wymieszaj z kaszą, natką i majerankiem.",
+      "Napełnij kapelusze farszem z górką i posyp serem.",
+      "Piecz 25 minut w 190 stopniach, aż pieczarki zmiękną, a ser się zrumieni."
+    ],
+    "opis_wizualny": "Mushroom caps filled with a brown grain stuffing and topped with melted browned cheese, sitting in a baking dish. Dark juices have collected under them. Parsley flecks the filling, and the caps have shrunk slightly."
+  },
+  {
+    "nazwa": "Gulasz z dyni i ciecierzycy",
+    "rodzaj": "obiad",
+    "kuchnia": "miedzynarodowa",
+    "poziom": "latwe",
+    "czas_minuty": 45,
+    "kcal": 400,
+    "skladniki": [
+      { "nazwa": "dynia", "ilosc": "200", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "ciecierzyca z puszki", "ilosc": "120", "jednostka": "g", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "pomidory z puszki", "ilosc": "100", "jednostka": "g", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "mleko kokosowe", "ilosc": "60", "jednostka": "ml", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "curry", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "imbir", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "kolendra", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Podsmaż cebulę z imbirem, dodaj curry i przesmaż chwilę, żeby przyprawa się otworzyła.",
+      "Dodaj dynię w kostce i pomidory, podlej 100 ml wody.",
+      "Duś 20 minut, aż dynia zmięknie, ale się nie rozpadnie.",
+      "Dodaj ciecierzycę i mleko kokosowe, gotuj jeszcze 8 minut.",
+      "Dopraw solą, posyp kolendrą. Podawaj z ryżem albo pieczywem."
+    ],
+    "opis_wizualny": "A thick orange stew with soft pumpkin cubes and whole chickpeas in a creamy tomato-coconut sauce. Swirls of pale coconut milk show on the surface. Coriander leaves are scattered over the top."
+  },
+  {
+    "nazwa": "Kurczak w sosie orzechowym",
+    "rodzaj": "obiad",
+    "kuchnia": "tajska",
+    "poziom": "latwe",
+    "czas_minuty": 35,
+    "kcal": 560,
+    "skladniki": [
+      { "nazwa": "pierś z kurczaka", "ilosc": "140", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "masło orzechowe", "ilosc": "2", "jednostka": "łyżka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "mleko kokosowe", "ilosc": "80", "jednostka": "ml", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "sos sojowy", "ilosc": "1", "jednostka": "łyżka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "sok z limonki", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "czosnek", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "papryczka chili", "ilosc": "1/4", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "ryż", "ilosc": "70", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "kolendra", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Ugotuj ryż. Kurczaka pokrój w kostkę i obsmaż na mocnym ogniu.",
+      "Dodaj czosnek i chili, smaż pół minuty.",
+      "Wmieszaj masło orzechowe, mleko kokosowe i sos sojowy, rozprowadź na gładki sos.",
+      "Duś 8 minut, aż sos zgęstnieje i oklei mięso.",
+      "Zdejmij z ognia, dodaj sok z limonki i kolendrę. Podawaj na ryżu."
+    ],
+    "opis_wizualny": "Cubes of chicken in a thick light-brown peanut sauce, served beside white rice. The sauce clings heavily and glistens, with red chilli flecks and coriander leaves on top. A lime wedge sits at the plate edge."
+  },
+  {
+    "nazwa": "Indyk w sosie żurawinowym",
+    "rodzaj": "obiad",
+    "kuchnia": "polska",
+    "poziom": "latwe",
+    "czas_minuty": 40,
+    "kcal": 420,
+    "skladniki": [
+      { "nazwa": "filet z indyka", "ilosc": "150", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "żurawina", "ilosc": "40", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "miód", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "8_Inne" },
+      { "nazwa": "bulion warzywny", "ilosc": "80", "jednostka": "ml", "kategoria": "8_Inne" },
+      { "nazwa": "masło", "ilosc": "15", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "rozmaryn", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "ocet balsamiczny", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "8_Inne" }
+    ],
+    "kroki": [
+      "Pokrój indyka w grube medaliony i rozbij je lekko tłuczkiem. Osól i opieprz.",
+      "Obsmaż na masle po 3 minuty z każdej strony i przełóż na talerz.",
+      "Na patelnię wrzuć żurawinę, miód, bulion, ocet i rozmaryn.",
+      "Gotuj 6 minut, aż owoce popękają i sos zgęstnieje.",
+      "Włóż mięso na minutę do sosu i podawaj od razu."
+    ],
+    "opis_wizualny": "Pale turkey medallions on a plate under a glossy dark red cranberry sauce with burst berries visible in it. The meat edges are lightly browned. A sprig of rosemary rests on top and sauce pools beside the meat."
+  },
+  {
+    "nazwa": "Jajka po florencku",
+    "rodzaj": "sniadanie",
+    "kuchnia": "francuska",
+    "poziom": "srednie",
+    "czas_minuty": 30,
+    "kcal": 420,
+    "skladniki": [
+      { "nazwa": "jajka", "ilosc": "2", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "szpinak", "ilosc": "120", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "mleko", "ilosc": "100", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "masło", "ilosc": "15", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "mąka pszenna", "ilosc": "15", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "ser żółty", "ilosc": "30", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "gałka muszkatołowa", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Podduś szpinak na masle i odciśnij go z wody.",
+      "Zrób beszamel: zasmaż mąkę, rozprowadź mlekiem, dopraw gałką muszkatołową, wmieszaj połowę sera.",
+      "Rozłóż szpinak w dwóch kokilkach i zrób w nim wgłębienie.",
+      "Wbij po jajku do każdej, zalej beszamelem i posyp resztą sera.",
+      "Piecz 12 minut w 200 stopniach — białko ma się zetnąć, żółtko zostać płynne."
+    ],
+    "opis_wizualny": "Individual baking dishes with a bed of dark spinach, an egg baked in the centre, covered with pale béchamel and browned cheese on top. The yolk shows as a darker dome under the sauce. The edges of the sauce have bubbled and caught colour."
+  }
+]

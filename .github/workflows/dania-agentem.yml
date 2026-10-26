@@ -1,0 +1,149 @@
+name: Dania agentem
+
+# Dania bez kredytów na API Anthropic.
+#
+# Tryb `auto` w „Generuj dania" woła api.anthropic.com kluczem ANTHROPIC_KEY
+# i stoi, gdy na koncie nie ma kredytów. Tutaj przepisy pisze Claude Code
+# (ta sama akcja i ten sam token subskrypcji, co agent QA w agent.yml),
+# a baza i zdjęcia chodzą na swoich kluczach — Supabase i Replicate.
+#
+# Droga: odśwież listę dań z bazy → agent pisze paczkę JSON → walidacja
+# → commit → tryb `import` wrzuca dania i dorabia zdjęcia.
+#
+# Sekrety: CLAUDE_CODE_OAUTH_TOKEN (ten od agenta), SUPABASE_URL,
+# SUPABASE_SERVICE_ROLE_KEY, REPLICATE_KEY. ANTHROPIC_KEY NIE jest używany.
+
+on:
+  workflow_dispatch:
+    inputs:
+      ile:
+        description: "Ile dań napisać (rozsądnie do 25 na przebieg)"
+        type: string
+        required: true
+        default: "10"
+      wytyczne:
+        description: "Opcjonalnie: kuchnie i rodzaje, np. „kuchnia grecka, same kolacje i surówki”"
+        type: string
+        required: false
+        default: ""
+      importuj:
+        description: "Po napisaniu wrzuć dania do bazy i dorób zdjęcia"
+        type: boolean
+        required: false
+        default: true
+
+# Jeden przebieg naraz — i tu, i w „Generuj dania" piszemy do tej samej tabeli.
+concurrency:
+  group: generuj-dania
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  dania:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      REPLICATE_KEY: ${{ secrets.REPLICATE_KEY }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Instalacja zależności
+        run: npm ci
+
+      - name: Sprawdź sekrety
+        run: |
+          brakuje=0
+          for zmienna in SUPABASE_URL SUPABASE_SERVICE_ROLE_KEY; do
+            if [ -z "${!zmienna}" ]; then echo "::error::brak sekretu $zmienna"; brakuje=1; fi
+          done
+          if [ -z "${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}" ]; then
+            echo "::error::brak sekretu CLAUDE_CODE_OAUTH_TOKEN (ten sam, którym chodzi agent QA)"
+            brakuje=1
+          fi
+          if [ "${{ inputs.importuj }}" = "true" ] && [ -z "$REPLICATE_KEY" ]; then
+            echo "::error::brak sekretu REPLICATE_KEY — bez niego nie ma zdjęć"; brakuje=1
+          fi
+          exit $brakuje
+
+      - name: Odśwież listę dań z bazy
+        # Agent musi wiedzieć, co w bazie JEST, inaczej napisze duble.
+        # Plik zostaje tylko w katalogu roboczym — commitujemy go na końcu.
+        env:
+          ZAPISZ_LISTE: "1"
+        run: |
+          node skrypty/lista.mjs | tail -5
+          mkdir -p agent-out
+          printf 'agent-out/\n' >> .git/info/exclude
+
+      - name: Agent pisze przepisy
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ github.token }}
+          prompt: |
+            Jesteś agentem przepisów aplikacji Menu Planer i pracujesz bez człowieka.
+            Przeczytaj plik .claude/przepisy-prompt.md i wykonaj go dokładnie.
+            ILE DAŃ: ${{ inputs.ile }}
+            WYTYCZNE: ${{ inputs.wytyczne }}
+          claude_args: |
+            --model claude-sonnet-5
+            --max-turns 120
+            --allowedTools "Read,Edit,Write,Glob,Grep,Bash(cat:*),Bash(ls:*),Bash(grep:*),Bash(node skrypty/sprawdz-nazwy.mjs),Bash(npx vitest run src/test/importDan.test.js),Bash(git status),Bash(git diff:*)"
+
+      - name: Walidacja paczek
+        # Druga bariera po teście agenta: workflow nie commituje pliku,
+        # którego nie da się zaimportować.
+        run: npx vitest run src/test/importDan.test.js
+
+      - name: Zacommituj paczkę
+        id: commit
+        run: |
+          if git diff --quiet -- skrypty/dania LISTA_DAN.md; then
+            echo "Agent nie dopisał żadnej paczki."
+            echo "pusto=1" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add skrypty/dania LISTA_DAN.md
+          git commit -m "Nowa paczka dań od agenta (${{ inputs.ile }} dań)
+
+          Przepisy napisane przez Claude Code na tokenie subskrypcji
+          (workflow „Dania agentem\"), bez kredytów na API Anthropic.
+          Zdjęcia: Replicate. Szczegóły w podsumowaniu przebiegu."
+          git push
+          echo "pusto=0" >> "$GITHUB_OUTPUT"
+
+      - name: Wrzuć dania do bazy i dorób zdjęcia
+        if: inputs.importuj && steps.commit.outputs.pusto == '0'
+        run: node skrypty/importuj-dania.mjs
+
+      - name: Podsumowanie
+        if: always()
+        run: |
+          if [ -f agent-out/wynik.md ]; then
+            cat agent-out/wynik.md >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Agent nie zapisał agent-out/wynik.md — przebieg przerwany (limit tur albo limit subskrypcji)." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Artefakty agenta
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dania-agentem-${{ github.run_id }}
+          path: agent-out/
+          retention-days: 14
+          if-no-files-found: ignore

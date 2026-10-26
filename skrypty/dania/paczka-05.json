@@ -1,0 +1,966 @@
+[
+  {
+    "nazwa": "Kurczak w sosie koperkowym",
+    "rodzaj": "obiad",
+    "kuchnia": "polska",
+    "poziom": "latwe",
+    "czas_minuty": 40,
+    "kcal": 420,
+    "skladniki": [
+      { "nazwa": "pierś z kurczaka", "ilosc": "150", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "koperek", "ilosc": "2", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "śmietana 18%", "ilosc": "60", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "masło", "ilosc": "15", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "mąka pszenna", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "bulion warzywny", "ilosc": "100", "jednostka": "ml", "kategoria": "8_Inne" },
+      { "nazwa": "sok z cytryny", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Pokrój kurczaka w grube paski, osól i obsmaż na masle ze wszystkich stron.",
+      "Wlej bulion i duś pod przykryciem 10 minut.",
+      "Rozmieszaj śmietanę z mąką, zahartuj sosem z garnka i wlej do mięsa.",
+      "Zagotuj, dodaj posiekany koperek i sok z cytryny.",
+      "Dopraw solą i pieprzem. Koperek wsyp dopiero na koniec, żeby nie zszarzał."
+    ],
+    "opis_wizualny": "Strips of white chicken in a pale creamy sauce heavily flecked with chopped dill, served in a shallow bowl. The sauce is opaque and clings to the meat. Nothing is browned dark; the overall tone is light cream and green."
+  },
+  {
+    "nazwa": "Pieczeń wieprzowa w sosie własnym",
+    "rodzaj": "obiad",
+    "kuchnia": "polska",
+    "poziom": "srednie",
+    "czas_minuty": 120,
+    "kcal": 520,
+    "skladniki": [
+      { "nazwa": "karkówka", "ilosc": "160", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "cebula", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "czosnek", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "majeranek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "liść laurowy", "ilosc": "1", "jednostka": "szt", "kategoria": "7_Przyprawy" },
+      { "nazwa": "mąka pszenna", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "smalec", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" }
+    ],
+    "kroki": [
+      "Natrzyj mięso solą, pieprzem, czosnkiem i majerankiem, odstaw na godzinę.",
+      "Obsmaż je na smalcu ze wszystkich stron, aż złapie brązową skorupkę.",
+      "Włóż do garnka z cebulą i liściem laurowym, podlej wodą do 1/3 wysokości.",
+      "Duś pod przykryciem 90 minut, dolewając wody, gdy odparuje.",
+      "Wyjmij mięso, sos zmiksuj z cebulą i zagęść mąką rozmieszaną w wodzie.",
+      "Pokrój pieczeń w plastry i zalej sosem."
+    ],
+    "opis_wizualny": "Thick slices of roast pork, grey-brown through the middle with a darker crust at the edges, overlapping on a plate under a glossy brown onion gravy. The sauce is smooth and thick, pooling slightly. Steam and sheen suggest it is just served."
+  },
+  {
+    "nazwa": "Śledź w śmietanie z jabłkiem",
+    "rodzaj": "kolacja",
+    "kuchnia": "polska",
+    "poziom": "latwe",
+    "czas_minuty": 20,
+    "kcal": 380,
+    "skladniki": [
+      { "nazwa": "śledź matias", "ilosc": "100", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "śmietana 18%", "ilosc": "60", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "jabłka", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "cebula", "ilosc": "1/4", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "ogórek kiszony", "ilosc": "1/2", "jednostka": "szt", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "szczypiorek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "pieprz", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Wymocz filety śledziowe w zimnej wodzie 2 godziny, jeśli są bardzo solone, i osusz.",
+      "Pokrój śledzie w dzwonka, jabłko i ogórka w kostkę, cebulę w drobne piórka.",
+      "Wymieszaj śmietanę z pieprzem, połącz z resztą składników.",
+      "Odstaw na 2 godziny do lodówki — dopiero wtedy smaki się połączą.",
+      "Posyp szczypiorkiem. Podawaj z chlebem albo ziemniakami."
+    ],
+    "opis_wizualny": "Pieces of dark silvery herring in a thick white cream sauce, mixed with cubes of pale apple, pickled cucumber and onion slivers. Served in a small bowl, the sauce coating everything heavily. Chopped chives on top."
+  },
+  {
+    "nazwa": "Pasztet drobiowy pieczony",
+    "rodzaj": "kolacja",
+    "kuchnia": "polska",
+    "poziom": "srednie",
+    "czas_minuty": 110,
+    "kcal": 340,
+    "skladniki": [
+      { "nazwa": "wątróbka drobiowa", "ilosc": "100", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "pierś z kurczaka", "ilosc": "80", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "boczek wędzony", "ilosc": "40", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "marchew", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "bułka", "ilosc": "1/2", "jednostka": "szt", "kategoria": "4_Pieczywo" },
+      { "nazwa": "jajka", "ilosc": "1/2", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "gałka muszkatołowa", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Ugotuj mięsa z marchewką i cebulą w niewielkiej ilości wody, 40 minut. Wątróbkę dodaj na ostatnie 10.",
+      "Bułkę namocz w wywarze.",
+      "Zmiel wszystko dwukrotnie w maszynce — dwa razy, bo pasztet ma być gładki.",
+      "Wmieszaj jajko, dopraw solą, pieprzem i gałką muszkatołową.",
+      "Przełóż do keksówki wyłożonej papierem i piecz 50 minut w 180 stopniach.",
+      "Studź całkowicie przed krojeniem, najlepiej przez noc w lodówce."
+    ],
+    "opis_wizualny": "A sliced baked meat loaf-style pâté, uniformly grey-brown and dense, with a slightly darker crust on top. The slices are smooth, holding together cleanly. Served on a board with bread and pickled cucumber."
+  },
+  {
+    "nazwa": "Smalec ze skwarkami",
+    "rodzaj": "dodatek",
+    "kuchnia": "polska",
+    "poziom": "latwe",
+    "czas_minuty": 60,
+    "kcal": 240,
+    "skladniki": [
+      { "nazwa": "słonina", "ilosc": "120", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "boczek wędzony", "ilosc": "40", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "jabłka", "ilosc": "1/4", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "majeranek", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "czosnek", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Pokrój słoninę i boczek w drobną kostkę i wytapiaj na małym ogniu 40 minut.",
+      "Gdy skwarki się zrumienią, dodaj cebulę i starte jabłko.",
+      "Smaż jeszcze 10 minut, aż cebula zmięknie i zrobi się złota.",
+      "Zdejmij z ognia, dodaj czosnek, majeranek, sól i pieprz.",
+      "Przelej do słoika i wstaw do lodówki. Zastyga na biało po kilku godzinach."
+    ],
+    "opis_wizualny": "A jar or bowl of set white pork fat with visible browned crackling pieces, onion and herb flecks suspended through it. The surface is matte and slightly uneven where it was spooned in. A slice of dark bread with a smear of it sits alongside."
+  },
+  {
+    "nazwa": "Barszcz z uszkami",
+    "rodzaj": "zupa",
+    "kuchnia": "polska",
+    "poziom": "trudne",
+    "czas_minuty": 120,
+    "kcal": 280,
+    "skladniki": [
+      { "nazwa": "buraki", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "marchew", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "grzyby suszone", "ilosc": "10", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "mąka pszenna", "ilosc": "40", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "cebula", "ilosc": "1/4", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "czosnek", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "ocet winny", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "8_Inne" },
+      { "nazwa": "majeranek", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Namocz grzyby w szklance wody na godzinę, potem ugotuj je w tej wodzie.",
+      "Upiecz buraki w skórce 60 minut w 190 stopniach — pieczone dają głębszy smak niż gotowane.",
+      "Obrane buraki zetrzyj i zalej wywarem grzybowym z 500 ml wody, zagotuj i odstaw.",
+      "Grzyby posiekaj z podsmażoną cebulą na farsz, dopraw majerankiem.",
+      "Zagnieć ciasto z mąki i wody, wykrój kwadraty, zalep uszka i ugotuj je 3 minuty.",
+      "Barszcz dopraw czosnkiem, octem, solą i pieprzem. NIE gotuj go po doprawieniu, straci kolor."
+    ],
+    "opis_wizualny": "A deep ruby-red clear soup in a bowl, with a few small folded dumplings floating in it. The broth is translucent and intensely coloured, with no cream. The dumplings are pale with slightly ruffled edges, two or three per serving."
+  },
+  {
+    "nazwa": "Uszka z grzybami",
+    "rodzaj": "dodatek",
+    "kuchnia": "polska",
+    "poziom": "trudne",
+    "czas_minuty": 80,
+    "kcal": 260,
+    "skladniki": [
+      { "nazwa": "mąka pszenna", "ilosc": "60", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "grzyby suszone", "ilosc": "15", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "bułka tarta", "ilosc": "1", "jednostka": "łyżka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "masło", "ilosc": "10", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "pieprz", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Namocz grzyby na godzinę i ugotuj do miękkości, zachowaj wywar.",
+      "Posiekaj grzyby drobno, podsmaż z cebulą na masle, zagęść bułką tartą. Dopraw mocno.",
+      "Zagnieć ciasto z mąki i gorącej wody ze szczyptą soli, wyrabiaj 5 minut i odstaw na 20.",
+      "Rozwałkuj cienko, pokrój w kwadraty po 4 cm, nałóż farsz i zlep w trójkąt.",
+      "Połącz dwa dolne rogi trójkąta — stąd nazwa, mają wyglądać jak uszko.",
+      "Gotuj 3 minuty od wypłynięcia. Podawaj w barszczu albo polane masłem."
+    ],
+    "opis_wizualny": "Small pale dumplings with their two corners pinched together into a ring shape, piled in a bowl and glistening with butter. They are the size of a thumbnail, with visibly thin dough and a dark mushroom filling showing through at the folds."
+  },
+  {
+    "nazwa": "Krem z pieczonej papryki",
+    "rodzaj": "zupa",
+    "kuchnia": "miedzynarodowa",
+    "poziom": "latwe",
+    "czas_minuty": 50,
+    "kcal": 240,
+    "skladniki": [
+      { "nazwa": "papryka", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "pomidory", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "czosnek", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "bulion warzywny", "ilosc": "200", "jednostka": "ml", "kategoria": "8_Inne" },
+      { "nazwa": "śmietana 18%", "ilosc": "30", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "oliwa z oliwek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "papryka słodka", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Przekrój papryki, ułóż skórą do góry z cebulą i czosnkiem, skrop oliwą.",
+      "Piecz 30 minut w 220 stopniach, aż skórka miejscami zczernieje.",
+      "Zdejmij z papryk skórkę — zejdzie sama, gdy chwilę poleżą przykryte.",
+      "Zmiksuj warzywa z bulionem i papryką słodką na gładki krem.",
+      "Zagotuj, dopraw i wlej śmietanę. Podawaj z grzankami."
+    ],
+    "opis_wizualny": "A smooth, deep orange-red cream soup filling a bowl, with a swirl of white cream on the surface and a few croutons. The texture is velvety and uniform, no visible chunks. A drizzle of olive oil shines on top."
+  },
+  {
+    "nazwa": "Zupa z pieczonego kalafiora",
+    "rodzaj": "zupa",
+    "kuchnia": "miedzynarodowa",
+    "poziom": "latwe",
+    "czas_minuty": 55,
+    "kcal": 260,
+    "skladniki": [
+      { "nazwa": "kalafior", "ilosc": "200", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "ziemniaki", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "czosnek", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "bulion warzywny", "ilosc": "250", "jednostka": "ml", "kategoria": "8_Inne" },
+      { "nazwa": "oliwa z oliwek", "ilosc": "2", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "kumin", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "śmietana 18%", "ilosc": "30", "jednostka": "ml", "kategoria": "3_Nabiał" }
+    ],
+    "kroki": [
+      "Rozłóż różyczki kalafiora na blasze, skrop oliwą, posyp kuminem.",
+      "Piecz 25 minut w 220 stopniach, aż brzegi się przypieką — to one dają smak tej zupie.",
+      "Kilka różyczek odłóż do dekoracji.",
+      "Resztę zalej bulionem z ziemniakiem, cebulą i czosnkiem, gotuj 20 minut.",
+      "Zmiksuj, dopraw, wmieszaj śmietanę i udekoruj odłożonymi różyczkami."
+    ],
+    "opis_wizualny": "A thick ivory-coloured cream soup with a few browned, roasted cauliflower florets placed on top, their edges dark and caramelised. The soup itself is smooth. A drizzle of oil and a dusting of cumin finish the surface."
+  },
+  {
+    "nazwa": "Jajka w sosie chrzanowym",
+    "rodzaj": "sniadanie",
+    "kuchnia": "polska",
+    "poziom": "latwe",
+    "czas_minuty": 25,
+    "kcal": 330,
+    "skladniki": [
+      { "nazwa": "jajka", "ilosc": "2", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "chrzan tarty", "ilosc": "1", "jednostka": "łyżka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "śmietana 18%", "ilosc": "50", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "masło", "ilosc": "10", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "mąka pszenna", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "koperek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "pieczywo", "ilosc": "1", "jednostka": "szt", "kategoria": "4_Pieczywo" }
+    ],
+    "kroki": [
+      "Ugotuj jajka na półtwardo — 7 minut — i obierz je.",
+      "Zasmaż mąkę na masle, rozprowadź 80 ml wody i zagotuj.",
+      "Zdejmij z ognia, wmieszaj śmietanę i chrzan. Na ogniu chrzan traci ostrość.",
+      "Dopraw solą, pieprzem i szczyptą cukru.",
+      "Przekrój jajka na połówki, polej sosem i posyp koperkiem. Podawaj z pieczywem."
+    ],
+    "opis_wizualny": "Halved boiled eggs with just-set yolks, lying cut side up under a pale cream sauce flecked with horseradish and dill. The sauce partly covers them and pools on the plate. A slice of bread sits at the side."
+  },
+  {
+    "nazwa": "Drożdżówki z budyniem",
+    "rodzaj": "deser",
+    "kuchnia": "polska",
+    "poziom": "srednie",
+    "czas_minuty": 120,
+    "kcal": 340,
+    "skladniki": [
+      { "nazwa": "mąka pszenna", "ilosc": "70", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "drożdże świeże", "ilosc": "7", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "mleko", "ilosc": "80", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "cukier", "ilosc": "25", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "masło", "ilosc": "20", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "jajka", "ilosc": "1/2", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "budyń waniliowy", "ilosc": "15", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "cukier puder", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "5_Produkty sypkie" }
+    ],
+    "kroki": [
+      "Z drożdży, 30 ml ciepłego mleka i łyżeczki cukru zrób rozczyn.",
+      "Zagnieć ciasto z mąki, rozczynu, jajka, cukru i masła. Wyrabiaj 10 minut, odstaw na godzinę.",
+      "Ugotuj gęsty budyń z pozostałego mleka i ostudź go pod folią, żeby nie zrobił kożucha.",
+      "Z ciasta formuj kulki, spłaszczaj je i rób wgłębienie na budyń.",
+      "Nałóż budyń, odstaw drożdżówki na 30 minut i piecz 18 minut w 180 stopniach.",
+      "Po ostudzeniu posyp cukrem pudrem."
+    ],
+    "opis_wizualny": "Round golden yeast buns with a glossy yellow custard centre that has set slightly domed and browned at its rim. The dough is risen and soft-looking, pale at the sides. Icing sugar is dusted over the edges."
+  },
+  {
+    "nazwa": "Surówka z selera i rodzynek",
+    "rodzaj": "surowka",
+    "kuchnia": "polska",
+    "poziom": "latwe",
+    "czas_minuty": 15,
+    "kcal": 170,
+    "skladniki": [
+      { "nazwa": "seler korzeniowy", "ilosc": "150", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "rodzynki", "ilosc": "1", "jednostka": "łyżka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "majonez", "ilosc": "1", "jednostka": "łyżka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "jogurt naturalny", "ilosc": "1", "jednostka": "łyżka", "kategoria": "3_Nabiał" },
+      { "nazwa": "sok z cytryny", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "orzechy włoskie", "ilosc": "15", "jednostka": "g", "kategoria": "5_Produkty sypkie" }
+    ],
+    "kroki": [
+      "Zalej rodzynki wrzątkiem na 10 minut i odsącz.",
+      "Zetrzyj selera na grubych oczkach i od razu skrop sokiem z cytryny, żeby nie zciemniał.",
+      "Wymieszaj majonez z jogurtem, połącz z selerem i rodzynkami.",
+      "Dopraw solą, pieprzem i szczyptą cukru, posyp orzechami.",
+      "Odstaw na 20 minut do lodówki."
+    ],
+    "opis_wizualny": "A pale cream-coloured salad of coarsely grated celeriac bound in dressing, with dark raisins and walnut pieces scattered through and on top. The strands stay loose rather than forming a paste. Served mounded in a small bowl."
+  },
+  {
+    "nazwa": "Sałatka z brokułem i jajkiem",
+    "rodzaj": "surowka",
+    "kuchnia": "miedzynarodowa",
+    "poziom": "latwe",
+    "czas_minuty": 25,
+    "kcal": 240,
+    "skladniki": [
+      { "nazwa": "brokuł", "ilosc": "150", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "jajka", "ilosc": "1", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "pomidorki koktajlowe", "ilosc": "4", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "jogurt naturalny", "ilosc": "2", "jednostka": "łyżka", "kategoria": "3_Nabiał" },
+      { "nazwa": "majonez", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "słonecznik", "ilosc": "1", "jednostka": "łyżka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "czosnek", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Ugotuj brokuł 4 minuty w osolonej wodzie i przelej zimną wodą — ma zostać jędrny i zielony.",
+      "Ugotuj jajko na twardo i pokrój w kostkę.",
+      "Rozmieszaj jogurt z majonezem i przeciśniętym czosnkiem.",
+      "Połącz brokuł, jajko i przepołowione pomidorki z sosem.",
+      "Posyp prażonym słonecznikiem przed podaniem."
+    ],
+    "opis_wizualny": "Bright green broccoli florets with chopped hard-boiled egg and halved cherry tomatoes, lightly coated in a white dressing. Toasted sunflower seeds are scattered over the top. The florets keep their shape and colour."
+  },
+  {
+    "nazwa": "Sałatka z kurczakiem i ananasem",
+    "rodzaj": "kolacja",
+    "kuchnia": "miedzynarodowa",
+    "poziom": "latwe",
+    "czas_minuty": 30,
+    "kcal": 420,
+    "skladniki": [
+      { "nazwa": "pierś z kurczaka", "ilosc": "120", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "ananas z puszki", "ilosc": "80", "jednostka": "g", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "ser żółty", "ilosc": "30", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "kukurydza z puszki", "ilosc": "40", "jednostka": "g", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "sałata", "ilosc": "50", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "jogurt naturalny", "ilosc": "2", "jednostka": "łyżka", "kategoria": "3_Nabiał" },
+      { "nazwa": "majonez", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "curry", "ilosc": "1/2", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Usmaż kurczaka pokrojonego w kostkę, dopraw solą i curry, ostudź.",
+      "Odsącz ananasa i kukurydzę — z syropu sałatka robi się wodnista.",
+      "Pokrój ananasa i ser w kostkę.",
+      "Rozmieszaj jogurt z majonezem i szczyptą curry.",
+      "Wymieszaj wszystko z porwaną sałatą i podawaj od razu."
+    ],
+    "opis_wizualny": "A chunky salad of diced chicken, pale yellow pineapple pieces, cheese cubes and sweetcorn on torn lettuce, lightly bound with a creamy dressing tinted faintly yellow. The pieces are distinct and the bowl looks full and colourful."
+  },
+  {
+    "nazwa": "Wareniki z twarogiem",
+    "rodzaj": "obiad",
+    "kuchnia": "ukrainska",
+    "poziom": "srednie",
+    "czas_minuty": 70,
+    "kcal": 450,
+    "skladniki": [
+      { "nazwa": "mąka pszenna", "ilosc": "80", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "twaróg", "ilosc": "120", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "jajka", "ilosc": "1/4", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "ziemniaki", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "masło", "ilosc": "15", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "śmietana 18%", "ilosc": "2", "jednostka": "łyżka", "kategoria": "3_Nabiał" }
+    ],
+    "kroki": [
+      "Zagnieć ciasto z mąki, gorącej wody, jajka i szczypty soli. Wyrabiaj 8 minut i odstaw pod ściereczką.",
+      "Ugotuj ziemniaka, przeciśnij przez praskę i wymieszaj z twarogiem. Dopraw mocno solą i pieprzem.",
+      "Rozwałkuj ciasto, wykrój krążki, nałóż farsz i zalep brzegi, wyciskając powietrze.",
+      "Gotuj partiami na osolonym wrzątku 4 minuty od wypłynięcia.",
+      "Podsmaż cebulę na masle i polej nią wareniki. Podawaj ze śmietaną."
+    ],
+    "opis_wizualny": "Plump half-moon dumplings with thick crimped edges, glossy from butter, topped with golden fried onion. A spoon of sour cream sits to one side. One broken open shows a pale curd-and-potato filling."
+  },
+  {
+    "nazwa": "Czebureki z mięsem",
+    "rodzaj": "obiad",
+    "kuchnia": "ukrainska",
+    "poziom": "srednie",
+    "czas_minuty": 60,
+    "kcal": 560,
+    "skladniki": [
+      { "nazwa": "mąka pszenna", "ilosc": "80", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "mięso mielone wołowe", "ilosc": "100", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "natka pietruszki", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "olej", "ilosc": "150", "jednostka": "ml", "kategoria": "8_Inne" },
+      { "nazwa": "pieprz", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" },
+      { "nazwa": "wódka", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "8_Inne" }
+    ],
+    "kroki": [
+      "Zagnieć ciasto z mąki, 40 ml wrzątku, szczypty soli i łyżeczki wódki — od niej ciasto robi się bąbelkowate przy smażeniu.",
+      "Wyrabiaj 10 minut, aż będzie gładkie i sprężyste, i odstaw na 30 minut.",
+      "Wymieszaj mięso z posiekaną cebulą, natką, solą, pieprzem i 2 łyżkami wody. Farsz ma być wilgotny.",
+      "Rozwałkuj cienkie placki, na połowę nałóż farsz cienką warstwą i zlep brzegi widelcem.",
+      "Smaż w głębokim oleju po 3 minuty z każdej strony, aż napuchną i zrobią się bąbelkowate."
+    ],
+    "opis_wizualny": "Large flat half-moon pies, deep golden with blistered bubbles across the surface, some patches darker brown. One is torn open showing a thin layer of juicy minced meat inside. They rest on paper that shows small oil marks."
+  },
+  {
+    "nazwa": "Köfte z jogurtem",
+    "rodzaj": "obiad",
+    "kuchnia": "turecka",
+    "poziom": "latwe",
+    "czas_minuty": 40,
+    "kcal": 480,
+    "skladniki": [
+      { "nazwa": "mięso mielone wołowe", "ilosc": "130", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "bułka tarta", "ilosc": "1", "jednostka": "łyżka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "jogurt grecki", "ilosc": "60", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "czosnek", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "kumin", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "natka pietruszki", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "papryka ostra", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Wymieszaj mięso ze startą cebulą, bułką tartą, kuminem, natką, solą i pieprzem.",
+      "Wyrabiaj masę ręką 5 minut — dopiero wtedy kotleciki się nie rozpadną.",
+      "Formuj podłużne wałeczki i spłaszcz je lekko.",
+      "Smaż na patelni grillowej po 4 minuty z każdej strony.",
+      "Wymieszaj jogurt z czosnkiem i solą, wyłóż na talerz, na nim ułóż köfte i posyp ostrą papryką."
+    ],
+    "opis_wizualny": "Oblong grilled meat patties with charred stripes, laid on a bed of thick white garlic yogurt that spreads across the plate. A dusting of red pepper and a drizzle of oil mark the yogurt. Flatbread and parsley sit at the edge."
+  },
+  {
+    "nazwa": "Menemen",
+    "rodzaj": "sniadanie",
+    "kuchnia": "turecka",
+    "poziom": "latwe",
+    "czas_minuty": 25,
+    "kcal": 340,
+    "skladniki": [
+      { "nazwa": "jajka", "ilosc": "2", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "pomidory", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "papryka", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "masło", "ilosc": "15", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "ser feta", "ilosc": "25", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "papryka ostra", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" },
+      { "nazwa": "pieczywo", "ilosc": "1", "jednostka": "szt", "kategoria": "4_Pieczywo" }
+    ],
+    "kroki": [
+      "Podsmaż na masle paprykę pokrojoną w drobną kostkę, 5 minut.",
+      "Dodaj obrane, posiekane pomidory i duś 10 minut, aż sos zgęstnieje.",
+      "Wbij jajka wprost na patelnię i mieszaj WOLNO, zgarniając je ku środkowi.",
+      "Zdejmij z ognia, gdy jajka są jeszcze wilgotne — dojdą na gorącej patelni.",
+      "Posyp pokruszoną fetą i ostrą papryką. Podawaj wprost z patelni, z pieczywem."
+    ],
+    "opis_wizualny": "Soft, barely set scrambled eggs mixed into a chunky red tomato and pepper base, served straight from a small pan. The eggs appear in loose yellow curds rather than a solid mass. Crumbled white cheese and red pepper flakes dot the top."
+  },
+  {
+    "nazwa": "Lahmacun",
+    "rodzaj": "obiad",
+    "kuchnia": "turecka",
+    "poziom": "srednie",
+    "czas_minuty": 90,
+    "kcal": 460,
+    "skladniki": [
+      { "nazwa": "mąka pszenna", "ilosc": "80", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "drożdże świeże", "ilosc": "4", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "mięso mielone wołowe", "ilosc": "80", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "pomidory", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "papryka", "ilosc": "1/4", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "natka pietruszki", "ilosc": "2", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "koncentrat pomidorowy", "ilosc": "1", "jednostka": "łyżka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "kumin", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "sok z cytryny", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Zagnieć ciasto z mąki, drożdży, 50 ml wody i soli. Odstaw na godzinę.",
+      "Zmiksuj krótko mięso z pomidorem, papryką, koncentratem, natką i kuminem na luźną pastę.",
+      "Rozwałkuj ciasto NA CIENKO, prawie na przezroczyście, i przełóż na gorącą blachę.",
+      "Rozsmaruj farsz cienką warstwą po całej powierzchni, do samych brzegów.",
+      "Piecz 8 minut w 250 stopniach. Skrop sokiem z cytryny, posyp natką i zwiń w rulon."
+    ],
+    "opis_wizualny": "A very thin oval flatbread covered edge to edge with a thin layer of dark red spiced minced meat, the dough browned and slightly crisp underneath. Fresh parsley and a lemon wedge sit on top. It is often shown half-rolled."
+  },
+  {
+    "nazwa": "Imam bayildi",
+    "rodzaj": "obiad",
+    "kuchnia": "turecka",
+    "poziom": "latwe",
+    "czas_minuty": 80,
+    "kcal": 320,
+    "skladniki": [
+      { "nazwa": "bakłażan", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "cebula", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "pomidory", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "czosnek", "ilosc": "3", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "oliwa z oliwek", "ilosc": "3", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "natka pietruszki", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "cukier", "ilosc": "1/2", "jednostka": "łyżeczka", "kategoria": "5_Produkty sypkie" }
+    ],
+    "kroki": [
+      "Natnij bakłażana wzdłuż, posól wnętrze i odstaw na 20 minut, potem osusz.",
+      "Podsmaż go na oliwie ze wszystkich stron i przełóż do naczynia.",
+      "Duś cebulę z czosnkiem 15 minut na małym ogniu, dodaj pomidory, cukier i natkę.",
+      "Rozchyl bakłażana i wypełnij go farszem, polej resztą oliwy.",
+      "Piecz 40 minut w 180 stopniach. Podawaj letnie albo zimne — tak się je w Turcji."
+    ],
+    "opis_wizualny": "A whole aubergine split open lengthwise and filled with a soft stew of onion, garlic and tomato, sitting in a pool of olive oil. The skin is wrinkled and dark purple, the flesh collapsed and glossy. Parsley is scattered over."
+  },
+  {
+    "nazwa": "Pilaw z marchewką",
+    "rodzaj": "dodatek",
+    "kuchnia": "turecka",
+    "poziom": "latwe",
+    "czas_minuty": 35,
+    "kcal": 290,
+    "skladniki": [
+      { "nazwa": "ryż", "ilosc": "80", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "marchew", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "cebula", "ilosc": "1/4", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "masło", "ilosc": "15", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "bulion warzywny", "ilosc": "160", "jednostka": "ml", "kategoria": "8_Inne" },
+      { "nazwa": "kumin", "ilosc": "1/2", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "rodzynki", "ilosc": "1", "jednostka": "łyżka", "kategoria": "5_Produkty sypkie" }
+    ],
+    "kroki": [
+      "Przepłucz ryż w zimnej wodzie, aż woda przestanie być mleczna — wtedy będzie sypki.",
+      "Zeszklij cebulę i startą marchewkę na masle, dopraw kuminem.",
+      "Wsyp ryż i mieszaj minutę, żeby oblepił się tłuszczem.",
+      "Wlej gorący bulion, dodaj rodzynki, zagotuj i przykryj.",
+      "Gotuj 12 minut na najmniejszym ogniu bez mieszania, potem odstaw na 10 minut pod przykryciem i przemieszaj widelcem."
+    ],
+    "opis_wizualny": "Fluffy separate rice grains tinted pale orange, mixed with shreds of soft carrot and a few dark raisins, mounded in a bowl. The grains look dry and distinct, glossy with butter rather than wet."
+  },
+  {
+    "nazwa": "Mujaddara",
+    "rodzaj": "obiad",
+    "kuchnia": "bliskowschodnia",
+    "poziom": "latwe",
+    "czas_minuty": 55,
+    "kcal": 420,
+    "skladniki": [
+      { "nazwa": "soczewica zielona", "ilosc": "60", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "ryż", "ilosc": "60", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "cebula", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "kumin", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "cynamon", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" },
+      { "nazwa": "olej", "ilosc": "3", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "jogurt naturalny", "ilosc": "2", "jednostka": "łyżka", "kategoria": "3_Nabiał" }
+    ],
+    "kroki": [
+      "Ugotuj soczewicę 20 minut w osolonej wodzie, nie na papkę. Odcedź, wodę zachowaj.",
+      "Usmaż cebulę w piórkach na głębszym oleju na CIEMNY brąz — to ona daje temu daniu smak i kolor.",
+      "Połowę cebuli odłóż na papier, resztę zostaw w garnku.",
+      "Wsyp ryż, kumin i cynamon, wlej 150 ml wody po soczewicy, gotuj 12 minut pod przykryciem.",
+      "Wmieszaj soczewicę, odstaw na 10 minut i posyp odłożoną cebulą. Podawaj z jogurtem."
+    ],
+    "opis_wizualny": "A mound of brown-tinged rice and whole green lentils, topped with a generous heap of dark, crisp fried onions. The grains and lentils are distinct. A spoon of white yogurt sits at the side of the plate."
+  },
+  {
+    "nazwa": "Shawarma z kurczaka",
+    "rodzaj": "obiad",
+    "kuchnia": "bliskowschodnia",
+    "poziom": "latwe",
+    "czas_minuty": 45,
+    "kcal": 540,
+    "skladniki": [
+      { "nazwa": "udko z kurczaka", "ilosc": "150", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "jogurt naturalny", "ilosc": "2", "jednostka": "łyżka", "kategoria": "3_Nabiał" },
+      { "nazwa": "pasta tahini", "ilosc": "1", "jednostka": "łyżka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "pita", "ilosc": "1", "jednostka": "szt", "kategoria": "4_Pieczywo" },
+      { "nazwa": "kumin", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "papryka słodka", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "cebula czerwona", "ilosc": "1/4", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "pomidory", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "sok z cytryny", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Zamarynuj mięso w jogurcie z kuminem, papryką, sokiem z cytryny i solą. Minimum 2 godziny.",
+      "Usmaż kurczaka na mocno rozgrzanej patelni, bez ruszania, aż zrobi się przypieczony.",
+      "Pokrój go w paski, wracając je na chwilę na patelnię dla chrupkości.",
+      "Rozmieszaj tahini z wodą i sokiem z cytryny na sos o gęstości śmietany.",
+      "Nałóż mięso na pitę z pomidorem i cebulą, polej sosem i zawiń ciasno."
+    ],
+    "opis_wizualny": "Strips of charred, spice-stained chicken wrapped in flatbread with tomato slices and red onion, drizzled with pale beige sesame sauce that leaks at the open end. The wrap is held tight at the bottom in paper. Edges of the bread are toasted."
+  },
+  {
+    "nazwa": "Sałatka z ciecierzycy i kolendry",
+    "rodzaj": "surowka",
+    "kuchnia": "bliskowschodnia",
+    "poziom": "latwe",
+    "czas_minuty": 20,
+    "kcal": 270,
+    "skladniki": [
+      { "nazwa": "ciecierzyca z puszki", "ilosc": "150", "jednostka": "g", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "kolendra", "ilosc": "2", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "pomidory", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "cebula czerwona", "ilosc": "1/4", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "oliwa z oliwek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "sok z cytryny", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "kumin", "ilosc": "1/2", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Odsącz i opłucz ciecierzycę, osusz ją na papierze.",
+      "Pokrój pomidory w kostkę, cebulę w drobne piórka, posiekaj kolendrę.",
+      "Zrób dressing z oliwy, soku z cytryny, kuminu, soli i pieprzu.",
+      "Wymieszaj wszystko i odstaw na 15 minut.",
+      "Przed podaniem spróbuj i dociśnij jeszcze cytryną — ta sałatka ma być wyraźnie kwaśna."
+    ],
+    "opis_wizualny": "Whole beige chickpeas mixed with red tomato dice, slivers of purple onion and plenty of chopped green coriander, glistening with dressing. Served in a bowl, the ingredients loose and clearly separate."
+  },
+  {
+    "nazwa": "Gulasz z soczewicy",
+    "rodzaj": "obiad",
+    "kuchnia": "miedzynarodowa",
+    "poziom": "latwe",
+    "czas_minuty": 45,
+    "kcal": 380,
+    "skladniki": [
+      { "nazwa": "soczewica czerwona", "ilosc": "70", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "papryka", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "pomidory z puszki", "ilosc": "120", "jednostka": "g", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "marchew", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "papryka słodka", "ilosc": "1", "jednostka": "łyżka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "majeranek", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "olej", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" }
+    ],
+    "kroki": [
+      "Podsmaż cebulę, marchew i paprykę na oleju 8 minut.",
+      "Zdejmij z ognia, wsyp słodką paprykę i wymieszaj — na gorącej patelni zgorzkniałaby.",
+      "Dodaj pomidory, soczewicę i 200 ml wody, zagotuj.",
+      "Gotuj 25 minut, mieszając, aż soczewica się rozpadnie i zagęści gulasz.",
+      "Dopraw majerankiem, solą i pieprzem. Podawaj z kaszą albo pieczywem."
+    ],
+    "opis_wizualny": "A thick orange-red stew in which the lentils have broken down into a coarse purée, with visible strips of pepper and carrot rounds. It holds its shape on a spoon. Served in a bowl with a sprinkle of marjoram on top."
+  },
+  {
+    "nazwa": "Pierś kaczki z sosem wiśniowym",
+    "rodzaj": "obiad",
+    "kuchnia": "polska",
+    "poziom": "trudne",
+    "czas_minuty": 50,
+    "kcal": 560,
+    "skladniki": [
+      { "nazwa": "pierś z kaczki", "ilosc": "150", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "wiśnie", "ilosc": "80", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "miód", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "wino czerwone", "ilosc": "50", "jednostka": "ml", "kategoria": "8_Inne" },
+      { "nazwa": "ocet balsamiczny", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "8_Inne" },
+      { "nazwa": "tymianek", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "masło", "ilosc": "10", "jednostka": "g", "kategoria": "3_Nabiał" }
+    ],
+    "kroki": [
+      "Natnij skórę kaczki w kratkę, nie dochodząc do mięsa, i osól.",
+      "Połóż pierś skórą do dołu na ZIMNĄ patelnię i smaż 8 minut na średnim ogniu, wylewając wytopiony tłuszcz.",
+      "Obróć na minutę, przełóż do piekarnika i piecz 8 minut w 180 stopniach.",
+      "Odstaw mięso na 8 minut pod folią — inaczej cały sok wypłynie na deskę.",
+      "Na patelni zredukuj wino z miodem, wiśniami, octem i tymiankiem, na koniec wmieszaj masło.",
+      "Pokrój pierś w plastry i polej sosem."
+    ],
+    "opis_wizualny": "Sliced duck breast fanned on a plate, pink in the middle with a crisp dark brown skin on the edge of each slice. A glossy dark red cherry sauce is spooned beside and over part of the meat, with whole cherries in it."
+  },
+  {
+    "nazwa": "Makaron z dynią i szałwią",
+    "rodzaj": "obiad",
+    "kuchnia": "wloska",
+    "poziom": "latwe",
+    "czas_minuty": 40,
+    "kcal": 480,
+    "skladniki": [
+      { "nazwa": "makaron", "ilosc": "90", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "dynia", "ilosc": "200", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "masło", "ilosc": "20", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "szałwia", "ilosc": "4", "jednostka": "szt", "kategoria": "7_Przyprawy" },
+      { "nazwa": "parmezan", "ilosc": "25", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "czosnek", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "orzechy włoskie", "ilosc": "15", "jednostka": "g", "kategoria": "5_Produkty sypkie" }
+    ],
+    "kroki": [
+      "Pokrój dynię w kostkę, skrop oliwą i piecz 25 minut w 200 stopniach, aż brzegi się skarmelizują.",
+      "Ugotuj makaron al dente, zachowaj szklankę wody.",
+      "Rozpuść masło z liśćmi szałwii i czosnkiem, smaż, aż masło zrobi się orzechowe, a szałwia chrupiąca.",
+      "Wrzuć dynię, część rozgnieć widelcem — zrobi sos.",
+      "Dodaj makaron, wodę z gotowania i parmezan, wymieszaj. Posyp orzechami."
+    ],
+    "opis_wizualny": "Pasta coated in a pale orange sauce with soft caramelised pumpkin cubes and dark crisp sage leaves on top. Chopped walnuts and grated cheese finish it. The sauce clings to the pasta, with browned butter visible as shine."
+  },
+  {
+    "nazwa": "Pieczony pstrąg z ziołami",
+    "rodzaj": "obiad",
+    "kuchnia": "polska",
+    "poziom": "latwe",
+    "czas_minuty": 40,
+    "kcal": 380,
+    "skladniki": [
+      { "nazwa": "pstrąg", "ilosc": "200", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "cytryny", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "koperek", "ilosc": "2", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "masło", "ilosc": "15", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "czosnek", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "natka pietruszki", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "pieprz", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Wypatrosz i osusz rybę, natnij skórę po skosie w dwóch miejscach.",
+      "Natrzyj ją solą i pieprzem z zewnątrz i w środku.",
+      "Wypełnij brzuch plasterkami cytryny, koperkiem, natką i czosnkiem.",
+      "Posmaruj rybę masłem i zawiń w papier do pieczenia.",
+      "Piecz 25 minut w 200 stopniach. Mięso ma odchodzić od kości przy kręgosłupie."
+    ],
+    "opis_wizualny": "A whole baked trout on a plate, skin silvery-grey and slightly crisped with two diagonal cuts, its belly stuffed with lemon slices and dill sticking out. Butter and juices pool under it. A lemon half sits beside the fish."
+  },
+  {
+    "nazwa": "Kurczak pieczony z cytryną i czosnkiem",
+    "rodzaj": "obiad",
+    "kuchnia": "miedzynarodowa",
+    "poziom": "latwe",
+    "czas_minuty": 70,
+    "kcal": 480,
+    "skladniki": [
+      { "nazwa": "udko z kurczaka", "ilosc": "2", "jednostka": "szt", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "cytryny", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "czosnek", "ilosc": "4", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "ziemniaki", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "oliwa z oliwek", "ilosc": "2", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "rozmaryn", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "papryka słodka", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Natrzyj udka oliwą, solą, pieprzem, papryką i rozmarynem. Odstaw na 30 minut.",
+      "Ułóż w naczyniu ziemniaki w ćwiartkach i całe, niełuskane ząbki czosnku.",
+      "Połóż na nich kurczaka skórą do góry, między kawałki wciśnij plastry cytryny.",
+      "Piecz 45 minut w 200 stopniach, podlewając raz wodą, jeśli naczynie wysycha.",
+      "Ostatnie 10 minut piecz z włączonym grillem, żeby skóra była chrupiąca."
+    ],
+    "opis_wizualny": "Two browned chicken thighs with crisp blistered skin on top of roast potato wedges, with whole garlic cloves and browned lemon slices in the dish. Pan juices with flecks of herbs collect at the bottom. Everything looks roasted and uneven."
+  },
+  {
+    "nazwa": "Kasza gryczana z grzybami",
+    "rodzaj": "obiad",
+    "kuchnia": "polska",
+    "poziom": "latwe",
+    "czas_minuty": 40,
+    "kcal": 390,
+    "skladniki": [
+      { "nazwa": "kasza gryczana", "ilosc": "70", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "pieczarki", "ilosc": "120", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "boczek wędzony", "ilosc": "30", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "śmietana 18%", "ilosc": "30", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "natka pietruszki", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "majeranek", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Ugotuj kaszę w podwójnej objętości osolonej wody, 15 minut, i odstaw pod przykryciem.",
+      "Wytop boczek, dodaj cebulę i pieczarki pokrojone w grube plastry.",
+      "Smaż na mocnym ogniu, aż grzyby odparują wodę i złapią kolor. Dopraw majerankiem.",
+      "Wmieszaj kaszę i śmietanę, podgrzej razem 2 minuty.",
+      "Dopraw solą i pieprzem, posyp natką."
+    ],
+    "opis_wizualny": "Dark brown buckwheat grains mixed with browned mushroom slices, onion and bits of bacon, lightly bound by cream. The grains are separate and the mushrooms clearly visible. Served heaped in a bowl with parsley on top."
+  },
+  {
+    "nazwa": "Kotlet z indyka z serem",
+    "rodzaj": "obiad",
+    "kuchnia": "polska",
+    "poziom": "latwe",
+    "czas_minuty": 35,
+    "kcal": 450,
+    "skladniki": [
+      { "nazwa": "filet z indyka", "ilosc": "150", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "ser żółty", "ilosc": "30", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "jajka", "ilosc": "1/2", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "bułka tarta", "ilosc": "3", "jednostka": "łyżka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "mąka pszenna", "ilosc": "1", "jednostka": "łyżka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "olej", "ilosc": "2", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "papryka słodka", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Rozbij filet tłuczkiem na pół centymetra, dopraw solą, pieprzem i papryką.",
+      "Na połowie kotleta ułóż plaster sera i złóż mięso na pół, dociskając brzegi.",
+      "Obtocz w mące, jajku i bułce tartej. Dociśnij panierkę dłonią, żeby ser nie wypłynął.",
+      "Smaż na średnim ogniu po 4 minuty z każdej strony.",
+      "Odłóż na papier na minutę i podawaj od razu — ser ma się ciągnąć."
+    ],
+    "opis_wizualny": "A golden breaded cutlet on a plate, cut at one end so melted cheese runs out onto the plate. The coating is crisp and evenly browned with a few darker crumbs. The meat inside is white and thin."
+  },
+  {
+    "nazwa": "Zapiekane bataty z fetą",
+    "rodzaj": "kolacja",
+    "kuchnia": "miedzynarodowa",
+    "poziom": "latwe",
+    "czas_minuty": 55,
+    "kcal": 420,
+    "skladniki": [
+      { "nazwa": "bataty", "ilosc": "250", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "ser feta", "ilosc": "50", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "oliwa z oliwek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "czosnek", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "jogurt grecki", "ilosc": "2", "jednostka": "łyżka", "kategoria": "3_Nabiał" },
+      { "nazwa": "papryka ostra", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" },
+      { "nazwa": "kolendra", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Umyj bataty, przekrój wzdłuż i natnij miąższ kratkę.",
+      "Skrop oliwą, posól i piecz 40 minut w 200 stopniach, aż miąższ będzie całkiem miękki.",
+      "Rozmieszaj jogurt z czosnkiem i szczyptą soli.",
+      "Rozwidłuj miąższ widelcem i pokrusz na nim fetę.",
+      "Polej sosem jogurtowym, posyp ostrą papryką i kolendrą."
+    ],
+    "opis_wizualny": "Halved roast sweet potatoes with deep orange flesh scored and fluffed up, topped with crumbled white cheese and a drizzle of yogurt. The skins are wrinkled and browned at the edges. Red pepper flakes and coriander leaves dot the top."
+  },
+  {
+    "nazwa": "Omlet z pomidorami i serem feta",
+    "rodzaj": "sniadanie",
+    "kuchnia": "grecka",
+    "poziom": "latwe",
+    "czas_minuty": 20,
+    "kcal": 370,
+    "skladniki": [
+      { "nazwa": "jajka", "ilosc": "2", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "pomidorki koktajlowe", "ilosc": "5", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "ser feta", "ilosc": "40", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "oliwa z oliwek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "oregano", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "dymka", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Podsmaż przepołowione pomidorki na oliwie 3 minuty, aż puszczą sok.",
+      "Rozkłóć jajka z solą i pieprzem i wylej na patelnię.",
+      "Smaż na małym ogniu, podnosząc brzegi łopatką, aż spód się zetnie.",
+      "Rozkrusz na wierzchu fetę, posyp oregano i przykryj na 2 minuty.",
+      "Złóż omlet na pół i posyp dymką."
+    ],
+    "opis_wizualny": "A folded omelette on a plate, pale yellow with browned patches, with blistered cherry tomato halves and crumbled white cheese visible at the open fold. Dried oregano and green onion rings are sprinkled over. A little oil shines on the surface."
+  },
+  {
+    "nazwa": "Chleb pita z jajkiem i hummusem",
+    "rodzaj": "sniadanie",
+    "kuchnia": "bliskowschodnia",
+    "poziom": "latwe",
+    "czas_minuty": 20,
+    "kcal": 420,
+    "skladniki": [
+      { "nazwa": "pita", "ilosc": "1", "jednostka": "szt", "kategoria": "4_Pieczywo" },
+      { "nazwa": "hummus", "ilosc": "3", "jednostka": "łyżka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "jajka", "ilosc": "1", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "pomidory", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "oliwa z oliwek", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "8_Inne" },
+      { "nazwa": "papryka słodka", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" },
+      { "nazwa": "natka pietruszki", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Podgrzej pitę na suchej patelni po minucie z każdej strony.",
+      "Ugotuj jajko na miękko, 6 minut, i obierz je ostrożnie.",
+      "Rozsmaruj hummus na picie, robiąc łyżką wgłębienie w środku.",
+      "Ułóż na nim przekrojone jajko i pomidora w kostce.",
+      "Skrop oliwą, posyp papryką i natką. Żółtko ma wsiąkać w hummus."
+    ],
+    "opis_wizualny": "A warm flatbread spread thickly with beige hummus, a soft-boiled egg split open in the middle with the yolk running into it. Diced tomato, parsley and a dusting of paprika sit around the egg, with olive oil pooled in the hollow."
+  },
+  {
+    "nazwa": "Pieczone jajka z chorizo",
+    "rodzaj": "sniadanie",
+    "kuchnia": "hiszpanska",
+    "poziom": "latwe",
+    "czas_minuty": 30,
+    "kcal": 450,
+    "skladniki": [
+      { "nazwa": "jajka", "ilosc": "2", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "chorizo", "ilosc": "50", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "pomidory z puszki", "ilosc": "100", "jednostka": "g", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "papryka", "ilosc": "1/4", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "cebula", "ilosc": "1/4", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "papryka słodka", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "pieczywo", "ilosc": "1", "jednostka": "szt", "kategoria": "4_Pieczywo" }
+    ],
+    "kroki": [
+      "Podsmaż chorizo w kostce na patelni, aż wytopi się z niego czerwony tłuszcz.",
+      "Dodaj cebulę i paprykę, smaż 5 minut, potem pomidory i słodką paprykę.",
+      "Duś sos 10 minut, aż zgęstnieje.",
+      "Zrób w sosie dwa wgłębienia i wbij w nie jajka.",
+      "Przykryj i gotuj 6 minut albo wstaw patelnię do piekarnika — białko ma być ścięte, żółtko płynne.",
+      "Podawaj wprost z patelni, z pieczywem do maczania."
+    ],
+    "opis_wizualny": "Two eggs baked into a thick red sauce in a small pan, whites set and yolks still glossy and whole. Orange-red chorizo cubes and soft pepper strips show through the sauce, which is flecked with paprika oil. Bread leans against the pan."
+  },
+  {
+    "nazwa": "Sałatka z buraka i jabłka",
+    "rodzaj": "surowka",
+    "kuchnia": "polska",
+    "poziom": "latwe",
+    "czas_minuty": 60,
+    "kcal": 140,
+    "skladniki": [
+      { "nazwa": "buraki", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "jabłka", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "cebula czerwona", "ilosc": "1/4", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "oliwa z oliwek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "sok z cytryny", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "orzechy włoskie", "ilosc": "15", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "miód", "ilosc": "1/2", "jednostka": "łyżeczka", "kategoria": "8_Inne" }
+    ],
+    "kroki": [
+      "Upiecz buraka w folii 50 minut w 200 stopniach — pieczony jest słodszy niż gotowany.",
+      "Ostudź, obierz i pokrój w kostkę.",
+      "Jabłko pokrój w kostkę i skrop sokiem z cytryny.",
+      "Zrób dressing z oliwy, miodu, reszty soku z cytryny, soli i pieprzu.",
+      "Wymieszaj z cebulą w cienkich piórkach i posyp orzechami."
+    ],
+    "opis_wizualny": "Cubes of deep red roasted beetroot mixed with pale apple cubes and thin red onion slivers, glossy with dressing. Walnut pieces sit on top. The beetroot has stained the apple pink at the edges."
+  },
+  {
+    "nazwa": "Rolada z kurczaka ze szpinakiem",
+    "rodzaj": "obiad",
+    "kuchnia": "miedzynarodowa",
+    "poziom": "srednie",
+    "czas_minuty": 60,
+    "kcal": 420,
+    "skladniki": [
+      { "nazwa": "pierś z kurczaka", "ilosc": "160", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "szpinak", "ilosc": "100", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "serek śmietankowy", "ilosc": "40", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "czosnek", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "boczek wędzony", "ilosc": "30", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "oliwa z oliwek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "papryka słodka", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Przekrój pierś wzdłuż jak książkę i rozbij tłuczkiem na równy płat.",
+      "Podduś szpinak z czosnkiem, ODCIŚNIJ go i wymieszaj z serkiem.",
+      "Rozłóż farsz na mięsie, zostawiając centymetr przy brzegach, i zwiń ciasno w rulon.",
+      "Owiń roladę plastrami boczku — trzyma kształt lepiej niż patyczki.",
+      "Obsmaż na oliwie ze wszystkich stron, potem piecz 25 minut w 190 stopniach.",
+      "Odstaw na 5 minut i pokrój w grube krążki."
+    ],
+    "opis_wizualny": "Thick round slices of chicken roll, each showing a spiral of white meat around a dark green spinach and cream cheese centre, wrapped in a browned bacon rim. The slices stand on a plate with pan juices around them."
+  },
+  {
+    "nazwa": "Mus jabłkowy z cynamonem",
+    "rodzaj": "deser",
+    "kuchnia": "polska",
+    "poziom": "latwe",
+    "czas_minuty": 30,
+    "kcal": 160,
+    "skladniki": [
+      { "nazwa": "jabłka", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "cukier", "ilosc": "1", "jednostka": "łyżka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "cynamon", "ilosc": "1/2", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "masło", "ilosc": "10", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "sok z cytryny", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Obierz jabłka i pokrój w kostkę.",
+      "Rozpuść masło w garnku, wrzuć jabłka, cukier i sok z cytryny.",
+      "Duś pod przykryciem 15 minut, aż jabłka się rozpadną.",
+      "Zdejmij z ognia, dodaj cynamon i rozgnieć widelcem — mus ma zostać z grudkami.",
+      "Podawaj ciepły albo zimny, z jogurtem albo jako dodatek do naleśników."
+    ],
+    "opis_wizualny": "A warm, pale golden apple purée in a small bowl, coarse rather than smooth, with visible soft fruit lumps. Cinnamon streaks the surface brown in places. A spoon rests in it."
+  }
+]

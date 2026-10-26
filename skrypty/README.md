@@ -22,19 +22,26 @@ Lokalnie działają też standardowe nazwy SDK (`ANTHROPIC_API_KEY`,
 
 **Actions → „Generuj dania" → Run workflow.** Pola:
 
-- **tryb** — `wszystko` (przepis + zdjęcie), `przepisy` (bez kosztów Replicate),
+- **tryb** — `auto` (podajesz LICZBĘ dań, nazwy wymyśla Claude — patrz niżej),
+  `propozycje` (same nazwy do przejrzenia, nic nie zapisuje),
+  `klucze` (sprawdza, czy klucze i kredyty działają — nic nie generuje),
+  `wszystko` (przepis + zdjęcie), `przepisy` (bez kosztów Replicate),
   `obrazy` (zdjęcia do dań, które są już w bazie bez zdjęcia),
   `lista` (tylko wypisuje dania z bazy — nic nie zmienia, zero kosztów),
   `usun` (KASUJE dania podane w polu `dania` — nieodwracalne),
   `kuchnie` (dopisuje kuchnię i poziom trudności — suchy bieg, chyba że `zapisz`)
+- **ile** — tryb `auto`/`propozycje`: ile dań dodać. Jedyne pole, które trzeba
+  wypełnić
 - **dania** — `Bigos|obiad; Żurek|zupa` (po średniku, bo pole jest jednolinijkowe).
-  W trybie `obrazy` puste = wszystkie dania bez zdjęcia.
+  W trybie `obrazy` puste = wszystkie dania bez zdjęcia. W trybie `auto` to pole
+  znaczy co innego: rozkład kuchni (`polska:3, wloska:1`), puste = domyślny
 - **limit** — bezpiecznik na koszty, `0` = bez limitu
 - **overwrite** — nadpisuje istniejące: w trybie `obrazy` regeneruje zdjęcia,
   w trybie `przepisy` regeneruje przepisy dań, które są już w bazie
   (`ulubione` i `zdjecie` są przenoszone na nowe wiersze)
 - **model_obrazu** — puste = `black-forest-labs/flux-2-pro`
-- **rodzaj**, **tylko_ulubione** — filtry dla trybu `lista`
+- **rodzaj**, **tylko_ulubione** — filtry dla trybu `lista`. W trybie `auto`
+  **rodzaj** to rozkład rodzajów (`obiad:3, zupa:1`), puste = domyślny
 - **zapisz_liste** — tryb `lista`: przepisuje `LISTA_DAN.md` aktualnym stanem bazy
   i commituje zmianę do repo
 - **zapisz** — tryb `kuchnie`: bez tego suchy bieg, z nim faktyczny zapis
@@ -43,12 +50,19 @@ Lokalnie działają też standardowe nazwy SDK (`ANTHROPIC_API_KEY`,
 > `.github/workflows/generuj-dania.yml` jest na gałęzi domyślnej (`main`).
 > Dopóki siedzi tylko na branchu, przycisku „Run workflow" nie będzie.
 
+> **Nie ustawiaj dwóch przebiegów w kolejce.** Oba workflowy generujące dania
+> siedzą w jednej grupie `concurrency` (piszą do tej samej tabeli), a GitHub
+> trzyma w grupie tylko JEDEN przebieg oczekujący: nowszy kasuje starszego,
+> jeszcze przed startem. Jeden przebieg naraz, kolejny po jego zakończeniu.
+
 ## Lokalnie
 
 ```bash
 export SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... \
        ANTHROPIC_KEY=... REPLICATE_KEY=...
 
+npm run sprawdz:klucze      # czy klucze działają (kredyty!) — nic nie generuje
+ILE=20 npm run generuj:auto # 20 nowych dań: nazwy, przepisy i zdjęcia
 npm run generuj:wszystko    # przepisy + zdjęcia dla dań z listy
 npm run generuj:przepisy    # same przepisy
 npm run generuj:obrazy      # same zdjęcia, do dań już w bazie
@@ -75,6 +89,184 @@ Lista dań: zmienna `DANIA` albo plik `skrypty/nowe-dania.txt`
 (format `Nazwa|rodzaj`, `#` to komentarz).
 
 Bezpiecznik: `LIMIT=5 npm run generuj:wszystko` przerobi tylko 5 pierwszych dań.
+
+## Tryb `auto` — podajesz liczbę, nie listę
+
+Wpisujesz **ile** dań dodać i tyle. Skrypt (`generuj-auto.mjs`):
+
+1. czyta nazwy wszystkich dań z bazy,
+2. rozdziela zamówioną liczbę na kuchnie i rodzaje (`propozycje.js`),
+3. prosi Claude'a o nazwy — osobno dla każdej kuchni, paczkami po 25,
+4. odsiewa duble: dokładne i „to samo danie pod inną nazwą",
+5. każde przyjęte danie idzie standardową ścieżką: przepis → INSERT →
+   zdjęcie → Storage (ten sam `potok.js`, co tryb `wszystko`).
+
+Domyślny rozkład (do podmiany polami `dania` i `rodzaj`):
+
+| | |
+| --- | --- |
+| kuchnie | polska 30, włoska 18, francuska 14, grecka 8, hiszpańska 8, amerykańska 7, meksykańska 6, niemiecka 5, węgierska 4 |
+| rodzaje | obiad 34, kolacja 20, śniadanie 16, deser 16, surówka 14 |
+
+`przekaska` **nie jest** generowana (ustalenie Filipa). `zupa` i `dodatek` też
+nie są w domyślnym rozkładzie — jak mają być, wpisz je w pole **rodzaj**
+(`obiad:3, zupa:1`).
+
+Duble są pilnowane dwa razy, bo samo proszenie modelu nie wystarcza:
+
+- nazwy dań z bazy idą do promptu (blok systemowy z cache'em, płacimy raz),
+- każda propozycja przechodzi przez miarę podobieństwa nazw
+  (`podobienstwo.js`) — tę samą, którą liczy `npm run duble`. Dlatego przy
+  „Spaghetti carbonara" w bazie odpadnie też „Carbonara z boczkiem".
+
+Przy gęstej bazie model zwróci mniej dań, niż zamówisz — skrypt wtedy dopytuje
+(3 rundy na paczkę) i na końcu pisze, ile z ilu wyszło. To normalne: 630 dań
+w bazie znaczy, że klasyka jest już zajęta.
+
+**Duża paczka (200 dań): rób po 50.** Jeden przebieg to ~1 min na danie
+(przepis + zdjęcie), czyli 200 dań ≈ 3,5 h i ocieranie się o limit czasu
+joba. Cztery przebiegi po 50 są bezpieczniejsze, a drugi i kolejne widzą już
+to, co dodał pierwszy, więc nie powtórzą dań.
+
+**Najpierw obejrzyj nazwy:** tryb `propozycje` robi punkty 1-4 i wypisuje
+gotową linijkę do wklejenia w pole **dania**. Koszt to kilka zapytań
+tekstowych, zero zdjęć.
+
+## Tryb `import` — gdy na Anthropic nie ma kredytów
+
+Generowanie przepisów chodzi na kluczu Anthropic, a ten potrzebuje kredytów.
+Baza (Supabase) i zdjęcia (Replicate) mają własne klucze i działają od tego
+niezależnie — sprawdzisz to trybem `klucze`.
+
+Dlatego jest druga droga: przepis pisze człowiek albo Claude w rozmowie,
+ląduje w pliku `skrypty/dania/paczka-NN.json`, a skrypt tylko wstawia go do
+bazy i dorabia zdjęcie. **Ani jednego zapytania do Anthropic.**
+
+```bash
+npm run import                       # wszystkie paczki z skrypty/dania/
+PLIKI=paczka-01.json npm run import  # jedna paczka
+LIMIT=5 npm run import               # bezpiecznik na koszty zdjęć
+BEZ_ZDJEC=1 npm run import           # sam zapis do bazy
+```
+
+W akcji: tryb `import`, a pole **dania** to nazwy plików (puste = wszystkie).
+
+Format pliku to **dokładnie to**, co w trybie `auto` zwraca Claude — tablica
+obiektów z polami `nazwa`, `rodzaj`, `kuchnia`, `poziom`, `czas_minuty`,
+`kcal`, `skladniki[]` (nazwa, ilosc, jednostka, kategoria), `kroki[]`,
+`opis_wizualny`. Dzięki temu jedna droga jest zamienna z drugą bez
+przepisywania czegokolwiek.
+
+Dwie rzeczy, o których łatwo zapomnieć przy pisaniu ręcznym:
+
+- **ilości są NA JEDNĄ PORCJĘ**, nie na całość (`porcje_bazowe` to 4),
+- **`opis_wizualny` po angielsku** — to z niego powstaje prompt zdjęcia; bez
+  niego skrypt musiałby zapytać Claude'a, czyli to, czego ten tryb unika.
+
+Walidacja (`import-dan.js`) sprawdza przed zapisem rodzaj, kuchnię, poziom,
+jednostki i kategorie. Jedno złe danie zatrzymuje CAŁY plik — lepiej stanąć
+na literówce, niż wstawić pół paczki. Składniki przechodzą przez ten sam
+słownik, co `auto`, więc nazwy i jednostki ujednolicają się ze stanem bazy.
+
+Dania, które w bazie już są, są pomijane — plik można odpalać wielokrotnie.
+
+### Co leży w `skrypty/dania`
+
+Siedem paczek, razem **200 dań** napisanych w rozmowie z Claude'em w październiku
+2026, kiedy na koncie Anthropic skończyły się kredyty:
+
+| plik | dań | zawartość |
+| --- | --- | --- |
+| `paczka-01.json` | 25 | Francja (klasyka) + polska klasyka domowa |
+| `paczka-02.json` | 28 | Włochy, Grecja, Hiszpania, Niemcy, Węgry |
+| `paczka-03.json` | 31 | USA, Meksyk, Bliski Wschód — dużo kolacji i śniadań |
+| `paczka-04.json` | 37 | Francja, Włochy, Polska — wypieki i dodatki |
+| `paczka-05.json` | 38 | Polska, Turcja, Bliski Wschód, Ukraina |
+| `paczka-06.json` | 21 | Włochy + polskie obiady i śniadania |
+| `paczka-07.json` | 20 | desery, dodatki, reszta kierunków |
+
+Przekąsek nie ma — to ustalenie Filipa. Nazwy były sprawdzane przeciw
+**świeżej** liście z bazy (`LISTA_DAN.md` po trybie `lista`) tą samą miarą,
+którą liczy `npm run duble`, a potem jeszcze raz ręcznie: automat porównuje
+NAZWY, więc „Pollo alla cacciatora" i „Kurczak alla cacciatora" przechodzą
+mu przez sito, choć to jedno danie. Kilkanaście takich par wypadło dopiero
+na ręcznym przejrzeniu.
+
+## Słownik składników
+
+Model dostaje czystą kartkę przy każdym daniu, więc ten sam produkt wraca
+w trzech pisowniach: „natka pietruszki", „garstka natki pietruszki",
+„pietruszka — natka". Na liście zakupów to trzy pozycje, a `skladniki_meta`
+(rozmiar opakowania, kcal) dopasuje się tylko do jednej.
+
+Dlatego każde generowanie przepisu (`auto`, `wszystko`, `przepisy`) zaczyna się
+od zbudowania słownika z bazy — `slownik.js`:
+
+- **do promptu** idzie lista „tak te produkty już się nazywają i w czym się je
+  liczy" (400 najczęstszych, blok systemowy z cache'em),
+- **po odpowiedzi** `czyscSkladnik()` sprząta to, co model przysłał mimo
+  prośby: nawiasy, alternatywy („boczek lub podgardle"), ilość wklejoną
+  w nazwę, słowo-ilość w polu ilości („garstka" → 1 łyżka), a nazwę podmienia
+  na pisownię, która w bazie już jest (łapie też odmianę: „natki pietruszki"
+  → „natka pietruszki", „soli" → „sól").
+
+Jednostki przelicza **tylko w jedną stronę** — z gramów na sztuki, nigdy
+odwrotnie. `150 g cebuli` staje się `1 szt`, bo tak cebula jest w bazie
+liczona i tak się ją kupuje, ale `1 szt` nigdy nie zrobi się `150 g`. Powód:
+słownik stoi na starych daniach, w których wszystko było w gramach (patrz
+„Jednostki: czemu cebula bywa w gramach") — przeliczanie w drugą stronę
+cofałoby poprawki, które wnosi prompt. Do przeliczenia potrzebna jest waga
+sztuki ze `skladniki_meta`; bez niej jednostka zostaje taka, jaką podał model.
+
+Granica jest ta sama co w `src/nazwySkladnikow.js`: **ujednolicamy pisownię
+i jednostkę, nie podmieniamy towaru.** „Natka pietruszki" nie staje się
+„pietruszką", „zielona cebulka" nie staje się „cebulą". Gdy nazwa pasuje do
+bazy tylko po uproszczeniu do produktu ze sklepu („cebula pokrojona w kostkę"
+↔ „cebula"), bierzemy stamtąd samą jednostkę — nazwa z przepisu zostaje.
+
+Testy: `src/test/slownikSkladnikow.test.js`, `src/test/generujAutoPotok.test.js`
+(cały potok na zamockowanym Claude, Supabase i Replicate).
+
+## Gdy padają kredyty albo klucz
+
+**Actions → „Generuj dania" → tryb `klucze`.** Odpytuje po kolei Supabase,
+Anthropic (jedno zapytanie na `max_tokens=1`) i Replicate (`/v1/account`,
+darmowe) i mówi, co nie działa. Skończone kredyty widać po komunikacie
+„credit balance is too low" — to nie zły klucz, tylko puste konto.
+
+Nowy klucz wpisuje się **wyłącznie** w Settings → Secrets and variables →
+Actions → `ANTHROPIC_KEY` → Update secret. Do kodu kluczy nie wpisujemy
+nigdy — `.gitignore` blokuje stare lokalne `generuj-*.mjs` właśnie dlatego,
+że miały je na sztywno.
+
+### Nie, `CLAUDE_CODE_OAUTH_TOKEN` tego nie zastąpi
+
+W sekretach jest drugi token od Anthropica: `CLAUDE_CODE_OAUTH_TOKEN`, ten,
+którym chodzi agent QA (`agent.yml` → `claude-code-action`). Pytanie wraca
+regularnie, więc odpowiedź jest w kodzie, a nie w czyjejś opinii: tryb
+`klucze` odpytuje nim API i wypisuje, co dostał. Dostaje `401 invalid
+x-api-key`, bo to token **subskrypcji Claude Code**, a nie klucz do
+`api.anthropic.com` — inna brama, inne rozliczenie.
+
+Przepisanie go w `ANTHROPIC_KEY` nie zadziała i nie o to w nim chodzi.
+Tokenem subskrypcji można natomiast napisać przepisy **agentem**, i to jest
+ta sama droga, którą chodzi agent QA: workflow **„Dania agentem"**
+(`.github/workflows/dania-agentem.yml`). Claude Code pisze tam paczkę JSON,
+workflow ją waliduje, commituje i wrzuca trybem `import` razem ze zdjęciami.
+Zero zapytań do API Anthropica.
+
+```
+Actions → „Dania agentem" → Run workflow
+  ile       = ile dań napisać (do 25 na przebieg)
+  wytyczne  = opcjonalnie: „kuchnia grecka, same kolacje i surówki"
+  importuj  = zaznaczone: od razu do bazy i ze zdjęciami
+```
+
+Limit jest nie na kredyty, a na okna subskrypcji — tak samo jak u agenta QA
+(patrz komentarz w `agent.yml`), więc nie puszczaj tego równolegle z nim.
+
+Model tekstowy można podmienić bez ruszania kodu: `ANTHROPIC_MODEL`
+(np. `claude-sonnet-5-5`, tańszy od Opusa przy generowaniu przepisów).
 
 ## Wznawianie
 
@@ -157,11 +349,13 @@ w miejscowniku (`w oleju`, `w puszce`, `w plasterkach` — w czym jest).
 Testy: `src/test/nazwySkladnikow.test.js`. Każdy nowy przypadek zgłoszony
 z apki zaczyna się tam od testu.
 
-Prompt przepisu (`ZASADY_SKLADNIKOW` w `wspolne.js`) nadal prosi o nazwy bez
-nawiasów i bez alternatyw, bo to szum również w przepisie — ale nic tego nie
-egzekwuje przy zapisie i jest to świadome. Dlatego `uproscNazweSkladnika()`
-musi radzić sobie z tym, co już leży w bazie, a nie zakładać, że prompt
-zadziałał.
+Prompt przepisu (`ZASADY_SKLADNIKOW` w `wspolne.js`) prosi o nazwy bez nawiasów
+i bez alternatyw, bo to szum również w przepisie. Od trybu `auto` prośba ma
+poparcie w kodzie: `czyscSkladnik()` ze `slownik.js` wycina nawiasy,
+alternatywy i słowa-ilości przed zapisem (patrz „Słownik składników"). Ale
+tylko dla dań generowanych OD TERAZ — w bazie leży kilkaset dań zapisanych
+wcześniej, więc `uproscNazweSkladnika()` nadal musi radzić sobie z tym, co tam
+jest, a nie zakładać, że prompt albo słownik zadziałał.
 
 ## Jednostki: czemu cebula bywa w gramach
 
@@ -186,6 +380,10 @@ mielone, ryż, mąka, ser), `ml` dla płynów, `łyżka`/`łyżeczka` dla dodatk
 z gramami — żeby je poprawić, trzeba albo uzupełnić `skladniki_meta`
 (wagę sztuki dla warzyw), albo przegenerować przepisy z `overwrite`.
 Prompt sam z siebie nie rusza tego, co leży w bazie.
+
+Drugie zabezpieczenie dokłada słownik składników: gdy model mimo wszystko
+poda `150 g cebuli`, a baza liczy cebulę w sztukach i `skladniki_meta` zna
+wagę sztuki — zapisze się `1 szt`. Szczegóły i granice: „Słownik składników".
 
 ## Gdy model uparcie pudłuje
 

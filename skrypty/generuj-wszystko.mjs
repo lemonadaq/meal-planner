@@ -1,6 +1,7 @@
 // generuj-wszystko.mjs
 // Dla każdego dania z listy: przepis od Claude'a → INSERT do `dania` →
 // zdjęcie z Replicate w rotowanym stylu → upload do Storage → UPDATE `zdjecie`.
+// Sam potok siedzi w potok.js — tu jest tylko wczytanie listy i bezpieczniki.
 //
 // Skrypt jest wznawialny — można go odpalać wielokrotnie po błędach:
 //   - danie z przepisem I zdjęciem  → pomijane
@@ -8,11 +9,16 @@
 //                                     (prompt ze składników już w bazie)
 //   - danie nieznane                → przepis + zdjęcie
 //
+// Składniki są ujednolicane ze stanem bazy (skrypty/slownik.js): nazwa, która
+// w bazie już jest, wchodzi w tej samej pisowni i jednostce.
+//
 // LISTA DAŃ — jedno z dwóch, w tej kolejności:
 //   1. zmienna DANIA (wielolinijkowa) — tak podaje ją workflow GitHuba
 //   2. plik skrypty/nowe-dania.txt
 // Format linii: Nazwa dania|rodzaj   (rodzaj: sniadanie, obiad, kolacja,
 // zupa, przekaska, deser, dodatek, surowka)
+//
+// Nie wiesz, co dopisać? Tryb `auto` (generuj-auto.mjs) wymyśla nazwy sam.
 //
 // LOKALNIE:
 //   export SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... \
@@ -25,11 +31,9 @@
 
 import { readFileSync, existsSync } from 'fs'
 import {
-  sprawdzKlucze, supabase, pauza, wczytajDania, zbudujWiersze,
-  generujPrzepis, generujOpisWizualny, wgrajZdjecie, utworzStraznika,
-  MODEL_TEKST, MODEL_OBRAZ,
+  sprawdzKlucze, wczytajDania, pobierzSlownikSkladnikow, MODEL_TEKST, MODEL_OBRAZ,
 } from './wspolne.js'
-import { zbudujPromptObrazu, wybierzStyl } from './style-zdjec.js'
+import { przetworzDania, wypiszPodsumowanie } from './potok.js'
 
 sprawdzKlucze([
   'SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'ANTHROPIC_KEY', 'REPLICATE_KEY',
@@ -39,10 +43,21 @@ const PLIK_DAN = 'skrypty/nowe-dania.txt'
 const LIMIT = parseInt(process.env.LIMIT || '0', 10)
 
 function wczytajListe() {
-  if (process.env.DANIA?.trim()) return wczytajDania(process.env.DANIA)
-  if (existsSync(PLIK_DAN)) return wczytajDania(readFileSync(PLIK_DAN, 'utf-8'))
-  console.error(`Brak listy dań — ustaw DANIA albo utwórz ${PLIK_DAN}`)
-  process.exit(1)
+  const lista = process.env.DANIA?.trim()
+    ? wczytajDania(process.env.DANIA)
+    : (existsSync(PLIK_DAN) ? wczytajDania(readFileSync(PLIK_DAN, 'utf-8')) : [])
+
+  // Pusta lista to NIE jest przebieg na zero dań — to pomyłka w wejściu
+  // i trzeba o niej powiedzieć, zamiast kończyć sukcesem bez efektu.
+  if (!lista.length) {
+    console.error('Lista dań jest PUSTA — nie ma czego generować.')
+    console.error(`Wpisz dania w pole \`dania\` w akcji (albo w ${PLIK_DAN}):`)
+    console.error('  Bigos|obiad; Żurek|zupa')
+    console.error('Chcesz, żeby nazwy wymyśliły się same? Tryb `auto` (pole `ile`).')
+    console.error('Chcesz gotowe przepisy bez kredytów na Anthropic? Tryb `import`.')
+    process.exit(1)
+  }
+  return lista
 }
 
 async function main() {
@@ -52,81 +67,14 @@ async function main() {
     dania = dania.slice(0, LIMIT)
   }
 
-  console.log(`Dania: ${dania.length} | tekst: ${MODEL_TEKST} | obraz: ${MODEL_OBRAZ}\n`)
+  const { slownik, tekst } = await pobierzSlownikSkladnikow()
+  console.log(
+    `Dania: ${dania.length} | tekst: ${MODEL_TEKST} | obraz: ${MODEL_OBRAZ} | ` +
+    `słownik składników: ${slownik.size}\n`,
+  )
 
-  let nowe = 0, tylkoZdjecie = 0, pominiete = 0, bledy = 0
-  const straznik = utworzStraznika()
-
-  for (const { nazwa, rodzaj } of dania) {
-    try {
-      // select('*') — kolumny są mixed-case i ze spacjami, bezpieczniej wziąć wszystko
-      const { data: istnieje, error } = await supabase.from('dania').select('*').eq('Danie', nazwa)
-      if (error) throw error
-
-      const maPrzepis = istnieje?.length > 0
-      const maZdjecie = maPrzepis && istnieje.every(r => r.zdjecie)
-
-      if (maPrzepis && maZdjecie) {
-        console.log(`⊘ ${nazwa} — kompletne, pomijam`)
-        pominiete++
-        continue
-      }
-
-      const styl = wybierzStyl(nazwa)
-
-      // ── A: przepis jest, brakuje zdjęcia ──
-      if (maPrzepis) {
-        process.stdout.write(`📷 ${nazwa} [${styl.id}] — opis... `)
-        const skladniki = istnieje
-          .filter(r => r['Składnik'])
-          .map(r => ({
-            nazwa: r['Składnik'],
-            ilosc: r['Ilość na 1 porcję'] || '-',
-            jednostka: r['Jednostka'] || '',
-          }))
-        const przepisTekst = istnieje.find(r => r['Przepis']?.trim())?.['Przepis'] || ''
-        const opis = await generujOpisWizualny(nazwa, skladniki, przepisTekst)
-
-        process.stdout.write('obraz... ')
-        await wgrajZdjecie(nazwa, zbudujPromptObrazu(nazwa, rodzaj, opis), istnieje.map(r => r.id))
-        console.log('✓')
-        tylkoZdjecie++
-        await pauza(500)
-        continue
-      }
-
-      // ── B: nowe danie — przepis + zdjęcie ──
-      process.stdout.write(`⏳ ${nazwa} [${styl.id}] — przepis... `)
-      const przepis = await generujPrzepis(nazwa, rodzaj)
-      const wiersze = zbudujWiersze(nazwa, rodzaj, przepis)
-
-      const { data: wstawione, error: bladInsert } = await supabase
-        .from('dania').insert(wiersze).select('id')
-      if (bladInsert) throw bladInsert
-      process.stdout.write(`✓ (${wiersze.length} skł., ${przepis.kcal} kcal), obraz... `)
-
-      // Jeśli obraz padnie, przepis został — ponowne odpalenie wejdzie w ścieżkę A.
-      await wgrajZdjecie(
-        nazwa,
-        zbudujPromptObrazu(nazwa, rodzaj, przepis.opis_wizualny),
-        wstawione.map(r => r.id),
-      )
-      console.log('✓')
-      nowe++
-      await pauza(500)
-    } catch (e) {
-      bledy++
-      console.log(`\n✗ ${nazwa}: ${e.message}`)
-      straznik(e.message)
-    }
-  }
-
-  console.log('\n──────── PODSUMOWANIE ────────')
-  console.log(`Nowe (przepis+zdjęcie): ${nowe}`)
-  console.log(`Dogenerowane zdjęcia:   ${tylkoZdjecie}`)
-  console.log(`Pominięte (kompletne):  ${pominiete}`)
-  console.log(`Błędy:                  ${bledy}`)
-  if (bledy > 0) console.log('\nOdpal ponownie — skrypt dokończy tylko to, czego brakuje.')
+  const stat = await przetworzDania(dania, { slownik, blokSystemowy: tekst })
+  wypiszPodsumowanie(stat)
 }
 
 main().catch(e => {

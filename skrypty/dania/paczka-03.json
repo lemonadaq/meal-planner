@@ -1,0 +1,785 @@
+[
+  {
+    "nazwa": "Mac and cheese",
+    "rodzaj": "obiad",
+    "kuchnia": "amerykanska",
+    "poziom": "latwe",
+    "czas_minuty": 40,
+    "kcal": 620,
+    "skladniki": [
+      { "nazwa": "makaron", "ilosc": "90", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "ser cheddar", "ilosc": "70", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "mleko", "ilosc": "150", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "masło", "ilosc": "20", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "mąka pszenna", "ilosc": "20", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "bułka tarta", "ilosc": "1", "jednostka": "łyżka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "musztarda", "ilosc": "1/2", "jednostka": "łyżeczka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "papryka słodka", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Ugotuj makaron minutę krócej niż na opakowaniu — dojdzie w piekarniku.",
+      "Zasmaż mąkę na masle, wlewaj mleko partiami i gotuj, aż sos zgęstnieje jak śmietana.",
+      "Zdejmij z ognia i wmieszaj starty ser z musztardą. Ser dodany na ogniu potrafi się zwarzyć.",
+      "Połącz z makaronem, przełóż do naczynia, posyp bułką tartą i resztą sera.",
+      "Zapiekaj 15 minut w 200 stopniach, aż wierzch będzie złoty i bąbelkujący."
+    ],
+    "opis_wizualny": "Short pasta tubes coated in a thick orange cheese sauce, baked in a dish with a browned, crumbly top. A served spoonful pulls strings of cheese and leaves a glossy sauce trail. The top is patchy golden-brown, darker at the dish edges."
+  },
+  {
+    "nazwa": "Clam chowder",
+    "rodzaj": "zupa",
+    "kuchnia": "amerykanska",
+    "poziom": "srednie",
+    "czas_minuty": 45,
+    "kcal": 420,
+    "skladniki": [
+      { "nazwa": "małże", "ilosc": "120", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "ziemniaki", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "boczek wędzony", "ilosc": "40", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "seler naciowy", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "śmietana 30%", "ilosc": "60", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "mąka pszenna", "ilosc": "1", "jednostka": "łyżka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "tymianek", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Wytop boczek w garnku, dodaj cebulę i seler, podsmaż bez rumienienia.",
+      "Wsyp mąkę, przesmaż chwilę i rozprowadź 250 ml wody z soku po małżach.",
+      "Dodaj ziemniaki w kostce i tymianek, gotuj 20 minut do miękkości.",
+      "Wlej śmietanę i dodaj małże, podgrzej, ale NIE gotuj — małże zrobią się gumowe.",
+      "Dopraw solą i pieprzem, podawaj z krakersami albo pieczywem."
+    ],
+    "opis_wizualny": "A thick, creamy off-white soup in a deep bowl, dense with potato cubes, clam pieces and flecks of bacon and celery. The surface shows a few orange dots of bacon fat and black pepper. The texture looks closer to a loose stew than a broth."
+  },
+  {
+    "nazwa": "Sloppy Joe",
+    "rodzaj": "kolacja",
+    "kuchnia": "amerykanska",
+    "poziom": "latwe",
+    "czas_minuty": 30,
+    "kcal": 520,
+    "skladniki": [
+      { "nazwa": "mięso mielone wołowe", "ilosc": "120", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "bułka", "ilosc": "1", "jednostka": "szt", "kategoria": "4_Pieczywo" },
+      { "nazwa": "ketchup", "ilosc": "2", "jednostka": "łyżka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "papryka", "ilosc": "1/4", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "musztarda", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "sos Worcestershire", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "papryka słodka", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Podsmaż cebulę z papryką, dodaj mięso i rozbijaj je łyżką, aż się zrumieni.",
+      "Dodaj ketchup, musztardę, sos Worcestershire i paprykę, podlej wodą.",
+      "Duś 15 minut, aż sos zgęstnieje i będzie się trzymał mięsa.",
+      "Przekrój bułkę i podpiecz ją na patelni.",
+      "Nałóż farsz z górką. Ta kanapka ma się rozpadać — stąd nazwa."
+    ],
+    "opis_wizualny": "A soft burger bun piled with loose, saucy minced beef in a thick red-brown sauce that spills over the sides onto the plate. The top bun sits slightly askew and cannot close. Pieces of onion and pepper are visible in the meat."
+  },
+  {
+    "nazwa": "Jambalaya z kiełbasą",
+    "rodzaj": "obiad",
+    "kuchnia": "amerykanska",
+    "poziom": "latwe",
+    "czas_minuty": 50,
+    "kcal": 560,
+    "skladniki": [
+      { "nazwa": "ryż", "ilosc": "80", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "kiełbasa", "ilosc": "80", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "pierś z kurczaka", "ilosc": "70", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "papryka", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "seler naciowy", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "pomidory z puszki", "ilosc": "100", "jednostka": "g", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "bulion warzywny", "ilosc": "180", "jednostka": "ml", "kategoria": "8_Inne" },
+      { "nazwa": "papryka ostra", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" },
+      { "nazwa": "tymianek", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Zrumień kiełbasę w szerokim garnku i odłóż, w tym tłuszczu obsmaż kurczaka.",
+      "Dodaj paprykę, seler i cebulę, smaż 5 minut.",
+      "Wsyp ryż i przemieszaj, wlej pomidory i bulion, dopraw tymiankiem i ostrą papryką.",
+      "Gotuj pod przykryciem 20 minut bez mieszania, aż ryż wypije płyn.",
+      "Wmieszaj kiełbasę, zdejmij z ognia i odstaw na 5 minut pod przykryciem."
+    ],
+    "opis_wizualny": "A one-pot rice dish stained reddish-brown, with coin slices of browned sausage, chunks of chicken and strips of pepper mixed through. The rice grains are separate and glossy, not creamy. Served heaped in a bowl with a few darker crisp bits on top."
+  },
+  {
+    "nazwa": "Cobb salad",
+    "rodzaj": "kolacja",
+    "kuchnia": "amerykanska",
+    "poziom": "latwe",
+    "czas_minuty": 30,
+    "kcal": 480,
+    "skladniki": [
+      { "nazwa": "sałata", "ilosc": "70", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "pierś z kurczaka", "ilosc": "80", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "boczek wędzony", "ilosc": "30", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "jajka", "ilosc": "1", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "awokado", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "pomidorki koktajlowe", "ilosc": "5", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "ser gorgonzola", "ilosc": "25", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "oliwa z oliwek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" }
+    ],
+    "kroki": [
+      "Ugotuj jajko na twardo, usmaż kurczaka i wytop boczek na chrupko.",
+      "Poszatkuj sałatę i rozłóż ją na dużym płaskim talerzu.",
+      "Ułóż na niej składniki RZĘDAMI: kurczak, boczek, jajko, awokado, pomidorki, ser.",
+      "Zrób dressing z oliwy, octu, musztardy i pieprzu i polej nim sałatkę przy podaniu.",
+      "Mieszaj dopiero na talerzu — ta sałatka ma być najpierw pokazana w pasach."
+    ],
+    "opis_wizualny": "A wide plate of chopped lettuce with toppings laid in distinct parallel stripes: diced chicken, crumbled bacon, sliced egg, green avocado, halved cherry tomatoes and blue cheese. The colours stay separated rather than tossed together. Dressing glistens lightly on the surface."
+  },
+  {
+    "nazwa": "Philly cheesesteak",
+    "rodzaj": "kolacja",
+    "kuchnia": "amerykanska",
+    "poziom": "latwe",
+    "czas_minuty": 30,
+    "kcal": 650,
+    "skladniki": [
+      { "nazwa": "rozbratel wołowy", "ilosc": "120", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "bułka", "ilosc": "1", "jednostka": "szt", "kategoria": "4_Pieczywo" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "papryka", "ilosc": "1/4", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "ser żółty", "ilosc": "50", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "masło", "ilosc": "10", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "pieprz", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Podmroź mięso na 30 minut i pokrój je w bardzo cienkie plastry — to klucz tej kanapki.",
+      "Usmaż cebulę z papryką na masle, odłóż na brzeg patelni.",
+      "Wrzuć mięso na mocno rozgrzaną patelnię i smaż 3 minuty, siekając je łopatką.",
+      "Zgarnij wszystko w kopczyk, połóż na wierzchu ser i przykryj, aż się rozpuści.",
+      "Przełóż łopatką do rozciętej bułki, nie rozdzielając warstw."
+    ],
+    "opis_wizualny": "A long roll stuffed with finely chopped browned beef, soft onions and peppers, covered by melted cheese that has run into the meat. The filling bulges out of the open side and the bread is slightly compressed. Cheese strings visible where the sandwich was lifted."
+  },
+  {
+    "nazwa": "Reuben sandwich",
+    "rodzaj": "kolacja",
+    "kuchnia": "amerykanska",
+    "poziom": "latwe",
+    "czas_minuty": 20,
+    "kcal": 590,
+    "skladniki": [
+      { "nazwa": "chleb żytni", "ilosc": "2", "jednostka": "szt", "kategoria": "4_Pieczywo" },
+      { "nazwa": "wołowina peklowana", "ilosc": "80", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "kapusta kiszona", "ilosc": "50", "jednostka": "g", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "ser żółty", "ilosc": "40", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "majonez", "ilosc": "1", "jednostka": "łyżka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "ketchup", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "masło", "ilosc": "10", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "ogórek kiszony", "ilosc": "1/2", "jednostka": "szt", "kategoria": "6_Konserwy i słoiki" }
+    ],
+    "kroki": [
+      "Zmieszaj majonez z ketchupem i posiekanym ogórkiem na sos.",
+      "Odciśnij kapustę z zalewy, inaczej kanapka będzie mokra.",
+      "Posmaruj kromki sosem, złóż kanapkę: ser, mięso, kapusta, ser.",
+      "Posmaruj kromki z zewnątrz masłem i smaż pod przyciskiem po 4 minuty z każdej strony.",
+      "Przekrój na pół pod kątem — ser ma się ciągnąć."
+    ],
+    "opis_wizualny": "A grilled dark rye sandwich cut diagonally and stood up to show its layers: pink corned beef, pale sauerkraut and melted cheese pressed together. The bread is deep brown with buttery toasted patches. A little sauce squeezes out at the cut edge."
+  },
+  {
+    "nazwa": "Cornbread",
+    "rodzaj": "dodatek",
+    "kuchnia": "amerykanska",
+    "poziom": "latwe",
+    "czas_minuty": 40,
+    "kcal": 280,
+    "skladniki": [
+      { "nazwa": "mąka kukurydziana", "ilosc": "50", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "mąka pszenna", "ilosc": "30", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "maślanka", "ilosc": "80", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "jajka", "ilosc": "1/2", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "masło", "ilosc": "20", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "cukier", "ilosc": "1", "jednostka": "łyżka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "proszek do pieczenia", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "5_Produkty sypkie" }
+    ],
+    "kroki": [
+      "Rozgrzej piekarnik do 200 stopni razem z żeliwną patelnią albo formą w środku.",
+      "Wymieszaj suche składniki, osobno maślankę z jajkiem i roztopionym masłem.",
+      "Połącz jedno z drugim kilkoma ruchami — przemieszane ciasto wyjdzie twarde.",
+      "Wylej na gorącą, wysmarowaną formę. Ciasto ma zasyczeć.",
+      "Piecz 22 minuty, aż wierzch będzie złoty, a brzegi odejdą od formy."
+    ],
+    "opis_wizualny": "A wedge of deep yellow cornbread with a golden-brown crust, the crumb coarse and visibly grainy. The top is slightly domed and cracked. Served warm with a pat of butter melting on the cut surface."
+  },
+  {
+    "nazwa": "Banana bread",
+    "rodzaj": "deser",
+    "kuchnia": "amerykanska",
+    "poziom": "latwe",
+    "czas_minuty": 70,
+    "kcal": 320,
+    "skladniki": [
+      { "nazwa": "banany", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "mąka pszenna", "ilosc": "50", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "cukier", "ilosc": "25", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "jajka", "ilosc": "1/2", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "masło", "ilosc": "25", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "soda", "ilosc": "1/2", "jednostka": "łyżeczka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "orzechy włoskie", "ilosc": "20", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "cynamon", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Rozgnieć widelcem bardzo dojrzałe banany — im ciemniejsze, tym lepiej.",
+      "Wymieszaj je z roztopionym masłem, cukrem i jajkiem.",
+      "Wmieszaj mąkę z sodą i cynamonem oraz posiekane orzechy, mieszając tylko do połączenia.",
+      "Przelej do keksówki wyłożonej papierem.",
+      "Piecz 50 minut w 175 stopniach. Patyczek ma wychodzić suchy, a wierzch pęknie wzdłuż."
+    ],
+    "opis_wizualny": "A loaf cake with a dark golden crust split lengthwise along the top, sliced to show a dense moist crumb with nut pieces. The colour inside is light brown, slightly damp-looking. Slices sit leaning against the loaf on a board."
+  },
+  {
+    "nazwa": "Bułeczki cynamonowe",
+    "rodzaj": "deser",
+    "kuchnia": "amerykanska",
+    "poziom": "trudne",
+    "czas_minuty": 150,
+    "kcal": 390,
+    "skladniki": [
+      { "nazwa": "mąka pszenna", "ilosc": "80", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "mleko", "ilosc": "50", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "drożdże świeże", "ilosc": "7", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "masło", "ilosc": "30", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "cukier", "ilosc": "30", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "cynamon", "ilosc": "1", "jednostka": "łyżka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "serek śmietankowy", "ilosc": "30", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "cukier puder", "ilosc": "20", "jednostka": "g", "kategoria": "5_Produkty sypkie" }
+    ],
+    "kroki": [
+      "Rozczyn z drożdży, ciepłego mleka i łyżeczki cukru odstaw na 10 minut.",
+      "Zagnieć ciasto z mąki, rozczynu, połowy masła i szczypty soli. Wyrabiaj 10 minut i odstaw na godzinę.",
+      "Rozwałkuj prostokąt, posmaruj resztą miękkiego masła, posyp cukrem z cynamonem.",
+      "Zwiń w rulon i pokrój na 3-centymetrowe krążki. Ułóż je w formie, nie dociskając.",
+      "Odstaw na 40 minut i piecz 25 minut w 180 stopniach.",
+      "Utrzyj serek z cukrem pudrem i polej gorące bułeczki, żeby glazura weszła w zwoje."
+    ],
+    "opis_wizualny": "Soft spiral buns baked close together in a dish, their swirls visible from above and sticky brown cinnamon filling showing between the layers. White cream cheese glaze is drizzled over, partly melted into the surface. The sides are pale where the buns touched."
+  },
+  {
+    "nazwa": "Granola domowa z orzechami",
+    "rodzaj": "sniadanie",
+    "kuchnia": "amerykanska",
+    "poziom": "latwe",
+    "czas_minuty": 35,
+    "kcal": 380,
+    "skladniki": [
+      { "nazwa": "płatki owsiane", "ilosc": "50", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "orzechy laskowe", "ilosc": "20", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "miód", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "olej kokosowy", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "pestki dyni", "ilosc": "10", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "rodzynki", "ilosc": "15", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "cynamon", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Wymieszaj płatki, posiekane orzechy, pestki i cynamon.",
+      "Dodaj roztopiony olej z miodem i wymieszaj, aż wszystko się oblepi.",
+      "Rozłóż cienko na blasze i piecz 20 minut w 160 stopniach, mieszając po 10 minutach.",
+      "Rodzynki dodaj PO pieczeniu — w piekarniku zrobiłyby się twarde.",
+      "Studź bez mieszania, wtedy granola zbryli się w chrupiące kawałki. Trzymaj w słoiku."
+    ],
+    "opis_wizualny": "Clusters of toasted oats, nuts and seeds in shades of golden brown, loosely heaped, with dark raisins scattered among them. The pieces are irregular and crunchy-looking, some stuck together in lumps. Served in a bowl or spilling from a jar."
+  },
+  {
+    "nazwa": "Enchiladas z kurczakiem",
+    "rodzaj": "obiad",
+    "kuchnia": "meksykanska",
+    "poziom": "srednie",
+    "czas_minuty": 60,
+    "kcal": 580,
+    "skladniki": [
+      { "nazwa": "tortilla", "ilosc": "2", "jednostka": "szt", "kategoria": "4_Pieczywo" },
+      { "nazwa": "pierś z kurczaka", "ilosc": "120", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "pomidory z puszki", "ilosc": "120", "jednostka": "g", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "ser żółty", "ilosc": "50", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "fasola czerwona z puszki", "ilosc": "60", "jednostka": "g", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "papryka ostra", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" },
+      { "nazwa": "kumin", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "śmietana 18%", "ilosc": "1", "jednostka": "łyżka", "kategoria": "3_Nabiał" }
+    ],
+    "kroki": [
+      "Ugotuj kurczaka i porwij go na włókna, wymieszaj z fasolą, cebulą i kuminem.",
+      "Zmiksuj pomidory z ostrą papryką i przesmaż sos 10 minut.",
+      "Zanurz tortille w sosie, nałóż farsz i zawiń w rulony.",
+      "Ułóż ciasno w naczyniu szwem do dołu, zalej resztą sosu i posyp serem.",
+      "Piecz 25 minut w 190 stopniach, aż ser się zrumieni. Podawaj ze śmietaną."
+    ],
+    "opis_wizualny": "Rolled tortillas lying side by side in a dish, covered with red sauce and melted browned cheese, their rolled ends visible at the edges. A served portion shows shredded chicken filling inside the soft tortilla. A stripe of white cream and chopped onion sits on top."
+  },
+  {
+    "nazwa": "Fajitas z kurczakiem",
+    "rodzaj": "obiad",
+    "kuchnia": "meksykanska",
+    "poziom": "latwe",
+    "czas_minuty": 35,
+    "kcal": 520,
+    "skladniki": [
+      { "nazwa": "pierś z kurczaka", "ilosc": "130", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "papryka", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "tortilla", "ilosc": "2", "jednostka": "szt", "kategoria": "4_Pieczywo" },
+      { "nazwa": "kumin", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "papryka słodka", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "sok z limonki", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "olej", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" }
+    ],
+    "kroki": [
+      "Pokrój kurczaka i warzywa w PASKI — fajitas rozpoznaje się po kształcie.",
+      "Zamarynuj mięso w oleju, kuminie, papryce i soku z limonki na 20 minut.",
+      "Smaż kurczaka na bardzo gorącej patelni 5 minut, aż złapie przypieczenia, i odłóż.",
+      "Na tej patelni podsmaż paprykę z cebulą — mają zostać jędrne, nie rozpadnięte.",
+      "Połącz z mięsem, podgrzej tortille i podaj wszystko osobno, do zawijania przy stole."
+    ],
+    "opis_wizualny": "Strips of charred chicken with strips of red and green pepper and onion, piled steaming in a cast-iron pan. The edges are blackened in places and the vegetables still look firm. Soft tortillas and a lime wedge sit on a plate beside the pan."
+  },
+  {
+    "nazwa": "Tinga de pollo",
+    "rodzaj": "obiad",
+    "kuchnia": "meksykanska",
+    "poziom": "latwe",
+    "czas_minuty": 45,
+    "kcal": 420,
+    "skladniki": [
+      { "nazwa": "pierś z kurczaka", "ilosc": "140", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "pomidory z puszki", "ilosc": "120", "jednostka": "g", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "cebula", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "czosnek", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "papryczka chipotle", "ilosc": "1/2", "jednostka": "szt", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "oregano", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "olej", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "tortilla", "ilosc": "2", "jednostka": "szt", "kategoria": "4_Pieczywo" }
+    ],
+    "kroki": [
+      "Ugotuj kurczaka w osolonej wodzie 20 minut, ostudź i porwij na włókna. Wywar zachowaj.",
+      "Zmiksuj pomidory z czosnkiem i chipotle na gładki sos.",
+      "Na oleju zrumień cebulę w piórkach, wlej sos i oregano, gotuj 10 minut.",
+      "Dodaj mięso i chlust wywaru, duś 10 minut, aż wszystko wypije sos.",
+      "Nakładaj na podgrzane tortille. Pasuje do tego awokado i pokruszony ser."
+    ],
+    "opis_wizualny": "Shredded chicken in a smoky deep-red sauce with soft onion strips, piled on open soft tortillas. The meat is stringy and visibly saturated with sauce, not swimming in it. Served with slices of avocado and crumbled white cheese on top."
+  },
+  {
+    "nazwa": "Sopa de tortilla",
+    "rodzaj": "zupa",
+    "kuchnia": "meksykanska",
+    "poziom": "latwe",
+    "czas_minuty": 40,
+    "kcal": 350,
+    "skladniki": [
+      { "nazwa": "pomidory z puszki", "ilosc": "140", "jednostka": "g", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "tortilla", "ilosc": "1", "jednostka": "szt", "kategoria": "4_Pieczywo" },
+      { "nazwa": "bulion warzywny", "ilosc": "250", "jednostka": "ml", "kategoria": "8_Inne" },
+      { "nazwa": "cebula", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "czosnek", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "awokado", "ilosc": "1/4", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "ser feta", "ilosc": "20", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "kolendra", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "olej", "ilosc": "2", "jednostka": "łyżka", "kategoria": "8_Inne" }
+    ],
+    "kroki": [
+      "Pokrój tortillę w paski i usmaż na oleju na chrupko, odsącz na papierze.",
+      "Zmiksuj pomidory z cebulą i czosnkiem, przesmaż 10 minut na tym samym oleju.",
+      "Wlej bulion i gotuj 15 minut, dopraw solą.",
+      "Nalej zupę do miski i DOPIERO TERAZ wrzuć paski tortilli — w garnku zmiękłyby.",
+      "Dołóż awokado, pokruszony ser i kolendrę."
+    ],
+    "opis_wizualny": "A clear-ish red tomato broth in a bowl, crossed by crisp fried tortilla strips sticking out above the surface. Cubes of avocado, crumbled white cheese and coriander leaves float on top. The soup itself is thin, not pureed thick."
+  },
+  {
+    "nazwa": "Flan karmelowy",
+    "rodzaj": "deser",
+    "kuchnia": "meksykanska",
+    "poziom": "srednie",
+    "czas_minuty": 80,
+    "kcal": 300,
+    "skladniki": [
+      { "nazwa": "mleko", "ilosc": "120", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "mleko skondensowane", "ilosc": "50", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "jajka", "ilosc": "1", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "cukier", "ilosc": "30", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "cukier waniliowy", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "5_Produkty sypkie" }
+    ],
+    "kroki": [
+      "Rozpuść cukier na patelni na ciemny karmel i rozlej go na dno foremek.",
+      "Rozkłóć jajka z oboma mlekami i cukrem waniliowym — bez ubijania, piana zrobi dziury.",
+      "Przecedź masę przez sitko i wlej na zastygnięty karmel.",
+      "Wstaw foremki do blachy z wrzątkiem i piecz 45 minut w 160 stopniach w kąpieli wodnej.",
+      "Studź 4 godziny w lodówce, potem obróć na talerzyk — karmel spłynie po bokach."
+    ],
+    "opis_wizualny": "A turned-out custard dome, pale cream in colour with a smooth, slightly wobbly surface, sitting in a pool of dark amber caramel that runs down its sides. The top is glossy where the caramel coats it. A few bubbles show at the base edge."
+  },
+  {
+    "nazwa": "Churros z czekoladą",
+    "rodzaj": "deser",
+    "kuchnia": "hiszpanska",
+    "poziom": "srednie",
+    "czas_minuty": 45,
+    "kcal": 450,
+    "skladniki": [
+      { "nazwa": "mąka pszenna", "ilosc": "50", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "masło", "ilosc": "10", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "cukier", "ilosc": "20", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "gorzka czekolada", "ilosc": "30", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "mleko", "ilosc": "60", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "olej", "ilosc": "200", "jednostka": "ml", "kategoria": "8_Inne" },
+      { "nazwa": "cynamon", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Zagotuj 100 ml wody z masłem i szczyptą soli, wsyp mąkę i mieszaj na ogniu minutę.",
+      "Przełóż ciasto do rękawa z gwiazdką i odstaw na 10 minut — żłobienia trzymają kształt przy smażeniu.",
+      "Rozgrzej olej do 180 stopni i wyciskaj paski ciasta, odcinając je nożykiem.",
+      "Smaż po 3 minuty z każdej strony na głęboki złoty kolor, odsącz na papierze.",
+      "Obsyp cukrem z cynamonem. Czekoladę rozpuść w mleku na gęsty sos do maczania."
+    ],
+    "opis_wizualny": "Long ridged sticks of fried dough, deep golden and dusted with cinnamon sugar, standing in a cup or lying crossed on a plate. A small cup of thick dark chocolate sauce sits beside them. The surface shows clear lengthwise grooves and a few darker blistered spots."
+  },
+  {
+    "nazwa": "Flammekueche z boczkiem",
+    "rodzaj": "kolacja",
+    "kuchnia": "francuska",
+    "poziom": "srednie",
+    "czas_minuty": 50,
+    "kcal": 520,
+    "skladniki": [
+      { "nazwa": "mąka pszenna", "ilosc": "70", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "śmietana 18%", "ilosc": "50", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "serek śmietankowy", "ilosc": "30", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "boczek wędzony", "ilosc": "60", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "cebula", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "olej", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "gałka muszkatołowa", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Zagnieć ciasto z mąki, 35 ml wody, oleju i szczypty soli. Odstaw na 20 minut. Bez drożdży — ma być cienkie i chrupiące.",
+      "Wymieszaj śmietanę z serkiem, dopraw solą, pieprzem i gałką muszkatołową.",
+      "Rozwałkuj ciasto bardzo cienko na prostokąt i przełóż na blachę.",
+      "Posmaruj masą śmietanową, rozsyp cebulę w cienkich piórkach i kostki boczku.",
+      "Piecz 12 minut w 250 stopniach, aż brzegi będą ciemnozłote i miejscami przypieczone."
+    ],
+    "opis_wizualny": "A thin rectangular flatbread with a pale cream base, scattered with translucent onion slivers and small browned bacon pieces. The edges are blistered dark brown and curled up slightly. It is cut into rough squares on a wooden board."
+  },
+  {
+    "nazwa": "Pissaladière",
+    "rodzaj": "kolacja",
+    "kuchnia": "francuska",
+    "poziom": "srednie",
+    "czas_minuty": 90,
+    "kcal": 430,
+    "skladniki": [
+      { "nazwa": "ciasto drożdżowe", "ilosc": "90", "jednostka": "g", "kategoria": "4_Pieczywo" },
+      { "nazwa": "cebula", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "anchois", "ilosc": "4", "jednostka": "szt", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "oliwki czarne", "ilosc": "8", "jednostka": "szt", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "oliwa z oliwek", "ilosc": "2", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "tymianek", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" },
+      { "nazwa": "czosnek", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Pokrój cebulę w piórka i duś ją na oliwie 40 minut na małym ogniu, aż będzie słodka i prawie rozpadnięta. To cały sekret tego placka.",
+      "Dopraw cebulę tymiankiem i czosnkiem, ostudź.",
+      "Rozwałkuj ciasto na prostokąt i wyłóż nim blachę, podnosząc brzegi.",
+      "Rozłóż cebulę grubą warstwą, na niej ułóż anchois w kratkę i oliwki w oczkach kratki.",
+      "Piecz 25 minut w 220 stopniach, aż spód będzie chrupiący."
+    ],
+    "opis_wizualny": "A rectangular yeast-dough tart covered in a thick layer of deep golden slow-cooked onions, with brown anchovy fillets laid in a lattice and black olives set in the gaps. The crust edge is risen and browned. The surface looks glossy with oil."
+  },
+  {
+    "nazwa": "Tarta cebulowa z tymiankiem",
+    "rodzaj": "kolacja",
+    "kuchnia": "francuska",
+    "poziom": "latwe",
+    "czas_minuty": 70,
+    "kcal": 460,
+    "skladniki": [
+      { "nazwa": "ciasto francuskie", "ilosc": "80", "jednostka": "g", "kategoria": "4_Pieczywo" },
+      { "nazwa": "cebula", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "śmietana 30%", "ilosc": "50", "jednostka": "ml", "kategoria": "3_Nabiał" },
+      { "nazwa": "jajka", "ilosc": "1/2", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "ser kozi", "ilosc": "30", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "masło", "ilosc": "10", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "tymianek", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Duś cebulę na masle 25 minut, aż zmięknie i zrobi się złota.",
+      "Wyłóż formę ciastem, nakłuj spód i podpiecz 10 minut w 190 stopniach.",
+      "Rozmieszaj śmietanę z jajkiem i tymiankiem, dopraw.",
+      "Rozłóż cebulę na spodzie, zalej masą, rozłóż kawałki koziego sera.",
+      "Piecz 30 minut w 180 stopniach, aż masa się zetnie, a ser się zrumieni."
+    ],
+    "opis_wizualny": "An open tart with a puffed golden pastry rim, filled with soft caramelised onion set in a thin custard, dotted with white rounds of goat cheese that have browned on top. Thyme leaves are scattered over. A cut wedge holds together with the onion visible in cross-section."
+  },
+  {
+    "nazwa": "Jajka w chmurce",
+    "rodzaj": "sniadanie",
+    "kuchnia": "miedzynarodowa",
+    "poziom": "srednie",
+    "czas_minuty": 20,
+    "kcal": 260,
+    "skladniki": [
+      { "nazwa": "jajka", "ilosc": "2", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "ser żółty", "ilosc": "20", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "szczypiorek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "pieczywo", "ilosc": "1", "jednostka": "szt", "kategoria": "4_Pieczywo" },
+      { "nazwa": "sól", "ilosc": "1", "jednostka": "szczypta", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Oddziel białka od żółtek, żółtka zostaw w miseczkach całe.",
+      "Ubij białka na sztywną pianę ze szczyptą soli, wmieszaj ser i szczypiorek.",
+      "Nałóż piany kopczyki na blachę i zrób w każdym wgłębienie łyżką.",
+      "Piecz 5 minut w 200 stopniach, wsuń żółtko we wgłębienie i dopiecz 3 minuty.",
+      "Podawaj od razu na grzance — po chwili chmurka opada."
+    ],
+    "opis_wizualny": "A baked cloud of whipped egg white, lightly golden on its peaks, with a whole soft yolk sitting in a hollow in the middle. It rests on a slice of toast, the white looking airy and meringue-like. Chopped chives speckle the surface."
+  },
+  {
+    "nazwa": "English breakfast",
+    "rodzaj": "sniadanie",
+    "kuchnia": "miedzynarodowa",
+    "poziom": "latwe",
+    "czas_minuty": 30,
+    "kcal": 720,
+    "skladniki": [
+      { "nazwa": "kiełbaski", "ilosc": "2", "jednostka": "szt", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "boczek wędzony", "ilosc": "50", "jednostka": "g", "kategoria": "2_Mięso i ryby" },
+      { "nazwa": "jajka", "ilosc": "1", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "fasolka w sosie pomidorowym", "ilosc": "80", "jednostka": "g", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "pomidory", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "pieczarki", "ilosc": "60", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "chleb tostowy", "ilosc": "1", "jednostka": "szt", "kategoria": "4_Pieczywo" },
+      { "nazwa": "masło", "ilosc": "10", "jednostka": "g", "kategoria": "3_Nabiał" }
+    ],
+    "kroki": [
+      "Usmaż kiełbaski na patelni 10 minut, obracając, i przełóż do ciepłego piekarnika.",
+      "Na tym samym tłuszczu wysmaż boczek na chrupko, potem pieczarki i połówkę pomidora.",
+      "Fasolkę podgrzej w rondelku.",
+      "Na końcu usmaż jajko sadzone — ma zostać z płynnym żółtkiem.",
+      "Podpiecz tost i ułóż wszystko na jednym dużym talerzu, osobnymi kupkami."
+    ],
+    "opis_wizualny": "A full plate with separate piles: two browned sausages, curled crisp bacon, a fried egg with a runny yolk, a spoonful of beans in tomato sauce, a grilled tomato half, fried mushrooms and a triangle of toast. Nothing is mixed; the plate looks crowded and generous."
+  },
+  {
+    "nazwa": "Placki z ricottą",
+    "rodzaj": "sniadanie",
+    "kuchnia": "wloska",
+    "poziom": "latwe",
+    "czas_minuty": 25,
+    "kcal": 390,
+    "skladniki": [
+      { "nazwa": "ricotta", "ilosc": "100", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "mąka pszenna", "ilosc": "40", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "jajka", "ilosc": "1", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "cukier", "ilosc": "1", "jednostka": "łyżka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "proszek do pieczenia", "ilosc": "1/2", "jednostka": "łyżeczka", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "masło", "ilosc": "10", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "miód", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "skórka z cytryny", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Rozmieszaj ricottę z żółtkiem, cukrem i skórką z cytryny.",
+      "Wmieszaj mąkę z proszkiem do pieczenia.",
+      "Ubij białko na sztywno i wmieszaj je delikatnie — to od niego placki są puszyste.",
+      "Smaż na masle na małym ogniu po 3 minuty z każdej strony, pod przykryciem.",
+      "Podawaj polane miodem."
+    ],
+    "opis_wizualny": "Thick, pale golden pancakes stacked three high on a plate, their surfaces slightly uneven and their edges soft. Honey runs down the sides and pools on the plate. The inside, where one is broken, looks moist and curd-flecked rather than cakey."
+  },
+  {
+    "nazwa": "Kanapki z serem pleśniowym i gruszką",
+    "rodzaj": "kolacja",
+    "kuchnia": "miedzynarodowa",
+    "poziom": "latwe",
+    "czas_minuty": 15,
+    "kcal": 380,
+    "skladniki": [
+      { "nazwa": "chleb żytni", "ilosc": "2", "jednostka": "szt", "kategoria": "4_Pieczywo" },
+      { "nazwa": "ser gorgonzola", "ilosc": "40", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "gruszka", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "orzechy włoskie", "ilosc": "15", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "miód", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "8_Inne" },
+      { "nazwa": "rukola", "ilosc": "20", "jednostka": "g", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Podpiecz kromki w tosterze albo na suchej patelni.",
+      "Rozsmaruj na ciepłym pieczywie ser pleśniowy — od ciepła lekko się rozpuści.",
+      "Ułóż cienkie plastry gruszki i garść rukoli.",
+      "Posyp posiekanymi orzechami i skrop miodem.",
+      "Dopraw grubo mielonym pieprzem."
+    ],
+    "opis_wizualny": "Two slices of toasted dark bread, each spread with crumbly blue cheese and topped with thin overlapping pear slices, rocket leaves and chopped walnuts. A thin thread of honey glistens over the top. The bread edges are crisp and visibly toasted."
+  },
+  {
+    "nazwa": "Tosty z tuńczykiem i serem",
+    "rodzaj": "kolacja",
+    "kuchnia": "miedzynarodowa",
+    "poziom": "latwe",
+    "czas_minuty": 15,
+    "kcal": 420,
+    "skladniki": [
+      { "nazwa": "chleb tostowy", "ilosc": "2", "jednostka": "szt", "kategoria": "4_Pieczywo" },
+      { "nazwa": "tuńczyk w oleju", "ilosc": "60", "jednostka": "g", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "ser żółty", "ilosc": "40", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "majonez", "ilosc": "1", "jednostka": "łyżka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "ogórek konserwowy", "ilosc": "1/2", "jednostka": "szt", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "szczypiorek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Odsącz tuńczyka i rozgnieć go widelcem z majonezem i posiekanym ogórkiem.",
+      "Rozłóż pastę na kromkach, posyp startym serem.",
+      "Zapiekaj 8 minut w 200 stopniach albo w opiekaczu, aż ser się zrumieni.",
+      "Posyp szczypiorkiem i zjedz, póki ciepłe."
+    ],
+    "opis_wizualny": "Two open-faced toasts covered with tuna mixture and a browned, bubbled layer of melted cheese, slightly darker at the crust. The filling is visible at the edges. Chopped chives are scattered over the hot cheese."
+  },
+  {
+    "nazwa": "Placki z kalafiora",
+    "rodzaj": "kolacja",
+    "kuchnia": "miedzynarodowa",
+    "poziom": "latwe",
+    "czas_minuty": 35,
+    "kcal": 290,
+    "skladniki": [
+      { "nazwa": "kalafior", "ilosc": "200", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "jajka", "ilosc": "1", "jednostka": "szt", "kategoria": "3_Nabiał" },
+      { "nazwa": "mąka pszenna", "ilosc": "30", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "ser żółty", "ilosc": "25", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "koperek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "olej", "ilosc": "2", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "czosnek", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Ugotuj kalafior na półmiękko, odcedź i dobrze odparuj — mokry rozwodni ciasto.",
+      "Rozgnieć go widelcem na grube kawałki, nie na papkę.",
+      "Wymieszaj z jajkiem, mąką, serem, czosnkiem i koperkiem, dopraw.",
+      "Nakładaj łyżką na rozgrzany olej i rozpłaszczaj.",
+      "Smaż po 3 minuty z każdej strony na złoto. Podawaj z jogurtem albo śmietaną."
+    ],
+    "opis_wizualny": "Irregular golden-brown fritters with visible chunks of cauliflower and specks of green dill breaking the surface, stacked slightly overlapping on a plate. The edges are ragged and crisp, the centres paler. A spoon of white sauce sits beside them."
+  },
+  {
+    "nazwa": "Tzatziki",
+    "rodzaj": "dodatek",
+    "kuchnia": "grecka",
+    "poziom": "latwe",
+    "czas_minuty": 15,
+    "kcal": 110,
+    "skladniki": [
+      { "nazwa": "jogurt grecki", "ilosc": "100", "jednostka": "g", "kategoria": "3_Nabiał" },
+      { "nazwa": "ogórek", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "czosnek", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "oliwa z oliwek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "koperek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "sok z cytryny", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Zetrzyj ogórka na grubych oczkach, posól i odstaw na 10 minut.",
+      "ODCIŚNIJ ogórek dłonią — bez tego sos się rozwodni po godzinie.",
+      "Wymieszaj jogurt z ogórkiem, przeciśniętym czosnkiem, oliwą i sokiem z cytryny.",
+      "Dodaj koperek, dopraw solą i pieprzem, wstaw na godzinę do lodówki."
+    ],
+    "opis_wizualny": "A thick white yogurt dip in a small bowl, flecked with shreds of pale green cucumber and chopped dill. The surface holds a spoon swirl with a little olive oil pooled in it. The texture looks dense, not runny."
+  },
+  {
+    "nazwa": "Tabbouleh",
+    "rodzaj": "surowka",
+    "kuchnia": "bliskowschodnia",
+    "poziom": "latwe",
+    "czas_minuty": 30,
+    "kcal": 210,
+    "skladniki": [
+      { "nazwa": "kasza bulgur", "ilosc": "40", "jednostka": "g", "kategoria": "5_Produkty sypkie" },
+      { "nazwa": "natka pietruszki", "ilosc": "3", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "pomidory", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "mięta", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "dymka", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "oliwa z oliwek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "sok z cytryny", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Zalej bulgur wrzątkiem na 15 minut i odcedź, jeśli zostanie woda.",
+      "Posiekaj natkę i miętę BARDZO drobno — w tej sałatce zieleniny jest więcej niż kaszy.",
+      "Pokrój pomidory w małą kostkę, dymkę w cienkie krążki.",
+      "Połącz wszystko z oliwą i sokiem z cytryny, dopraw solą i pieprzem.",
+      "Odstaw na 15 minut, żeby kasza wzięła smak."
+    ],
+    "opis_wizualny": "A vivid green salad dominated by finely chopped parsley, with small pale grains of bulgur and red tomato dice mixed through. It is served mounded in a bowl, looking moist and glossy from oil and lemon. Thin rings of spring onion show on top."
+  },
+  {
+    "nazwa": "Fattoush",
+    "rodzaj": "surowka",
+    "kuchnia": "bliskowschodnia",
+    "poziom": "latwe",
+    "czas_minuty": 25,
+    "kcal": 260,
+    "skladniki": [
+      { "nazwa": "pita", "ilosc": "1/2", "jednostka": "szt", "kategoria": "4_Pieczywo" },
+      { "nazwa": "pomidory", "ilosc": "1", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "ogórek", "ilosc": "1/2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "sałata", "ilosc": "50", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "rzodkiewka", "ilosc": "2", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "oliwa z oliwek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "sok z cytryny", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "sumak", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "7_Przyprawy" }
+    ],
+    "kroki": [
+      "Porwij pitę na kawałki i podpiecz je 8 minut w 200 stopniach na chrupko.",
+      "Pokrój pomidory, ogórka i rzodkiewki w grubą kostkę, sałatę porwij.",
+      "Zrób dressing z oliwy, soku z cytryny, sumaku, soli i pieprzu.",
+      "Wymieszaj warzywa z dressingiem.",
+      "Chlebek dodaj DOPIERO przy podaniu — ma chrupać, nie moknąć."
+    ],
+    "opis_wizualny": "A chunky vegetable salad of tomato, cucumber and radish with torn lettuce, topped with pieces of crisp toasted flatbread sticking up at angles. The dressing leaves everything shiny and dark red sumac dusts the surface. The bread pieces look dry and golden."
+  },
+  {
+    "nazwa": "Surówka z kapusty pekińskiej i rzodkiewki",
+    "rodzaj": "surowka",
+    "kuchnia": "polska",
+    "poziom": "latwe",
+    "czas_minuty": 15,
+    "kcal": 110,
+    "skladniki": [
+      { "nazwa": "kapusta pekińska", "ilosc": "100", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "rzodkiewka", "ilosc": "3", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "szczypiorek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "jogurt naturalny", "ilosc": "2", "jednostka": "łyżka", "kategoria": "3_Nabiał" },
+      { "nazwa": "majonez", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "sok z cytryny", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "1_Warzywa i owoce" }
+    ],
+    "kroki": [
+      "Poszatkuj kapustę w cienkie wstążki, rzodkiewki pokrój w plasterki.",
+      "Rozmieszaj jogurt z majonezem i sokiem z cytryny, dopraw solą i pieprzem.",
+      "Wymieszaj wszystko ze szczypiorkiem.",
+      "Podawaj od razu — kapusta szybko puszcza wodę."
+    ],
+    "opis_wizualny": "A light salad of thin shredded Chinese cabbage with pink-rimmed radish slices through it, lightly coated in a white dressing. The cabbage is pale green and crisp-looking, the radishes bright. Chopped chives are sprinkled over the top."
+  },
+  {
+    "nazwa": "Sałatka z fasolki szparagowej",
+    "rodzaj": "surowka",
+    "kuchnia": "miedzynarodowa",
+    "poziom": "latwe",
+    "czas_minuty": 25,
+    "kcal": 160,
+    "skladniki": [
+      { "nazwa": "fasolka szparagowa", "ilosc": "150", "jednostka": "g", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "cebula", "ilosc": "1/4", "jednostka": "szt", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "oliwa z oliwek", "ilosc": "1", "jednostka": "łyżka", "kategoria": "8_Inne" },
+      { "nazwa": "ocet winny", "ilosc": "1", "jednostka": "łyżeczka", "kategoria": "8_Inne" },
+      { "nazwa": "musztarda Dijon", "ilosc": "1/2", "jednostka": "łyżeczka", "kategoria": "6_Konserwy i słoiki" },
+      { "nazwa": "natka pietruszki", "ilosc": "1", "jednostka": "łyżka", "kategoria": "1_Warzywa i owoce" },
+      { "nazwa": "orzechy włoskie", "ilosc": "15", "jednostka": "g", "kategoria": "5_Produkty sypkie" }
+    ],
+    "kroki": [
+      "Ugotuj fasolkę 6 minut w osolonej wodzie — ma zostać jędrna.",
+      "Przelej ją natychmiast zimną wodą, żeby zachowała zielony kolor.",
+      "Zrób dressing z oliwy, octu i musztardy.",
+      "Wymieszaj fasolkę z cebulą w cienkich piórkach i dressingiem.",
+      "Posyp natką i posiekanymi orzechami."
+    ],
+    "opis_wizualny": "Whole green beans, still bright and firm, piled lengthwise in a shallow dish and lightly coated in dressing. Slivers of raw onion and chopped walnuts are scattered over them, with parsley on top. The beans glisten but there is no pool of dressing."
+  }
+]

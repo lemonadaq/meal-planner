@@ -13,14 +13,23 @@ on:
         required: true
         default: wszystko
         options:
+          - auto       # sam wymyśla `ile` nowych dań + przepis + zdjęcie
+          - propozycje # tylko wymyśla nazwy i wypisuje je — nic nie zapisuje
+          - import     # gotowe przepisy z skrypty/dania/*.json + zdjęcia (BEZ Anthropic)
           - wszystko   # przepis + zdjęcie dla dań z listy
           - przepisy   # same przepisy, bez zdjęć (bez kosztów Replicate)
           - obrazy     # zdjęcia dla dań, które są już w bazie bez zdjęcia
           - lista      # tylko wypisuje dania z bazy, nic nie zmienia, zero kosztów
           - usun       # KASUJE dania podane w polu `dania` — nieodwracalne
           - kuchnie    # dopisuje kuchnię i poziom trudności (suchy bieg, chyba że `zapisz`)
+          - klucze     # sprawdza, czy klucze działają (kredyty!) — nic nie generuje
+      ile:
+        description: "Tryb 'auto'/'propozycje': ILE dań dodać (to jedyne pole, które trzeba wypełnić)"
+        type: string
+        required: false
+        default: ""
       dania:
-        description: "Lista dań, po średniku: Bigos|obiad; Żurek|zupa (tryb 'obrazy' — puste = wszystkie bez zdjęcia)"
+        description: "Lista dań: Bigos|obiad; Żurek|zupa ('obrazy' — puste = wszystkie bez zdjęcia; 'auto' — rozkład kuchni, np. polska:3, wloska:1; 'import' — nazwy plików JSON, puste = wszystkie)"
         type: string
         required: false
         default: ""
@@ -40,7 +49,7 @@ on:
         required: false
         default: ""
       rodzaj:
-        description: "Tryb 'lista': filtruj po rodzaju (sniadanie, obiad, kolacja, zupa, przekaska, deser, dodatek, surowka)"
+        description: "Tryb 'lista': filtruj po rodzaju. Tryb 'auto': rozkład rodzajów, np. obiad:3, zupa:1 (puste = obiad, kolacja, sniadanie, deser, surowka)"
         type: string
         required: false
         default: ""
@@ -80,8 +89,16 @@ jobs:
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
       ANTHROPIC_KEY: ${{ secrets.ANTHROPIC_KEY }}
       REPLICATE_KEY: ${{ secrets.REPLICATE_KEY }}
+      # Tylko do trybu `klucze`: sprawdzamy, co api.anthropic.com mówi na token
+      # subskrypcji agenta. Żaden skrypt generujący go nie czyta.
+      CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
       DANIA: ${{ inputs.dania }}
       LIMIT: ${{ inputs.limit }}
+      ILE: ${{ inputs.ile }}
+      # W trybach `auto`/`propozycje` pola `dania` i `rodzaj` znaczą co innego:
+      # nie listę dań i filtr, a rozkład kuchni i rodzajów.
+      KUCHNIE_PLAN: ${{ (inputs.tryb == 'auto' || inputs.tryb == 'propozycje') && inputs.dania || '' }}
+      RODZAJE_PLAN: ${{ (inputs.tryb == 'auto' || inputs.tryb == 'propozycje') && inputs.rodzaj || '' }}
       OVERWRITE: ${{ inputs.overwrite && '1' || '0' }}
       REPLICATE_MODEL: ${{ inputs.model_obrazu }}
       RODZAJ: ${{ inputs.rodzaj }}
@@ -104,17 +121,20 @@ jobs:
 
       - name: Sprawdź sekrety
         run: |
+          # Tryb `klucze` sam sprawdza klucze i mówi, co z nimi jest nie tak —
+          # nie ma sensu ubiegać go błędem o brakującym sekrecie.
+          if [ "${{ inputs.tryb }}" = "klucze" ]; then exit 0; fi
           brakuje=0
           for zmienna in SUPABASE_URL SUPABASE_SERVICE_ROLE_KEY; do
             if [ -z "${!zmienna}" ]; then echo "::error::brak sekretu $zmienna"; brakuje=1; fi
           done
           # tryb 'lista' tylko czyta bazę — nie potrzebuje ani Claude'a, ani Replicate
-          case "${{ inputs.tryb }}" in lista|usun) potrzebnyClaude=0 ;; *) potrzebnyClaude=1 ;; esac
+          case "${{ inputs.tryb }}" in lista|usun|import) potrzebnyClaude=0 ;; *) potrzebnyClaude=1 ;; esac
           if [ "$potrzebnyClaude" = 1 ] && [ -z "$ANTHROPIC_KEY" ]; then
             echo "::error::brak sekretu ANTHROPIC_KEY"; brakuje=1
           fi
           case "${{ inputs.tryb }}" in
-            wszystko|obrazy)
+            wszystko|obrazy|auto|import)
               if [ -z "$REPLICATE_KEY" ]; then echo "::error::brak sekretu REPLICATE_KEY"; brakuje=1; fi ;;
           esac
           exit $brakuje
@@ -122,6 +142,10 @@ jobs:
       - name: Generuj
         run: |
           case "${{ inputs.tryb }}" in
+            auto)     node skrypty/generuj-auto.mjs ;;
+            propozycje) TYLKO_PROPOZYCJE=1 node skrypty/generuj-auto.mjs ;;
+            import)   node skrypty/importuj-dania.mjs ;;
+            klucze)   node skrypty/sprawdz-klucze.mjs ;;
             wszystko) node skrypty/generuj-wszystko.mjs ;;
             przepisy) node skrypty/generuj-przepisy.mjs ;;
             obrazy)   node skrypty/generuj-obrazy.mjs ;;
