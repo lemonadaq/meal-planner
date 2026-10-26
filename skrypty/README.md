@@ -265,6 +265,21 @@ Actions → „Dania agentem" → Run workflow
 Limit jest nie na kredyty, a na okna subskrypcji — tak samo jak u agenta QA
 (patrz komentarz w `agent.yml`), więc nie puszczaj tego równolegle z nim.
 
+**Czego ten workflow NIE robi na słowo agenta.** Pierwszy przebieg
+(run 40281264797) skończył się raportem „STATUS: OK, 3 dania" — i bez pliku
+z przepisami, a wypisane w raporcie dania były dublami („Sałatka jarzynowa"
+jest w bazie dosłownie). Dlatego między agentem a commitem stoją teraz trzy
+bramki, wszystkie maszynowe:
+
+1. **Czy jest paczka** — brak nowego pliku w `skrypty/dania` to czerwony
+   przebieg, nie zielony. Raport nie jest produktem; plik jest.
+2. **Walidacja formatu** — `src/test/importDan.test.js`.
+3. **Brama dubli** — `PACZKA=paczka-NN.json npm run sprawdz:nazwy` kończy się
+   błędem, gdy choć jedno danie z paczki jest już w bazie albo w innej paczce.
+
+Dopiero po tych trzech workflow commituje i importuje. Przy pisaniu własnej
+paczki ręcznie warto odpalić punkty 2 i 3 u siebie — to te same komendy.
+
 Model tekstowy można podmienić bez ruszania kodu: `ANTHROPIC_MODEL`
 (np. `claude-sonnet-5-5`, tańszy od Opusa przy generowaniu przepisów).
 

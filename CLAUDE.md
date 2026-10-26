@@ -72,6 +72,7 @@ w Supabase — nikt ich nie czyta, Filip usunie je ręcznie, jak zechce.
   - tryb `import` — przepisy z plików `skrypty/dania/*.json` (format 1:1 z odpowiedzią Claude'a) do bazy + zdjęcia, BEZ ani jednego zapytania do Anthropic. Droga na czas, gdy na koncie Anthropic nie ma kredytów, a Replicate i Supabase działają
   - `skrypty/dania/` — 7 paczek, 200 dań napisanych w rozmowie (2026-10-25), kiedy kredyty API się skończyły
   - workflow „Dania agentem" (`dania-agentem.yml`) + `.claude/przepisy-prompt.md` — przepisy pisze Claude Code na `CLAUDE_CODE_OAUTH_TOKEN` (ten sam token, co agent QA), potem walidacja, commit i `import` ze zdjęciami. Tego tokenu NIE da się podstawić pod `ANTHROPIC_KEY` — to subskrypcja, nie klucz API, i tryb `klucze` to pokazuje odpowiedzią z API (401)
+  - między agentem a commitem stoją trzy maszynowe bramki: czy paczka w ogóle powstała (raport „STATUS: OK" bez pliku = czerwony przebieg), walidacja formatu i brama dubli (`PACZKA=... npm run sprawdz:nazwy`). Pierwszy przebieg agenta pokazał, po co: raport OK, zero pliku, a w raporcie dania, które już są w bazie
   - `sprawdz-nazwy.mjs` — czy nazwa dania to dubel; porównuje z `LISTA_DAN.md` ORAZ z paczkami czekającymi na import. Mierzy NAPISY, nie dania, więc lista „czystych" idzie jeszcze pod oczy
   - `slownik.js` — składniki nowych dań są ujednolicane ze stanem bazy (pisownia + jednostka, `150 g cebuli` → `1 szt`). Granica jak w `nazwySkladnikow.js`: ujednolicamy pisownię, nie podmieniamy towaru
 

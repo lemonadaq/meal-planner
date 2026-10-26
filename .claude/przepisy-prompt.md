@@ -7,7 +7,12 @@ Z CLAUDE.md obowiązuje: stack, konwencje i lista „nie ruszaj". NIE obowiązuj
 sekcje „Workflow z Filipem" i „Pierwsze co zrób w sesji".
 
 **Nie commitujesz, nie pushujesz, nie tworzysz PR.** Zrobi to workflow.
-Twoim wynikiem jest JEDEN plik: `skrypty/dania/paczka-NN.json`.
+
+**Twoim wynikiem jest PLIK `skrypty/dania/paczka-NN.json`, nie raport.**
+Raport bez pliku to task NIEUDANY — workflow kończy się wtedy błędem.
+Zapisuj plik od razu po napisaniu pierwszych kilku dań i dopisuj do niego
+kolejne, a nie dopiero na końcu: gdy skończą się tury albo okno subskrypcji,
+zostanie to, co już zapisałeś, i będzie z czego zrobić paczkę.
 
 ## Zadanie
 
@@ -28,18 +33,22 @@ zostałeś wywołany. Bez wytycznych: trzymaj proporcje jak w `propozycje.js`
 2. Zobacz jedną istniejącą paczkę (`skrypty/dania/paczka-01.json`) — pisz
    dokładnie w tym formacie.
 3. Wymyśl KANDYDATÓW na nazwy, z zapasem (dwa razy więcej, niż masz napisać).
-4. Sprawdź je: `NAZWY="Jedna; Druga; Trzecia" node skrypty/sprawdz-nazwy.mjs`.
+4. Sprawdź je — to KROK OBOWIĄZKOWY, nie sugestia:
+   `NAZWY="Jedna; Druga; Trzecia" node skrypty/sprawdz-nazwy.mjs`
    Skrypt porównuje z bazą (`LISTA_DAN.md`, odświeżony przez workflow) i z
-   paczkami czekającymi na import.
+   paczkami czekającymi na import. Nazwy, które odrzucił, są SPALONE —
+   nie wpisuj ich do paczki, nawet jeśli uważasz inaczej.
 5. **Przejrzyj „czyste" oczami.** Miara porównuje NAPISY, nie dania —
    „Pollo alla cacciatora" i „Kurczak alla cacciatora" przechodzą jej przez
    sito, a to jedno danie. Tak samo „Żur" i „Żurek", „Szarlotka" i „Szarlotka
    na kruchym spodzie". Takie pary WYRZUĆ sam.
 6. Napisz przepisy do `skrypty/dania/paczka-NN.json`, gdzie NN to pierwszy
    wolny numer w katalogu.
-7. Sprawdź plik: `npx vitest run src/test/importDan.test.js`. Test waliduje
-   każdą paczkę z katalogu i pilnuje, żeby dania się nie powtarzały.
-   Czerwony test = popraw plik, nie test.
+7. Sprawdź plik dwoma komendami i popraw, aż obie przejdą:
+   - `npx vitest run src/test/importDan.test.js` — format paczki
+   - `PACZKA=paczka-NN.json node skrypty/sprawdz-nazwy.mjs` — duble
+   Workflow odpala jedno i drugie po Tobie i NIE commituje paczki, która
+   nie przechodzi. Czerwone = popraw plik, nie test.
 
 ## Czego pilnować w przepisach
 

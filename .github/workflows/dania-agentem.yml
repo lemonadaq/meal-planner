@@ -102,19 +102,38 @@ jobs:
             --max-turns 120
             --allowedTools "Read,Edit,Write,Glob,Grep,Bash(cat:*),Bash(ls:*),Bash(grep:*),Bash(node skrypty/sprawdz-nazwy.mjs),Bash(npx vitest run src/test/importDan.test.js),Bash(git status),Bash(git diff:*)"
 
+      - name: Czy agent w ogóle zapisał paczkę
+        # Agent potrafi napisać w raporcie „STATUS: OK" i NIE zapisać pliku
+        # z przepisami (run 40281264797). Wtedy przebieg musi być czerwony,
+        # bo zielony bez paczki to zielony bez efektu.
+        id: paczki
+        run: |
+          nowe=$(git status --porcelain -- skrypty/dania | awk '{print $NF}')
+          if [ -z "$nowe" ]; then
+            echo "::error::Agent nie zapisał żadnej paczki w skrypty/dania."
+            echo "Raport agenta (jeśli jest):"
+            cat agent-out/wynik.md 2>/dev/null || echo "(brak agent-out/wynik.md)"
+            exit 1
+          fi
+          echo "Nowe paczki: $nowe"
+          echo "lista=$nowe" >> "$GITHUB_OUTPUT"
+
       - name: Walidacja paczek
-        # Druga bariera po teście agenta: workflow nie commituje pliku,
-        # którego nie da się zaimportować.
+        # Format: rodzaj, kuchnia, poziom, jednostki, kategorie, opis wyglądu.
         run: npx vitest run src/test/importDan.test.js
 
-      - name: Zacommituj paczkę
-        id: commit
+      - name: Brama dubli
+        # Nie wierzymy raportowi, sprawdzamy plik. Agent raz wypisał w nim
+        # „Sałatkę jarzynową", która jest w bazie dosłownie — i uznał task
+        # za zrobiony. Tu taka paczka zatrzymuje przebieg.
         run: |
-          if git diff --quiet -- skrypty/dania LISTA_DAN.md; then
-            echo "Agent nie dopisał żadnej paczki."
-            echo "pusto=1" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
+          for plik in ${{ steps.paczki.outputs.lista }}; do
+            echo "── $plik"
+            PACZKA="$(basename "$plik")" node skrypty/sprawdz-nazwy.mjs
+          done
+
+      - name: Zacommituj paczkę
+        run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add skrypty/dania LISTA_DAN.md
@@ -122,12 +141,12 @@ jobs:
 
           Przepisy napisane przez Claude Code na tokenie subskrypcji
           (workflow „Dania agentem\"), bez kredytów na API Anthropic.
+          Paczka przeszła walidację formatu i bramę dubli.
           Zdjęcia: Replicate. Szczegóły w podsumowaniu przebiegu."
           git push
-          echo "pusto=0" >> "$GITHUB_OUTPUT"
 
       - name: Wrzuć dania do bazy i dorób zdjęcia
-        if: inputs.importuj && steps.commit.outputs.pusto == '0'
+        if: inputs.importuj
         run: node skrypty/importuj-dania.mjs
 
       - name: Podsumowanie
