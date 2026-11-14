@@ -1,6 +1,6 @@
 [
   {
-    "nazwa": "Caldo verde",
+    "nazwa": "Zupa z jarmużem i kiełbasą (caldo verde)",
     "rodzaj": "zupa",
     "kuchnia": "miedzynarodowa",
     "poziom": "latwe",
@@ -24,7 +24,7 @@
     "opis_wizualny": "A pale creamy potato soup with fine dark green shreds of kale suspended through it, topped with a few browned chorizo coins. Red-orange oil from the sausage marbles the surface. Served in a wide bowl."
   },
   {
-    "nazwa": "Bacalhau a Bras",
+    "nazwa": "Dorsz z ziemniakami i jajkiem (bacalhau à Brás)",
     "rodzaj": "obiad",
     "kuchnia": "miedzynarodowa",
     "poziom": "srednie",
@@ -51,7 +51,7 @@
     "opis_wizualny": "A tangle of thin crisp potato straws, white flakes of fish and softly set egg binding it all together, pale gold with darker fried edges. Black olives and plenty of chopped parsley sit on top. Served heaped on a plate."
   },
   {
-    "nazwa": "Pasteis de nata",
+    "nazwa": "Portugalskie babeczki budyniowe (pastéis de nata)",
     "rodzaj": "deser",
     "kuchnia": "miedzynarodowa",
     "poziom": "trudne",
@@ -77,7 +77,7 @@
     "opis_wizualny": "Small tartlets with flaky, layered pastry shells and a yellow custard filling blistered dark brown and almost black in spots on top. The custard is slightly domed and wobbly. They sit in a row, dusted with cinnamon."
   },
   {
-    "nazwa": "Feijoada",
+    "nazwa": "Gulasz z czarnej fasoli i mięsa (feijoada)",
     "rodzaj": "obiad",
     "kuchnia": "miedzynarodowa",
     "poziom": "srednie",
@@ -104,7 +104,7 @@
     "opis_wizualny": "A very dark, almost black bean stew with chunks of pork, sausage coins and bacon half-submerged, thick enough to mound on a plate. Served beside white rice with orange segments at the edge of the plate."
   },
   {
-    "nazwa": "Moqueca z dorsza",
+    "nazwa": "Dorsz w mleku kokosowym po brazylijsku (moqueca)",
     "rodzaj": "obiad",
     "kuchnia": "miedzynarodowa",
     "poziom": "latwe",
@@ -131,7 +131,7 @@
     "opis_wizualny": "Large white fish pieces sitting on rings of red pepper, tomato and onion in a pale orange coconut broth, in a shallow pot. The fish is just opaque and holding together. Coriander covers the top and oil glistens on the surface."
   },
   {
-    "nazwa": "Empanadas z mięsem",
+    "nazwa": "Pieczone pierożki z mięsem (empanadas)",
     "rodzaj": "kolacja",
     "kuchnia": "miedzynarodowa",
     "poziom": "srednie",
@@ -157,7 +157,7 @@
     "opis_wizualny": "Half-moon pastries with a twisted, rope-like crimped edge, baked to a glossy deep gold, one broken open to show dark minced meat with olive and egg pieces. They sit on a board, three or four together."
   },
   {
-    "nazwa": "Ceviche z dorsza",
+    "nazwa": "Dorsz marynowany w limonce (ceviche)",
     "rodzaj": "kolacja",
     "kuchnia": "miedzynarodowa",
     "poziom": "srednie",
@@ -183,7 +183,7 @@
     "opis_wizualny": "Cubes of white fish turned opaque at the edges, sitting in a cloudy lime marinade with thin red onion slivers, chilli rings and coriander. Slices of cooked orange sweet potato are arranged beside it in a shallow bowl."
   },
   {
-    "nazwa": "Khachapuri",
+    "nazwa": "Gruzińska łódka z serem i jajkiem (chaczapuri)",
     "rodzaj": "kolacja",
     "kuchnia": "miedzynarodowa",
     "poziom": "srednie",
@@ -209,7 +209,7 @@
     "opis_wizualny": "A boat-shaped bread with high browned edges, filled with molten bubbling cheese and a whole raw-looking egg yolk sitting in the middle, with a knob of butter melting beside it. The crust is deep golden and blistered."
   },
   {
-    "nazwa": "Shepherd's pie",
+    "nazwa": "Zapiekanka pasterska (shepherd's pie)",
     "rodzaj": "obiad",
     "kuchnia": "miedzynarodowa",
     "poziom": "srednie",
@@ -237,7 +237,7 @@
     "opis_wizualny": "A baked dish with a forked potato top, the ridges browned to gold against paler valleys, and a dark meat and vegetable layer visible where a portion has been lifted out. Peas and carrot pieces show in the filling."
   },
   {
-    "nazwa": "Fish and chips",
+    "nazwa": "Ryba z frytkami (fish and chips)",
     "rodzaj": "obiad",
     "kuchnia": "miedzynarodowa",
     "poziom": "srednie",

@@ -48,3 +48,8 @@ playwright-report/
 *.keystore
 *.jks
 android/keystore.properties
+
+# Zrzuty bazy z czyszczenia dań (2026-11) — dane z produkcji, w tym plany
+# i listy zakupów rodzin. Skrypty i CSV z tego katalogu są w repo, zrzuty nie.
+skrypty/czyszczenie/dane/
+skrypty/czyszczenie/__pycache__/

@@ -1,6 +1,6 @@
 [
   {
-    "nazwa": "Quiche lorraine",
+    "nazwa": "Tarta z boczkiem i serem (quiche lorraine)",
     "rodzaj": "obiad",
     "kuchnia": "francuska",
     "poziom": "srednie",
@@ -27,7 +27,7 @@
     "opis_wizualny": "A round open tart with a golden-brown pastry rim, cut into wedges so the filling is visible. The set custard is pale yellow and slightly puffed, speckled with browned bacon pieces and melted cheese on top. The surface is uneven and lightly blistered, not smooth."
   },
   {
-    "nazwa": "Coq au vin",
+    "nazwa": "Kurczak w czerwonym winie (coq au vin)",
     "rodzaj": "obiad",
     "kuchnia": "francuska",
     "poziom": "trudne",
@@ -56,7 +56,7 @@
     "opis_wizualny": "Bone-in chicken pieces in a deep, glossy dark burgundy sauce, the skin browned but softened by the braise. Around the meat sit whole small onions, browned mushroom caps and carrot chunks. The sauce is thick enough to coat, pooling at the bottom of a shallow bowl."
   },
   {
-    "nazwa": "Boeuf bourguignon",
+    "nazwa": "Wołowina po burgundzku (bœuf bourguignon)",
     "rodzaj": "obiad",
     "kuchnia": "francuska",
     "poziom": "trudne",
@@ -111,7 +111,7 @@
     "opis_wizualny": "A rustic stew of soft vegetable chunks in a reduced tomato sauce: purple-skinned aubergine cubes, green courgette, strips of red pepper, all still holding their shape. The sauce is deep red and glossy with olive oil, collected around the vegetables. Served spooned into a bowl, uneven and homely."
   },
   {
-    "nazwa": "Gratin dauphinois",
+    "nazwa": "Zapiekanka ziemniaczana ze śmietaną (gratin)",
     "rodzaj": "obiad",
     "kuchnia": "francuska",
     "poziom": "latwe",
@@ -136,7 +136,7 @@
     "opis_wizualny": "Thin potato slices baked in layers until the top is deep golden and blistered, the edges darker and crisped where the cream caught the dish. A cut portion shows soft, cream-soaked layers holding together in a slab. The cream has thickened around the potatoes rather than remaining liquid."
   },
   {
-    "nazwa": "Tartiflette",
+    "nazwa": "Ziemniaki zapiekane z serem i boczkiem (tartiflette)",
     "rodzaj": "obiad",
     "kuchnia": "francuska",
     "poziom": "latwe",
@@ -161,7 +161,7 @@
     "opis_wizualny": "A baked dish of thick potato slices and bacon, covered by melted rind-on cheese that has slumped and browned in patches. The cheese is bubbling at the edges and the potatoes beneath are glistening and cream-coated. Served straight from the dish, scooped rather than sliced."
   },
   {
-    "nazwa": "Hachis parmentier",
+    "nazwa": "Zapiekanka z mięsa i puree (hachis parmentier)",
     "rodzaj": "obiad",
     "kuchnia": "francuska",
     "poziom": "srednie",
@@ -188,7 +188,7 @@
     "opis_wizualny": "A baked casserole with a mashed potato top that has been forked into ridges and browned to gold on the peaks. A served portion shows a clear two-layer cut: dark minced meat below, pale potato above. The meat layer is moist and holds together, not runny."
   },
   {
-    "nazwa": "Blanquette de veau",
+    "nazwa": "Cielęcina w białym sosie (blanquette de veau)",
     "rodzaj": "obiad",
     "kuchnia": "francuska",
     "poziom": "trudne",
@@ -216,7 +216,7 @@
     "opis_wizualny": "Pale chunks of veal and carrot in an ivory-white, velvety sauce with whole mushroom caps. Nothing is browned: the meat is light grey-beige and the sauce coats it opaquely. Served in a shallow bowl, often with white rice at the side."
   },
   {
-    "nazwa": "Moules marinière",
+    "nazwa": "Mule w białym winie (moules marinière)",
     "rodzaj": "obiad",
     "kuchnia": "francuska",
     "poziom": "latwe",
@@ -241,7 +241,7 @@
     "opis_wizualny": "A heap of open black-shelled mussels filling a bowl, the orange flesh visible inside each shell. A thin, pale broth with specks of shallot and chopped parsley pools at the bottom. Empty half-shells sit on top of the pile; a piece of bread rests at the side."
   },
   {
-    "nazwa": "Bouillabaisse",
+    "nazwa": "Prowansalska zupa rybna (bouillabaisse)",
     "rodzaj": "zupa",
     "kuchnia": "francuska",
     "poziom": "trudne",
@@ -268,7 +268,7 @@
     "opis_wizualny": "A deep orange-red fish soup in a wide bowl, with big flakes of white fish and pink prawns sitting above the surface. Slices of potato and strands of fennel are visible in the broth, which is thin but intensely coloured by saffron. A garlic-rubbed toast leans on the rim."
   },
   {
-    "nazwa": "Vichyssoise",
+    "nazwa": "Krem z pora i ziemniaków (vichyssoise)",
     "rodzaj": "zupa",
     "kuchnia": "francuska",
     "poziom": "latwe",
@@ -293,7 +293,7 @@
     "opis_wizualny": "A smooth, thick cream soup of a pale ivory colour, served cold in a shallow bowl. The surface is matte and even, with a swirl of cream and finely chopped chives scattered over the centre. No visible chunks of vegetable."
   },
   {
-    "nazwa": "Salade lyonnaise",
+    "nazwa": "Sałatka lyońska z boczkiem i jajkiem",
     "rodzaj": "kolacja",
     "kuchnia": "francuska",
     "poziom": "srednie",
@@ -318,7 +318,7 @@
     "opis_wizualny": "A plate of leafy green salad topped with a single poached egg, its white loosely gathered and the yolk visibly ready to run. Cubes of browned bacon and toasted bread cubes are scattered through the leaves. The dressing leaves the leaves shiny rather than wet."
   },
   {
-    "nazwa": "Tarte tatin",
+    "nazwa": "Odwrócona tarta z jabłkami (tarte tatin)",
     "rodzaj": "deser",
     "kuchnia": "francuska",
     "poziom": "srednie",
@@ -341,7 +341,7 @@
     "opis_wizualny": "An upside-down apple tart turned out onto a plate: tightly packed apple wedges on top, deep amber and glossy with caramel, sitting on a browned pastry base. Caramel has run down the sides and pooled on the plate. The apples hold their shape but look soft and collapsed at the edges."
   },
   {
-    "nazwa": "Clafoutis z czereśniami",
+    "nazwa": "Zapiekany deser z czereśniami (clafoutis)",
     "rodzaj": "deser",
     "kuchnia": "francuska",
     "poziom": "latwe",
@@ -366,7 +366,7 @@
     "opis_wizualny": "A baked batter pudding in a shallow dish, pale golden and puffed at the edges, dipping in the middle. Dark red cherries are half-submerged in the set custard, their tops showing. A dusting of icing sugar sits unevenly over the surface."
   },
   {
-    "nazwa": "Mousse au chocolat",
+    "nazwa": "Mus czekoladowy (mousse au chocolat)",
     "rodzaj": "deser",
     "kuchnia": "francuska",
     "poziom": "srednie",
@@ -389,7 +389,7 @@
     "opis_wizualny": "A dark brown chocolate mousse served in a small glass, the surface soft and matte with a spoon mark left in it. The texture is airy and holds peaks rather than being liquid. A few chocolate shavings rest on top."
   },
   {
-    "nazwa": "Madeleinki",
+    "nazwa": "Francuskie babeczki (madeleinki)",
     "rodzaj": "deser",
     "kuchnia": "francuska",
     "poziom": "srednie",

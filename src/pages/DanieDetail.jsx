@@ -3,6 +3,9 @@ import { supabase } from '../supabase'
 import { t, fonts, ui, GORA_TRESCI } from '../theme'
 import { poniedzialekTygodnia, zakresTygodniaLabel, etykietaTygodnia, TYGODNIE_DO_WYBORU } from '../useTydzien'
 import { kcalZeSkladnikow, etykietaKcal } from '../kcalZeSkladnikow'
+import { JEDNOSTKI_FORMULARZA as JEDNOSTKI } from '../jednostki'
+import { KUCHNIA_LABEL, POZIOM_LABEL } from '../etykiety'
+import KuchniaPoziomPola from '../components/KuchniaPoziomPola'
 
 async function kompresujObraz(plik, maxSzerokosc = 1200, jakosc = 0.82) {
   return new Promise(resolve => {
@@ -52,7 +55,6 @@ function getEmoji(nazwa) {
   return '🍽️'
 }
 
-const JEDNOSTKI = ['g', 'kg', 'ml', 'l', 'szt.', 'opak.', 'łyżka', 'łyżki', 'łyżeczka', 'szklanka', 'ząbki', 'pęczek', 'garść', 'do smaku']
 const KATEGORIE = [
   '1_Warzywa i owoce', '2_Mięso i ryby', '3_Nabiał', '4_Pieczywo',
   '5_Produkty sypkie', '6_Konserwy i słoiki', '7_Przyprawy', '8_Inne',
@@ -91,6 +93,8 @@ export function metaChipyDania(skladnik, rodzaje = RODZAJE) {
   if (rodzajLabel) chipy.push(rodzajLabel)
   if (skladnik.czas_minuty) chipy.push(`${skladnik.czas_minuty} min`)
   if (skladnik.kcal) chipy.push(`${skladnik.kcal} kcal`)
+  if (POZIOM_LABEL[skladnik.poziom]) chipy.push(POZIOM_LABEL[skladnik.poziom])
+  if (KUCHNIA_LABEL[skladnik.kuchnia]) chipy.push(KUCHNIA_LABEL[skladnik.kuchnia])
   return chipy
 }
 
@@ -122,6 +126,8 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
   const [edCzas, setEdCzas] = useState('')
   const [edKcal, setEdKcal] = useState('')
   const [edTyp, setEdTyp] = useState('')
+  const [edKuchnia, setEdKuchnia] = useState('')
+  const [edPoziom, setEdPoziom] = useState('')
   const [metaSkladnikow, setMetaSkladnikow] = useState(null) // skladniki_meta do podpowiedzi kcal
 
   // Planowanie idzie do puli tygodnia (plan_tygodnia), nie do dni i slotów —
@@ -199,7 +205,7 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
       id: sk.id,
       Skladnik: sk['Składnik'] || '',
       Ilosc: sk['Ilość na 1 porcję'] || '',
-      Jednostka: sk['Jednostka'] || 'szt.',
+      Jednostka: sk['Jednostka'] || 'szt',
       Kategoria: sk['Kategoria'] || '8_Inne',
       _nowy: false,
     })))
@@ -212,6 +218,8 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
     setEdCzas(skladniki[0]?.czas_minuty != null ? String(skladniki[0].czas_minuty) : '')
     setEdKcal(skladniki[0]?.kcal != null ? String(skladniki[0].kcal) : '')
     setEdTyp(skladniki[0]?.TYP || '')
+    setEdKuchnia(skladniki[0]?.kuchnia || '')
+    setEdPoziom(skladniki[0]?.poziom || '')
     setBladZapisu('')
     setEdycja(true)
   }
@@ -219,7 +227,7 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
   function dodajPustySkladnik() {
     setEdSkladniki(prev => [
       ...prev,
-      { id: null, Skladnik: '', Ilosc: '', Jednostka: 'szt.', Kategoria: '8_Inne', _nowy: true }
+      { id: null, Skladnik: '', Ilosc: '', Jednostka: 'szt', Kategoria: '8_Inne', _nowy: true }
     ])
   }
 
@@ -254,7 +262,8 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
     setBladZapisu('')
     setSaving(true)
     const czasMinutyVal = liczbaDodatnia(edCzas, 480)
-    const kcalVal = liczbaDodatnia(edKcal, 5000)
+    // Puste pole kcal = wartość policzona ze składników; wpisana ręcznie wygrywa.
+    const kcalVal = liczbaDodatnia(edKcal, 5000) ?? (sugestiaKcal?.kcal || null)
     const przepisTekst = edPrzepisRaw
       .split('\n').map(k => k.replace(/^\d+[\.\)]\s*/, '').trim()).filter(Boolean)
       .map((k, i) => `${i + 1}. ${k}`).join('\n')
@@ -296,6 +305,8 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
         'rodzaj': edRodzaj || null,
         'czas_minuty': czasMinutyVal,
         'kcal': kcalVal,
+        'kuchnia': edKuchnia || null,
+        'poziom': edPoziom || null,
         'TYP': edTyp || null,
       }).eq('Danie', aktualnaNazwa)
     )
@@ -330,6 +341,8 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
         'rodzaj': edRodzaj || null,
         'czas_minuty': czasMinutyVal,
         'kcal': kcalVal,
+        'kuchnia': edKuchnia || null,
+        'poziom': edPoziom || null,
       }))
       operacje.push(supabase.from('dania').insert(wiersze))
     }
@@ -506,6 +519,9 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
                   <select style={s.edInputMeta} value={edTyp} onChange={e => setEdTyp(e.target.value)}>
                     {TYPY.map(x => <option key={x.id} value={x.id}>{x.label}</option>)}
                   </select>
+                </div>
+                <div style={{ marginTop: 8 }}>
+                  <KuchniaPoziomPola kuchnia={edKuchnia} setKuchnia={setEdKuchnia} poziom={edPoziom} setPoziom={setEdPoziom} />
                 </div>
                 {etykietaKcal(sugestiaKcal) && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 8, fontFamily: fonts.sans, fontSize: 12, color: t.mute }}>

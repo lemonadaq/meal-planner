@@ -79,10 +79,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 350
 
-    # Potrzebne tylko po to, żeby tryb `lista` + `zapisz_liste` mógł
-    # zacommitować odświeżony LISTA_DAN.md z powrotem do repo.
+    # Potrzebne po to, żeby tryb `lista` + `zapisz_liste` mógł zacommitować
+    # odświeżony LISTA_DAN.md z powrotem do repo — a gdy gałąź wymaga PR-a
+    # (reguła na `main`), otworzyć go.
     permissions:
       contents: write
+      pull-requests: write
 
     env:
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -156,15 +158,8 @@ jobs:
 
       - name: Zacommituj odświeżoną listę dań
         if: inputs.tryb == 'lista' && inputs.zapisz_liste
-        run: |
-          if git diff --quiet -- LISTA_DAN.md; then
-            echo "LISTA_DAN.md bez zmian — nie ma czego commitować."
-            exit 0
-          fi
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add LISTA_DAN.md
-          git commit -m "Odświeżenie LISTA_DAN.md ze stanu bazy
-
-          Wygenerowane przez workflow \"Generuj dania\" (tryb lista, zapisz_liste)."
-          git push
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GALAZ_PREFIX: lista-dan
+          OPIS: Wygenerowane przez workflow „Generuj dania" (tryb lista, zapisz_liste).
+        run: bash skrypty/wypchnij-zmiany.sh "Odświeżenie LISTA_DAN.md ze stanu bazy" LISTA_DAN.md

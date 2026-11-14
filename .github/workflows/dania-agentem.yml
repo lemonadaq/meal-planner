@@ -39,6 +39,7 @@ concurrency:
 
 permissions:
   contents: write
+  pull-requests: write
   id-token: write
 
 jobs:
@@ -117,6 +118,10 @@ jobs:
           fi
           echo "Nowe paczki: $nowe"
           echo "lista=$nowe" >> "$GITHUB_OUTPUT"
+          # Kopia do artefaktu: jeśli padnie którykolwiek dalszy krok, praca
+          # agenta zostaje do pobrania. W run 40282972301 push odbił się od
+          # ochrony gałęzi i gotowa paczka przepadła razem z workspace'em.
+          cp $nowe agent-out/ 2>/dev/null || true
 
       - name: Walidacja paczek
         # Format: rodzaj, kuchnia, poziom, jednostki, kategorie, opis wyglądu.
@@ -133,17 +138,19 @@ jobs:
           done
 
       - name: Zacommituj paczkę
+        # Prosto na gałąź, a gdy ta wymaga PR-a (reguła na `main`) — przez PR-a.
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GALAZ_PREFIX: dania-agentem
+          OPIS: |
+            Przepisy napisane przez Claude Code na tokenie subskrypcji
+            (workflow „Dania agentem"), bez kredytów na API Anthropic.
+            Paczka przeszła walidację formatu i bramę dubli.
+            Zdjęcia: Replicate. Szczegóły w podsumowaniu przebiegu.
         run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add skrypty/dania LISTA_DAN.md
-          git commit -m "Nowa paczka dań od agenta (${{ inputs.ile }} dań)
-
-          Przepisy napisane przez Claude Code na tokenie subskrypcji
-          (workflow „Dania agentem\"), bez kredytów na API Anthropic.
-          Paczka przeszła walidację formatu i bramę dubli.
-          Zdjęcia: Replicate. Szczegóły w podsumowaniu przebiegu."
-          git push
+          bash skrypty/wypchnij-zmiany.sh \
+            "Nowa paczka dań od agenta (${{ inputs.ile }} dań)" \
+            skrypty/dania LISTA_DAN.md
 
       - name: Wrzuć dania do bazy i dorób zdjęcia
         if: inputs.importuj

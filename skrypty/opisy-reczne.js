@@ -17,14 +17,14 @@
 // nazwy tych dań, `overwrite` zaznaczone.
 
 export const OPISY_RECZNE = {
-  'Breakfast Burrito':
+  'Burrito śniadaniowe':
     'A large flour tortilla rolled into one tight closed cylinder with the ends tucked in, ' +
     'cut in half on the diagonal so the filling of scrambled egg, beans, cheese and tomato ' +
     'shows only at the two cut ends. The outside is smooth, pale and lightly griddled, ' +
     'wrapped completely with nothing spilling out. It is a properly rolled burrito — ' +
     'not open tacos, not a folded shell, not a wrap left unrolled.',
 
-  'Frittata z ziemniakami i cebulą':
+  'Włoski omlet z ziemniakami i cebulą (frittata)':
     'A thick round baked egg frittata, deep yellow and set firm, packed with thin round ' +
     'slices of boiled potato and soft translucent onion clearly visible in the cut face. ' +
     'The potato slices are starchy, matte and pale cream-yellow, unmistakably potato — ' +
@@ -110,7 +110,7 @@ export const OPISY_RECZNE = {
     'on a plate. These are racuchy — never neat flat even American pancakes and never a tidy ' +
     'stack of identical discs.',
 
-  'Spring rolls (sajgonki)':
+  'Sajgonki (spring rolls)':
     'Fresh rice-paper rolls, a few left whole and one cut straight across its width. The ' +
     'prawns are halved lengthwise and laid end to end ALONG the length of each roll, running ' +
     'parallel to the roll\'s long axis and pressed against the translucent wrapper, so on the ' +

@@ -1,6 +1,6 @@
 [
   {
-    "nazwa": "Spaghetti alle vongole",
+    "nazwa": "Spaghetti z małżami (alle vongole)",
     "rodzaj": "obiad",
     "kuchnia": "wloska",
     "poziom": "srednie",
@@ -26,7 +26,7 @@
     "opis_wizualny": "A nest of spaghetti in a shallow bowl with open black-shelled clams piled on top and around it. The pasta is glossy with a thin, pale olive-oil sauce rather than tomato, flecked with chopped parsley and slices of garlic. No cheese is visible."
   },
   {
-    "nazwa": "Pasta e ceci",
+    "nazwa": "Zupa z makaronem i ciecierzycą (pasta e ceci)",
     "rodzaj": "zupa",
     "kuchnia": "wloska",
     "poziom": "latwe",
@@ -51,7 +51,7 @@
     "opis_wizualny": "A thick, rust-coloured soup-stew in a bowl, dense with whole chickpeas and short pasta. The liquid is creamy from blended chickpeas but not smooth, and a swirl of olive oil sits on the surface. A sprig of rosemary rests at the edge."
   },
   {
-    "nazwa": "Pollo alla diavola",
+    "nazwa": "Ostry kurczak z pieca (pollo alla diavola)",
     "rodzaj": "obiad",
     "kuchnia": "wloska",
     "poziom": "latwe",
@@ -76,7 +76,7 @@
     "opis_wizualny": "A flattened half chicken with deeply browned, blistered skin marked by dark grill lines, lying flat on a plate. Flecks of red chilli and chopped rosemary cling to the surface. A lemon wedge and a little oily juice sit beside it."
   },
   {
-    "nazwa": "Tortellini panna e prosciutto",
+    "nazwa": "Tortellini z szynką w sosie śmietanowym",
     "rodzaj": "obiad",
     "kuchnia": "wloska",
     "poziom": "latwe",
@@ -100,7 +100,7 @@
     "opis_wizualny": "Plump filled pasta rings coated in a pale, creamy sauce, with thin strips of pink ham visible between them. The sauce clings to the pasta and pools slightly at the bottom of the plate. Grated cheese and black pepper are scattered over the top."
   },
   {
-    "nazwa": "Bistecca alla pizzaiola",
+    "nazwa": "Stek w sosie pomidorowym (alla pizzaiola)",
     "rodzaj": "obiad",
     "kuchnia": "wloska",
     "poziom": "latwe",
@@ -125,7 +125,7 @@
     "opis_wizualny": "Thin beef steaks half-submerged in a chunky red tomato sauce in a frying pan, with black olives and capers scattered through it. The meat is grey-brown at the edges where it was seared, the sauce thick and clinging rather than soupy. Dried oregano is visible on the surface."
   },
   {
-    "nazwa": "Chilaquiles z jajkiem",
+    "nazwa": "Chipsy z tortilli w sosie z jajkiem (chilaquiles)",
     "rodzaj": "sniadanie",
     "kuchnia": "meksykanska",
     "poziom": "latwe",
@@ -178,7 +178,7 @@
     "opis_wizualny": "Two aubergine halves acting as boats, filled to overflowing with dark minced meat in tomato sauce and topped with browned, bubbling cheese. The purple skin is wrinkled and collapsed from baking. Fresh basil leaves sit on top, and juices have run onto the dish."
   },
   {
-    "nazwa": "Torta di mele",
+    "nazwa": "Włoskie ciasto z jabłkami (torta di mele)",
     "rodzaj": "deser",
     "kuchnia": "wloska",
     "poziom": "latwe",
@@ -204,7 +204,7 @@
     "opis_wizualny": "A low, round cake densely packed with apple slices, the top covered in overlapping wedges that have caramelised to amber at their edges. A cut slice shows more fruit than batter, the crumb moist and yellow. Icing sugar is dusted lightly over the surface."
   },
   {
-    "nazwa": "Zeppole z kremem",
+    "nazwa": "Włoskie pączki parzone z kremem (zeppole)",
     "rodzaj": "deser",
     "kuchnia": "wloska",
     "poziom": "trudne",
@@ -230,7 +230,7 @@
     "opis_wizualny": "Golden choux rings with a cracked, irregular surface, split and piped full of thick pale yellow custard that bulges out at the sides. They sit on a plate dusted with icing sugar. The pastry looks dry and crisp, the cream glossy."
   },
   {
-    "nazwa": "Souvlaki z kurczaka",
+    "nazwa": "Greckie szaszłyki z kurczaka (souvlaki)",
     "rodzaj": "obiad",
     "kuchnia": "grecka",
     "poziom": "latwe",
@@ -256,7 +256,7 @@
     "opis_wizualny": "Cubes of chicken with charred edges stacked on a warm flatbread, with a thick white yogurt sauce spooned over them. Slices of tomato and raw onion poke out from the bread, which is folded rather than rolled tight. Wooden skewers lie beside it on the plate."
   },
   {
-    "nazwa": "Spanakopita",
+    "nazwa": "Grecki placek ze szpinakiem i fetą (spanakopita)",
     "rodzaj": "kolacja",
     "kuchnia": "grecka",
     "poziom": "srednie",
@@ -282,7 +282,7 @@
     "opis_wizualny": "A baked pie with a crisp, deep golden top of wrinkled filo layers, cut into squares. The cut edge shows a dense dark green spinach filling flecked with white cheese between thin pastry sheets. Flakes of pastry have come loose on the plate."
   },
   {
-    "nazwa": "Pastitsio",
+    "nazwa": "Grecka zapiekanka makaronowa z mięsem (pastitsio)",
     "rodzaj": "obiad",
     "kuchnia": "grecka",
     "poziom": "trudne",
@@ -310,7 +310,7 @@
     "opis_wizualny": "A baked pasta casserole cut into a square portion showing three clear layers: tubular pasta at the bottom, dark spiced mince in the middle, and a thick pale béchamel top browned in patches. The portion stands up on the plate and holds its shape."
   },
   {
-    "nazwa": "Fasolada",
+    "nazwa": "Grecka zupa fasolowa (fasolada)",
     "rodzaj": "zupa",
     "kuchnia": "grecka",
     "poziom": "latwe",
@@ -336,7 +336,7 @@
     "opis_wizualny": "A rustic bean soup, brick-orange and thick, full of whole white beans with chunks of carrot and celery. The surface shows a slick of olive oil and a bay leaf. The broth is cloudy rather than clear, with beans visible just under the surface."
   },
   {
-    "nazwa": "Giouvetsi z wołowiną",
+    "nazwa": "Wołowina zapiekana z makaronem orzo (giouvetsi)",
     "rodzaj": "obiad",
     "kuchnia": "grecka",
     "poziom": "srednie",
@@ -416,7 +416,7 @@
     "opis_wizualny": "A wide shallow pan of yellow-orange rice spread in an even layer, with pink prawns, open mussel shells, chicken pieces, red pepper strips and green peas arranged on top. The rice is dry and separate, not creamy, with a darker crust visible at the pan edge. A lemon wedge sits on the rim."
   },
   {
-    "nazwa": "Tortilla española",
+    "nazwa": "Hiszpański omlet z ziemniakami (tortilla española)",
     "rodzaj": "kolacja",
     "kuchnia": "hiszpanska",
     "poziom": "srednie",
@@ -439,7 +439,7 @@
     "opis_wizualny": "A thick round potato omelette, golden-brown on the outside, sitting on a plate and cut into wedges. The cut face shows layers of soft potato slices bound by set egg, moist and slightly runny in the very centre. The sides are straight, the shape a low cylinder."
   },
   {
-    "nazwa": "Salmorejo",
+    "nazwa": "Hiszpański chłodnik pomidorowy (salmorejo)",
     "rodzaj": "zupa",
     "kuchnia": "hiszpanska",
     "poziom": "latwe",
@@ -464,7 +464,7 @@
     "opis_wizualny": "A thick, cold soup of a pale salmon-orange colour, smooth and opaque like a loose cream, filling a shallow bowl. On top sit chopped hard-boiled egg and small cubes of cured ham, with a drizzle of olive oil. No chunks of vegetable are visible in the soup itself."
   },
   {
-    "nazwa": "Pollo al ajillo",
+    "nazwa": "Kurczak z czosnkiem po hiszpańsku (pollo al ajillo)",
     "rodzaj": "obiad",
     "kuchnia": "hiszpanska",
     "poziom": "latwe",
@@ -489,7 +489,7 @@
     "opis_wizualny": "Browned chicken pieces in a shallow pan coated in a thin, oily golden sauce with whole softened garlic cloves scattered among them. The skin is crisp and patchy dark brown, the sauce reduced to just a few spoonfuls. Chopped parsley is sprinkled over."
   },
   {
-    "nazwa": "Patatas bravas",
+    "nazwa": "Ziemniaki w pikantnym sosie (patatas bravas)",
     "rodzaj": "dodatek",
     "kuchnia": "hiszpanska",
     "poziom": "latwe",
@@ -514,7 +514,7 @@
     "opis_wizualny": "Irregular cubes of crisp roast potato heaped on a small plate, drizzled with a red-orange spicy sauce and zigzags of white garlic mayonnaise. The potatoes are golden with dark crunchy corners, partly covered by sauce and partly bare. A wooden toothpick sticks out of one piece."
   },
   {
-    "nazwa": "Crema catalana",
+    "nazwa": "Kataloński krem z karmelem (crema catalana)",
     "rodzaj": "deser",
     "kuchnia": "hiszpanska",
     "poziom": "srednie",
@@ -538,7 +538,7 @@
     "opis_wizualny": "A shallow dish of pale yellow set custard with a thin, glassy caramelised sugar crust on top, broken in one place to show the soft cream underneath. The crust is unevenly browned, nearly black at a couple of spots. Served cold in a terracotta dish."
   },
   {
-    "nazwa": "Sauerbraten",
+    "nazwa": "Marynowana pieczeń wołowa (Sauerbraten)",
     "rodzaj": "obiad",
     "kuchnia": "niemiecka",
     "poziom": "trudne",
@@ -564,7 +564,7 @@
     "opis_wizualny": "Slices of dark braised beef fanned on a plate under a thick, glossy brown sauce with visible raisins. The meat is uniformly grey-brown through the middle, tender-looking and falling at the edges. Red cabbage and a dumpling usually sit alongside."
   },
   {
-    "nazwa": "Käsespätzle z cebulką",
+    "nazwa": "Kluski z serem i cebulką (Käsespätzle)",
     "rodzaj": "obiad",
     "kuchnia": "niemiecka",
     "poziom": "srednie",
@@ -589,7 +589,7 @@
     "opis_wizualny": "Short irregular egg noodles bound by stretchy melted cheese in a baking dish, topped with a heap of deep brown fried onion rings. The cheese is browned and bubbling at the edges of the dish. Chopped chives are sprinkled over the onions."
   },
   {
-    "nazwa": "Apfelstrudel",
+    "nazwa": "Strudel jabłkowy (Apfelstrudel)",
     "rodzaj": "deser",
     "kuchnia": "niemiecka",
     "poziom": "srednie",

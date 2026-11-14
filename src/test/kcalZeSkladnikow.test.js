@@ -100,15 +100,44 @@ describe('kcalZeSkladnikow', () => {
   })
 
   it('olej DO SMAŻENIA liczy tylko wchłonięte ~35%', () => {
-    // 2 łyżki = 30 g × 8,84 = 265,2 × 0,35 = 92,8 → 90 (dopasowanie przez alias)
+    // 2 łyżki oleju = 27 g × 8,84 = 238,7 × 0,35 = 83,5 → 80 (dopasowanie przez alias)
     const w = kcalZeSkladnikow([{ nazwa: 'Olej do smażenia', ilosc: '2', jednostka: 'łyżka' }], META)
-    expect(w.kcal).toBe(90)
+    expect(w.kcal).toBe(80)
   })
 
-  it('zwykła oliwa liczona w całości', () => {
-    // 1 łyżka = 15 g × 8,84 = 132,6 → 130
+  it('zwykła oliwa liczona w całości (łyżka oleju = 13,5 g)', () => {
+    // 1 łyżka = 13,5 g × 8,84 = 119,3 → 120
     const w = kcalZeSkladnikow([{ nazwa: 'Oliwa z oliwek', ilosc: '1', jednostka: 'łyżka' }], META)
-    expect(w.kcal).toBe(130)
+    expect(w.kcal).toBe(120)
+  })
+
+  it('głęboki tłuszcz (≥ ~50 ml na porcję) liczy 10%, także bez dopisku w nazwie', () => {
+    // 200 ml × 0,92 = 184 g × 8,84 = 1626,6 × 0,10 = 162,7 → 160
+    const w = kcalZeSkladnikow([{ nazwa: 'Olej rzepakowy', ilosc: '200', jednostka: 'ml' }], META)
+    expect(w.kcal).toBe(160)
+  })
+
+  it('łyżka mąki waży 10 g, nie 15', () => {
+    // 3 łyżki = 30 g × 3,6 = 108 → 110
+    const w = kcalZeSkladnikow([{ nazwa: 'Mąka pszenna', ilosc: '3', jednostka: 'łyżka' }], META)
+    expect(w.kcal).toBe(110)
+  })
+
+  it('zakres „2-3" to średnia', () => {
+    // 2,5 szt × 55 g × 1,43 = 196,6 → 200
+    const w = kcalZeSkladnikow([{ nazwa: 'Jajko', ilosc: '2-3', jednostka: 'szt' }], META)
+    expect(w.kcal).toBe(200)
+  })
+
+  it('szczypta i „do smaku" liczą się jako 0 i nie trafiają do braków', () => {
+    const w = kcalZeSkladnikow([
+      { nazwa: 'Masło', ilosc: '40', jednostka: 'g' },
+      { nazwa: 'Cukier', ilosc: '1', jednostka: 'szczypta' },
+      { nazwa: 'Rozmaryn', ilosc: '2', jednostka: 'do smaku' },
+      { nazwa: 'Woda', ilosc: '200', jednostka: 'ml' },
+    ], META)
+    expect(w.kcal).toBe(290)
+    expect(w.braki).toEqual([])
   })
 
   it('składnik bez meta trafia do braków, reszta się liczy', () => {

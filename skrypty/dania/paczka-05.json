@@ -360,7 +360,7 @@
   {
     "nazwa": "Wareniki z twarogiem",
     "rodzaj": "obiad",
-    "kuchnia": "ukrainska",
+    "kuchnia": "wschodnioeuropejska",
     "poziom": "srednie",
     "czas_minuty": 70,
     "kcal": 450,
@@ -385,7 +385,7 @@
   {
     "nazwa": "Czebureki z mięsem",
     "rodzaj": "obiad",
-    "kuchnia": "ukrainska",
+    "kuchnia": "wschodnioeuropejska",
     "poziom": "srednie",
     "czas_minuty": 60,
     "kcal": 560,
@@ -408,7 +408,7 @@
     "opis_wizualny": "Large flat half-moon pies, deep golden with blistered bubbles across the surface, some patches darker brown. One is torn open showing a thin layer of juicy minced meat inside. They rest on paper that shows small oil marks."
   },
   {
-    "nazwa": "Köfte z jogurtem",
+    "nazwa": "Tureckie kotleciki z jogurtem (köfte)",
     "rodzaj": "obiad",
     "kuchnia": "turecka",
     "poziom": "latwe",
@@ -434,7 +434,7 @@
     "opis_wizualny": "Oblong grilled meat patties with charred stripes, laid on a bed of thick white garlic yogurt that spreads across the plate. A dusting of red pepper and a drizzle of oil mark the yogurt. Flatbread and parsley sit at the edge."
   },
   {
-    "nazwa": "Menemen",
+    "nazwa": "Tureckie jajka z pomidorami i papryką (menemen)",
     "rodzaj": "sniadanie",
     "kuchnia": "turecka",
     "poziom": "latwe",
@@ -459,7 +459,7 @@
     "opis_wizualny": "Soft, barely set scrambled eggs mixed into a chunky red tomato and pepper base, served straight from a small pan. The eggs appear in loose yellow curds rather than a solid mass. Crumbled white cheese and red pepper flakes dot the top."
   },
   {
-    "nazwa": "Lahmacun",
+    "nazwa": "Turecka pizza z mięsem (lahmacun)",
     "rodzaj": "obiad",
     "kuchnia": "turecka",
     "poziom": "srednie",
@@ -486,7 +486,7 @@
     "opis_wizualny": "A very thin oval flatbread covered edge to edge with a thin layer of dark red spiced minced meat, the dough browned and slightly crisp underneath. Fresh parsley and a lemon wedge sit on top. It is often shown half-rolled."
   },
   {
-    "nazwa": "Imam bayildi",
+    "nazwa": "Faszerowany bakłażan po turecku (imam bayıldı)",
     "rodzaj": "obiad",
     "kuchnia": "turecka",
     "poziom": "latwe",
@@ -536,7 +536,7 @@
     "opis_wizualny": "Fluffy separate rice grains tinted pale orange, mixed with shreds of soft carrot and a few dark raisins, mounded in a bowl. The grains look dry and distinct, glossy with butter rather than wet."
   },
   {
-    "nazwa": "Mujaddara",
+    "nazwa": "Soczewica z ryżem i smażoną cebulą (mujaddara)",
     "rodzaj": "obiad",
     "kuchnia": "bliskowschodnia",
     "poziom": "latwe",
