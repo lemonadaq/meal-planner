@@ -70,7 +70,7 @@ ciabatta|4|szt|270|90|
 ciasto drożdżowe|4|g|290||
 ciasto filo|4|g|300||
 ciasto francuskie|4|g|390||
-ciasto na pierogi (krążki)|4|szt|290|10|
+ciasto na pierogi|4|szt|290|10|
 ciasto na wontony|4|szt|290|8|
 ciecierzyca suszona|5|g|360||
 ciecierzyca z puszki|6|g|120||
@@ -350,7 +350,7 @@ pieprz syczuański|7|=|300||
 piernik|4|g|350||
 pierś z kaczki|2|g|200||
 pierś z kurczaka|2|g|110|200|
-pietruszka (korzeń)|1|g|40|80|
+pietruszka korzeń|1|g|40|80|
 pistacje|5|g|570||9
 pita|4|szt|275|60|
 piwo|8|ml|43||
@@ -528,7 +528,7 @@ zrazowa wołowa|2|g|180||
 żeberka wieprzowe wędzone|2|g|300||
 żeberka wołowe|2|g|290||
 żelatyna|5|g|340||
-żurawina (konfitura)|6|łyżka|250||20
+konfitura żurawinowa|6|łyżka|250||20
 żurawina suszona|1|g|330||
 żółtko|3|szt|320|18|
 """

@@ -55,7 +55,7 @@ ciabatta,ciabatta,bulka panini lub ciabatta|ciabatta lub bulka panini|ciabatta l
 ciasto drożdżowe,ciasto drozdzowe,,g,1000,kg,false,,290,nowy
 ciasto filo,ciasto filo,,g,1000,kg,false,,300,nowy
 ciasto francuskie,ciasto francuskie,,g,1000,kg,false,,390,nowy
-ciasto na pierogi (krążki),ciasto na pierogi krazki,papier ryzowy ciasto na pierogi gotowe krazki mandu,szt,10,szt.,false,10,290,nowy
+ciasto na pierogi,ciasto na pierogi,papier ryzowy ciasto na pierogi gotowe krazki mandu,szt,10,szt.,false,10,290,nowy
 ciasto na wontony,ciasto na wontony,,szt,8,szt.,false,8,290,nowy
 ciecierzyca suszona,ciecierzyca suszona,ciecierzyca suszona moczona przez noc,g,1000,kg,false,,360,nowy
 ciecierzyca z puszki,ciecierzyca z puszki,ciecierzyca z puszki odsaczona,g,1000,kg,false,,120,nowy
@@ -171,6 +171,7 @@ kolendra świeża,kolendra swieza,kolendra,g,0.3,szt.,false,0.3,25,nowy
 komosa ryżowa,komosa ryzowa,komosa|komosa ryzowa quinoa|quinoa,g,250,opak. 250g,true,,370,scalony z: Quinoa
 koncentrat pomidorowy,koncentrat pomidorowy,koncentrat|przecier z pomidorow,g,200,tubka 200g,true,,90,scalony z: Koncentrat pomidorowy
 konfitura różana,konfitura rozana,,g,1000,kg,false,,250,nowy
+konfitura żurawinowa,konfitura zurawinowa,zurawina konfitura,g,1000,kg,false,,250,nowy
 koperek,koperek,koper|koperek swiezy|swiezy koperek,g,30,pęczek,true,,40,scalony z: Koper
 korzeń żeń-szenia,korzen zen szenia,korzen zen szenia swiezy lub suszony,szt,10,szt.,false,10,100,nowy
 krakersy,krakersy,,g,5,szt.,false,5,450,nowy
@@ -335,7 +336,7 @@ pieprz syczuański,pieprz syczuanski,,g,1000,kg,false,,300,nowy
 piernik,piernik,,g,1000,kg,false,,350,nowy
 pierś z kaczki,piers z kaczki,,g,1000,kg,false,,200,nowy
 pierś z kurczaka,piers z kurczaka,filet kurczak|filet z kurczaka|filet z piersi kurczaka,g,1000,kg,false,200,110,scalony z: Pierś z kurczaka
-pietruszka (korzeń),pietruszka korzen,pietruszka,g,80,szt.,true,80,40,scalony z: Pietruszka
+pietruszka korzeń,pietruszka korzen,pietruszka,g,80,szt.,true,80,40,scalony z: Pietruszka
 pistacje,pistacje,pistacje luskane|pistacje niesolone luskane,g,1000,kg,false,,570,nowy
 pita,pita,,szt,60,szt.,false,60,275,nowy
 piwo,piwo,,ml,1000,l,false,,43,nowy
@@ -513,7 +514,6 @@ zrazowa wołowa,zrazowa wolowa,zrazowka wolowa plastry,g,1000,kg,false,,180,nowy
 żeberka wieprzowe wędzone,zeberka wieprzowe wedzone,zeberka wedzone,g,1000,kg,false,,300,nowy
 żeberka wołowe,zeberka wolowe,,g,1000,kg,false,,290,nowy
 żelatyna,zelatyna,,g,1000,kg,false,,340,nowy
-żurawina (konfitura),zurawina konfitura,,g,1000,kg,false,,250,nowy
 żurawina suszona,zurawina suszona,suszona zurawina|zurawina,g,1000,kg,false,,330,nowy
 żółtko,zoltko,zoltka|zoltka jaj|zoltko jajka,szt,18,szt.,false,18,320,nowy
 Ryż brązowy,ryz brazowy,,g,1000,opak. 1kg,true,,350,"stary — brak w przepisach, bez zmian"

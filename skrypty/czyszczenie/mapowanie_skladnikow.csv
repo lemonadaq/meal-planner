@@ -830,7 +830,7 @@ Owoce sezonowe,g,owoce sezonowe,1_Warzywa i owoce,g,1,,1
 Panko,g,panko,5_Produkty sypkie,g,1,,5
 papaja zielona,g,papaja zielona,1_Warzywa i owoce,g,1,,1
 Papier ryżowy,szt.,papier ryżowy,5_Produkty sypkie,szt,1,,1
-papier ryżowy / ciasto na pierogi (gotowe krążki mandu),szt,ciasto na pierogi (krążki),4_Pieczywo,szt,1,mandu: gotowe krążki ciasta,1
+papier ryżowy / ciasto na pierogi (gotowe krążki mandu),szt,ciasto na pierogi,4_Pieczywo,szt,1,mandu: gotowe krążki ciasta,1
 Pappardelle,g,makaron pappardelle,5_Produkty sypkie,g,1,,1
 papryczka chili,szt,papryczka chili,1_Warzywa i owoce,szt,1,,11
 Papryczka chili,szt.,papryczka chili,1_Warzywa i owoce,szt,1,,2
@@ -933,10 +933,10 @@ pierś z kaczki,g,pierś z kaczki,2_Mięso i ryby,g,1,,1
 Pierś z kurczaka,g,pierś z kurczaka,2_Mięso i ryby,g,1,,31
 pierś z kurczaka,g,pierś z kurczaka,2_Mięso i ryby,g,1,,1
 Pierś z kurczaka,szt.,pierś z kurczaka,2_Mięso i ryby,g,200,1 szt = 200 g,9
-Pietruszka korzeń,g,pietruszka (korzeń),1_Warzywa i owoce,g,1,,6
-pietruszka korzeń,szt,pietruszka (korzeń),1_Warzywa i owoce,g,80,1 szt = 80 g,3
-Pietruszka korzeń,szt,pietruszka (korzeń),1_Warzywa i owoce,g,80,1 szt = 80 g,1
-Pietruszka korzeń,szt.,pietruszka (korzeń),1_Warzywa i owoce,g,80,1 szt = 80 g,2
+Pietruszka korzeń,g,pietruszka korzeń,1_Warzywa i owoce,g,1,,6
+pietruszka korzeń,szt,pietruszka korzeń,1_Warzywa i owoce,g,80,1 szt = 80 g,3
+Pietruszka korzeń,szt,pietruszka korzeń,1_Warzywa i owoce,g,80,1 szt = 80 g,1
+Pietruszka korzeń,szt.,pietruszka korzeń,1_Warzywa i owoce,g,80,1 szt = 80 g,2
 pietruszka natka,łyżka,natka pietruszki,1_Warzywa i owoce,łyżka,1,,2
 pistacje,łyżka,pistacje,5_Produkty sypkie,łyżka,1,,1
 "pistacje niesolone, łuskane",g,pistacje,5_Produkty sypkie,g,1,,1
@@ -1465,7 +1465,7 @@ Ząbek czosnku,szt,czosnek,1_Warzywa i owoce,szt,1,,3
 Żelatyna,g,żelatyna,5_Produkty sypkie,g,1,,3
 żelatyna,g,żelatyna,5_Produkty sypkie,g,1,,1
 Żurawina,g,żurawina suszona,1_Warzywa i owoce,g,1,,1
-Żurawina (konfitura),łyżka,żurawina (konfitura),6_Konserwy i słoiki,łyżka,1,,1
+Żurawina (konfitura),łyżka,konfitura żurawinowa,6_Konserwy i słoiki,łyżka,1,,1
 Żółtka,szt,żółtko,3_Nabiał,szt,1,,1
 żółtka,szt,żółtko,3_Nabiał,szt,1,,11
 żółtka jaj,szt,żółtko,3_Nabiał,szt,1,,2
