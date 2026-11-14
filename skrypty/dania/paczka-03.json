@@ -1,6 +1,6 @@
 [
   {
-    "nazwa": "Mac and cheese",
+    "nazwa": "Makaron z serem (mac and cheese)",
     "rodzaj": "obiad",
     "kuchnia": "amerykanska",
     "poziom": "latwe",
@@ -26,7 +26,7 @@
     "opis_wizualny": "Short pasta tubes coated in a thick orange cheese sauce, baked in a dish with a browned, crumbly top. A served spoonful pulls strings of cheese and leaves a glossy sauce trail. The top is patchy golden-brown, darker at the dish edges."
   },
   {
-    "nazwa": "Clam chowder",
+    "nazwa": "Zupa z małżami (clam chowder)",
     "rodzaj": "zupa",
     "kuchnia": "amerykanska",
     "poziom": "srednie",
@@ -52,7 +52,7 @@
     "opis_wizualny": "A thick, creamy off-white soup in a deep bowl, dense with potato cubes, clam pieces and flecks of bacon and celery. The surface shows a few orange dots of bacon fat and black pepper. The texture looks closer to a loose stew than a broth."
   },
   {
-    "nazwa": "Sloppy Joe",
+    "nazwa": "Bułka z sosem mięsnym (sloppy joe)",
     "rodzaj": "kolacja",
     "kuchnia": "amerykanska",
     "poziom": "latwe",
@@ -78,7 +78,7 @@
     "opis_wizualny": "A soft burger bun piled with loose, saucy minced beef in a thick red-brown sauce that spills over the sides onto the plate. The top bun sits slightly askew and cannot close. Pieces of onion and pepper are visible in the meat."
   },
   {
-    "nazwa": "Jambalaya z kiełbasą",
+    "nazwa": "Ryż z kiełbasą po kreolsku (jambalaya)",
     "rodzaj": "obiad",
     "kuchnia": "amerykanska",
     "poziom": "latwe",
@@ -105,7 +105,7 @@
     "opis_wizualny": "A one-pot rice dish stained reddish-brown, with coin slices of browned sausage, chunks of chicken and strips of pepper mixed through. The rice grains are separate and glossy, not creamy. Served heaped in a bowl with a few darker crisp bits on top."
   },
   {
-    "nazwa": "Cobb salad",
+    "nazwa": "Sałatka Cobb",
     "rodzaj": "kolacja",
     "kuchnia": "amerykanska",
     "poziom": "latwe",
@@ -131,7 +131,7 @@
     "opis_wizualny": "A wide plate of chopped lettuce with toppings laid in distinct parallel stripes: diced chicken, crumbled bacon, sliced egg, green avocado, halved cherry tomatoes and blue cheese. The colours stay separated rather than tossed together. Dressing glistens lightly on the surface."
   },
   {
-    "nazwa": "Philly cheesesteak",
+    "nazwa": "Kanapka z wołowiną i serem (Philly cheesesteak)",
     "rodzaj": "kolacja",
     "kuchnia": "amerykanska",
     "poziom": "latwe",
@@ -156,7 +156,7 @@
     "opis_wizualny": "A long roll stuffed with finely chopped browned beef, soft onions and peppers, covered by melted cheese that has run into the meat. The filling bulges out of the open side and the bread is slightly compressed. Cheese strings visible where the sandwich was lifted."
   },
   {
-    "nazwa": "Reuben sandwich",
+    "nazwa": "Kanapka z peklowaną wołowiną (Reuben sandwich)",
     "rodzaj": "kolacja",
     "kuchnia": "amerykanska",
     "poziom": "latwe",
@@ -182,7 +182,7 @@
     "opis_wizualny": "A grilled dark rye sandwich cut diagonally and stood up to show its layers: pink corned beef, pale sauerkraut and melted cheese pressed together. The bread is deep brown with buttery toasted patches. A little sauce squeezes out at the cut edge."
   },
   {
-    "nazwa": "Cornbread",
+    "nazwa": "Chlebek kukurydziany (cornbread)",
     "rodzaj": "dodatek",
     "kuchnia": "amerykanska",
     "poziom": "latwe",
@@ -207,7 +207,7 @@
     "opis_wizualny": "A wedge of deep yellow cornbread with a golden-brown crust, the crumb coarse and visibly grainy. The top is slightly domed and cracked. Served warm with a pat of butter melting on the cut surface."
   },
   {
-    "nazwa": "Banana bread",
+    "nazwa": "Chlebek bananowy (banana bread)",
     "rodzaj": "deser",
     "kuchnia": "amerykanska",
     "poziom": "latwe",
@@ -285,7 +285,7 @@
     "opis_wizualny": "Clusters of toasted oats, nuts and seeds in shades of golden brown, loosely heaped, with dark raisins scattered among them. The pieces are irregular and crunchy-looking, some stuck together in lumps. Served in a bowl or spilling from a jar."
   },
   {
-    "nazwa": "Enchiladas z kurczakiem",
+    "nazwa": "Zapiekane tortille z kurczakiem (enchiladas)",
     "rodzaj": "obiad",
     "kuchnia": "meksykanska",
     "poziom": "srednie",
@@ -312,7 +312,7 @@
     "opis_wizualny": "Rolled tortillas lying side by side in a dish, covered with red sauce and melted browned cheese, their rolled ends visible at the edges. A served portion shows shredded chicken filling inside the soft tortilla. A stripe of white cream and chopped onion sits on top."
   },
   {
-    "nazwa": "Fajitas z kurczakiem",
+    "nazwa": "Tortille z kurczakiem i papryką (fajitas)",
     "rodzaj": "obiad",
     "kuchnia": "meksykanska",
     "poziom": "latwe",
@@ -338,7 +338,7 @@
     "opis_wizualny": "Strips of charred chicken with strips of red and green pepper and onion, piled steaming in a cast-iron pan. The edges are blackened in places and the vegetables still look firm. Soft tortillas and a lime wedge sit on a plate beside the pan."
   },
   {
-    "nazwa": "Tinga de pollo",
+    "nazwa": "Szarpany kurczak w sosie chipotle (tinga de pollo)",
     "rodzaj": "obiad",
     "kuchnia": "meksykanska",
     "poziom": "latwe",
@@ -364,7 +364,7 @@
     "opis_wizualny": "Shredded chicken in a smoky deep-red sauce with soft onion strips, piled on open soft tortillas. The meat is stringy and visibly saturated with sauce, not swimming in it. Served with slices of avocado and crumbled white cheese on top."
   },
   {
-    "nazwa": "Sopa de tortilla",
+    "nazwa": "Meksykańska zupa z tortillą (sopa de tortilla)",
     "rodzaj": "zupa",
     "kuchnia": "meksykanska",
     "poziom": "latwe",
@@ -391,7 +391,7 @@
     "opis_wizualny": "A clear-ish red tomato broth in a bowl, crossed by crisp fried tortilla strips sticking out above the surface. Cubes of avocado, crumbled white cheese and coriander leaves float on top. The soup itself is thin, not pureed thick."
   },
   {
-    "nazwa": "Flan karmelowy",
+    "nazwa": "Krem karmelowy (flan)",
     "rodzaj": "deser",
     "kuchnia": "meksykanska",
     "poziom": "srednie",
@@ -439,7 +439,7 @@
     "opis_wizualny": "Long ridged sticks of fried dough, deep golden and dusted with cinnamon sugar, standing in a cup or lying crossed on a plate. A small cup of thick dark chocolate sauce sits beside them. The surface shows clear lengthwise grooves and a few darker blistered spots."
   },
   {
-    "nazwa": "Flammekueche z boczkiem",
+    "nazwa": "Alzacki placek z boczkiem i cebulą (flammekueche)",
     "rodzaj": "kolacja",
     "kuchnia": "francuska",
     "poziom": "srednie",
@@ -464,7 +464,7 @@
     "opis_wizualny": "A thin rectangular flatbread with a pale cream base, scattered with translucent onion slivers and small browned bacon pieces. The edges are blistered dark brown and curled up slightly. It is cut into rough squares on a wooden board."
   },
   {
-    "nazwa": "Pissaladière",
+    "nazwa": "Prowansalski placek z cebulą i anchois (pissaladière)",
     "rodzaj": "kolacja",
     "kuchnia": "francuska",
     "poziom": "srednie",
@@ -537,7 +537,7 @@
     "opis_wizualny": "A baked cloud of whipped egg white, lightly golden on its peaks, with a whole soft yolk sitting in a hollow in the middle. It rests on a slice of toast, the white looking airy and meringue-like. Chopped chives speckle the surface."
   },
   {
-    "nazwa": "English breakfast",
+    "nazwa": "Angielskie śniadanie (English breakfast)",
     "rodzaj": "sniadanie",
     "kuchnia": "miedzynarodowa",
     "poziom": "latwe",
@@ -684,7 +684,7 @@
     "opis_wizualny": "A thick white yogurt dip in a small bowl, flecked with shreds of pale green cucumber and chopped dill. The surface holds a spoon swirl with a little olive oil pooled in it. The texture looks dense, not runny."
   },
   {
-    "nazwa": "Tabbouleh",
+    "nazwa": "Sałatka z bulguru i natki pietruszki (tabbouleh)",
     "rodzaj": "surowka",
     "kuchnia": "bliskowschodnia",
     "poziom": "latwe",
@@ -709,7 +709,7 @@
     "opis_wizualny": "A vivid green salad dominated by finely chopped parsley, with small pale grains of bulgur and red tomato dice mixed through. It is served mounded in a bowl, looking moist and glossy from oil and lemon. Thin rings of spring onion show on top."
   },
   {
-    "nazwa": "Fattoush",
+    "nazwa": "Sałatka z chrupiącą pitą (fattoush)",
     "rodzaj": "surowka",
     "kuchnia": "bliskowschodnia",
     "poziom": "latwe",

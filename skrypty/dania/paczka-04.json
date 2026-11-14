@@ -1,6 +1,6 @@
 [
   {
-    "nazwa": "Poulet basquaise",
+    "nazwa": "Kurczak po baskijsku (poulet basquaise)",
     "rodzaj": "obiad",
     "kuchnia": "francuska",
     "poziom": "latwe",
@@ -26,7 +26,7 @@
     "opis_wizualny": "Browned chicken thighs sitting in a chunky red pepper and tomato stew, the pepper strips soft and glossy. The sauce is thick and clings to the meat, with a faint orange sheen of paprika oil. Served in a shallow pan or bowl, rustic and unarranged."
   },
   {
-    "nazwa": "Navarin jagnięcy",
+    "nazwa": "Duszona jagnięcina z warzywami (navarin)",
     "rodzaj": "obiad",
     "kuchnia": "francuska",
     "poziom": "trudne",
@@ -53,7 +53,7 @@
     "opis_wizualny": "A spring lamb stew: chunks of meat with carrot, turnip and potato pieces in a light brown gravy, with bright green peas scattered on top. The vegetables keep their shapes and the sauce is just thick enough to coat them. Served in a wide bowl."
   },
   {
-    "nazwa": "Confit de canard",
+    "nazwa": "Konfitowane udka kacze (confit de canard)",
     "rodzaj": "obiad",
     "kuchnia": "francuska",
     "poziom": "trudne",
@@ -79,7 +79,7 @@
     "opis_wizualny": "A whole duck leg with deeply browned, crackling-crisp skin, the meat beneath dark and pulling away from the bone. Sautéed potato cubes sit alongside, glossy with duck fat and flecked with garlic. The plate shows little sauce, just rendered fat."
   },
   {
-    "nazwa": "Brandade de morue",
+    "nazwa": "Pasta z dorsza i ziemniaków (brandade de morue)",
     "rodzaj": "obiad",
     "kuchnia": "francuska",
     "poziom": "srednie",
@@ -104,7 +104,7 @@
     "opis_wizualny": "A baked gratin of pale, fluffy fish-and-potato purée with a golden breadcrumb crust, scooped to show the soft white interior. The surface is uneven with browned peaks. A drizzle of olive oil and chopped parsley sit on top."
   },
   {
-    "nazwa": "Sole meunière",
+    "nazwa": "Sola smażona w maśle (sole meunière)",
     "rodzaj": "obiad",
     "kuchnia": "francuska",
     "poziom": "srednie",
@@ -153,7 +153,7 @@
     "opis_wizualny": "Whole pale endive heads wrapped in ham, lying side by side under a thick béchamel and a browned cheese crust. The sauce bubbles at the dish edges and has browned in patches. A cut one shows the layered leaves collapsed and soft."
   },
   {
-    "nazwa": "Pot-au-feu",
+    "nazwa": "Wołowina gotowana z warzywami (pot-au-feu)",
     "rodzaj": "zupa",
     "kuchnia": "francuska",
     "poziom": "srednie",
@@ -179,7 +179,7 @@
     "opis_wizualny": "A clear golden broth in a bowl with large pieces of boiled beef, whole carrot chunks, leek and potato arranged rather than heaped. The meat is grey-brown and fibrous, the vegetables soft but intact. Coarse salt and mustard sit at the side."
   },
   {
-    "nazwa": "Soupe au pistou",
+    "nazwa": "Prowansalska zupa warzywna z pesto (pistou)",
     "rodzaj": "zupa",
     "kuchnia": "francuska",
     "poziom": "latwe",
@@ -206,7 +206,7 @@
     "opis_wizualny": "A vegetable soup in a bowl, full of diced potato, courgette, green beans and white beans with small pasta, in a cloudy broth. A spoonful of bright green basil paste sits in the middle, bleeding green into the surrounding liquid. Grated cheese is sprinkled on top."
   },
   {
-    "nazwa": "Salade de chèvre chaud",
+    "nazwa": "Sałatka z ciepłym kozim serem (chèvre chaud)",
     "rodzaj": "kolacja",
     "kuchnia": "francuska",
     "poziom": "latwe",
@@ -231,7 +231,7 @@
     "opis_wizualny": "Green salad leaves on a plate with two toasted bread rounds on top, each carrying a softened, lightly browned disc of goat cheese glazed with honey. Walnut pieces are scattered around. The leaves shine with dressing and a few dark drops of balsamic mark the plate."
   },
   {
-    "nazwa": "Pain au chocolat",
+    "nazwa": "Francuskie bułeczki z czekoladą (pain au chocolat)",
     "rodzaj": "sniadanie",
     "kuchnia": "francuska",
     "poziom": "latwe",
@@ -279,7 +279,7 @@
     "opis_wizualny": "Long choux buns with a slightly irregular, cracked surface, split and filled with thick pale custard, topped with a band of dark chocolate glaze. The glaze has set with a soft shine and drips at the edges. They lie in a row on a plate."
   },
   {
-    "nazwa": "Millefeuille",
+    "nazwa": "Francuska kremówka (millefeuille)",
     "rodzaj": "deser",
     "kuchnia": "francuska",
     "poziom": "trudne",
@@ -330,7 +330,7 @@
     "opis_wizualny": "A tart with a crisp pale shortcrust rim and a smooth, glossy bright yellow lemon filling that is flat and even. A cut slice shows the filling about a centimetre thick, holding its edge cleanly. A thin strip of lemon zest curls on top."
   },
   {
-    "nazwa": "Far breton",
+    "nazwa": "Bretoński placek ze śliwkami (far breton)",
     "rodzaj": "deser",
     "kuchnia": "francuska",
     "poziom": "latwe",
@@ -355,7 +355,7 @@
     "opis_wizualny": "A dense baked custard cake, deep brown and slightly blistered on top, dipping in the centre, with whole dark prunes embedded in the pale yellow set batter. A cut piece looks firm and flan-like rather than spongy. Served in the dish it was baked in."
   },
   {
-    "nazwa": "Galette bretonne z jajkiem",
+    "nazwa": "Gryczany naleśnik z jajkiem (galette bretonne)",
     "rodzaj": "kolacja",
     "kuchnia": "francuska",
     "poziom": "srednie",
@@ -379,7 +379,7 @@
     "opis_wizualny": "A square-folded dark buckwheat crêpe with four edges turned in, a whole runny yolk sitting exposed in the centre, with ham and melted cheese visible underneath. The crêpe surface is speckled brown and grey. Served flat on a plate."
   },
   {
-    "nazwa": "Spaghetti alla Nerano",
+    "nazwa": "Spaghetti z cukinią i serem (alla Nerano)",
     "rodzaj": "obiad",
     "kuchnia": "wloska",
     "poziom": "srednie",
@@ -404,7 +404,7 @@
     "opis_wizualny": "Spaghetti coated in a creamy pale green-yellow sauce with soft golden courgette slices tangled through it, twirled into a nest on the plate. Basil leaves sit on top. The sauce looks emulsified and glossy, clinging to the strands with no pool at the bottom."
   },
   {
-    "nazwa": "Pasta alla boscaiola",
+    "nazwa": "Makaron z grzybami po leśnemu (alla boscaiola)",
     "rodzaj": "obiad",
     "kuchnia": "wloska",
     "poziom": "latwe",
@@ -457,7 +457,7 @@
     "opis_wizualny": "A round pizza with a puffed, blistered crust edge, covered in melted cheese that varies in colour across quarters: white stretchy mozzarella, blue-veined patches, browned hard cheese and soft white rounds. The cheese has merged in the middle with golden bubbles."
   },
   {
-    "nazwa": "Pastiera napoletana",
+    "nazwa": "Neapolitańskie ciasto wielkanocne (pastiera)",
     "rodzaj": "deser",
     "kuchnia": "wloska",
     "poziom": "trudne",
@@ -484,7 +484,7 @@
     "opis_wizualny": "A low round tart with a lattice of pastry strips over a dense, speckled ricotta filling that has set and cracked slightly. The crust and lattice are pale gold. A cut slice shows grains of wheat suspended in the cream-coloured filling."
   },
   {
-    "nazwa": "Gnocchi alla romana",
+    "nazwa": "Zapiekane kluski z kaszy manny (gnocchi alla romana)",
     "rodzaj": "obiad",
     "kuchnia": "wloska",
     "poziom": "srednie",
@@ -508,7 +508,7 @@
     "opis_wizualny": "Overlapping pale yellow semolina discs in a baking dish, their edges browned and crisped, the tops glistening with butter and browned cheese. The centres are soft and smooth. The arrangement looks like roof tiles."
   },
   {
-    "nazwa": "Peperonata",
+    "nazwa": "Duszona papryka po włosku (peperonata)",
     "rodzaj": "dodatek",
     "kuchnia": "wloska",
     "poziom": "latwe",
@@ -533,7 +533,7 @@
     "opis_wizualny": "Soft wide strips of red and yellow pepper glistening in a small amount of reduced tomato and oil, collapsed but still distinguishable. The colours are deep and glossy. Basil leaves rest on top and oil pools at the edge of the bowl."
   },
   {
-    "nazwa": "Insalata di farro",
+    "nazwa": "Sałatka z orkiszem (insalata di farro)",
     "rodzaj": "surowka",
     "kuchnia": "wloska",
     "poziom": "latwe",

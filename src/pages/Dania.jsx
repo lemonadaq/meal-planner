@@ -2,7 +2,10 @@ import { useEffect, useLayoutEffect, useState, useRef } from 'react'
 import { supabase } from '../supabase'
 import { t, fonts, ui, GORA_TRESCI } from '../theme'
 import Toast from '../components/Toast'
-import { KUCHNIA_LABEL, POZIOM_LABEL, RODZAJ_LABEL } from '../etykiety'
+import {
+  KUCHNIE, KUCHNIA_LABEL, KUCHNIA_FLAGA, KUCHNIA_NAZWA, POZIOMY, POZIOM_LABEL, POZIOM_KROPKA,
+  RODZAJ_LABEL, KCAL_PRZEDZIALY, kcalWPrzedziale,
+} from '../etykiety'
 import { useDuzyEkran } from '../useDuzyEkran'
 
 // Filtry-chipy: 'wszystko' i 'ulubione' to specjalne, reszta to wartości pola `rodzaj`
@@ -83,6 +86,9 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
   const [potwierdz, setPotwierdz] = useState(null)
   const [kuchnia, setKuchnia] = useState(() => sessionStorage.getItem('dania_kuchnia') || '')
   const [poziom, setPoziom] = useState(() => sessionStorage.getItem('dania_poziom') || '')
+  const [kcalPrzedzial, setKcalPrzedzial] = useState(() => sessionStorage.getItem('dania_kcal') || '')
+  // Lista kuchni otwierana z chipa „🌍 Kuchnia ▾" (23 kuchnie nie mieszczą się w rzędzie chipów)
+  const [wyborKuchni, setWyborKuchni] = useState(false)
 
   // { danie: '...', rodzaj: '...', wpisyKalendarza: [...] }
 
@@ -100,6 +106,7 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
   useEffect(() => { sessionStorage.setItem('dania_filtry', JSON.stringify(filtry)) }, [filtry])
   useEffect(() => { sessionStorage.setItem('dania_kuchnia', kuchnia) }, [kuchnia])
   useEffect(() => { sessionStorage.setItem('dania_poziom', poziom) }, [poziom])
+  useEffect(() => { sessionStorage.setItem('dania_kcal', kcalPrzedzial) }, [kcalPrzedzial])
   useEffect(() => { sessionStorage.setItem('dania_widok', widok) }, [widok])
   useEffect(() => { sessionStorage.setItem('dania_ulubione', String(ulubioneNaGorze)) }, [ulubioneNaGorze])
 
@@ -192,6 +199,7 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
       if (aktywneRodzaje.length > 0 && !aktywneRodzaje.includes(d.rodzaj)) return false
       if (kuchnia && d.kuchnia !== kuchnia) return false
       if (poziom && d.poziom !== poziom) return false
+      if (kcalPrzedzial && !kcalWPrzedziale(d.kcal, kcalPrzedzial)) return false
       if (szukaj && !d['Danie'].toLowerCase().includes(szukaj.toLowerCase())) return false
       return true
     })
@@ -311,8 +319,13 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
   const showFeatured = false
   // Kolejność z KUCHNIA_LABEL/POZIOM_LABEL, nie alfabetyczna — łatwe przed
   // trudnymi, a Polska przed Wietnamem.
-  const obecnePoziomy = Object.keys(POZIOM_LABEL).filter(p => wszystkie.some(d => d.poziom === p))
-  const obecneKuchnie = Object.keys(KUCHNIA_LABEL).filter(k => wszystkie.some(d => d.kuchnia === k))
+  const obecnePoziomy = POZIOMY.filter(p => wszystkie.some(d => d.poziom === p))
+  // Kuchnie spoza zamkniętej listy (stare wartości) na końcu, żeby nic nie znikało z filtra
+  const licznikKuchni = {}
+  for (const d of wszystkie) if (d.kuchnia) licznikKuchni[d.kuchnia] = (licznikKuchni[d.kuchnia] || 0) + 1
+  const obecneKuchnie = [...KUCHNIE, ...Object.keys(licznikKuchni).filter(k => !KUCHNIE.includes(k))]
+    .filter(k => licznikKuchni[k])
+  const sKcal = wszystkie.some(d => d.kcal > 0)
 
   const [featured, ...reszta] = filtrowane
   const tabela = showFeatured ? reszta : filtrowane
@@ -369,11 +382,25 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
           </div>
         </div>
 
-        {/* Kuchnia i poziom — pokazujemy tylko wartości, które są w danych,
-            żeby przed uzupełnieniem bazy nie wisiał tu pusty rząd. */}
-        {(obecneKuchnie.length > 0 || obecnePoziomy.length > 0) && (
+        {/* Poziom, kalorie i kuchnia (wariant 3 z czyszczenia bazy 2026-11):
+            poziom i kalorie jako szybkie chipy, kuchnia jako jeden chip
+            otwierający listę — 23 kuchnie nie mieszczą się w rzędzie.
+            Pokazujemy tylko wartości, które są w danych. */}
+        {(obecneKuchnie.length > 0 || obecnePoziomy.length > 0 || sKcal) && (
           <div style={s.chipsRow}>
             <div style={s.chipsScroll}>
+              {obecneKuchnie.length > 0 && (
+                kuchnia ? (
+                  <span style={{ ...s.chip, ...s.chipOn, ...s.chipZloz }}>
+                    <button style={s.chipWewn} onClick={() => setWyborKuchni(true)}>
+                      {KUCHNIA_LABEL[kuchnia] || kuchnia}
+                    </button>
+                    <button style={s.chipWewn} onClick={() => setKuchnia('')} aria-label="Wyczyść kuchnię">✕</button>
+                  </span>
+                ) : (
+                  <button style={s.chip} onClick={() => setWyborKuchni(true)}>🌍 Kuchnia ▾</button>
+                )
+              )}
               {obecnePoziomy.map(p => (
                 <button key={p}
                   style={{ ...s.chip, ...(poziom === p ? s.chipOn : {}) }}
@@ -381,11 +408,11 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
                   {POZIOM_LABEL[p] || p}
                 </button>
               ))}
-              {obecneKuchnie.map(k => (
-                <button key={k}
-                  style={{ ...s.chip, ...(kuchnia === k ? s.chipOn : {}) }}
-                  onClick={() => setKuchnia(kuchnia === k ? '' : k)}>
-                  {KUCHNIA_LABEL[k] || k}
+              {sKcal && KCAL_PRZEDZIALY.map(k => (
+                <button key={k.id}
+                  style={{ ...s.chip, ...(kcalPrzedzial === k.id ? s.chipOn : {}) }}
+                  onClick={() => setKcalPrzedzial(kcalPrzedzial === k.id ? '' : k.id)}>
+                  {k.label}
                 </button>
               ))}
             </div>
@@ -488,6 +515,7 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
                       {d.kcal > 0 && (
                         <span style={s.cardCzas}>🔥 {d.kcal} kcal</span>
                       )}
+                      <ZnacznikiDania d={d} style={s.cardCzas} />
                     </div>
                   </div>
                 </article>
@@ -517,6 +545,7 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
                       <span style={s.cardBadge}>{RODZAJ_LABEL[d.rodzaj]}</span>
                       {d.czas_minuty > 0 && <span style={s.cardCzas}>⏱ {d.czas_minuty} min</span>}
                       {d.kcal > 0 && <span style={s.cardCzas}>🔥 {d.kcal} kcal</span>}
+                      <ZnacznikiDania d={d} style={s.cardCzas} />
                     </div>
                   </div>
                 </div>
@@ -530,6 +559,36 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
           </div>
         )}
       </div>
+
+      {/* Wybór kuchni */}
+      {wyborKuchni && (
+        <div style={s.modalOverlay} onClick={() => setWyborKuchni(false)}>
+          <div style={{ ...s.bottomSheet, ...s.sheetKuchnie }} onClick={e => e.stopPropagation()}>
+            <div style={s.sheetHeader}>
+              <div>
+                <div style={s.sheetEyebrow}>Filtr</div>
+                <div style={s.sheetTitle}>Kuchnia</div>
+              </div>
+              <button style={s.sheetClose} onClick={() => setWyborKuchni(false)} aria-label="Zamknij">✕</button>
+            </div>
+            <div style={s.sheetLista}>
+              <button style={{ ...s.sheetBtn, ...(!kuchnia ? s.sheetBtnOn : {}) }}
+                onClick={() => { setKuchnia(''); setWyborKuchni(false) }}>
+                <span style={s.flagaKuchni}>🌍</span>
+                <span style={{ flex: 1 }}>Wszystkie kuchnie</span>
+              </button>
+              {obecneKuchnie.map(k => (
+                <button key={k} style={{ ...s.sheetBtn, ...(kuchnia === k ? s.sheetBtnOn : {}) }}
+                  onClick={() => { setKuchnia(k); setWyborKuchni(false) }}>
+                  <span style={s.flagaKuchni}>{KUCHNIA_FLAGA[k] || '🍽'}</span>
+                  <span style={{ flex: 1 }}>{KUCHNIA_NAZWA[k] || k}</span>
+                  <span style={s.licznikKuchni}>{licznikKuchni[k]}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Bottom sheet menu */}
       {menuDla && (
@@ -695,6 +754,12 @@ function makeS(duzy = false) {
   chipOn: {
     background: t.accent, borderColor: t.accent, color: '#fff', fontWeight: 600,
     boxShadow: '0 2px 8px rgba(77,124,77,.25)',
+  },
+  // Chip wybranej kuchni: dwie strefy — nazwa otwiera listę, ✕ czyści
+  chipZloz: { display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 10px 0 14px' },
+  chipWewn: {
+    background: 'none', border: 'none', padding: '8px 0', color: 'inherit',
+    font: 'inherit', fontWeight: 'inherit', cursor: 'pointer', whiteSpace: 'nowrap',
   },
 
   metaRow: {
@@ -928,6 +993,11 @@ function makeS(duzy = false) {
     textAlign: 'left',
   },
   sheetBtnDanger: { color: t.danger },
+  sheetBtnOn: { background: t.accentSoft, fontWeight: 600 },
+  sheetKuchnie: { maxHeight: '80vh', display: 'flex', flexDirection: 'column' },
+  sheetLista: { overflowY: 'auto', WebkitOverflowScrolling: 'touch' },
+  flagaKuchni: { fontSize: 20, width: 26, textAlign: 'center' },
+  licznikKuchni: { fontSize: 12, color: t.mute, fontVariantNumeric: 'tabular-nums' },
 
   // Confirm modal
   confirmModal: {
@@ -956,4 +1026,17 @@ function makeS(duzy = false) {
   },
 
 }
+}
+
+// Dyskretny znacznik na kafelku: kropka poziomu + flaga kuchni (pełne nazwy w title)
+function ZnacznikiDania({ d, style }) {
+  const kropka = POZIOM_KROPKA[d.poziom]
+  const flaga = KUCHNIA_FLAGA[d.kuchnia]
+  if (!kropka && !flaga) return null
+  const opis = [POZIOM_LABEL[d.poziom]?.replace(/^\S+\s/, ''), KUCHNIA_NAZWA[d.kuchnia]].filter(Boolean).join(' · ')
+  return (
+    <span style={style} title={opis} aria-label={opis}>
+      {kropka}{kropka && flaga ? ' ' : ''}{flaga}
+    </span>
+  )
 }

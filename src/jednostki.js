@@ -13,6 +13,11 @@ export function normalizujNazweMeta(nazwa = '') {
     .trim()
 }
 
+// Jednostki podpowiadane w formularzach dania (DodajDanie, DanieDetail) —
+// te same, które zostały w bazie po czyszczeniu 2026-11-14. Pole jednostki
+// zostaje tekstem z podpowiedziami, nie zamkniętą listą (USTALENIA.md, pkt 1).
+export const JEDNOSTKI_FORMULARZA = ['g', 'ml', 'szt', 'łyżka', 'łyżeczka', 'szczypta', 'do smaku']
+
 // ── Uniwersalne przeliczniki (stałe, te same dla wszystkich; trzymane w kodzie) ──
 // Sprowadzamy każdą jednostkę do „rodziny": waga (g), objętość (ml), łyżki (ml),
 // sztuki (szt). Łyżka/łyżeczka/szczypta to przybliżenia — wystarczające dla zakupów.

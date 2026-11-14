@@ -3,7 +3,8 @@ import { supabase } from '../supabase'
 import { t, fonts, ui, GORA_TRESCI } from '../theme'
 import { kcalZeSkladnikow, etykietaKcal } from '../kcalZeSkladnikow'
 import { pobierzWszystkieWiersze } from '../pobierzWszystko'
-import { parsujIlosc } from '../jednostki'
+import { parsujIlosc, JEDNOSTKI_FORMULARZA as JEDNOSTKI } from '../jednostki'
+import KuchniaPoziomPola from '../components/KuchniaPoziomPola'
 
 async function kompresujObraz(plik, maxSzerokosc = 1200, jakosc = 0.82) {
   return new Promise((resolve, reject) => {
@@ -31,8 +32,6 @@ async function uploadujZdjecie(plik, slug) {
   if (error) throw error
   return supabase.storage.from('dania-zdjecia').getPublicUrl(sciezka).data.publicUrl
 }
-
-const JEDNOSTKI = ['g', 'kg', 'ml', 'l', 'szt.', 'opak.', 'puszka', 'słoik', 'kostka', 'łyżka', 'łyżki', 'łyżeczka', 'łyżeczki', 'szklanka', 'szklanki', 'ząbki', 'pęczek', 'garść', 'do smaku']
 
 const KATEGORIE = {
   'Warzywa i owoce':    '1_Warzywa i owoce',
@@ -66,6 +65,8 @@ export default function DodajDanie({ onBack, onZapisano }) {
   const [typ, setTyp] = useState('samodzielne')
   const [czasMinuty, setCzasMinuty] = useState('')
   const [kcal, setKcal] = useState('')
+  const [kuchnia, setKuchnia] = useState('')
+  const [poziom, setPoziom] = useState('')
   const [porcjeBazowe, setPorcjeBazowe] = useState('4')
   const [notatki, setNotatki] = useState('')
 
@@ -131,10 +132,11 @@ export default function DodajDanie({ onBack, onZapisano }) {
           const trimmed = x['Składnik'].trim()
           const key = kluczDedup(trimmed)
           const prev = mapa.get(key)
-          // Wygrywa krótszy zapis (Ogórek bije Ogórek świeży); remis → alfabetycznie pierwszy
+          // Wygrywa krótszy zapis (Ogórek bije Ogórek świeży); remis → alfabetycznie pierwszy.
+          // Pisownia zostaje jak w bazie — po czyszczeniu 2026-11 nazwy składników
+          // są od małej litery i tak mają trafiać do nowych przepisów.
           if (!prev || trimmed.length < prev['Składnik'].length) {
-            const display = trimmed.charAt(0).toUpperCase() + trimmed.slice(1)
-            mapa.set(key, { ...x, 'Składnik': display })
+            mapa.set(key, { ...x, 'Składnik': trimmed })
           }
         }
         setIstniejaceSkladniki([...mapa.values()])
@@ -182,7 +184,7 @@ export default function DodajDanie({ onBack, onZapisano }) {
 
   function wyczyscFormularz() {
     setRodzaj('obiad'); setNazwa(''); setTyp('samodzielne')
-    setCzasMinuty(''); setKcal(''); setPorcjeBazowe('4'); setNotatki('')
+    setCzasMinuty(''); setKcal(''); setKuchnia(''); setPoziom(''); setPorcjeBazowe('4'); setNotatki('')
     skladnikiRef.current = []
     setSkladniki([]); setPrzepisRaw('')
     setNowyS({ nazwa: '', ilosc: '', jednostka: 'g', kategoria: '1_Warzywa i owoce' })
@@ -214,7 +216,10 @@ export default function DodajDanie({ onBack, onZapisano }) {
         setBladSkladnik('Ilość musi być liczbą większą od zera'); return
       }
     }
-    skladnikiRef.current = [...skladnikiRef.current, { ...nowyS, nazwa: nazwaTrim }]
+    // Nazwy składników w bazie są od małej litery (czyszczenie 2026-11) —
+    // „Cebula" wpisana z klawiatury trafia jako „cebula", żeby nie było dubli.
+    const nazwaKanon = nazwaTrim.charAt(0).toLowerCase() + nazwaTrim.slice(1)
+    skladnikiRef.current = [...skladnikiRef.current, { ...nowyS, nazwa: nazwaKanon }]
     setSkladniki(skladnikiRef.current)
     setNowyS({ nazwa: '', ilosc: '', jednostka: 'g', kategoria: '1_Warzywa i owoce' })
     setPodpowiedzi([]); setWybrano(false); setBladSkladnik('')
@@ -285,7 +290,11 @@ export default function DodajDanie({ onBack, onZapisano }) {
       'rodzaj': rodzaj,
       // > 0, nie tylko truthy — samo `parseInt(...) || null` przepuszczało liczby ujemne
       'czas_minuty': czasNum > 0 ? czasNum : null,
-      'kcal': kcalNum > 0 ? kcalNum : null,
+      // Puste pole kcal = wartość policzona ze składników (skladniki_meta.kcal_100g).
+      // Wpisana ręcznie zawsze wygrywa.
+      'kcal': kcalNum > 0 ? kcalNum : (sugestiaKcal.kcal || null),
+      'kuchnia': kuchnia || null,
+      'poziom': poziom || null,
       'porcje_bazowe': porcjeNum > 0 ? porcjeNum : 4,
       'notatki': notatki.trim() || null,
       'zdjecie': zdjecieUrl,
@@ -398,7 +407,7 @@ export default function DodajDanie({ onBack, onZapisano }) {
             </div>
           </div>
           <div style={s.hint}>
-            Czas i kalorie to opcja — dla filtra „do 30 minut" i chipa 🔥. Porcje określają, ile osób wykarmi ten przepis bazowo.
+            Czas i kalorie to opcja — dla filtrów w Przepisach. Puste kcal policzą się przy zapisie ze składników. Porcje określają, ile osób wykarmi ten przepis bazowo.
           </div>
           {etykietaKcal(sugestiaKcal) && (
             <div style={{ ...s.hint, display: 'flex', alignItems: 'center', gap: 8, marginTop: 6 }}>
@@ -414,6 +423,12 @@ export default function DodajDanie({ onBack, onZapisano }) {
               )}
             </div>
           )}
+        </section>
+
+        {/* Kuchnia i poziom — oba opcjonalne, służą filtrom w Przepisach */}
+        <section style={s.section}>
+          <label style={s.label}>Kuchnia i poziom</label>
+          <KuchniaPoziomPola kuchnia={kuchnia} setKuchnia={setKuchnia} poziom={poziom} setPoziom={setPoziom} />
         </section>
 
         {/* Typ dania (tylko dla głównych rodzajów) */}
@@ -458,7 +473,8 @@ export default function DodajDanie({ onBack, onZapisano }) {
                   <div style={{ ...s.podpowiedzItem, ...s.podpowiedzUzyj }}
                     onClick={() => {
                       const n = nowyS.nazwa.trim()
-                      const display = n.charAt(0).toUpperCase() + n.slice(1)
+                      // nazwy składników w bazie są od małej litery („cebula", nie „Cebula")
+                      const display = n.charAt(0).toLowerCase() + n.slice(1)
                       setWybrano(true)
                       setNowyS(prev => ({ ...prev, nazwa: display }))
                       setPodpowiedzi([])

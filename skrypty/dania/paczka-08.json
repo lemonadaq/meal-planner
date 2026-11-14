@@ -1,6 +1,6 @@
 [
   {
-    "nazwa": "Katsu curry z kurczakiem",
+    "nazwa": "Kurczak w panko z sosem curry (katsu curry)",
     "rodzaj": "obiad",
     "kuchnia": "japonska",
     "poziom": "srednie",
@@ -27,7 +27,7 @@
     "opis_wizualny": "A breaded chicken cutlet sliced into thick strips, the coating pale golden and visibly crunchy, laid beside a mound of white rice. A thick brown curry sauce is poured over part of the plate, deliberately leaving the crust dry. Soft onion and carrot pieces show in the sauce."
   },
   {
-    "nazwa": "Tonkatsu",
+    "nazwa": "Japoński kotlet schabowy (tonkatsu)",
     "rodzaj": "obiad",
     "kuchnia": "japonska",
     "poziom": "latwe",
@@ -53,7 +53,7 @@
     "opis_wizualny": "A thick pork cutlet in crunchy pale-gold panko crumbs, sliced into wide strips that lean apart to show juicy white meat inside. A heap of finely shredded raw cabbage sits beside it, with dark brown sauce drizzled over the meat."
   },
   {
-    "nazwa": "Oyakodon",
+    "nazwa": "Ryż z kurczakiem i jajkiem po japońsku (oyakodon)",
     "rodzaj": "obiad",
     "kuchnia": "japonska",
     "poziom": "latwe",
@@ -79,7 +79,7 @@
     "opis_wizualny": "A bowl of white rice topped with chicken pieces and softly set egg that has run into the rice in pale yellow curds and streaks. The whole top looks glossy and wet from the soy broth, with soft onion strands and green spring onion rings scattered over."
   },
   {
-    "nazwa": "Okonomiyaki",
+    "nazwa": "Japoński placek z kapustą (okonomiyaki)",
     "rodzaj": "kolacja",
     "kuchnia": "japonska",
     "poziom": "srednie",
@@ -159,7 +159,7 @@
     "opis_wizualny": "A deep bowl of cloudy, pale brown broth with a nest of curly noodles, topped with rolled slices of braised pork, a halved soft egg with a dark jammy yolk, and green onion rings. A sheen of fat floats on the surface."
   },
   {
-    "nazwa": "Tamagoyaki",
+    "nazwa": "Japoński zwijany omlet (tamagoyaki)",
     "rodzaj": "sniadanie",
     "kuchnia": "japonska",
     "poziom": "srednie",
@@ -211,7 +211,7 @@
     "opis_wizualny": "A large bowl of clear amber broth with flat rice noodles beneath the surface and thin slices of beef laid on top, their edges greying in the hot liquid. Bean sprouts, coriander leaves and a lime wedge sit at one side of the bowl."
   },
   {
-    "nazwa": "Banh mi z kurczakiem",
+    "nazwa": "Wietnamska bagietka z kurczakiem (bánh mì)",
     "rodzaj": "kolacja",
     "kuchnia": "wietnamska",
     "poziom": "latwe",
@@ -238,7 +238,7 @@
     "opis_wizualny": "A crusty split baguette packed with strips of browned chicken, orange and white pickled vegetable matchsticks, coriander sprigs and red chilli rings poking out. The bread is golden and cracked on top, the filling overflowing at both ends."
   },
   {
-    "nazwa": "Bun cha z wieprzowiną",
+    "nazwa": "Wietnamski makaron z grillowaną wieprzowiną (bún chả)",
     "rodzaj": "obiad",
     "kuchnia": "wietnamska",
     "poziom": "srednie",
@@ -265,7 +265,7 @@
     "opis_wizualny": "A plate with a nest of cold white rice noodles, a pile of charred grilled pork slices, and fresh lettuce and mint leaves at the side. A small bowl of thin brown dipping sauce with carrot shreds sits next to it. Everything is kept separate, not mixed."
   },
   {
-    "nazwa": "Dal z czerwonej soczewicy",
+    "nazwa": "Indyjska potrawka z czerwonej soczewicy (dal)",
     "rodzaj": "obiad",
     "kuchnia": "indyjska",
     "poziom": "latwe",
@@ -293,7 +293,7 @@
     "opis_wizualny": "A thick yellow-orange lentil stew, coarse rather than smooth, in a bowl with a darker swirl of spiced onion and tomato on top. A pool of clarified butter shines on the surface, with coriander leaves scattered over."
   },
   {
-    "nazwa": "Palak paneer",
+    "nazwa": "Szpinak z indyjskim serem (palak paneer)",
     "rodzaj": "obiad",
     "kuchnia": "indyjska",
     "poziom": "srednie",
@@ -321,7 +321,7 @@
     "opis_wizualny": "A deep green spinach purée in a bowl with cubes of white cheese sitting in it, some with golden-brown toasted faces. A swirl of cream is drawn across the surface. The sauce is thick and clings to the cheese."
   },
   {
-    "nazwa": "Biryani z kurczakiem",
+    "nazwa": "Ryż z kurczakiem po indyjsku (biryani)",
     "rodzaj": "obiad",
     "kuchnia": "indyjska",
     "poziom": "trudne",
@@ -350,7 +350,7 @@
     "opis_wizualny": "A mound of long-grain rice in patches of white, yellow and orange, with pieces of dark braised chicken half-buried in it. Crisp fried onion strands and coriander sit on top. The grains stay separate and dry-looking."
   },
   {
-    "nazwa": "Aloo gobi",
+    "nazwa": "Ziemniaki z kalafiorem po indyjsku (aloo gobi)",
     "rodzaj": "dodatek",
     "kuchnia": "indyjska",
     "poziom": "latwe",
@@ -376,7 +376,7 @@
     "opis_wizualny": "Chunks of potato and cauliflower stained yellow with turmeric, browned at the edges and dry rather than saucy, piled in a bowl. Cumin seeds and coriander leaves are visible on the surface."
   },
   {
-    "nazwa": "Naan z czosnkiem",
+    "nazwa": "Indyjski chlebek czosnkowy (naan)",
     "rodzaj": "dodatek",
     "kuchnia": "indyjska",
     "poziom": "srednie",
@@ -401,7 +401,7 @@
     "opis_wizualny": "A teardrop-shaped flatbread with large puffed bubbles, charred black in spots and pale between them, glistening with melted garlic butter. Chopped green herbs stick to the surface. It lies folded loosely on a board."
   },
   {
-    "nazwa": "Raita ogórkowa",
+    "nazwa": "Indyjski sos jogurtowy z ogórkiem (raita)",
     "rodzaj": "dodatek",
     "kuchnia": "indyjska",
     "poziom": "latwe",
@@ -424,7 +424,7 @@
     "opis_wizualny": "A small bowl of thick white yogurt flecked with pale green grated cucumber and chopped herbs, with a dusting of brown ground cumin on top. The surface holds a spoon mark; a little watery liquid gathers at the rim."
   },
   {
-    "nazwa": "Green curry z kurczakiem",
+    "nazwa": "Zielone curry z kurczakiem",
     "rodzaj": "obiad",
     "kuchnia": "tajska",
     "poziom": "latwe",
@@ -451,7 +451,7 @@
     "opis_wizualny": "A pale green coconut curry in a bowl, with chunks of chicken, aubergine and whole green beans, a film of green-tinged oil on the surface. Basil leaves float on top. White rice is served beside it in a separate mound."
   },
   {
-    "nazwa": "Massaman z wołowiną",
+    "nazwa": "Tajskie curry massaman z wołowiną",
     "rodzaj": "obiad",
     "kuchnia": "tajska",
     "poziom": "srednie",
@@ -478,7 +478,7 @@
     "opis_wizualny": "A mild brown-orange coconut curry with large tender beef chunks, whole potato pieces and peanuts, in a thick sauce with visible oil separation at the edge. Served in a bowl, the potatoes pale against the darker sauce."
   },
   {
-    "nazwa": "Som tam",
+    "nazwa": "Sałatka z zielonej papai (som tam)",
     "rodzaj": "surowka",
     "kuchnia": "tajska",
     "poziom": "latwe",
@@ -505,7 +505,7 @@
     "opis_wizualny": "A tangle of pale green shredded papaya in a shallow bowl, wet with dressing, mixed with crushed cherry tomato halves, green bean pieces and red chilli. Crushed peanuts are scattered over the top and liquid pools at the bottom."
   },
   {
-    "nazwa": "Pad see ew z wołowiną",
+    "nazwa": "Smażony makaron ryżowy z wołowiną (pad see ew)",
     "rodzaj": "obiad",
     "kuchnia": "tajska",
     "poziom": "latwe",
@@ -531,9 +531,9 @@
     "opis_wizualny": "Wide flat rice noodles stained dark brown by soy sauce, with charred patches, tossed with strips of beef, broccoli florets and ribbons of scrambled egg. The noodles look slippery and clumped, served heaped on a plate."
   },
   {
-    "nazwa": "Tagine z kurczakiem i cytryną",
+    "nazwa": "Duszony kurczak z cytryną po marokańsku (tagine)",
     "rodzaj": "obiad",
-    "kuchnia": "afrykanska",
+    "kuchnia": "marokanska",
     "poziom": "srednie",
     "czas_minuty": 80,
     "kcal": 520,
@@ -558,9 +558,9 @@
     "opis_wizualny": "Chicken thighs in a shallow earthenware dish, in a yellow-tinged sauce with soft onion, green olives and translucent lemon slices. The skin is browned, the sauce reduced and glossy. Coriander is scattered thickly over the top."
   },
   {
-    "nazwa": "Zaalouk",
+    "nazwa": "Marokańska sałatka z bakłażana (zaalouk)",
     "rodzaj": "surowka",
-    "kuchnia": "afrykanska",
+    "kuchnia": "marokanska",
     "poziom": "latwe",
     "czas_minuty": 45,
     "kcal": 190,
@@ -584,9 +584,9 @@
     "opis_wizualny": "A coarse, soft spread of collapsed aubergine and tomato, deep brick-red with olive oil pooling on top, served in a shallow bowl. The texture is rough with visible strands of aubergine. Coriander is mixed through and scattered on top."
   },
   {
-    "nazwa": "Harira",
+    "nazwa": "Marokańska zupa z soczewicy i ciecierzycy (harira)",
     "rodzaj": "zupa",
-    "kuchnia": "afrykanska",
+    "kuchnia": "marokanska",
     "poziom": "latwe",
     "czas_minuty": 60,
     "kcal": 380,
@@ -612,7 +612,7 @@
     "opis_wizualny": "A thick red-brown soup crowded with chickpeas, lentils and short noodles, with celery and herb flecks throughout. The liquid is cloudy and slightly starchy. Chopped parsley and a lemon wedge sit at the side of the bowl."
   },
   {
-    "nazwa": "Chili sin carne",
+    "nazwa": "Chili bez mięsa (chili sin carne)",
     "rodzaj": "obiad",
     "kuchnia": "meksykanska",
     "poziom": "latwe",

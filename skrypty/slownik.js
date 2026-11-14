@@ -176,6 +176,24 @@ export function budujSlownik(wiersze = [], meta = []) {
       wagaSztuki: wagaSztukiZMeta(metaWpis),
     })
   }
+  // Składniki ze skladniki_meta, których nie ma jeszcze w żadnym przepisie —
+  // po czyszczeniu bazy 2026-11 meta to lista nazw kanonicznych, więc model
+  // ma je znać, nawet jeśli dziś użyte są raz albo wcale. ile=0: blok promptu
+  // je pokazuje tylko z minIle=0, a jednostki nie przeliczamy (udzial=0).
+  for (const m of meta) {
+    const klucz = m.nazwa_norm || normalizujNazweMeta(m.nazwa)
+    if (!klucz || slownik.has(klucz)) continue
+    const jb = kanonJednostka(m.jednostka_bazowa)
+    slownik.set(klucz, {
+      nazwa: m.nazwa,
+      jednostka: JEDNOSTKI.includes(jb) ? jb : null,
+      udzial: 0,
+      ile: 0,
+      wagaSztuki: wagaSztukiZMeta(m),
+    })
+  }
+  // meta przy słowniku — zbudujWiersze liczy nią kcal (src/kcalZeSkladnikow.js)
+  Object.defineProperty(slownik, 'meta', { value: meta, enumerable: false })
   return slownik
 }
 

@@ -7,6 +7,8 @@ import { createClient } from '@supabase/supabase-js'
 import Anthropic from '@anthropic-ai/sdk'
 import { opisReczny, wskazowkaPrzepisu } from './opisy-reczne.js'
 import { czyscSkladnik, scalPowtorki, budujSlownik, tekstSlownika } from './slownik.js'
+import { KUCHNIE as KUCHNIE_APKI, POZIOMY as POZIOMY_APKI } from '../src/etykiety.js'
+import { kcalZeSkladnikow } from '../src/kcalZeSkladnikow.js'
 
 // ── Klucze ────────────────────────────────────────────────────────
 // Główne nazwy = te, które są w GitHub Secrets. Standardowe nazwy SDK
@@ -34,15 +36,11 @@ export const RODZAJE = [
 
 // Kuchnie pochodzenia — zamknięta lista, żeby filtr w apce nie rozsypał się
 // na „włoska", „Włoska" i „kuchnia włoska". Bez ogonków, bo to wartość
-// techniczna; etykiety do wyświetlenia siedzą w src/pages/Dania.jsx.
-export const KUCHNIE = [
-  'polska', 'wloska', 'francuska', 'hiszpanska', 'grecka', 'niemiecka',
-  'wegierska', 'ukrainska', 'amerykanska', 'meksykanska',
-  'koreanska', 'japonska', 'chinska', 'tajska', 'wietnamska', 'indyjska',
-  'bliskowschodnia', 'turecka', 'afrykanska', 'miedzynarodowa',
-]
+// techniczna. Jedno źródło z apką: src/etykiety.js (tam też etykiety z flagami);
+// lista 23 kuchni z czyszczenia bazy 2026-11-14.
+export const KUCHNIE = KUCHNIE_APKI
 
-export const POZIOMY = ['latwe', 'srednie', 'trudne']
+export const POZIOMY = POZIOMY_APKI
 
 export const KATEGORIE = [
   '1_Warzywa i owoce', '2_Mięso i ryby', '3_Nabiał', '4_Pieczywo',
@@ -175,7 +173,7 @@ const SCHEMAT_PRZEPISU = {
     poziom: {
       type: 'string',
       enum: POZIOMY,
-      description: 'Trudność dla domowego kucharza: latwe (do 30 min, bez technik), srednie, trudne (długie, wymaga wprawy)',
+      description: 'Trudność dla domowego kucharza: latwe (do ~30 min aktywnej pracy, proste techniki), srednie (kilka etapów, panierowanie, zupa na wywarze, risotto), trudne (ciasto drożdżowe lub francuskie od zera, pierogi lepione od zera, beza, długi wieloetapowy proces)',
     },
     skladniki: {
       type: 'array',
@@ -329,9 +327,12 @@ export async function generujPrzepis(nazwa, rodzaj, { blokSystemowy = '' } = {})
       '- Przepis ma być realistyczny dla domowej kuchni, bez restauracyjnych udziwnień.\n' +
       '- `kuchnia` to kraj pochodzenia dania, nie kraj składników. Schabowy to polska, ' +
       'tteokbokki to koreanska. Danie bez wyraźnego rodowodu (omlet, kanapka) → miedzynarodowa.\n' +
-      '- `poziom` oceniaj z perspektywy kogoś, kto gotuje w domu po pracy: `latwe` to ' +
-      'do pół godziny i bez technik, `trudne` to długie wyrastanie, smażenie w głębokim ' +
-      'tłuszczu, praca z ciastem albo kilka rzeczy naraz.\n\n' +
+      '- `poziom` oceniaj po krokach i czasie, nie po nazwie. `latwe`: do ok. 30 min ' +
+      'aktywnej pracy i proste techniki (krojenie, smażenie, gotowanie, składanie) — ' +
+      'kanapki, jajecznica, surówki, makaron z sosem. `srednie`: kilka etapów albo ' +
+      'technik naraz, panierowanie, pieczenie ciasta, zupa na wywarze, pierogi z gotowym ' +
+      'ciastem, risotto. `trudne`: ciasto drożdżowe albo francuskie od zera, pierogi ' +
+      'lepione od zera, beza, crème brûlée, długie duszenie z wieloma etapami.\n\n' +
       ZASADY_SKLADNIKOW + '\n\n' +
       ZASADY_JEDNOSTEK + '\n\n' +
       ZASADY_WYGLADU,
@@ -516,6 +517,14 @@ export function zbudujWiersze(nazwa, rodzaj, przepis, slownik = null) {
   }
   const skladniki = scalPowtorki(przepis.skladniki.map(s => czyscSkladnik(s, slownik)))
 
+  // kcal tym samym helperem co formularz w apce (skladniki_meta.kcal_100g).
+  // Wartość od modelu zostaje tylko wtedy, gdy któregoś składnika nie da się
+  // policzyć — helper by wtedy zaniżył wynik.
+  if (slownik?.meta?.length) {
+    const w = kcalZeSkladnikow(skladniki.map(s => ({ nazwa: s.nazwa, ilosc: s.ilosc, jednostka: s.jednostka })), slownik.meta)
+    if (w.kcal && w.braki.length === 0) wspolne.kcal = w.kcal
+  }
+
   return skladniki.map(s => ({
     ...wspolne,
     'Składnik': s.nazwa,
@@ -538,7 +547,9 @@ export async function pobierzSlownikSkladnikow() {
   if (error) throw error
 
   const slownik = budujSlownik(wiersze, meta || [])
-  return { slownik, tekst: tekstSlownika(slownik) }
+  // minIle=0: w prompcie lądują też nazwy kanoniczne ze skladniki_meta, których
+  // jeszcze żaden przepis nie używa (po czyszczeniu bazy ~520 nazw — mieści się)
+  return { slownik, tekst: tekstSlownika(slownik, { maks: 700, minIle: 0 }) }
 }
 
 // Nazwy dań, które już są w bazie — do odsiewania dubli i do promptu.
