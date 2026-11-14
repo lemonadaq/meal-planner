@@ -22,16 +22,21 @@ insert into _zmiana values
 -- przepisy
 update dania d set "Składnik" = z.nowa from _zmiana z where d."Składnik" = z.stara;
 
--- skladniki_meta: nazwa to klucz główny — nowy wiersz z danymi starego,
--- stara nazwa ląduje w aliasach (dopasowanie promocji i starych list)
+-- skladniki_meta: nazwa to klucz główny, a nazwa_norm ma unikalny indeks
+-- (ux_skladniki_meta_nazwa_norm) — „pietruszka (korzeń)" i „pietruszka korzeń"
+-- mają ten sam nazwa_norm. Dlatego: kopia starego wiersza → usunięcie → wstawienie
+-- pod nową nazwą. Stara nazwa ląduje w aliasach.
+create temp table _meta_stare on commit drop as
+  select m.*, z.nowa, z.nowa_norm, z.stara_norm
+  from skladniki_meta m join _zmiana z on m.nazwa = z.stara
+  where not exists (select 1 from skladniki_meta x where x.nazwa = z.nowa);
+delete from skladniki_meta m using _zmiana z where m.nazwa = z.stara;
 insert into skladniki_meta (nazwa, nazwa_norm, aliasy, jednostka_bazowa, rozmiar_opakowania,
                             jednostka_opakowania, zaokraglaj, waga_sztuki_g, kcal_100g)
-select z.nowa, z.nowa_norm,
-       (select coalesce(array_agg(distinct a), '{}') from unnest(m.aliasy || z.stara_norm) a where a <> z.nowa_norm),
-       m.jednostka_bazowa, m.rozmiar_opakowania, m.jednostka_opakowania, m.zaokraglaj, m.waga_sztuki_g, m.kcal_100g
-from skladniki_meta m join _zmiana z on m.nazwa = z.stara
-where not exists (select 1 from skladniki_meta x where x.nazwa = z.nowa);
-delete from skladniki_meta m using _zmiana z where m.nazwa = z.stara;
+select s.nowa, s.nowa_norm,
+       (select coalesce(array_agg(distinct a), '{}') from unnest(s.aliasy || s.stara_norm) a where a <> s.nowa_norm),
+       s.jednostka_bazowa, s.rozmiar_opakowania, s.jednostka_opakowania, s.zaokraglaj, s.waga_sztuki_g, s.kcal_100g
+from _meta_stare s;
 
 -- listy zakupów (stare tygodnie — dla spójności historii)
 update zakupy_historia h set skladnik = z.nowa from _zmiana z where h.skladnik = z.stara;
