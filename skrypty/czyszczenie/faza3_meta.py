@@ -79,11 +79,28 @@ def main():
                         and wlasciciel.get(a, {k}) == {k})
         jedn = p['jednostka'] if p['jednostka'] in ('g', 'ml', 'szt') else 'g'
         zrodlo = ('scalony z: ' + ', '.join(m['nazwa'] for m in ms)) if ms else 'nowy'
+        # rozmiar_opakowania i jednostka_opakowania są w bazie NOT NULL. Nowe
+        # wiersze dostają wartości wg konwencji, która już jest w tabeli:
+        #   produkt na sztuki → rozmiar = waga sztuki, opak. „szt." (jak Cebula 150/szt.)
+        #   produkt na wagę   → 1000 / „kg" (jak Boczek) — wagaSztukiZMeta() przy
+        #   „kg" NIE zgaduje wagi sztuki z rozmiaru, więc „3 szt" nie zamieni się w 3 g
+        #   płyn              → 1000 / „l"
+        # zaokraglaj=false: bez prawdziwego opakowania lista nie liczy opakowań.
+        if baza:
+            rozm, opak = baza['rozmiar_opakowania'], baza['jednostka_opakowania']
+        elif p['waga_sztuki_g']:
+            rozm, opak = p['waga_sztuki_g'], 'szt.'
+        elif jedn == 'ml':
+            rozm, opak = 1000, 'l'
+        elif jedn == 'szt':
+            rozm, opak = 1, 'szt.'
+        else:
+            rozm, opak = 1000, 'kg'
         wiersze.append({
             'nazwa': k, 'nazwa_norm': nk, 'aliasy': '|'.join(aliasy),
             'jednostka_bazowa': (baza['jednostka_bazowa'] if baza else jedn),
-            'rozmiar_opakowania': (baza['rozmiar_opakowania'] if baza else ''),
-            'jednostka_opakowania': (baza['jednostka_opakowania'] if baza else ''),
+            'rozmiar_opakowania': f'{rozm:g}' if isinstance(rozm, float) else rozm,
+            'jednostka_opakowania': opak,
             'zaokraglaj': str(bool(baza['zaokraglaj'])).lower() if baza else 'false',
             'waga_sztuki_g': f"{p['waga_sztuki_g']:g}" if p['waga_sztuki_g'] else '',
             'kcal_100g': f"{p['kcal_100g']:g}" if p['kcal_100g'] is not None else '',
@@ -119,6 +136,9 @@ def main():
           f'{sum(1 for w in wiersze if w["zrodlo"].startswith("scalony"))}, starych bez zmian: {len(stare_bez)})')
     print('stare bez odpowiednika:', [m['nazwa'] for m in stare_bez])
     print('bez kcal:', [w['nazwa'] for w in wiersze if not w['kcal_100g']])
+    for kol_wym in ('jednostka_bazowa', 'rozmiar_opakowania', 'jednostka_opakowania', 'zaokraglaj', 'nazwa_norm'):
+        puste = [w['nazwa'] for w in wiersze if w[kol_wym] in ('', None)]
+        if puste: print(f'BŁĄD pusta wymagana kolumna {kol_wym}:', puste)
     if dup: print('BŁĄD dubel nazwa_norm:', dup)
     if kolizje: print('BŁĄD kolizje aliasów:', kolizje)
 

@@ -75,3 +75,11 @@ Sprawdzone lokalnie (Postgres 16 na kopii danych): backup → próba (PRÓBA OK)
 Potem: odświeżyć `LISTA_DAN.md` (Actions → „Generuj dania" → tryb `lista`, zaznacz `zapisz_liste`), bo `sprawdz-nazwy` porównuje nowe dania z tą listą.
 
 **Do czasu Fazy 5** dania z nowymi kuchniami (portugalska, brytyjska, wschodnioeuropejska, brazylijska, marokańska — 17 dań) nie mają jeszcze chipa w filtrze, bo `src/etykiety.js` ich nie zna. Reszta apki działa bez zmian.
+
+**Poprawka 2026-11-14 (po pierwszej próbie):** pierwsza próba przerwała się na
+`null value in column "rozmiar_opakowania" of relation "skladniki_meta"` i
+wszystko się wycofało. Nowe wiersze `skladniki_meta` dostają teraz wymagane
+kolumny według konwencji, która już jest w tabeli: produkt na sztuki ma
+rozmiar = waga sztuki i opak. `szt.`, produkt na wagę `1000 kg`, płyn `1000 l`,
+wszystkie z `zaokraglaj=false`. Lokalny test odwzorowuje teraz NOT NULL ze
+schematu produkcji.

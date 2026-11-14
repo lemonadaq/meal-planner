@@ -1,519 +1,519 @@
 nazwa,nazwa_norm,aliasy,jednostka_bazowa,rozmiar_opakowania,jednostka_opakowania,zaokraglaj,waga_sztuki_g,kcal_100g,zrodlo
-amaretto,amaretto,,ml,,,false,,300,nowy
-ananas z puszki,ananas z puszki,,g,,,false,,60,nowy
-anchois,anchois,filet anchois|filety anchois|filety anchois z zalewy,szt,,,false,4,210,nowy
-anyż gwiazdkowy,anyz gwiazdkowy,anyz gwiazdzisty,g,,,false,0.5,340,nowy
-arbuz,arbuz,,g,,,false,,30,nowy
-aromat waniliowy,aromat waniliowy,,g,,,false,,0,nowy
-awokado,awokado,,szt,,,false,150,160,nowy
-bagietka,bagietka,bagietka lub chleb tostowy,szt,,,false,250,270,nowy
-bajgiel,bajgiel,,szt,,,false,90,260,nowy
-bakłażan,baklazan,,szt,,,false,300,25,nowy
-banan,banan,,szt,,,false,120,90,nowy
-batat,batat,bataty,g,,,false,250,86,nowy
-bazylia suszona,bazylia suszona,,g,,,false,,250,nowy
+amaretto,amaretto,,ml,1000,l,false,,300,nowy
+ananas z puszki,ananas z puszki,,g,1000,kg,false,,60,nowy
+anchois,anchois,filet anchois|filety anchois|filety anchois z zalewy,szt,4,szt.,false,4,210,nowy
+anyż gwiazdkowy,anyz gwiazdkowy,anyz gwiazdzisty,g,0.5,szt.,false,0.5,340,nowy
+arbuz,arbuz,,g,1000,kg,false,,30,nowy
+aromat waniliowy,aromat waniliowy,,g,1000,kg,false,,0,nowy
+awokado,awokado,,szt,150,szt.,false,150,160,nowy
+bagietka,bagietka,bagietka lub chleb tostowy,szt,250,szt.,false,250,270,nowy
+bajgiel,bajgiel,,szt,90,szt.,false,90,260,nowy
+bakłażan,baklazan,,szt,300,szt.,false,300,25,nowy
+banan,banan,,szt,120,szt.,false,120,90,nowy
+batat,batat,bataty,g,250,szt.,false,250,86,nowy
+bazylia suszona,bazylia suszona,,g,1000,kg,false,,250,nowy
 bazylia świeża,bazylia swieza,bazylia|swieza bazylia,g,10,opak. 10g,true,0.5,25,scalony z: Bazylia
-bekon,bekon,,g,,,false,10,450,nowy
-biała kiełbasa,biala kielbasa,biala kielbasa surowa|kielbasa biala lub wedzona,g,,,false,100,280,nowy
-białko jajka,bialko jajka,bialko jaja,szt,,,false,33,50,nowy
-biszkopty,biszkopty,biszkopty podluzne|biszkopty savoiardi,szt,,,false,8,390,nowy
-boczek surowy,boczek surowy,boczek lub lopatka wieprzowa|boczek lub mielona wieprzowina|boczek lub wieprzowina,g,,,false,,500,nowy
+bekon,bekon,,g,10,szt.,false,10,450,nowy
+biała kiełbasa,biala kielbasa,biala kielbasa surowa|kielbasa biala lub wedzona,g,100,szt.,false,100,280,nowy
+białko jajka,bialko jajka,bialko jaja,szt,33,szt.,false,33,50,nowy
+biszkopty,biszkopty,biszkopty podluzne|biszkopty savoiardi,szt,8,szt.,false,8,390,nowy
+boczek surowy,boczek surowy,boczek lub lopatka wieprzowa|boczek lub mielona wieprzowina|boczek lub wieprzowina,g,1000,kg,false,,500,nowy
 boczek wędzony,boczek wedzony,boczek|boczek w plastrach|boczek wedzony lub podgardle|boczek wedzony w plastrach,g,1000,kg,false,15,500,"scalony z: Boczek, Boczek wędzony"
 boczniaki,boczniaki,boczniak,g,200,opak. 200g,true,,35,scalony z: Boczniaki
-bok choy,bok choy,,g,,,false,150,13,nowy
-borówki,borowki,,g,,,false,,57,nowy
-botwinka,botwinka,botwinka peczek z liscmi i buraczkami|botwinka z burakami,szt,,,false,500,25,nowy
+bok choy,bok choy,,g,150,szt.,false,150,13,nowy
+borówki,borowki,,g,1000,kg,false,,57,nowy
+botwinka,botwinka,botwinka peczek z liscmi i buraczkami|botwinka z burakami,szt,500,szt.,false,500,25,nowy
 brokuł,brokul,brokuly,g,400,szt.,true,400,34,scalony z: Brokuł
-brzoskwinia,brzoskwinia,,szt,,,false,150,40,nowy
-budyń waniliowy,budyn waniliowy,budyn waniliowy w proszku,g,,,false,40,370,nowy
+brzoskwinia,brzoskwinia,,szt,150,szt.,false,150,40,nowy
+budyń waniliowy,budyn waniliowy,budyn waniliowy w proszku,g,40,szt.,false,40,370,nowy
 bulgur,bulgur,kasza bulgur,g,400,opak. 400g,true,,340,scalony z: Kasza bulgur
-bulion drobiowy,bulion drobiowy,,ml,,,false,,10,nowy
+bulion drobiowy,bulion drobiowy,,ml,1000,l,false,,10,nowy
 bulion warzywny,bulion warzywny,bulion|bulion warzywny lub drobiowy|bulion warzywny lub wolowy|bulion warzywny lub z anchois,szt.,6,opak. 6 kostek,true,,7,scalony z: Bulion
-bulion wołowy,bulion wolowy,,ml,,,false,,10,nowy
+bulion wołowy,bulion wolowy,,ml,1000,l,false,,10,nowy
 burak,burak,burak surowy|buraki,g,150,szt.,true,150,43,scalony z: Buraki
-burak gotowany,burak gotowany,burak ugotowany|buraki gotowane,g,,,false,150,44,nowy
-bułka,bulka,muffinka angielska lub bulka,szt,,,false,60,280,nowy
+burak gotowany,burak gotowany,burak ugotowany|buraki gotowane,g,150,szt.,false,150,44,nowy
+bułka,bulka,muffinka angielska lub bulka,szt,60,szt.,false,60,280,nowy
 bułka do burgera,bulka do burgera,bulki burgerowe|bulki do burgerow|mini bulki do burgerow,szt.,4,opak. 4 szt.,true,70,280,scalony z: Bułki do burgerów
-bułka do hot doga,bulka do hot doga,mini bulki do hot dogow,szt,,,false,60,280,nowy
+bułka do hot doga,bulka do hot doga,mini bulki do hot dogow,szt,60,szt.,false,60,280,nowy
 bułka tarta,bulka tarta,,g,400,opak. 400g,true,,370,scalony z: Bułka tarta
-bób,bob,bob swiezy lub mrozony,g,,,false,,70,nowy
-camembert,camembert,ser camembert,g,,,false,120,300,nowy
+bób,bob,bob swiezy lub mrozony,g,1000,kg,false,,70,nowy
+camembert,camembert,ser camembert,g,120,szt.,false,120,300,nowy
 cebula,cebula,,g,150,szt.,true,150,40,scalony z: Cebula
 cebula czerwona,cebula czerwona,czerwona cebula,g,150,szt.,true,150,40,scalony z: Cebula czerwona
-chałka,chalka,,g,,,false,,300,nowy
-chałwa,chalwa,,g,,,false,,520,nowy
+chałka,chalka,,g,1000,kg,false,,300,nowy
+chałwa,chalwa,,g,1000,kg,false,,520,nowy
 cheddar,cheddar,cheddar w plastrach|ser cheddar|ser cheddar starty|ser cheddar tarty|ser cheddar w plastrach,g,200,opak. 200g,true,20,400,scalony z: Ser cheddar
-chili w proszku,chili w proszku,,g,,,false,,300,nowy
-chleb na zakwasie,chleb na zakwasie,czerstwy chleb na zakwasie,szt,,,false,40,240,nowy
-chleb pełnoziarnisty,chleb pelnoziarnisty,pieczywo pelnoziarniste,szt,,,false,35,230,nowy
+chili w proszku,chili w proszku,,g,1000,kg,false,,300,nowy
+chleb na zakwasie,chleb na zakwasie,czerstwy chleb na zakwasie,szt,40,szt.,false,40,240,nowy
+chleb pełnoziarnisty,chleb pelnoziarnisty,pieczywo pelnoziarniste,szt,35,szt.,false,35,230,nowy
 chleb pszenny,chleb pszenny,chleb|chleb pszenny czerstwy|chleb pszenny kromki|czerstwy chleb pszenny|pieczywo|pieczywo do podania,g,500,bochenek,true,30,250,scalony z: Chleb
 chleb tostowy,chleb tostowy,chleb tostowy bez skorki|pieczywo tostowe|pieczywo tostowe lub bagietka|tost|tosty,g,500,opak. 500g,true,25,270,scalony z: Chleb tostowy
-chleb żytni,chleb zytni,pieczywo zytnie,szt,,,false,35,230,nowy
-chorizo,chorizo,,g,,,false,,450,nowy
-chrzan,chrzan,chrzan tarty|chrzan tarty ze sloika,g,,,false,,100,nowy
-ciabatta,ciabatta,bulka panini lub ciabatta|ciabatta lub bulka panini|ciabatta lub bulka rzemieslnicza,szt,,,false,90,270,nowy
-ciasto drożdżowe,ciasto drozdzowe,,g,,,false,,290,nowy
-ciasto filo,ciasto filo,,g,,,false,,300,nowy
-ciasto francuskie,ciasto francuskie,,g,,,false,,390,nowy
-ciasto na pierogi (krążki),ciasto na pierogi krazki,papier ryzowy ciasto na pierogi gotowe krazki mandu,szt,,,false,10,290,nowy
-ciasto na wontony,ciasto na wontony,,szt,,,false,8,290,nowy
-ciecierzyca suszona,ciecierzyca suszona,ciecierzyca suszona moczona przez noc,g,,,false,,360,nowy
-ciecierzyca z puszki,ciecierzyca z puszki,ciecierzyca z puszki odsaczona,g,,,false,,120,nowy
-cielęcina,cielecina,cielecina zrazowa lub udziec|kotlet cielecy z kostka|sznycel cielecy lub schab|sznycle cielece cienkie platy|sznycle z cieleciny lub piersi z kurczaka,g,,,false,,110,nowy
-croissant,croissant,,szt,,,false,60,410,nowy
+chleb żytni,chleb zytni,pieczywo zytnie,szt,35,szt.,false,35,230,nowy
+chorizo,chorizo,,g,1000,kg,false,,450,nowy
+chrzan,chrzan,chrzan tarty|chrzan tarty ze sloika,g,1000,kg,false,,100,nowy
+ciabatta,ciabatta,bulka panini lub ciabatta|ciabatta lub bulka panini|ciabatta lub bulka rzemieslnicza,szt,90,szt.,false,90,270,nowy
+ciasto drożdżowe,ciasto drozdzowe,,g,1000,kg,false,,290,nowy
+ciasto filo,ciasto filo,,g,1000,kg,false,,300,nowy
+ciasto francuskie,ciasto francuskie,,g,1000,kg,false,,390,nowy
+ciasto na pierogi (krążki),ciasto na pierogi krazki,papier ryzowy ciasto na pierogi gotowe krazki mandu,szt,10,szt.,false,10,290,nowy
+ciasto na wontony,ciasto na wontony,,szt,8,szt.,false,8,290,nowy
+ciecierzyca suszona,ciecierzyca suszona,ciecierzyca suszona moczona przez noc,g,1000,kg,false,,360,nowy
+ciecierzyca z puszki,ciecierzyca z puszki,ciecierzyca z puszki odsaczona,g,1000,kg,false,,120,nowy
+cielęcina,cielecina,cielecina zrazowa lub udziec|kotlet cielecy z kostka|sznycel cielecy lub schab|sznycle cielece cienkie platy|sznycle z cieleciny lub piersi z kurczaka,g,1000,kg,false,,110,nowy
+croissant,croissant,,szt,60,szt.,false,60,410,nowy
 cukier,cukier,cukier bialy|cukier do obtoczenia|cukier drobny,g,1000,opak. 1kg,true,,400,scalony z: Cukier
-cukier perlisty,cukier perlisty,,g,,,false,,400,nowy
-cukier puder,cukier puder,cukier puder do posypania,g,,,false,,400,nowy
-cukier trzcinowy,cukier trzcinowy,cukier brazowy|cukier trzcinowy do karmelizacji,g,,,false,,390,nowy
-cukier waniliowy,cukier waniliowy,cukier wanilinowy,g,,,false,,400,nowy
+cukier perlisty,cukier perlisty,,g,1000,kg,false,,400,nowy
+cukier puder,cukier puder,cukier puder do posypania,g,1000,kg,false,,400,nowy
+cukier trzcinowy,cukier trzcinowy,cukier brazowy|cukier trzcinowy do karmelizacji,g,1000,kg,false,,390,nowy
+cukier waniliowy,cukier waniliowy,cukier wanilinowy,g,1000,kg,false,,400,nowy
 cukinia,cukinia,,g,300,szt.,true,300,17,scalony z: Cukinia
-curry,curry,curry w proszku,g,,,false,,320,nowy
-cynamon,cynamon,cynamon mielony,g,,,false,,250,nowy
+curry,curry,curry w proszku,g,1000,kg,false,,320,nowy
+cynamon,cynamon,cynamon mielony,g,1000,kg,false,,250,nowy
 cytryna,cytryna,cytryny,g,100,szt.,true,120,30,scalony z: Cytryna
-czekolada deserowa,czekolada deserowa,,g,,,false,,520,nowy
-czekolada gorzka,czekolada gorzka,gorzka czekolada|gorzka czekolada do posypania,g,,,false,,550,nowy
-czereśnie,czeresnie,,g,,,false,,60,nowy
+czekolada deserowa,czekolada deserowa,,g,1000,kg,false,,520,nowy
+czekolada gorzka,czekolada gorzka,gorzka czekolada|gorzka czekolada do posypania,g,1000,kg,false,,550,nowy
+czereśnie,czeresnie,,g,1000,kg,false,,60,nowy
 czosnek,czosnek,czosnek swiezy|zabek czosnku,g,50,główka,true,5,145,scalony z: Czosnek
-czosnek granulowany,czosnek granulowany,czosnek w proszku,g,,,false,,330,nowy
-daktyle suszone,daktyle suszone,daktyle suszone bez pestek,szt,,,false,8,280,nowy
-dashi,dashi,bulion dashi,ml,,,false,,3,nowy
+czosnek granulowany,czosnek granulowany,czosnek w proszku,g,1000,kg,false,,330,nowy
+daktyle suszone,daktyle suszone,daktyle suszone bez pestek,szt,8,szt.,false,8,280,nowy
+dashi,dashi,bulion dashi,ml,1000,l,false,,3,nowy
 dorsz,dorsz,filet z dorsza,g,1000,kg,false,,80,"scalony z: Dorsz, Filet z dorsza"
 drożdże instant,drozdze instant,drozdze suche|drozdze suszone,g,7,saszetka 7g,true,7,330,scalony z: Drożdże suche
-drożdże świeże,drozdze swieze,drozdze,g,,,false,,100,nowy
-dymka,dymka,cebula dymka|cebula dymka zielona czesc|dymka cebula wiosenna|dymka cebula zielona|dymka szczypiorek|dymka zielona cebulka|szczypiorek dymka,szt,,,false,20,30,nowy
-dynia,dynia,dynia hokkaido|dynia miazsz np hokkaido|dynia np hokkaido,g,,,false,,26,nowy
-dżem malinowy,dzem malinowy,,g,,,false,,240,nowy
-dżem morelowy,dzem morelowy,,g,,,false,,240,nowy
-dżem truskawkowy,dzem truskawkowy,,g,,,false,,240,nowy
-ekstrakt migdałowy,ekstrakt migdalowy,,g,,,false,,290,nowy
-ekstrakt waniliowy,ekstrakt waniliowy,,g,,,false,,290,nowy
-endywia,endywia,,szt,,,false,200,17,nowy
+drożdże świeże,drozdze swieze,drozdze,g,1000,kg,false,,100,nowy
+dymka,dymka,cebula dymka|cebula dymka zielona czesc|dymka cebula wiosenna|dymka cebula zielona|dymka szczypiorek|dymka zielona cebulka|szczypiorek dymka,szt,20,szt.,false,20,30,nowy
+dynia,dynia,dynia hokkaido|dynia miazsz np hokkaido|dynia np hokkaido,g,1000,kg,false,,26,nowy
+dżem malinowy,dzem malinowy,,g,1000,kg,false,,240,nowy
+dżem morelowy,dzem morelowy,,g,1000,kg,false,,240,nowy
+dżem truskawkowy,dzem truskawkowy,,g,1000,kg,false,,240,nowy
+ekstrakt migdałowy,ekstrakt migdalowy,,g,1000,kg,false,,290,nowy
+ekstrakt waniliowy,ekstrakt waniliowy,,g,1000,kg,false,,290,nowy
+endywia,endywia,,szt,200,szt.,false,200,17,nowy
 fasola biała suszona,fasola biala suszona,fasola biala,g,400,opak. 400g,true,,330,scalony z: Fasola biała
-fasola biała z puszki,fasola biala z puszki,,g,,,false,,100,nowy
-fasola czarna z puszki,fasola czarna z puszki,,g,,,false,,100,nowy
+fasola biała z puszki,fasola biala z puszki,,g,1000,kg,false,,100,nowy
+fasola czarna z puszki,fasola czarna z puszki,,g,1000,kg,false,,100,nowy
 fasola czerwona z puszki,fasola czerwona z puszki,fasola konserwowa|fasola w puszce,g,400,puszka 400g,true,400,100,scalony z: Fasola w puszce
-fasolka szparagowa,fasolka szparagowa,fasolka szparagowa zielona,g,,,false,,31,nowy
-fasolka w sosie pomidorowym,fasolka w sosie pomidorowym,,g,,,false,,90,nowy
-fenkuł,fenkul,fenkul koper wloski|koper wloski fenkul,g,,,false,250,31,nowy
-feta,feta,ser feta|ser feta lub queso fresco,g,,,false,,265,nowy
-filet z indyka,filet z indyka,filet z piersi indyka,g,,,false,,105,nowy
-filet z soli,filet z soli,,g,,,false,,90,nowy
-flaki wołowe,flaki wolowe,,g,,,false,,90,nowy
+fasolka szparagowa,fasolka szparagowa,fasolka szparagowa zielona,g,1000,kg,false,,31,nowy
+fasolka w sosie pomidorowym,fasolka w sosie pomidorowym,,g,1000,kg,false,,90,nowy
+fenkuł,fenkul,fenkul koper wloski|koper wloski fenkul,g,250,szt.,false,250,31,nowy
+feta,feta,ser feta|ser feta lub queso fresco,g,1000,kg,false,,265,nowy
+filet z indyka,filet z indyka,filet z piersi indyka,g,1000,kg,false,,105,nowy
+filet z soli,filet z soli,,g,1000,kg,false,,90,nowy
+flaki wołowe,flaki wolowe,,g,1000,kg,false,,90,nowy
 frytki,frytki,frytki mrozone,g,750,opak. 750g,true,,150,scalony z: Frytki
-galaretka truskawkowa w proszku,galaretka truskawkowa w proszku,,szt,,,false,75,380,nowy
+galaretka truskawkowa w proszku,galaretka truskawkowa w proszku,,szt,75,szt.,false,75,380,nowy
 garam masala,garam masala,,g,30,opak. 30g,true,,380,scalony z: Garam masala
 gałka muszkatołowa,galka muszkatolowa,,g,15,opak. 15g,true,,525,scalony z: Gałka muszkatołowa
-gicz wołowa,gicz wolowa,gicz wolowa ossobuco w plastrze,g,,,false,,150,nowy
+gicz wołowa,gicz wolowa,gicz wolowa ossobuco w plastrze,g,1000,kg,false,,150,nowy
 gnocchi,gnocchi,gnocchi ziemniaczane,g,500,opak. 500g,true,,160,scalony z: Gnocchi
-gochugaru,gochugaru,gochugaru platki chili|platki chili gochugaru,g,,,false,,300,nowy
-golonka wieprzowa,golonka wieprzowa,,g,,,false,,260,nowy
-gorgonzola,gorgonzola,ser gorgonzola|ser plesniowy gorgonzola|ser plesniowy gorgonzola lub lazur,g,,,false,,350,nowy
-gouda,gouda,ser gouda,g,,,false,,360,nowy
-goździki,gozdziki,,g,,,false,0.1,270,nowy
-granat,granat,,szt,,,false,250,83,nowy
-granola,granola,,g,,,false,,450,nowy
-groch łuskany,groch luskany,groch luskany polowki,g,,,false,,340,nowy
-groszek konserwowy,groszek konserwowy,,g,,,false,,70,nowy
-groszek zielony,groszek zielony,groszek mrozony|groszek zielony mrozony,g,,,false,,80,nowy
-gruszka,gruszka,,szt,,,false,180,57,nowy
-gruyère,gruyere,ser gruyere,g,,,false,,410,nowy
-grzanki,grzanki,,g,,,false,,400,nowy
-grzyby leśne,grzyby lesne,grzyby lesne podgrzybki borowiki,g,,,false,,30,nowy
-grzyby mun,grzyby mun,grzyby mun suszone,g,,,false,,280,nowy
+gochugaru,gochugaru,gochugaru platki chili|platki chili gochugaru,g,1000,kg,false,,300,nowy
+golonka wieprzowa,golonka wieprzowa,,g,1000,kg,false,,260,nowy
+gorgonzola,gorgonzola,ser gorgonzola|ser plesniowy gorgonzola|ser plesniowy gorgonzola lub lazur,g,1000,kg,false,,350,nowy
+gouda,gouda,ser gouda,g,1000,kg,false,,360,nowy
+goździki,gozdziki,,g,0.1,szt.,false,0.1,270,nowy
+granat,granat,,szt,250,szt.,false,250,83,nowy
+granola,granola,,g,1000,kg,false,,450,nowy
+groch łuskany,groch luskany,groch luskany polowki,g,1000,kg,false,,340,nowy
+groszek konserwowy,groszek konserwowy,,g,1000,kg,false,,70,nowy
+groszek zielony,groszek zielony,groszek mrozony|groszek zielony mrozony,g,1000,kg,false,,80,nowy
+gruszka,gruszka,,szt,180,szt.,false,180,57,nowy
+gruyère,gruyere,ser gruyere,g,1000,kg,false,,410,nowy
+grzanki,grzanki,,g,1000,kg,false,,400,nowy
+grzyby leśne,grzyby lesne,grzyby lesne podgrzybki borowiki,g,1000,kg,false,,30,nowy
+grzyby mun,grzyby mun,grzyby mun suszone,g,1000,kg,false,,280,nowy
 grzyby suszone,grzyby suszone,suszone grzyby|suszone grzyby borowiki,g,20,opak. 20g,true,,280,scalony z: Grzyby suszone
-guanciale,guanciale,guanciale lub boczek surowy,g,,,false,,650,nowy
-halloumi,halloumi,ser halloumi,g,,,false,,320,nowy
-herbatniki,herbatniki,herbatniki na spod,g,,,false,8,450,nowy
-hummus,hummus,,g,,,false,,250,nowy
+guanciale,guanciale,guanciale lub boczek surowy,g,1000,kg,false,,650,nowy
+halloumi,halloumi,ser halloumi,g,1000,kg,false,,320,nowy
+herbatniki,herbatniki,herbatniki na spod,g,8,szt.,false,8,450,nowy
+hummus,hummus,,g,1000,kg,false,,250,nowy
 imbir,imbir,imbir korzen|imbir swiezy|imbir swiezy starty|sok imbirowy lub starty imbir|swiezy imbir,g,100,kawałek,true,20,80,scalony z: Imbir
-imbir mielony,imbir mielony,,g,,,false,,335,nowy
+imbir mielony,imbir mielony,,g,1000,kg,false,,335,nowy
 jabłko,jablko,jablka|jablka kwasne,g,180,szt.,true,180,52,scalony z: Jabłko
-jagody,jagody,,g,,,false,,57,nowy
+jagody,jagody,,g,1000,kg,false,,57,nowy
 jajko,jajko,jaja|jajka|jajko do posmarowania|jajko do wersji madame|jajko kurze|jajko ugotowane na twardo,szt.,10,karton 10 szt.,true,55,143,scalony z: Jajko
-jajko przepiórcze,jajko przepiorcze,jajka przepiorcze,szt,,,false,10,158,nowy
-jarmuż,jarmuz,jarmuz lub kapusta wloska,g,,,false,,50,nowy
-jogurt grecki,jogurt grecki,,g,,,false,,100,nowy
+jajko przepiórcze,jajko przepiorcze,jajka przepiorcze,szt,10,szt.,false,10,158,nowy
+jarmuż,jarmuz,jarmuz lub kapusta wloska,g,1000,kg,false,,50,nowy
+jogurt grecki,jogurt grecki,,g,1000,kg,false,,100,nowy
 jogurt naturalny,jogurt naturalny,jogurt,g,400,opak. 400g,true,,61,scalony z: Jogurt naturalny
-jujuba suszona,jujuba suszona,daktyle jujuba suszone|jujuba suszona opcjonalnie,szt,,,false,4,290,nowy
-kaczka,kaczka,kaczka cwiartka,g,,,false,,340,nowy
-kakao,kakao,,g,,,false,,380,nowy
+jujuba suszona,jujuba suszona,daktyle jujuba suszone|jujuba suszona opcjonalnie,szt,4,szt.,false,4,290,nowy
+kaczka,kaczka,kaczka cwiartka,g,1000,kg,false,,340,nowy
+kakao,kakao,,g,1000,kg,false,,380,nowy
 kalafior,kalafior,,g,800,szt.,true,800,25,scalony z: Kalafior
-kalarepa,kalarepa,,g,,,false,250,27,nowy
-kalmary,kalmary,kalmary tuby mrozone|kalmary tuby oczyszczone|krazki kalmara,g,,,false,,90,nowy
-kapary,kapary,,g,,,false,,25,nowy
+kalarepa,kalarepa,,g,250,szt.,false,250,27,nowy
+kalmary,kalmary,kalmary tuby mrozone|kalmary tuby oczyszczone|krazki kalmara,g,1000,kg,false,,90,nowy
+kapary,kapary,,g,1000,kg,false,,25,nowy
 kapusta biała,kapusta biala,kapusta,g,1500,główka,true,1500,30,scalony z: Kapusta biała
 kapusta czerwona,kapusta czerwona,,g,1500,główka,true,1200,31,scalony z: Kapusta czerwona
 kapusta kiszona,kapusta kiszona,kapusta kwaszona,g,500,opak. 500g,true,,20,scalony z: Kapusta kiszona
 kapusta pekińska,kapusta pekinska,,g,800,szt.,true,800,16,scalony z: Kapusta pekińska
 karczek wołowy,karczek wolowy,,g,1000,kg,false,,200,scalony z: Karczek wołowy
-karczochy marynowane,karczochy marynowane,karczochy marynowane z sloika|karczochy z zalewy serca,g,,,false,,90,nowy
-karkówka,karkowka,karkowka wieprzowa,g,,,false,,260,nowy
-karp,karp,,g,,,false,,130,nowy
+karczochy marynowane,karczochy marynowane,karczochy marynowane z sloika|karczochy z zalewy serca,g,1000,kg,false,,90,nowy
+karkówka,karkowka,karkowka wieprzowa,g,1000,kg,false,,260,nowy
+karp,karp,,g,1000,kg,false,,130,nowy
 kasza gryczana,kasza gryczana,gryczana,g,400,opak. 400g,true,,340,scalony z: Kasza gryczana
 kasza jaglana,kasza jaglana,jaglana,g,400,opak. 400g,true,,350,scalony z: Kasza jaglana
 kasza jęczmienna,kasza jeczmienna,jeczmienna|peczak,g,400,opak. 400g,true,,340,scalony z: Kasza jęczmienna
-kasza manna,kasza manna,semolina lub kaszka manna,g,,,false,,350,nowy
-kasza orkiszowa,kasza orkiszowa,kasza orkiszowa peczak orkiszowy,g,,,false,,340,nowy
-kaszanka,kaszanka,,g,,,false,,300,nowy
-kawa,kawa,kawa lub herbata do popicia,ml,,,false,,2,nowy
-kawa espresso,kawa espresso,kawa espresso swiezo zaparzona,ml,,,false,,2,nowy
-kefir,kefir,,ml,,,false,,50,nowy
+kasza manna,kasza manna,semolina lub kaszka manna,g,1000,kg,false,,350,nowy
+kasza orkiszowa,kasza orkiszowa,kasza orkiszowa peczak orkiszowy,g,1000,kg,false,,340,nowy
+kaszanka,kaszanka,,g,1000,kg,false,,300,nowy
+kawa,kawa,kawa lub herbata do popicia,ml,1000,l,false,,2,nowy
+kawa espresso,kawa espresso,kawa espresso swiezo zaparzona,ml,1000,l,false,,2,nowy
+kefir,kefir,,ml,1000,l,false,,50,nowy
 ketchup,ketchup,,g,500,but. 500g,true,,100,scalony z: Ketchup
-kiełbasa,kielbasa,kielbaski,g,,,false,80,300,nowy
-kiełbasa wiejska,kielbasa wiejska,,g,,,false,,320,nowy
-kiełbasa włoska,kielbasa wloska,kielbasa wloska lub biala surowa,g,,,false,,300,nowy
+kiełbasa,kielbasa,kielbaski,g,80,szt.,false,80,300,nowy
+kiełbasa wiejska,kielbasa wiejska,,g,1000,kg,false,,320,nowy
+kiełbasa włoska,kielbasa wloska,kielbasa wloska lub biala surowa,g,1000,kg,false,,300,nowy
 kiełbasa śląska,kielbasa slaska,,g,500,opak. 500g,true,100,300,scalony z: Kiełbasa śląska
-kiełki fasoli mung,kielki fasoli mung,kielki sojowe|kielki sojowe fasoli mung,g,,,false,,30,nowy
-kimchi,kimchi,kimchi dojrzale kwasne,g,,,false,,20,nowy
-kiwi,kiwi,,szt,,,false,75,60,nowy
-kminek,kminek,,g,,,false,,375,nowy
-kolendra świeża,kolendra swieza,kolendra,g,,,false,0.3,25,nowy
+kiełki fasoli mung,kielki fasoli mung,kielki sojowe|kielki sojowe fasoli mung,g,1000,kg,false,,30,nowy
+kimchi,kimchi,kimchi dojrzale kwasne,g,1000,kg,false,,20,nowy
+kiwi,kiwi,,szt,75,szt.,false,75,60,nowy
+kminek,kminek,,g,1000,kg,false,,375,nowy
+kolendra świeża,kolendra swieza,kolendra,g,0.3,szt.,false,0.3,25,nowy
 komosa ryżowa,komosa ryzowa,komosa|komosa ryzowa quinoa|quinoa,g,250,opak. 250g,true,,370,scalony z: Quinoa
 koncentrat pomidorowy,koncentrat pomidorowy,koncentrat|przecier z pomidorow,g,200,tubka 200g,true,,90,scalony z: Koncentrat pomidorowy
-konfitura różana,konfitura rozana,,g,,,false,,250,nowy
+konfitura różana,konfitura rozana,,g,1000,kg,false,,250,nowy
 koperek,koperek,koper|koperek swiezy|swiezy koperek,g,30,pęczek,true,,40,scalony z: Koper
-korzeń żeń-szenia,korzen zen szenia,korzen zen szenia swiezy lub suszony,szt,,,false,10,100,nowy
-krakersy,krakersy,,g,,,false,5,450,nowy
-krem balsamiczny,krem balsamiczny,,g,,,false,,180,nowy
-krem budyniowy,krem budyniowy,krem budyniowy lub nutella,g,,,false,,130,nowy
-krewetki,krewetki,krewetki obrane|krewetki obrane surowe|krewetki surowe obrane,g,,,false,,85,nowy
-kukurydza do popcornu,kukurydza do popcornu,kukurydza do prazenia|ziarna kukurydzy do popcornu,g,,,false,,370,nowy
+korzeń żeń-szenia,korzen zen szenia,korzen zen szenia swiezy lub suszony,szt,10,szt.,false,10,100,nowy
+krakersy,krakersy,,g,5,szt.,false,5,450,nowy
+krem balsamiczny,krem balsamiczny,,g,1000,kg,false,,180,nowy
+krem budyniowy,krem budyniowy,krem budyniowy lub nutella,g,1000,kg,false,,130,nowy
+krewetki,krewetki,krewetki obrane|krewetki obrane surowe|krewetki surowe obrane,g,1000,kg,false,,85,nowy
+kukurydza do popcornu,kukurydza do popcornu,kukurydza do prazenia|ziarna kukurydzy do popcornu,g,1000,kg,false,,370,nowy
 kukurydza konserwowa,kukurydza konserwowa,kukurydza|kukurydza w puszce|kukurydza z puszki,g,200,puszka 200g,true,340,90,scalony z: Kukurydza w puszce
 kumin,kumin,cumin|kmin|kmin mielony|kmin rzymski|kumin mielony,g,20,opak. 20g,true,,375,"scalony z: Kumin, Kmin rzymski"
-kurczak cały,kurczak caly,,g,,,false,,215,nowy
+kurczak cały,kurczak caly,,g,1000,kg,false,,215,nowy
 kurki,kurki,kurka,g,250,opak. 250g,true,,30,scalony z: Kurki
-kurkuma,kurkuma,,g,,,false,,310,nowy
+kurkuma,kurkuma,,g,1000,kg,false,,310,nowy
 kuskus,kuskus,couscous|kasza kuskus,g,500,opak. 500g,true,,360,scalony z: Kuskus
-laska wanilii,laska wanilii,,g,,,false,3,300,nowy
-likier kawowy,likier kawowy,likier kawowy opcjonalnie,ml,,,false,,320,nowy
-likier pomarańczowy,likier pomaranczowy,likier pomaranczowy cointreau lub grand marnier,ml,,,false,,320,nowy
-limonka,limonka,,szt,,,false,70,30,nowy
+laska wanilii,laska wanilii,,g,3,szt.,false,3,300,nowy
+likier kawowy,likier kawowy,likier kawowy opcjonalnie,ml,1000,l,false,,320,nowy
+likier pomarańczowy,likier pomaranczowy,likier pomaranczowy cointreau lub grand marnier,ml,1000,l,false,,320,nowy
+limonka,limonka,,szt,70,szt.,false,70,30,nowy
 liść laurowy,lisc laurowy,liscie laurowe,g,10,opak. 10g,true,0.15,310,scalony z: Liść laurowy
-lody waniliowe,lody waniliowe,,g,,,false,60,200,nowy
+lody waniliowe,lody waniliowe,,g,60,szt.,false,60,200,nowy
 majeranek,majeranek,majeranek suszony,g,10,opak. 10g,true,,270,scalony z: Majeranek
 majonez,majonez,,g,400,słoik 400g,true,,700,scalony z: Majonez
-mak,mak,,g,,,false,,520,nowy
+mak,mak,,g,1000,kg,false,,520,nowy
 makaron,makaron,,g,500,opak. 500g,true,,360,scalony z: Makaron
-makaron bucatini,makaron bucatini,makaron bucatini lub spaghetti,g,,,false,,360,nowy
-makaron chiński jajeczny,makaron chinski jajeczny,,g,,,false,,380,nowy
-makaron chiński pszenny,makaron chinski pszenny,makaron pszenny chinski,g,,,false,,360,nowy
-makaron ditalini,makaron ditalini,makaron drobny ditalini,g,,,false,,360,nowy
-makaron farfalle,makaron farfalle,,g,,,false,,360,nowy
-makaron fettuccine,makaron fettuccine,,g,,,false,,360,nowy
+makaron bucatini,makaron bucatini,makaron bucatini lub spaghetti,g,1000,kg,false,,360,nowy
+makaron chiński jajeczny,makaron chinski jajeczny,,g,1000,kg,false,,380,nowy
+makaron chiński pszenny,makaron chinski pszenny,makaron pszenny chinski,g,1000,kg,false,,360,nowy
+makaron ditalini,makaron ditalini,makaron drobny ditalini,g,1000,kg,false,,360,nowy
+makaron farfalle,makaron farfalle,,g,1000,kg,false,,360,nowy
+makaron fettuccine,makaron fettuccine,,g,1000,kg,false,,360,nowy
 makaron lasagne,makaron lasagne,lasagne,g,500,opak. 500g,true,,360,scalony z: Makaron lasagne
 makaron muszelki,makaron muszelki,muszelki,g,500,opak. 500g,true,500,360,scalony z: Makaron muszelki
-makaron naengmyeon,makaron naengmyeon,makaron naengmyeon gryczany,g,,,false,,350,nowy
-makaron nitki,makaron nitki,,g,,,false,,370,nowy
-makaron orecchiette,makaron orecchiette,,g,,,false,,360,nowy
-makaron pappardelle,makaron pappardelle,pappardelle,g,,,false,,360,nowy
+makaron naengmyeon,makaron naengmyeon,makaron naengmyeon gryczany,g,1000,kg,false,,350,nowy
+makaron nitki,makaron nitki,,g,1000,kg,false,,370,nowy
+makaron orecchiette,makaron orecchiette,,g,1000,kg,false,,360,nowy
+makaron pappardelle,makaron pappardelle,pappardelle,g,1000,kg,false,,360,nowy
 makaron penne,makaron penne,penne,g,500,opak. 500g,true,,360,scalony z: Makaron penne
-makaron ramen,makaron ramen,makaron ramen lub pszenny,g,,,false,,370,nowy
-makaron ramen instant,makaron ramen instant,makaron instant bez przyprawy|makaron ramyeon instant,szt,,,false,120,450,nowy
-makaron rigatoni,makaron rigatoni,rigatoni,g,,,false,,360,nowy
-makaron ryżowy,makaron ryzowy,makaron ryzowy wstazki,g,,,false,,360,nowy
-makaron sojowy,makaron sojowy,makaron szklany,g,,,false,,350,nowy
-makaron somen,makaron somen,makaron pszenny somen lub spaghetti,g,,,false,,350,nowy
+makaron ramen,makaron ramen,makaron ramen lub pszenny,g,1000,kg,false,,370,nowy
+makaron ramen instant,makaron ramen instant,makaron instant bez przyprawy|makaron ramyeon instant,szt,120,szt.,false,120,450,nowy
+makaron rigatoni,makaron rigatoni,rigatoni,g,1000,kg,false,,360,nowy
+makaron ryżowy,makaron ryzowy,makaron ryzowy wstazki,g,1000,kg,false,,360,nowy
+makaron sojowy,makaron sojowy,makaron szklany,g,1000,kg,false,,350,nowy
+makaron somen,makaron somen,makaron pszenny somen lub spaghetti,g,1000,kg,false,,350,nowy
 makaron spaghetti,makaron spaghetti,spaghetti,g,500,opak. 500g,true,500,360,scalony z: Makaron spaghetti
 makaron tagliatelle,makaron tagliatelle,tagliatelle,g,500,opak. 500g,true,500,360,scalony z: Makaron tagliatelle
-makaron trofie,makaron trofie,makaron trofie lub swiderki,g,,,false,,360,nowy
-makaron udon,makaron udon,makaron pszenny grube nitki,g,,,false,,350,nowy
-makaron ze skrobi batatów,makaron ze skrobi batatow,makaron z batatow japchae,g,,,false,,350,nowy
-makaron łazanki,makaron lazanki,,g,,,false,,360,nowy
+makaron trofie,makaron trofie,makaron trofie lub swiderki,g,1000,kg,false,,360,nowy
+makaron udon,makaron udon,makaron pszenny grube nitki,g,1000,kg,false,,350,nowy
+makaron ze skrobi batatów,makaron ze skrobi batatow,makaron z batatow japchae,g,1000,kg,false,,350,nowy
+makaron łazanki,makaron lazanki,,g,1000,kg,false,,360,nowy
 makaron świderki,makaron swiderki,fusilli|swiderki,g,500,opak. 500g,true,500,360,scalony z: Makaron świderki
-makrela wędzona,makrela wedzona,,g,,,false,,220,nowy
-maliny,maliny,maliny lub truskawki|maliny moga byc mrozone|mrozone maliny,g,,,false,,52,nowy
+makrela wędzona,makrela wedzona,,g,1000,kg,false,,220,nowy
+maliny,maliny,maliny lub truskawki|maliny moga byc mrozone|mrozone maliny,g,1000,kg,false,,52,nowy
 mango,mango,,g,350,szt.,true,350,60,scalony z: Mango
 marchew,marchew,marchewka|marchewki,g,80,szt.,true,80,35,scalony z: Marchewka
-marmolada wieloowocowa,marmolada wieloowocowa,,g,,,false,,250,nowy
-marynowana rzodkiew danmuji,marynowana rzodkiew danmuji,marynowana zolta rzodkiew danmuji,szt,,,false,30,25,nowy
-masa krówkowa,masa krowkowa,kajmak masa krowkowa|masa krowkowa kajmak,g,,,false,,320,nowy
-mascarpone,mascarpone,ser mascarpone|serek mascarpone,g,,,false,,430,nowy
+marmolada wieloowocowa,marmolada wieloowocowa,,g,1000,kg,false,,250,nowy
+marynowana rzodkiew danmuji,marynowana rzodkiew danmuji,marynowana zolta rzodkiew danmuji,szt,30,szt.,false,30,25,nowy
+masa krówkowa,masa krowkowa,kajmak masa krowkowa|masa krowkowa kajmak,g,1000,kg,false,,320,nowy
+mascarpone,mascarpone,ser mascarpone|serek mascarpone,g,1000,kg,false,,430,nowy
 masło,maslo,maslo do kremu|maslo do smazenia|maslo roztopione|maslo zimne,g,200,kostka 200g,true,,735,scalony z: Masło
-masło klarowane,maslo klarowane,,g,,,false,,880,nowy
-masło orzechowe,maslo orzechowe,,g,,,false,,600,nowy
-małże,malze,,g,,,false,,85,nowy
-maślanka,maslanka,,ml,,,false,,40,nowy
-melon kantalupa,melon kantalupa,,g,,,false,,34,nowy
-mielonka konserwowa,mielonka konserwowa,mielonka konserwowa spam,g,,,false,,300,nowy
-mieszanka owoców morza,mieszanka owocow morza,mieszanka owocow morza mrozona|mrozona mieszanka owocow morza,g,,,false,,80,nowy
-mieszanka sałat,mieszanka salat,mix salat|mix salat rukola roszponka,g,,,false,,15,nowy
-migdały,migdaly,migdaly blanszowane|migdaly cale,g,,,false,1.2,580,nowy
-migdały mielone,migdaly mielone,mielone migdaly,g,,,false,,600,nowy
-migdały w płatkach,migdaly w platkach,platki migdalowe,g,,,false,,580,nowy
-mini parówki,mini parowki,,szt,,,false,15,260,nowy
+masło klarowane,maslo klarowane,,g,1000,kg,false,,880,nowy
+masło orzechowe,maslo orzechowe,,g,1000,kg,false,,600,nowy
+małże,malze,,g,1000,kg,false,,85,nowy
+maślanka,maslanka,,ml,1000,l,false,,40,nowy
+melon kantalupa,melon kantalupa,,g,1000,kg,false,,34,nowy
+mielonka konserwowa,mielonka konserwowa,mielonka konserwowa spam,g,1000,kg,false,,300,nowy
+mieszanka owoców morza,mieszanka owocow morza,mieszanka owocow morza mrozona|mrozona mieszanka owocow morza,g,1000,kg,false,,80,nowy
+mieszanka sałat,mieszanka salat,mix salat|mix salat rukola roszponka,g,1000,kg,false,,15,nowy
+migdały,migdaly,migdaly blanszowane|migdaly cale,g,1.2,szt.,false,1.2,580,nowy
+migdały mielone,migdaly mielone,mielone migdaly,g,1000,kg,false,,600,nowy
+migdały w płatkach,migdaly w platkach,platki migdalowe,g,1000,kg,false,,580,nowy
+mini parówki,mini parowki,,szt,15,szt.,false,15,260,nowy
 miód,miod,,g,500,słoik 500g,true,,320,scalony z: Miód
-mięso mielone jagnięce,mieso mielone jagniece,mieso mielone jagniece lub wolowe,g,,,false,,280,nowy
-mięso mielone wieprzowe,mieso mielone wieprzowe,,g,,,false,,260,nowy
-mięso mielone wieprzowo-wołowe,mieso mielone wieprzowo wolowe,mieso mielone wolowo wieprzowe,g,,,false,,250,nowy
+mięso mielone jagnięce,mieso mielone jagniece,mieso mielone jagniece lub wolowe,g,1000,kg,false,,280,nowy
+mięso mielone wieprzowe,mieso mielone wieprzowe,,g,1000,kg,false,,260,nowy
+mięso mielone wieprzowo-wołowe,mieso mielone wieprzowo wolowe,mieso mielone wolowo wieprzowe,g,1000,kg,false,,250,nowy
 mięso mielone wołowe,mieso mielone wolowe,mielona wolowina|mieso na burgery|wolowina na burgery,g,500,opak. 500g,true,,220,scalony z: Wołowina na burgery
-mięta świeża,mieta swieza,listki miety|mieta|mieta lub koperek|swieza mieta,g,,,false,0.2,45,nowy
+mięta świeża,mieta swieza,listki miety|mieta|mieta lub koperek|swieza mieta,g,0.2,szt.,false,0.2,45,nowy
 mleko,mleko,mleko 2|mleko 32|mleko uht,ml,1000,karton 1l,true,,55,scalony z: Mleko
-mleko kokosowe,mleko kokosowe,mleczko kokosowe,ml,,,false,,180,nowy
-mleko skondensowane słodzone,mleko skondensowane slodzone,mleko skondensowane,ml,,,false,,320,nowy
-mleko w proszku,mleko w proszku,,g,,,false,,500,nowy
-morele,morele,,szt,,,false,40,48,nowy
-mortadela,mortadela,mortadela w plastrach,g,,,false,,310,nowy
-mostek wołowy,mostek wolowy,mostek wolowy lub chuda wolowina|wolowina mostek lub rostbef,g,,,false,,250,nowy
+mleko kokosowe,mleko kokosowe,mleczko kokosowe,ml,1000,l,false,,180,nowy
+mleko skondensowane słodzone,mleko skondensowane slodzone,mleko skondensowane,ml,1000,l,false,,320,nowy
+mleko w proszku,mleko w proszku,,g,1000,kg,false,,500,nowy
+morele,morele,,szt,40,szt.,false,40,48,nowy
+mortadela,mortadela,mortadela w plastrach,g,1000,kg,false,,310,nowy
+mostek wołowy,mostek wolowy,mostek wolowy lub chuda wolowina|wolowina mostek lub rostbef,g,1000,kg,false,,250,nowy
 mozzarella,mozzarella,mozarella|mozarella swieza|mozzarella starta|mozzarella tarta|ser mozarella|ser mozzarella|ser mozzarella starty,g,125,kulka 125g,true,125,250,"scalony z: Mozarella, Ser mozarella"
-mozzarella mini,mozzarella mini,bocconcini male kulki mozzarelli|mini kulki mozzarelli bocconcini|mozzarella mini ciliegine|mozzarella mini kulki,g,,,false,,250,nowy
-musli,musli,platki musli,g,,,false,,370,nowy
+mozzarella mini,mozzarella mini,bocconcini male kulki mozzarelli|mini kulki mozzarelli bocconcini|mozzarella mini ciliegine|mozzarella mini kulki,g,1000,kg,false,,250,nowy
+musli,musli,platki musli,g,1000,kg,false,,370,nowy
 musztarda,musztarda,,g,200,słoik 200g,true,,130,scalony z: Musztarda
-musztarda Dijon,musztarda dijon,,g,,,false,,150,nowy
-musztarda sarepska,musztarda sarepska,,g,,,false,,130,nowy
-mąka gryczana,maka gryczana,,g,,,false,,340,nowy
-mąka kukurydziana,maka kukurydziana,,g,,,false,,360,nowy
+musztarda Dijon,musztarda dijon,,g,1000,kg,false,,150,nowy
+musztarda sarepska,musztarda sarepska,,g,1000,kg,false,,130,nowy
+mąka gryczana,maka gryczana,,g,1000,kg,false,,340,nowy
+mąka kukurydziana,maka kukurydziana,,g,1000,kg,false,,360,nowy
 mąka pszenna,maka pszenna,maka|maka na kruszonke|maka pszenna typ 550,g,1000,opak. 1kg,true,,345,scalony z: Mąka
 mąka pszenna typ 00,maka pszenna typ 00,maka 00|maka tipo 00,g,1000,opak. 1kg,true,,345,scalony z: Mąka 00
-mąka ryżowa,maka ryzowa,maka ryzowa lub ziemniaczana,g,,,false,,360,nowy
-mąka z ciecierzycy,maka z ciecierzycy,,g,,,false,,380,nowy
+mąka ryżowa,maka ryzowa,maka ryzowa lub ziemniaczana,g,1000,kg,false,,360,nowy
+mąka z ciecierzycy,maka z ciecierzycy,,g,1000,kg,false,,380,nowy
 mąka ziemniaczana,maka ziemniaczana,skrobia ziemniaczana,g,250,opak. 250g,true,,340,scalony z: Mąka ziemniaczana
-nachosy,nachosy,chipsy nachos kukurydziane|chipsy tortilla|nachosy kukurydziane,g,,,false,,500,nowy
-nasiona chia,nasiona chia,,g,,,false,,490,nowy
-nasiona kopru włoskiego,nasiona kopru wloskiego,,g,,,false,,345,nowy
+nachosy,nachosy,chipsy nachos kukurydziane|chipsy tortilla|nachosy kukurydziane,g,1000,kg,false,,500,nowy
+nasiona chia,nasiona chia,,g,1000,kg,false,,490,nowy
+nasiona kopru włoskiego,nasiona kopru wloskiego,,g,1000,kg,false,,345,nowy
 natka pietruszki,natka pietruszki,pietruszka liscie|pietruszka natka|swieza natka pietruszki,g,30,pęczek,true,,40,scalony z: Natka pietruszki
 nori,nori,algi nori|glony nori|nori platki lub pokrojony arkusz,szt.,10,opak. 10 szt.,true,3,350,scalony z: Nori
-ocet balsamiczny,ocet balsamiczny,,g,,,false,,90,nowy
+ocet balsamiczny,ocet balsamiczny,,g,1000,kg,false,,90,nowy
 ocet ryżowy,ocet ryzowy,,ml,250,but. 250ml,true,,20,scalony z: Ocet ryżowy
 ocet spirytusowy,ocet spirytusowy,ocet|ocet jablkowy,ml,500,but. 500ml,true,,20,scalony z: Ocet
-ocet winny biały,ocet winny bialy,ocet winny,ml,,,false,,20,nowy
-ocet winny czerwony,ocet winny czerwony,,g,,,false,,20,nowy
-odżywka białkowa,odzywka bialkowa,,g,,,false,,380,nowy
+ocet winny biały,ocet winny bialy,ocet winny,ml,1000,l,false,,20,nowy
+ocet winny czerwony,ocet winny czerwony,,g,1000,kg,false,,20,nowy
+odżywka białkowa,odzywka bialkowa,,g,1000,kg,false,,380,nowy
 ogórek,ogorek,ogorek swiezy|ogorek zielony|ogorki,g,180,szt.,true,200,15,scalony z: Ogórek
-ogórek gruntowy,ogorek gruntowy,,g,,,false,100,15,nowy
+ogórek gruntowy,ogorek gruntowy,,g,100,szt.,false,100,15,nowy
 ogórek kiszony,ogorek kiszony,ogorki kiszone,g,80,szt.,true,80,12,scalony z: Ogórek kiszony
-ogórek konserwowy,ogorek konserwowy,,szt,,,false,50,20,nowy
-olej chili,olej chili,,g,,,false,,880,nowy
-olej kokosowy,olej kokosowy,,g,,,false,,860,nowy
+ogórek konserwowy,ogorek konserwowy,,szt,50,szt.,false,50,20,nowy
+olej chili,olej chili,,g,1000,kg,false,,880,nowy
+olej kokosowy,olej kokosowy,,g,1000,kg,false,,860,nowy
 olej rzepakowy,olej rzepakowy,olej|olej do smazenia|olej roslinny|olej slonecznikowy,ml,1000,but. 1l,true,,884,scalony z: Olej
-olej sezamowy,olej sezamowy,,g,,,false,,884,nowy
+olej sezamowy,olej sezamowy,,g,1000,kg,false,,884,nowy
 oliwa z oliwek,oliwa z oliwek,oliwa|oliwa do smazenia,ml,500,but. 500ml,true,,884,scalony z: Oliwa
 oliwki czarne,oliwki czarne,oliwki czarne bez pestek,g,150,słoik 150g,true,4,150,scalony z: Oliwki czarne
 oliwki zielone,oliwki zielone,duze oliwki zielone drylowane|oliwki,g,150,słoik 150g,true,5,145,scalony z: Oliwki Zielone
 oregano,oregano,oregano suszone,g,10,opak. 10g,true,,270,scalony z: Oregano
-orzechy laskowe,orzechy laskowe,orzechy laskowe prazone siekane,g,,,false,,630,nowy
-orzechy nerkowca,orzechy nerkowca,,g,,,false,,570,nowy
-orzechy włoskie,orzechy wloskie,orzechy wloskie posiekane,g,,,false,,650,nowy
-orzeszki piniowe,orzeszki piniowe,,g,,,false,0.2,670,nowy
-orzeszki ziemne,orzeszki ziemne,orzeszki ziemne niesolone|orzeszki ziemne prazone,g,,,false,,570,nowy
-owoce sezonowe,owoce sezonowe,,g,,,false,,50,nowy
-paneer,paneer,ser paneer,g,,,false,,320,nowy
+orzechy laskowe,orzechy laskowe,orzechy laskowe prazone siekane,g,1000,kg,false,,630,nowy
+orzechy nerkowca,orzechy nerkowca,,g,1000,kg,false,,570,nowy
+orzechy włoskie,orzechy wloskie,orzechy wloskie posiekane,g,1000,kg,false,,650,nowy
+orzeszki piniowe,orzeszki piniowe,,g,0.2,szt.,false,0.2,670,nowy
+orzeszki ziemne,orzeszki ziemne,orzeszki ziemne niesolone|orzeszki ziemne prazone,g,1000,kg,false,,570,nowy
+owoce sezonowe,owoce sezonowe,,g,1000,kg,false,,50,nowy
+paneer,paneer,ser paneer,g,1000,kg,false,,320,nowy
 panko,panko,,g,200,opak. 200g,true,,370,scalony z: Panko
-papaja zielona,papaja zielona,,g,,,false,,40,nowy
-papier ryżowy,papier ryzowy,,szt,,,false,9,340,nowy
-papryczka chili,papryczka chili,,szt,,,false,10,40,nowy
+papaja zielona,papaja zielona,,g,1000,kg,false,,40,nowy
+papier ryżowy,papier ryzowy,,szt,9,szt.,false,9,340,nowy
+papryczka chili,papryczka chili,,szt,10,szt.,false,10,40,nowy
 papryczka chili suszona,papryczka chili suszona,chilli|papryczki chili suszone,g,20,opak. 20g,true,0.5,300,scalony z: Chilli
-papryczka chipotle,papryczka chipotle,,szt,,,false,15,60,nowy
-papryczka jalapeño,papryczka jalapeno,,szt,,,false,15,30,nowy
-papryczki mini słodkie,papryczki mini slodkie,,szt,,,false,30,30,nowy
+papryczka chipotle,papryczka chipotle,,szt,15,szt.,false,15,60,nowy
+papryczka jalapeño,papryczka jalapeno,,szt,15,szt.,false,15,30,nowy
+papryczki mini słodkie,papryczki mini slodkie,,szt,30,szt.,false,30,30,nowy
 papryka czerwona,papryka czerwona,papryka,g,150,szt.,true,200,31,scalony z: Papryka czerwona
 papryka ostra,papryka ostra,papryka ostra mielona|papryka ostra w proszku,g,30,opak. 30g,true,,290,scalony z: Papryka ostra
-papryka pieczona ze słoika,papryka pieczona ze sloika,papryka pieczona z sloika,g,,,false,,35,nowy
+papryka pieczona ze słoika,papryka pieczona ze sloika,papryka pieczona z sloika,g,1000,kg,false,,35,nowy
 papryka słodka,papryka slodka,papryka mielona|papryka slodka mielona|papryka slodka w proszku|papryka w proszku,g,30,opak. 30g,true,,290,scalony z: Papryka słodka
 papryka wędzona,papryka wedzona,papryka slodka wedzona|papryka wedzona slodka,g,30,opak. 30g,true,,290,scalony z: Papryka wędzona
 papryka żółta,papryka zolta,,g,150,szt.,true,200,27,scalony z: Papryka żółta
 parmezan,parmezan,parmezan starty|parmigiano|ser parmezan|ser parmezan tarty,g,100,opak. 100g,true,,400,scalony z: Parmezan
-parówki,parowki,parowki cielece,szt,,,false,40,260,nowy
-passata pomidorowa,passata pomidorowa,pomidory z puszki passata,ml,,,false,,30,nowy
-pasta anko,pasta anko,czerwona fasola adzuki z puszki slodzona|pasta z czerwonej fasoli anko,g,,,false,,240,nowy
-pasta chunjang,pasta chunjang,pasta z czarnej fasoli chunjang,g,,,false,,200,nowy
-pasta curry massaman,pasta curry massaman,,g,,,false,,200,nowy
-pasta curry zielona,pasta curry zielona,,g,,,false,,150,nowy
-pasta doenjang,pasta doenjang,pasta sojowa doenjang lub miso,g,,,false,,180,nowy
-pasta doubanjiang,pasta doubanjiang,,g,,,false,,130,nowy
-pasta gochujang,pasta gochujang,gochujang|gochujang pasta chili,g,,,false,,230,nowy
-pasta miso,pasta miso,,g,,,false,,200,nowy
-pasta pistacjowa,pasta pistacjowa,,g,,,false,,570,nowy
-pasztet drobiowy,pasztet drobiowy,,g,,,false,,280,nowy
-pecorino,pecorino,ser pecorino|ser pecorino romano|ser pecorino romano drobno starty|ser pecorino romano starty,g,,,false,,390,nowy
-pestki dyni,pestki dyni,,g,,,false,,560,nowy
+parówki,parowki,parowki cielece,szt,40,szt.,false,40,260,nowy
+passata pomidorowa,passata pomidorowa,pomidory z puszki passata,ml,1000,l,false,,30,nowy
+pasta anko,pasta anko,czerwona fasola adzuki z puszki slodzona|pasta z czerwonej fasoli anko,g,1000,kg,false,,240,nowy
+pasta chunjang,pasta chunjang,pasta z czarnej fasoli chunjang,g,1000,kg,false,,200,nowy
+pasta curry massaman,pasta curry massaman,,g,1000,kg,false,,200,nowy
+pasta curry zielona,pasta curry zielona,,g,1000,kg,false,,150,nowy
+pasta doenjang,pasta doenjang,pasta sojowa doenjang lub miso,g,1000,kg,false,,180,nowy
+pasta doubanjiang,pasta doubanjiang,,g,1000,kg,false,,130,nowy
+pasta gochujang,pasta gochujang,gochujang|gochujang pasta chili,g,1000,kg,false,,230,nowy
+pasta miso,pasta miso,,g,1000,kg,false,,200,nowy
+pasta pistacjowa,pasta pistacjowa,,g,1000,kg,false,,570,nowy
+pasztet drobiowy,pasztet drobiowy,,g,1000,kg,false,,280,nowy
+pecorino,pecorino,ser pecorino|ser pecorino romano|ser pecorino romano drobno starty|ser pecorino romano starty,g,1000,kg,false,,390,nowy
+pestki dyni,pestki dyni,,g,1000,kg,false,,560,nowy
 pesto bazyliowe,pesto bazyliowe,pesto|pesto zielone,g,190,słoik 190g,true,190,450,scalony z: Pesto Zielone
 pieczarki,pieczarki,pieczarka|pieczarki male|swieze pieczarki lub podgrzybki,g,250,opak. 250g,true,20,22,scalony z: Pieczarki
-pieprz biały,pieprz bialy,,g,,,false,,300,nowy
+pieprz biały,pieprz bialy,,g,1000,kg,false,,300,nowy
 pieprz czarny,pieprz czarny,pieprz|pieprz czarny grubo mielony|pieprz czarny mielony|pieprz czarny swiezo mielony|swiezo mielony pieprz,g,50,opak. 50g,true,,250,scalony z: Pieprz
-pieprz czarny ziarnisty,pieprz czarny ziarnisty,pieprz ziarnisty,g,,,false,0.05,250,nowy
-pieprz syczuański,pieprz syczuanski,,g,,,false,,300,nowy
-piernik,piernik,,g,,,false,,350,nowy
-pierś z kaczki,piers z kaczki,,g,,,false,,200,nowy
+pieprz czarny ziarnisty,pieprz czarny ziarnisty,pieprz ziarnisty,g,0.05,szt.,false,0.05,250,nowy
+pieprz syczuański,pieprz syczuanski,,g,1000,kg,false,,300,nowy
+piernik,piernik,,g,1000,kg,false,,350,nowy
+pierś z kaczki,piers z kaczki,,g,1000,kg,false,,200,nowy
 pierś z kurczaka,piers z kurczaka,filet kurczak|filet z kurczaka|filet z piersi kurczaka,g,1000,kg,false,200,110,scalony z: Pierś z kurczaka
 pietruszka (korzeń),pietruszka korzen,pietruszka,g,80,szt.,true,80,40,scalony z: Pietruszka
-pistacje,pistacje,pistacje luskane|pistacje niesolone luskane,g,,,false,,570,nowy
-pita,pita,,szt,,,false,60,275,nowy
-piwo,piwo,,ml,,,false,,43,nowy
-piwo ciemne,piwo ciemne,,ml,,,false,,50,nowy
-placki mandaryńskie,placki mandarynskie,nalesniki mandarynskie,szt,,,false,15,280,nowy
-polenta,polenta,kasza kukurydziana polenta|kaszka kukurydziana polenta blyskawiczna,g,,,false,,360,nowy
+pistacje,pistacje,pistacje luskane|pistacje niesolone luskane,g,1000,kg,false,,570,nowy
+pita,pita,,szt,60,szt.,false,60,275,nowy
+piwo,piwo,,ml,1000,l,false,,43,nowy
+piwo ciemne,piwo ciemne,,ml,1000,l,false,,50,nowy
+placki mandaryńskie,placki mandarynskie,nalesniki mandarynskie,szt,15,szt.,false,15,280,nowy
+polenta,polenta,kasza kukurydziana polenta|kaszka kukurydziana polenta blyskawiczna,g,1000,kg,false,,360,nowy
 polędwica sopocka,poledwica sopocka,,g,200,opak. 200g,true,,120,scalony z: Polędwica sopocka
 polędwica wołowa,poledwica wolowa,poledwica lub rostbef wolowy,g,1000,kg,false,,120,scalony z: Polędwica wołowa
 polędwiczka wieprzowa,poledwiczka wieprzowa,poledwiczka wieprzowa lub filet z indyka,g,500,szt.,false,,110,scalony z: Polędwiczka wieprzowa
-pomarańcza,pomarancza,,szt,,,false,200,47,nowy
+pomarańcza,pomarancza,,szt,200,szt.,false,200,47,nowy
 pomidor,pomidor,pomidory|pomidory dojrzale,g,120,szt.,true,150,18,scalony z: Pomidor
 pomidorki koktajlowe,pomidorki koktajlowe,pomidory koktajlowe,g,250,opak. 250g,true,15,20,scalony z: Pomidory koktajlowe
 pomidory suszone,pomidory suszone,pomidory suszone w oleju|suszone pomidory,g,200,słoik 200g,true,,210,scalony z: Pomidory suszone
 pomidory z puszki,pomidory z puszki,pomidory krojone z puszki|pomidory pelati z puszki|pomidory pelpane|pomidory w puszce,g,400,puszka 400g,true,400,22,scalony z: Pomidory w puszce
-por,por,,szt,,,false,200,60,nowy
-porchetta,porchetta,porchetta pieczony boczek schab w rolce w plastrach,g,,,false,,300,nowy
-proszek do pieczenia,proszek do pieczenia,,g,,,false,,100,nowy
-przyprawa do mięsa mielonego,przyprawa do miesa mielonego,,g,,,false,,250,nowy
-przyprawa do tacos,przyprawa do tacos,,g,,,false,,250,nowy
+por,por,,szt,200,szt.,false,200,60,nowy
+porchetta,porchetta,porchetta pieczony boczek schab w rolce w plastrach,g,1000,kg,false,,300,nowy
+proszek do pieczenia,proszek do pieczenia,,g,1000,kg,false,,100,nowy
+przyprawa do mięsa mielonego,przyprawa do miesa mielonego,,g,1000,kg,false,,250,nowy
+przyprawa do tacos,przyprawa do tacos,,g,1000,kg,false,,250,nowy
 przyprawa gyros,przyprawa gyros,gyros przyprawa,g,30,opak. 30g,true,,250,scalony z: Przyprawa gyros
 przyprawa kebab,przyprawa kebab,kebab przyprawa,g,30,opak. 30g,true,,250,scalony z: Przyprawa kebab
-przyprawa korzenna do piernika,przyprawa korzenna do piernika,,g,,,false,,280,nowy
-przyprawa pięć smaków,przyprawa piec smakow,piec smakow,g,,,false,,300,nowy
+przyprawa korzenna do piernika,przyprawa korzenna do piernika,,g,1000,kg,false,,280,nowy
+przyprawa pięć smaków,przyprawa piec smakow,piec smakow,g,1000,kg,false,,300,nowy
 pstrąg,pstrag,,g,400,szt.,false,300,120,scalony z: Pstrąg
-pszenica na pastierę,pszenica na pastiere,,g,,,false,,110,nowy
-pyłek pszczeli,pylek pszczeli,,g,,,false,,300,nowy
-pędy bambusa,pedy bambusa,pedy bambusa z puszki,g,,,false,,20,nowy
-płatki chili,platki chili,chili w platkach|papryczka chili platki,g,,,false,,300,nowy
-płatki kukurydziane,platki kukurydziane,,g,,,false,,380,nowy
-płatki owsiane,platki owsiane,,g,,,false,,370,nowy
-rabarbar,rabarbar,,g,,,false,,21,nowy
-radicchio,radicchio,,g,,,false,,23,nowy
-ricotta,ricotta,ser ricotta|ser ricotta salata lub feta,g,,,false,,170,nowy
-rodzynki,rodzynki,,g,,,false,,300,nowy
+pszenica na pastierę,pszenica na pastiere,,g,1000,kg,false,,110,nowy
+pyłek pszczeli,pylek pszczeli,,g,1000,kg,false,,300,nowy
+pędy bambusa,pedy bambusa,pedy bambusa z puszki,g,1000,kg,false,,20,nowy
+płatki chili,platki chili,chili w platkach|papryczka chili platki,g,1000,kg,false,,300,nowy
+płatki kukurydziane,platki kukurydziane,,g,1000,kg,false,,380,nowy
+płatki owsiane,platki owsiane,,g,1000,kg,false,,370,nowy
+rabarbar,rabarbar,,g,1000,kg,false,,21,nowy
+radicchio,radicchio,,g,1000,kg,false,,23,nowy
+ricotta,ricotta,ser ricotta|ser ricotta salata lub feta,g,1000,kg,false,,170,nowy
+rodzynki,rodzynki,,g,1000,kg,false,,300,nowy
 rostbef,rostbef,gotowana wolowina rostbef|rostbef wolowy|wolowina rostbef|wolowina rostbef lub antrykot cienko pokrojona,g,1000,kg,false,,200,scalony z: Rostbef
-roszponka,roszponka,,g,,,false,,21,nowy
-rozbratel wołowy,rozbratel wolowy,,g,,,false,,200,nowy
-rozmaryn suszony,rozmaryn suszony,,g,,,false,,330,nowy
+roszponka,roszponka,,g,1000,kg,false,,21,nowy
+rozbratel wołowy,rozbratel wolowy,,g,1000,kg,false,,200,nowy
+rozmaryn suszony,rozmaryn suszony,,g,1000,kg,false,,330,nowy
 rozmaryn świeży,rozmaryn swiezy,rozmaryn|swiezy rozmaryn,g,10,opak. 10g,true,1,130,scalony z: Rozmaryn
 rukola,rukola,,g,70,opak. 70g,true,,25,scalony z: Rukola
-rurki cannelloni,rurki cannelloni,,szt,,,false,12,360,nowy
+rurki cannelloni,rurki cannelloni,,szt,12,szt.,false,12,360,nowy
 ryż,ryz,ryz bialy|ryz bialy ugotowany goracy|ryz dlugoziarnisty|ryz dlugoziarnisty ugotowany wystudzony|ryz ugotowany|ryz ugotowany najlepiej z dnia poprzedniego,g,1000,opak. 1kg,true,,350,scalony z: Ryż
 ryż arborio,ryz arborio,arborio|carnaroli|ryz do risotto,g,500,opak. 500g,true,,350,scalony z: Ryż do risotto
-ryż basmati,ryz basmati,,g,,,false,,350,nowy
+ryż basmati,ryz basmati,,g,1000,kg,false,,350,nowy
 ryż do sushi,ryz do sushi,ryz kleisty,g,500,opak. 500g,true,,350,scalony z: Ryż do sushi
-ryż jaśminowy,ryz jasminowy,,g,,,false,,350,nowy
-ryż krótkoziarnisty,ryz krotkoziarnisty,ryz krotkoziarnisty ugotowany,g,,,false,,350,nowy
-rzepa,rzepa,,szt,,,false,150,28,nowy
-rzodkiew biała,rzodkiew biala,rzodkiew daikon,g,,,false,,18,nowy
+ryż jaśminowy,ryz jasminowy,,g,1000,kg,false,,350,nowy
+ryż krótkoziarnisty,ryz krotkoziarnisty,ryz krotkoziarnisty ugotowany,g,1000,kg,false,,350,nowy
+rzepa,rzepa,,szt,150,szt.,false,150,28,nowy
+rzodkiew biała,rzodkiew biala,rzodkiew daikon,g,1000,kg,false,,18,nowy
 rzodkiewka,rzodkiewka,rzodkiewki,g,200,pęczek,true,15,16,scalony z: Rzodkiewka
 salami,salami,,g,100,opak. 100g,true,,400,scalony z: Salami
-sardynki,sardynki,male rybki np sardynki lub filet z dorsza w kawalkach,g,,,false,,200,nowy
-sałata,salata,liscie salaty,g,,,false,20,15,nowy
+sardynki,sardynki,male rybki np sardynki lub filet z dorsza w kawalkach,g,1000,kg,false,,200,nowy
+sałata,salata,liscie salaty,g,20,szt.,false,20,15,nowy
 sałata lodowa,salata lodowa,,g,250,szt.,true,20,14,scalony z: Sałata lodowa
-sałata masłowa,salata maslowa,,g,,,false,,13,nowy
-sałata rzymska,salata rzymska,,g,,,false,,17,nowy
+sałata masłowa,salata maslowa,,g,1000,kg,false,,13,nowy
+sałata rzymska,salata rzymska,,g,1000,kg,false,,17,nowy
 schab,schab,schab biodrowy|schab wieprzowy bez kosci|wieprzowina|wieprzowina schab lopatka,g,1000,kg,false,,200,"scalony z: Schab, Wieprzowina (schab/łopatka)"
-seler korzeniowy,seler korzeniowy,seler,g,,,false,,25,nowy
+seler korzeniowy,seler korzeniowy,seler,g,1000,kg,false,,25,nowy
 seler naciowy,seler naciowy,,g,400,szt.,true,40,15,scalony z: Seler naciowy
-ser kozi,ser kozi,,g,,,false,,360,nowy
+ser kozi,ser kozi,,g,1000,kg,false,,360,nowy
 ser żółty,ser zolty,edam|ser zolty gouda|ser zolty np gouda|ser zolty starty|ser zolty tarty|ser zolty w plastrze,g,200,opak. 200g,true,20,380,scalony z: Ser żółty
-serek topiony,serek topiony,serek topiony smietankowy,g,,,false,,300,nowy
-serek waniliowy,serek waniliowy,,g,,,false,,130,nowy
-serek wiejski,serek wiejski,,g,,,false,,100,nowy
+serek topiony,serek topiony,serek topiony smietankowy,g,1000,kg,false,,300,nowy
+serek waniliowy,serek waniliowy,,g,1000,kg,false,,130,nowy
+serek wiejski,serek wiejski,,g,1000,kg,false,,100,nowy
 serek śmietankowy,serek smietankowy,serek alette|serek alette smietankowy|serek kremowy,g,150,opak. 150g,true,150,250,scalony z: Serek Alette śmietankowy
-sezam,sezam,nasiona sezamu|sezam prazony,g,,,false,,570,nowy
-siemię lniane,siemie lniane,,g,,,false,,530,nowy
-skrobia kukurydziana,skrobia kukurydziana,,g,,,false,,350,nowy
-skrzydełka z kurczaka,skrzydelka z kurczaka,skrzydelka kurczaka,g,,,false,,200,nowy
-skyr,skyr,skyr naturalny,g,,,false,,65,nowy
-skórka pomarańczowa kandyzowana,skorka pomaranczowa kandyzowana,,g,,,false,,300,nowy
-skórka z cytryny,skorka z cytryny,,g,,,false,,50,nowy
-skórka z pomarańczy,skorka z pomaranczy,,g,,,false,,100,nowy
-smalec,smalec,smalec lub olej|smalec lub olej do smazenia,g,,,false,,900,nowy
-smalec gęsi,smalec gesi,,g,,,false,,900,nowy
-soczewica czerwona,soczewica czerwona,soczewica czerwona lub zielona sucha,g,,,false,,350,nowy
-soczewica zielona,soczewica zielona,,g,,,false,,350,nowy
-soda oczyszczona,soda oczyszczona,soda,g,,,false,,0,nowy
-sok malinowy,sok malinowy,,g,,,false,,250,nowy
-sok z ananasa,sok z ananasa,,ml,,,false,,50,nowy
-sok z cytryny,sok z cytryny,,g,,,false,,22,nowy
-sok z limonki,sok z limonki,limonka sok,g,,,false,,25,nowy
-sos BBQ,sos bbq,,g,,,false,,170,nowy
-sos Worcestershire,sos worcestershire,,g,,,false,,80,nowy
-sos burgerowy,sos burgerowy,,g,,,false,,350,nowy
-sos cezar,sos cezar,,g,,,false,,450,nowy
-sos czosnkowy,sos czosnkowy,,g,,,false,,350,nowy
-sos hoisin,sos hoisin,,g,,,false,,220,nowy
-sos ostrygowy,sos ostrygowy,,g,,,false,,50,nowy
+sezam,sezam,nasiona sezamu|sezam prazony,g,1000,kg,false,,570,nowy
+siemię lniane,siemie lniane,,g,1000,kg,false,,530,nowy
+skrobia kukurydziana,skrobia kukurydziana,,g,1000,kg,false,,350,nowy
+skrzydełka z kurczaka,skrzydelka z kurczaka,skrzydelka kurczaka,g,1000,kg,false,,200,nowy
+skyr,skyr,skyr naturalny,g,1000,kg,false,,65,nowy
+skórka pomarańczowa kandyzowana,skorka pomaranczowa kandyzowana,,g,1000,kg,false,,300,nowy
+skórka z cytryny,skorka z cytryny,,g,1000,kg,false,,50,nowy
+skórka z pomarańczy,skorka z pomaranczy,,g,1000,kg,false,,100,nowy
+smalec,smalec,smalec lub olej|smalec lub olej do smazenia,g,1000,kg,false,,900,nowy
+smalec gęsi,smalec gesi,,g,1000,kg,false,,900,nowy
+soczewica czerwona,soczewica czerwona,soczewica czerwona lub zielona sucha,g,1000,kg,false,,350,nowy
+soczewica zielona,soczewica zielona,,g,1000,kg,false,,350,nowy
+soda oczyszczona,soda oczyszczona,soda,g,1000,kg,false,,0,nowy
+sok malinowy,sok malinowy,,g,1000,kg,false,,250,nowy
+sok z ananasa,sok z ananasa,,ml,1000,l,false,,50,nowy
+sok z cytryny,sok z cytryny,,g,1000,kg,false,,22,nowy
+sok z limonki,sok z limonki,limonka sok,g,1000,kg,false,,25,nowy
+sos BBQ,sos bbq,,g,1000,kg,false,,170,nowy
+sos Worcestershire,sos worcestershire,,g,1000,kg,false,,80,nowy
+sos burgerowy,sos burgerowy,,g,1000,kg,false,,350,nowy
+sos cezar,sos cezar,,g,1000,kg,false,,450,nowy
+sos czosnkowy,sos czosnkowy,,g,1000,kg,false,,350,nowy
+sos hoisin,sos hoisin,,g,1000,kg,false,,220,nowy
+sos ostrygowy,sos ostrygowy,,g,1000,kg,false,,50,nowy
 sos pieczarkowy,sos pieczarkowy,,g,400,słoik 400g,true,400,80,scalony z: Sos pieczarkowy
-sos pomidorowy,sos pomidorowy,,ml,,,false,,60,nowy
-sos rybny,sos rybny,,g,,,false,,35,nowy
+sos pomidorowy,sos pomidorowy,,ml,1000,l,false,,60,nowy
+sos rybny,sos rybny,,g,1000,kg,false,,35,nowy
 sos sojowy,sos sojowy,soja sos,ml,250,but. 250ml,true,,55,scalony z: Sos sojowy
-sos sojowy ciemny,sos sojowy ciemny,,g,,,false,,80,nowy
-sos sojowy jasny,sos sojowy jasny,,g,,,false,,55,nowy
+sos sojowy ciemny,sos sojowy ciemny,,g,1000,kg,false,,80,nowy
+sos sojowy jasny,sos sojowy jasny,,g,1000,kg,false,,55,nowy
 sos słodkie chili,sos slodkie chili,sos chili slodki|sos sweet chilli|sweet chilli,ml,200,but. 200ml,true,,220,scalony z: Sos sweet chilli
-sos słodko-kwaśny,sos slodko kwasny,,g,,,false,,150,nowy
-spirytus,spirytus,spirytus lub ocet,g,,,false,,0,nowy
-stracchino,stracchino,ser stracchino lub kremowy twarozek,g,,,false,,300,nowy
-sucharki fette biscottate,sucharki fette biscottate,,szt,,,false,10,410,nowy
-sumak,sumak,,g,,,false,,240,nowy
-syrop klonowy,syrop klonowy,,g,,,false,,260,nowy
-szafran,szafran,,g,,,false,,0,nowy
-szalotka,szalotka,,szt,,,false,30,72,nowy
-szałwia świeża,szalwia swieza,liscie swiezej szalwii|swieza szalwia|szalwia,g,,,false,0.3,120,nowy
-szczaw świeży,szczaw swiezy,,g,,,false,,20,nowy
-szczypiorek,szczypiorek,szczypiorek lub dymka,g,,,false,,30,nowy
-szparagi zielone,szparagi zielone,szparagi,g,,,false,,20,nowy
+sos słodko-kwaśny,sos slodko kwasny,,g,1000,kg,false,,150,nowy
+spirytus,spirytus,spirytus lub ocet,g,1000,kg,false,,0,nowy
+stracchino,stracchino,ser stracchino lub kremowy twarozek,g,1000,kg,false,,300,nowy
+sucharki fette biscottate,sucharki fette biscottate,,szt,10,szt.,false,10,410,nowy
+sumak,sumak,,g,1000,kg,false,,240,nowy
+syrop klonowy,syrop klonowy,,g,1000,kg,false,,260,nowy
+szafran,szafran,,g,1000,kg,false,,0,nowy
+szalotka,szalotka,,szt,30,szt.,false,30,72,nowy
+szałwia świeża,szalwia swieza,liscie swiezej szalwii|swieza szalwia|szalwia,g,0.3,szt.,false,0.3,120,nowy
+szczaw świeży,szczaw swiezy,,g,1000,kg,false,,20,nowy
+szczypiorek,szczypiorek,szczypiorek lub dymka,g,1000,kg,false,,30,nowy
+szparagi zielone,szparagi zielone,szparagi,g,1000,kg,false,,20,nowy
 szpinak,szpinak,szpinak swiezy,g,100,opak. 100g,true,,23,scalony z: Szpinak
-szpinak baby,szpinak baby,,g,,,false,,23,nowy
-szpinak mrożony,szpinak mrozony,,g,,,false,,25,nowy
-szponder wołowy,szponder wolowy,,g,,,false,,250,nowy
+szpinak baby,szpinak baby,,g,1000,kg,false,,23,nowy
+szpinak mrożony,szpinak mrozony,,g,1000,kg,false,,25,nowy
+szponder wołowy,szponder wolowy,,g,1000,kg,false,,250,nowy
 szynka,szynka,szynka gotowana|szynka gotowana w plastrach|szynka lub boczek wedzony|szynka w kostce|szynka w plastrach|szynka wieprzowa,g,200,opak. 200g,true,15,130,"scalony z: Szynka, Szynka wieprzowa"
-szynka dojrzewająca,szynka dojrzewajaca,szynka dojrzewajaca lub bekon|szynka dojrzewajaca prosciutto|szynka parmenska|szynka parmenska lub szynka dojrzewajaca|szynka parmenska w plastrach|szynka prosciutto crudo,g,,,false,10,250,nowy
+szynka dojrzewająca,szynka dojrzewajaca,szynka dojrzewajaca lub bekon|szynka dojrzewajaca prosciutto|szynka parmenska|szynka parmenska lub szynka dojrzewajaca|szynka parmenska w plastrach|szynka prosciutto crudo,g,10,szt.,false,10,250,nowy
 sól,sol,sol do wody|szczypta soli,g,1000,opak. 1kg,true,,0,scalony z: Sól
-sól morska,sol morska,sol morska gruba,g,,,false,,0,nowy
-słonecznik,slonecznik,prazone slonecznik,g,,,false,,580,nowy
-słonina,slonina,,g,,,false,,750,nowy
-słód jęczmienny mielony,slod jeczmienny mielony,,g,,,false,,360,nowy
-tahini,tahini,pasta sezamowa tahini|pasta tahini,g,,,false,,600,nowy
-tapioka perełki,tapioka perelki,,g,,,false,,350,nowy
-tofu,tofu,tofu naturalne|tofu twarde,g,,,false,,120,nowy
-tofu jedwabiste,tofu jedwabiste,tofu jedwabiste miekkie,g,,,false,,55,nowy
-tortellini,tortellini,,g,,,false,,300,nowy
-tortellini z mięsem,tortellini z miesem,tortellini z miesem swieze,g,,,false,,300,nowy
-tortellini z serem,tortellini z serem,tortellini z serem swieze,g,,,false,,300,nowy
+sól morska,sol morska,sol morska gruba,g,1000,kg,false,,0,nowy
+słonecznik,slonecznik,prazone slonecznik,g,1000,kg,false,,580,nowy
+słonina,slonina,,g,1000,kg,false,,750,nowy
+słód jęczmienny mielony,slod jeczmienny mielony,,g,1000,kg,false,,360,nowy
+tahini,tahini,pasta sezamowa tahini|pasta tahini,g,1000,kg,false,,600,nowy
+tapioka perełki,tapioka perelki,,g,1000,kg,false,,350,nowy
+tofu,tofu,tofu naturalne|tofu twarde,g,1000,kg,false,,120,nowy
+tofu jedwabiste,tofu jedwabiste,tofu jedwabiste miekkie,g,1000,kg,false,,55,nowy
+tortellini,tortellini,,g,1000,kg,false,,300,nowy
+tortellini z mięsem,tortellini z miesem,tortellini z miesem swieze,g,1000,kg,false,,300,nowy
+tortellini z serem,tortellini z serem,tortellini z serem swieze,g,1000,kg,false,,300,nowy
 tortilla pszenna,tortilla pszenna,placek piadina lub duza tortilla pszenna|tortilla|tortilla pszenna duza|tortille|tortille pszenne|tortille pszenne male|wrap,szt.,6,opak. 6 szt.,true,60,300,scalony z: Tortilla
-trawa cytrynowa,trawa cytrynowa,,szt,,,false,20,100,nowy
-truskawki,truskawki,mrozone truskawki|truskawki lub inne owoce|truskawki lub maliny|truskawki moga byc mrozone,g,,,false,,32,nowy
-tteok,tteok,kluski ryzowe tteok|placki ryzowe tteok plasterki,g,,,false,,230,nowy
-tuńczyk w oleju,tunczyk w oleju,tunczyk w oleju puszka|tunczyk w oleju z puszki,g,,,false,,190,nowy
-tuńczyk w sosie własnym,tunczyk w sosie wlasnym,,g,,,false,120,110,nowy
+trawa cytrynowa,trawa cytrynowa,,szt,20,szt.,false,20,100,nowy
+truskawki,truskawki,mrozone truskawki|truskawki lub inne owoce|truskawki lub maliny|truskawki moga byc mrozone,g,1000,kg,false,,32,nowy
+tteok,tteok,kluski ryzowe tteok|placki ryzowe tteok plasterki,g,1000,kg,false,,230,nowy
+tuńczyk w oleju,tunczyk w oleju,tunczyk w oleju puszka|tunczyk w oleju z puszki,g,1000,kg,false,,190,nowy
+tuńczyk w sosie własnym,tunczyk w sosie wlasnym,,g,120,szt.,false,120,110,nowy
 twaróg,twarog,ser bialy|ser twarog|ser twarogowy|twarog poltlusty|twarozek,g,250,opak. 250g,true,,130,"scalony z: Ser twaróg, Ser biały"
-twaróg sernikowy,twarog sernikowy,ser twarogowy na sernik|twarog sernikowy mielony,g,,,false,,160,nowy
-tymianek,tymianek,tymianek suszony,g,,,false,,280,nowy
-udko z kaczki,udko z kaczki,udziec z kaczki,szt,,,false,250,200,nowy
+twaróg sernikowy,twarog sernikowy,ser twarogowy na sernik|twarog sernikowy mielony,g,1000,kg,false,,160,nowy
+tymianek,tymianek,tymianek suszony,g,1000,kg,false,,280,nowy
+udko z kaczki,udko z kaczki,udziec z kaczki,szt,250,szt.,false,250,200,nowy
 udko z kurczaka,udko z kurczaka,maly kurczak poussin lub udka z kurczaka|mieso z kurczaka udka|podudzia z kurczaka|udka|udka kurczaka,g,1000,kg,false,200,160,scalony z: Udka kurczaka
-udko z kurczaka bez kości,udko z kurczaka bez kosci,filet z udzca kurczaka|udka z kurczaka bez kosci|udziec z kurczaka bez kosci,g,,,false,,160,nowy
+udko z kurczaka bez kości,udko z kurczaka bez kosci,filet z udzca kurczaka|udka z kurczaka bez kosci|udziec z kurczaka bez kosci,g,1000,kg,false,,160,nowy
 udziec wołowy,udziec wolowy,wolowina ligawa udziec,g,1000,kg,false,,150,"scalony z: Udziec wołowy, Wołowina (Ligawa/Udziec)"
-wakame,wakame,suszone wodorosty miyeok wakame|wodorosty wakame,g,,,false,,45,nowy
-wino Marsala,wino marsala,wino marsala lub slodkie biale,ml,,,false,,160,nowy
+wakame,wakame,suszone wodorosty miyeok wakame|wodorosty wakame,g,1000,kg,false,,45,nowy
+wino Marsala,wino marsala,wino marsala lub slodkie biale,ml,1000,l,false,,160,nowy
 wino białe wytrawne,wino biale wytrawne,biale wino|biale wino wytrawne|biale wytrawne wino|wino biale,ml,750,but. 750ml,true,,80,scalony z: Wino białe wytrawne
 wino czerwone wytrawne,wino czerwone wytrawne,czerwone wino|wino czerwone,ml,750,but. 750ml,true,,85,scalony z: Wino czerwone wytrawne
-winogrona,winogrona,,g,,,false,,70,nowy
-wiórki kokosowe,wiorki kokosowe,wiorki kokosowe do obtoczenia,g,,,false,,660,nowy
-wiśnie,wisnie,wisnie bez pestek,g,,,false,,50,nowy
-wiśnie z kompotu,wisnie z kompotu,wisnie z kompotu bez pestek,g,,,false,,70,nowy
+winogrona,winogrona,,g,1000,kg,false,,70,nowy
+wiórki kokosowe,wiorki kokosowe,wiorki kokosowe do obtoczenia,g,1000,kg,false,,660,nowy
+wiśnie,wisnie,wisnie bez pestek,g,1000,kg,false,,50,nowy
+wiśnie z kompotu,wisnie z kompotu,wisnie z kompotu bez pestek,g,1000,kg,false,,70,nowy
 woda,woda,woda bardzo zimna|woda ciepla|woda letnia|woda lub bulion|woda lub wywar|wrzaca woda,ml,1500,but. 1.5l,true,,0,scalony z: Woda
-woda gazowana,woda gazowana,,ml,,,false,,0,nowy
+woda gazowana,woda gazowana,,ml,1000,l,false,,0,nowy
 wołowina gulaszowa,wolowina gulaszowa,wolowina,g,1000,kg,false,,200,scalony z: Wołowina
-wołowina peklowana,wolowina peklowana,,g,,,false,,250,nowy
-wykałaczki,wykalaczki,,szt,,,false,,0,nowy
-wódka,wodka,wodka ryzowa lub biala,g,,,false,,230,nowy
-wątróbka drobiowa,watrobka drobiowa,,g,,,false,,120,nowy
-włoszczyzna,wloszczyzna,wloszczyzna marchew pietruszka seler por,g,,,false,,35,nowy
-zakwas na żur,zakwas na zur,zakwas na zurek|zakwas z zytniej maki,ml,,,false,,30,nowy
+wołowina peklowana,wolowina peklowana,,g,1000,kg,false,,250,nowy
+wykałaczki,wykalaczki,,szt,1,szt.,false,,0,nowy
+wódka,wodka,wodka ryzowa lub biala,g,1000,kg,false,,230,nowy
+wątróbka drobiowa,watrobka drobiowa,,g,1000,kg,false,,120,nowy
+włoszczyzna,wloszczyzna,wloszczyzna marchew pietruszka seler por,g,1000,kg,false,,35,nowy
+zakwas na żur,zakwas na zur,zakwas na zurek|zakwas z zytniej maki,ml,1000,l,false,,30,nowy
 ziele angielskie,ziele angielskie,,g,15,opak. 15g,true,0.05,260,scalony z: Ziele angielskie
 ziemniak,ziemniak,kartofle|ziemniaki,g,150,szt.,true,150,77,scalony z: Ziemniaki
-ziemniak młody,ziemniak mlody,ziemniaki mlode,g,,,false,,70,nowy
-zioła prowansalskie,ziola prowansalskie,ziola provence,g,,,false,,260,nowy
-zrazowa wołowa,zrazowa wolowa,zrazowka wolowa plastry,g,,,false,,180,nowy
-łopatka cielęca,lopatka cieleca,,g,,,false,,150,nowy
-łopatka jagnięca,lopatka jagnieca,,g,,,false,,230,nowy
+ziemniak młody,ziemniak mlody,ziemniaki mlode,g,1000,kg,false,,70,nowy
+zioła prowansalskie,ziola prowansalskie,ziola provence,g,1000,kg,false,,260,nowy
+zrazowa wołowa,zrazowa wolowa,zrazowka wolowa plastry,g,1000,kg,false,,180,nowy
+łopatka cielęca,lopatka cieleca,,g,1000,kg,false,,150,nowy
+łopatka jagnięca,lopatka jagnieca,,g,1000,kg,false,,230,nowy
 łopatka wieprzowa,lopatka wieprzowa,lopatka,g,1000,kg,false,,250,scalony z: Łopatka wieprzowa
-łopatka wołowa,lopatka wolowa,wolowina lopatka,g,,,false,,200,nowy
+łopatka wołowa,lopatka wolowa,wolowina lopatka,g,1000,kg,false,,200,nowy
 łosoś,losos,filet z lososia|filet z lososia ze skora|losos filet|losos swiezy filet,g,500,opak. 500g,true,150,200,scalony z: Filet z łososia
-łosoś wędzony,losos wedzony,,g,,,false,,180,nowy
-śledź matias,sledz matias,,g,,,false,,250,nowy
-śliwki,sliwki,sliwki lub jagody,szt,,,false,40,46,nowy
-śliwki suszone,sliwki suszone,sliwki suszone bez pestek|suszone sliwki,szt,,,false,8,240,nowy
+łosoś wędzony,losos wedzony,,g,1000,kg,false,,180,nowy
+śledź matias,sledz matias,,g,1000,kg,false,,250,nowy
+śliwki,sliwki,sliwki lub jagody,szt,40,szt.,false,40,46,nowy
+śliwki suszone,sliwki suszone,sliwki suszone bez pestek|suszone sliwki,szt,8,szt.,false,8,240,nowy
 śmietana 18%,smietana 18,smietana|smietana 12|smietanka 18,ml,200,opak. 200ml,true,,185,scalony z: Śmietana
 śmietanka 30%,smietanka 30,smietana 30|smietana kremowka 30|smietanka|smietanka kremowa|smietanka kremowka 30,ml,200,opak. 200ml,true,,290,scalony z: Śmietanka 30%
-śmietanka 36%,smietanka 36,smietanka kremowka 36,ml,,,false,,340,nowy
+śmietanka 36%,smietanka 36,smietanka kremowka 36,ml,1000,l,false,,340,nowy
 żeberka wieprzowe,zeberka wieprzowe,zeberka,g,1000,kg,false,,280,scalony z: Żeberka wieprzowe
-żeberka wieprzowe wędzone,zeberka wieprzowe wedzone,zeberka wedzone,g,,,false,,300,nowy
-żeberka wołowe,zeberka wolowe,,g,,,false,,290,nowy
-żelatyna,zelatyna,,g,,,false,,340,nowy
-żurawina (konfitura),zurawina konfitura,,g,,,false,,250,nowy
-żurawina suszona,zurawina suszona,suszona zurawina|zurawina,g,,,false,,330,nowy
-żółtko,zoltko,zoltka|zoltka jaj|zoltko jajka,szt,,,false,18,320,nowy
+żeberka wieprzowe wędzone,zeberka wieprzowe wedzone,zeberka wedzone,g,1000,kg,false,,300,nowy
+żeberka wołowe,zeberka wolowe,,g,1000,kg,false,,290,nowy
+żelatyna,zelatyna,,g,1000,kg,false,,340,nowy
+żurawina (konfitura),zurawina konfitura,,g,1000,kg,false,,250,nowy
+żurawina suszona,zurawina suszona,suszona zurawina|zurawina,g,1000,kg,false,,330,nowy
+żółtko,zoltko,zoltka|zoltka jaj|zoltko jajka,szt,18,szt.,false,18,320,nowy
 Ryż brązowy,ryz brazowy,,g,1000,opak. 1kg,true,,350,"stary — brak w przepisach, bez zmian"
