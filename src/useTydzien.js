@@ -4,7 +4,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { supabase } from './supabase'
 import { formatDataLocal } from './dataHelpers'
-import { DIETA_LABEL } from './dieta'
+import { DIETA_LABEL, dietyDania } from './dieta'
 
 // Poniedziałek bieżącego tygodnia + offset tygodni, jako 'YYYY-MM-DD'.
 // Lustro tydzienZakupowZOffsetem z ListaZakupow.jsx — oba ekrany MUSZĄ zgadzać
@@ -59,7 +59,7 @@ export function filtrujDania(dania, { filtry = [], szukaj = '' } = {}) {
 
   return dania.filter(d => {
     if (tylkoUlubione && !d.ulubione) return false
-    if (aktywneDiety.length > 0 && !aktywneDiety.includes(d.dieta)) return false
+    if (aktywneDiety.length > 0 && !dietyDania(d).some(k => aktywneDiety.includes(k))) return false
     if (aktywneRodzaje.length > 0 && !aktywneRodzaje.includes(d.rodzaj)) return false
     if (q && !d.Danie.toLowerCase().includes(q)) return false
     return true

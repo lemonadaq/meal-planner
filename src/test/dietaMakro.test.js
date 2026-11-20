@@ -6,7 +6,7 @@ import { sprawdzDanie, wczytajPlik } from '../../skrypty/import-dan.js'
 import { zbudujWiersze } from '../../skrypty/wspolne.js'
 import { filtrujDania } from '../useTydzien'
 import { metaChipyDania } from '../pages/DanieDetail'
-import { etykietaMakro, obecneDiety, scalDiete, zDietaAlboBez } from '../dieta'
+import { dietyDania, etykietaMakro, etykietaPorcji, obecneDiety, porcjePodCel, scalDiete, zDietaAlboBez } from '../dieta'
 
 // Dieta (filtr „💪 Na masę") i makro na porcję — paczka-10 + migracja_dieta_makro.sql
 
@@ -111,5 +111,47 @@ describe('makro w szczegółach dania', () => {
     const chipy = metaChipyDania({ rodzaj: 'obiad', kcal: 900, bialko: 67, tluszcz: 15, wegle: 125, dieta: 'masa' })
     expect(chipy).toContain('B 67 g · T 15 g · W 125 g')
     expect(chipy).toContain('💪 Na masę')
+  })
+})
+
+describe('dieta z proporcji — obie etykiety i porcja pod cel', () => {
+  const KURCZAK = { Danie: 'Kurczak z ryżem', rodzaj: 'obiad', dieta: 'masa,fit', kcal: 700, bialko: 60, tluszcz: 15, wegle: 80 }
+
+  it('„masa,fit" to dwie diety', () => {
+    expect(dietyDania(KURCZAK)).toEqual(['masa', 'fit'])
+    expect(dietyDania({ dieta: 'masa' })).toEqual(['masa'])
+    expect(dietyDania({ dieta: null })).toEqual([])
+  })
+
+  it('danie z obiema etykietami wpada do obu filtrów', () => {
+    const z = [KURCZAK, { Danie: 'Carbonara', rodzaj: 'obiad', dieta: null }]
+    expect(filtrujDania(z, { filtry: ['fit'] }).map(d => d.Danie)).toEqual(['Kurczak z ryżem'])
+    expect(filtrujDania(z, { filtry: ['masa'] }).map(d => d.Danie)).toEqual(['Kurczak z ryżem'])
+    expect(obecneDiety(z)).toEqual(['masa', 'fit'])
+  })
+
+  it('chipy w szczegółach pokazują obie diety', () => {
+    const chipy = metaChipyDania(KURCZAK)
+    expect(chipy).toContain('💪 Na masę')
+    expect(chipy).toContain('🥗 Fit')
+  })
+
+  it('porcja pod cel liczy się z kcal porcji przepisu', () => {
+    expect(porcjePodCel(KURCZAK)).toEqual([
+      { dieta: 'masa', kcal: 900, porcje: 1.3 },
+      { dieta: 'fit', kcal: 550, porcje: 0.8 },
+    ])
+    expect(etykietaPorcji({ dieta: 'fit', kcal: 550, porcje: 0.8 })).toBe('0,8 porcji ≈ 550 kcal')
+  })
+
+  it('bez sensownego wyniku nie ma podpowiedzi porcji', () => {
+    expect(porcjePodCel({ ...KURCZAK, kcal: 150 })).toEqual([])
+    expect(porcjePodCel({ ...KURCZAK, rodzaj: 'deser' })).toEqual([])
+    expect(porcjePodCel({ ...KURCZAK, dieta: null })).toEqual([])
+  })
+
+  it('import przyjmuje „masa,fit", ale nie literówki', () => {
+    expect(sprawdzDanie({ ...DANIE, dieta: 'masa,fit' })).toEqual([])
+    expect(sprawdzDanie({ ...DANIE, dieta: 'masa,fiit' })[0]).toMatch(/dieta/)
   })
 })

@@ -15,9 +15,12 @@
 #      dania), a kcal z makro nie odjeżdża od zapisanego `kcal` dania
 #      dalej niż 0,5–2×. Inaczej danie zostaje bez makro i bez etykiety —
 #      lepiej brak etykiety niż zła.
-#   4. Dieta (tylko puste, bez dodatków i surówek):
-#        masa — B ≥ 35 g, kcal ≥ 650, węgle > tłuszcz
-#        fit  — kcal ≤ 550, B ≥ 30 g, T ≤ 20 g
+#   4. Dieta (tylko puste, bez dodatków i surówek) — z PROPORCJI makro,
+#      nie z kcal na porcję (kaloryczność to wielkość porcji). Te same progi
+#      co supabase/fixes/20261120-2200-dieta-proporcje.sql:
+#        masa — białko ≥ 20% kcal, węgle (g) > tłuszcz (g)
+#        fit  — białko ≥ 25% kcal, tłuszcz ≤ 35% kcal
+#      Obie naraz → dieta = 'masa,fit'.
 #
 # Ruszamy tylko puste pola (`bialko is null`, `dieta is null`), więc dania
 # z paczki 10 i ręczne poprawki zostają. Plik można odpalać wielokrotnie.
@@ -194,15 +197,15 @@ update dania d set bialko = p.b, tluszcz = p.t, wegle = p.w
 from makro_pewne p
 where d."Danie" = p.danie and d.bialko is null;
 
-update dania d set dieta = case
-    when p.b >= 35 and p.kcal_m >= 650 and p.w > p.t then 'masa'
-    when p.kcal_m <= 550 and p.b >= 30 and p.t <= 20 then 'fit'
-  end
-from makro_pewne p
-where d."Danie" = p.danie and d.dieta is null
-  and coalesce(d.rodzaj, '') not in ('dodatek', 'surowka')
-  and ((p.b >= 35 and p.kcal_m >= 650 and p.w > p.t)
-    or (p.kcal_m <= 550 and p.b >= 30 and p.t <= 20));
+update dania d set dieta = x.dieta
+from (
+  select danie, nullif(concat_ws(',',
+      case when b * 4 >= kcal_m * 0.20 and w > t then 'masa' end,
+      case when b * 4 >= kcal_m * 0.25 and t * 9 <= kcal_m * 0.35 then 'fit' end), '') as dieta
+  from makro_pewne
+) x
+where d."Danie" = x.danie and d.dieta is null and x.dieta is not null
+  and coalesce(d.rodzaj, '') not in ('dodatek', 'surowka');
 
 -- Kontrola (widać w logu workflow)
 select count(*) as dan, count(*) filter (where braki = 0) as bez_brakow from makro_dan;

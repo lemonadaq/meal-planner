@@ -27,7 +27,7 @@ export function sprawdzDanie(danie, gdzie = '') {
   if (danie.kuchnia && !KUCHNIE.includes(danie.kuchnia)) zle(`kuchnia "${danie.kuchnia}" poza listą`)
   if (danie.poziom && !POZIOMY.includes(danie.poziom)) zle(`poziom "${danie.poziom}" poza listą`)
 
-  if (danie.dieta != null && !DIETY.includes(danie.dieta)) zle(`dieta "${danie.dieta}" poza listą (${DIETY.join(', ')})`)
+  if (danie.dieta != null && !String(danie.dieta).split(',').every(x => DIETY.includes(x))) zle(`dieta "${danie.dieta}" poza listą (${DIETY.join(', ')})`)
 
   for (const pole of ['czas_minuty', 'kcal', ...POLA_MAKRO]) {
     const v = danie[pole]

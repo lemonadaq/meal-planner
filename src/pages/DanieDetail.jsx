@@ -3,7 +3,7 @@ import { supabase } from '../supabase'
 import { t, fonts, ui, GORA_TRESCI } from '../theme'
 import { poniedzialekTygodnia, zakresTygodniaLabel, etykietaTygodnia, TYGODNIE_DO_WYBORU } from '../useTydzien'
 import { kcalZeSkladnikow, etykietaKcal } from '../kcalZeSkladnikow'
-import { DIETA_LABEL, etykietaMakro } from '../dieta'
+import { DIETA_LABEL, dietyDania, etykietaMakro, etykietaPorcji, porcjePodCel } from '../dieta'
 
 async function kompresujObraz(plik, maxSzerokosc = 1200, jakosc = 0.82) {
   return new Promise(resolve => {
@@ -94,7 +94,7 @@ export function metaChipyDania(skladnik, rodzaje = RODZAJE) {
   if (skladnik.kcal) chipy.push(`${skladnik.kcal} kcal`)
   const makro = etykietaMakro(skladnik)
   if (makro) chipy.push(makro)
-  if (DIETA_LABEL[skladnik.dieta]) chipy.push(DIETA_LABEL[skladnik.dieta])
+  for (const k of dietyDania(skladnik)) chipy.push(DIETA_LABEL[k])
   return chipy
 }
 
@@ -541,10 +541,22 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
                 {(() => {
                   const chipy = metaChipyDania(skladniki[0])
                   if (chipy.length === 0) return null
+                  const cele = porcjePodCel(skladniki[0])
                   return (
-                    <div style={s.metaRow}>
-                      {chipy.map((c, i) => <span key={i} style={s.metaChip}>{c}</span>)}
-                    </div>
+                    <>
+                      <div style={s.metaRow}>
+                        {chipy.map((c, i) => <span key={i} style={s.metaChip}>{c}</span>)}
+                      </div>
+                      {cele.length > 0 && (
+                        <div style={s.metaRow}>
+                          {cele.map(c => (
+                            <span key={c.dieta} style={s.metaChip}>
+                              {DIETA_LABEL[c.dieta].split(' ')[0]} {etykietaPorcji(c)}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </>
                   )
                 })()}
               </>

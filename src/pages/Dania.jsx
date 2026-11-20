@@ -4,7 +4,7 @@ import { t, fonts, ui, GORA_TRESCI } from '../theme'
 import Toast from '../components/Toast'
 import { KUCHNIA_LABEL, POZIOM_LABEL, RODZAJ_LABEL } from '../etykiety'
 import { useDuzyEkran } from '../useDuzyEkran'
-import { DIETA_LABEL, obecneDiety, scalDiete, zDietaAlboBez } from '../dieta'
+import { DIETA_LABEL, dietyDania, obecneDiety, scalDiete, zDietaAlboBez } from '../dieta'
 
 // Filtry-chipy: 'wszystko' i 'ulubione' to specjalne, reszta to wartości pola `rodzaj`
 const FILTRY = [
@@ -208,7 +208,7 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
       if (aktywneRodzaje.length > 0 && !aktywneRodzaje.includes(d.rodzaj)) return false
       if (kuchnia && d.kuchnia !== kuchnia) return false
       if (poziom && d.poziom !== poziom) return false
-      if (dieta && d.dieta !== dieta) return false
+      if (dieta && !dietyDania(d).includes(dieta)) return false
       if (szukaj && !d['Danie'].toLowerCase().includes(szukaj.toLowerCase())) return false
       return true
     })

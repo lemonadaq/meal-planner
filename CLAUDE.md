@@ -195,6 +195,13 @@ i progi: `skrypty/makro/generuj-sql-makro.py` (reguły składników:
 `skrypty/makro/makro_reguly.py`). Rusza tylko puste pola; dania, których nie
 da się wiarygodnie policzyć, zostają bez makro i bez etykiety.
 
+`supabase/fixes/20261120-2200-dieta-proporcje.sql` — etykiety diety z PROPORCJI
+makro, nie z kcal na porcję (decyzja Filipa: kcal wynika z wielkości porcji).
+Fit: białko ≥ 25% kcal, tłuszcz ≤ 35% kcal. Masa: białko ≥ 20% kcal, węgle (g)
+> tłuszcz (g). Obie naraz → `dieta = 'masa,fit'` (odczyt: `dietyDania()`
+w `src/dieta.js`, NIE porównuj `d.dieta === 'fit'`). W szczegółach dania
+podpowiedź „porcja pod cel" (`porcjePodCel`, cele kcal w `CEL_KCAL`).
+
 `supabase/fixes/20261006-rls-dania-zdjecia.sql` — polityki RLS na
 `storage.objects` dla bucketu `dania-zdjecia`. BEZ TEGO wgranie zdjęcia z apki
 pada błędem 403 „new row violates row-level security policy" — i w formularzu,
