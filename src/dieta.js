@@ -1,5 +1,5 @@
 // dieta.js
-// Pole `dieta` (np. `masa`) i makro na porcję — wspólne dla Przepisów,
+// Pole `dieta` (`masa` / `fit`) i makro na porcję — wspólne dla Przepisów,
 // Tygodnia i szczegółów dania.
 //
 // Kolumny dochodzą migracją `migracja_dieta_makro.sql`. Dopóki ktoś jej nie
@@ -9,7 +9,7 @@
 // tylko bez chipa diety.
 
 // Wartości techniczne pilnuje DIETY w skrypty/wspolne.js.
-export const DIETA_LABEL = { masa: '💪 Na masę' }
+export const DIETA_LABEL = { masa: '💪 Na masę', fit: '🥗 Fit' }
 
 // Diety obecne w danych, w kolejności z DIETA_LABEL — chip pokazujemy tylko
 // wtedy, gdy jest co filtrować.

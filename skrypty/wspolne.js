@@ -45,9 +45,10 @@ export const KUCHNIE = [
 export const POZIOMY = ['latwe', 'srednie', 'trudne']
 
 // Diety — opcjonalne pole dania, filtr-chip w Przepisach i Tygodniu.
-// Etykiety do wyświetlenia: DIETA_LABEL w src/etykiety.js.
+// Etykiety do wyświetlenia: DIETA_LABEL w src/dieta.js. Progi masa/fit:
+// skrypty/makro/generuj-sql-makro.py.
 // Kolumna wymaga migracji `migracja_dieta_makro.sql`.
-export const DIETY = ['masa']
+export const DIETY = ['masa', 'fit']
 
 // Makro na 1 porcję (g) — opcjonalne, razem z kolumnami z tej samej migracji.
 export const POLA_MAKRO = ['bialko', 'tluszcz', 'wegle']

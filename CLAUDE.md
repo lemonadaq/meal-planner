@@ -189,6 +189,12 @@ chip w szczegółach dania). Wykonana razem z daniami przez
 `supabase/fixes/20261120-1700-dane.sql`. Listy działają też bez niej
 (`src/dieta.js` → `zDietaAlboBez`), tylko bez chipa diety.
 
+`supabase/fixes/20261120-2030-makro-dieta.sql` — makro na porcję dla WSZYSTKICH
+dań (ze składników) + etykieta `masa` / `fit` z progów. Generator, metoda
+i progi: `skrypty/makro/generuj-sql-makro.py` (reguły składników:
+`skrypty/makro/makro_reguly.py`). Rusza tylko puste pola; dania, których nie
+da się wiarygodnie policzyć, zostają bez makro i bez etykiety.
+
 `supabase/fixes/20261006-rls-dania-zdjecia.sql` — polityki RLS na
 `storage.objects` dla bucketu `dania-zdjecia`. BEZ TEGO wgranie zdjęcia z apki
 pada błędem 403 „new row violates row-level security policy" — i w formularzu,

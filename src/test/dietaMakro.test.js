@@ -73,6 +73,16 @@ describe('filtr diety', () => {
       .toEqual(['Kurczak teriyaki'])
   })
 
+  it('masa i fit naraz w Tygodniu działają jak OR między dietami', () => {
+    const z = [...DANIA, { Danie: 'Ceviche z dorsza', rodzaj: 'kolacja', dieta: 'fit' }]
+    expect(filtrujDania(z, { filtry: ['masa', 'fit'] })).toHaveLength(3)
+    expect(filtrujDania(z, { filtry: ['fit'] }).map(d => d.Danie)).toEqual(['Ceviche z dorsza'])
+  })
+
+  it('dieta fit przechodzi walidację importu', () => {
+    expect(sprawdzDanie({ ...DANIE, dieta: 'fit' })).toEqual([])
+  })
+
   it('chip pokazujemy tylko, gdy jest co filtrować', () => {
     expect(obecneDiety(DANIA)).toEqual(['masa'])
     expect(obecneDiety([{ dieta: null }])).toEqual([])
