@@ -170,6 +170,14 @@ słownik, co `auto`, więc nazwy i jednostki ujednolicają się ze stanem bazy.
 
 Dania, które w bazie już są, są pomijane — plik można odpalać wielokrotnie.
 
+Opcjonalnie danie może mieć **`dieta`** (wartość z `DIETY` w `wspolne.js`,
+np. `masa` → chip „💪 Na masę" w apce) oraz makro na porcję: **`bialko`,
+`tluszcz`, `wegle`** (gramy). Te pola idą do bazy tylko wtedy, gdy są
+w pliku — wymagają kolumn z `migracja_dieta_makro.sql`. Przykład:
+`paczka-10.json` (dania na masę), generowana z
+`skrypty/dania/zrodla/paczka-10-masa.py`, który liczy kcal i makro ze
+składników.
+
 ### Co leży w `skrypty/dania`
 
 Siedem paczek, razem **200 dań** napisanych w rozmowie z Claude'em w październiku

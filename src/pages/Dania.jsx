@@ -4,6 +4,7 @@ import { t, fonts, ui, GORA_TRESCI } from '../theme'
 import Toast from '../components/Toast'
 import { KUCHNIA_LABEL, POZIOM_LABEL, RODZAJ_LABEL } from '../etykiety'
 import { useDuzyEkran } from '../useDuzyEkran'
+import { DIETA_LABEL, obecneDiety, scalDiete, zDietaAlboBez } from '../dieta'
 
 // Filtry-chipy: 'wszystko' i 'ulubione' to specjalne, reszta to wartości pola `rodzaj`
 const FILTRY = [
@@ -83,6 +84,7 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
   const [potwierdz, setPotwierdz] = useState(null)
   const [kuchnia, setKuchnia] = useState(() => sessionStorage.getItem('dania_kuchnia') || '')
   const [poziom, setPoziom] = useState(() => sessionStorage.getItem('dania_poziom') || '')
+  const [dieta, setDieta] = useState(() => sessionStorage.getItem('dania_dieta') || '')
 
   // { danie: '...', rodzaj: '...', wpisyKalendarza: [...] }
 
@@ -100,6 +102,7 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
   useEffect(() => { sessionStorage.setItem('dania_filtry', JSON.stringify(filtry)) }, [filtry])
   useEffect(() => { sessionStorage.setItem('dania_kuchnia', kuchnia) }, [kuchnia])
   useEffect(() => { sessionStorage.setItem('dania_poziom', poziom) }, [poziom])
+  useEffect(() => { sessionStorage.setItem('dania_dieta', dieta) }, [dieta])
   useEffect(() => { sessionStorage.setItem('dania_widok', widok) }, [widok])
   useEffect(() => { sessionStorage.setItem('dania_ulubione', String(ulubioneNaGorze)) }, [ulubioneNaGorze])
 
@@ -139,12 +142,24 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
     const STRONA = 1000
     let od = 0
     let wszystkieWiersze = []
+    // Kolumna `dieta` dochodzi migracją — bez niej pytamy jak dawniej (dieta.js)
+    let dodatkowe = ', dieta'
     while (true) {
-      const { data, error } = await supabase
-        .from('dania')
-        .select('"Danie", "TYP", rodzaj, kuchnia, poziom, czas_minuty, kcal, porcje_bazowe, ulubione, zdjecie')
-        .order('"Danie"')
-        .range(od, od + STRONA - 1)
+      const strona = await (od === 0
+        ? zDietaAlboBez(async kol => {
+            dodatkowe = kol
+            return supabase
+              .from('dania')
+              .select(`"Danie", "TYP", rodzaj, kuchnia, poziom, czas_minuty, kcal, porcje_bazowe, ulubione, zdjecie${kol}`)
+              .order('"Danie"')
+              .range(od, od + STRONA - 1)
+          })
+        : supabase
+            .from('dania')
+            .select(`"Danie", "TYP", rodzaj, kuchnia, poziom, czas_minuty, kcal, porcje_bazowe, ulubione, zdjecie${dodatkowe}`)
+            .order('"Danie"')
+            .range(od, od + STRONA - 1))
+      const { data, error } = strona
       if (error || !data?.length) break
       wszystkieWiersze = wszystkieWiersze.concat(data)
       if (data.length < STRONA) break
@@ -160,6 +175,7 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
       } else {
         const bazowy = (!prev.zdjecie && d.zdjecie) ? { ...d } : { ...prev }
         bazowy.ulubione = !!(prev.ulubione || d.ulubione)
+        bazowy.dieta = scalDiete(prev, d)
         mapa.set(d['Danie'], bazowy)
       }
     }
@@ -192,6 +208,7 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
       if (aktywneRodzaje.length > 0 && !aktywneRodzaje.includes(d.rodzaj)) return false
       if (kuchnia && d.kuchnia !== kuchnia) return false
       if (poziom && d.poziom !== poziom) return false
+      if (dieta && d.dieta !== dieta) return false
       if (szukaj && !d['Danie'].toLowerCase().includes(szukaj.toLowerCase())) return false
       return true
     })
@@ -313,6 +330,7 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
   // trudnymi, a Polska przed Wietnamem.
   const obecnePoziomy = Object.keys(POZIOM_LABEL).filter(p => wszystkie.some(d => d.poziom === p))
   const obecneKuchnie = Object.keys(KUCHNIA_LABEL).filter(k => wszystkie.some(d => d.kuchnia === k))
+  const diety = obecneDiety(wszystkie)
 
   const [featured, ...reszta] = filtrowane
   const tabela = showFeatured ? reszta : filtrowane
@@ -371,9 +389,16 @@ export default function Dania({ onSelect, user, householdId, onDodaj, onBack, re
 
         {/* Kuchnia i poziom — pokazujemy tylko wartości, które są w danych,
             żeby przed uzupełnieniem bazy nie wisiał tu pusty rząd. */}
-        {(obecneKuchnie.length > 0 || obecnePoziomy.length > 0) && (
+        {(diety.length > 0 || obecneKuchnie.length > 0 || obecnePoziomy.length > 0) && (
           <div style={s.chipsRow}>
             <div style={s.chipsScroll}>
+              {diety.map(k => (
+                <button key={k}
+                  style={{ ...s.chip, ...(dieta === k ? s.chipOn : {}) }}
+                  onClick={() => setDieta(dieta === k ? '' : k)}>
+                  {DIETA_LABEL[k] || k}
+                </button>
+              ))}
               {obecnePoziomy.map(p => (
                 <button key={p}
                   style={{ ...s.chip, ...(poziom === p ? s.chipOn : {}) }}

@@ -70,6 +70,7 @@ w Supabase — nikt ich nie czyta, Filip usunie je ręcznie, jak zechce.
   - tryb `auto` — podajesz w akcji LICZBĘ dań (pole `ile`), nazwy wymyśla Claude z rozkładem na kuchnie i rodzaje (`propozycje.js`), duble odsiewa `podobienstwo.js`, a potem leci standardowy potok przepis → zdjęcie (`potok.js`). `przekaska` nie jest generowana
   - tryb `propozycje` — same nazwy do przejrzenia, nic nie zapisuje; tryb `klucze` — sprawdza, czy klucze i kredyty działają
   - tryb `import` — przepisy z plików `skrypty/dania/*.json` (format 1:1 z odpowiedzią Claude'a) do bazy + zdjęcia, BEZ ani jednego zapytania do Anthropic. Droga na czas, gdy na koncie Anthropic nie ma kredytów, a Replicate i Supabase działają
+  - `skrypty/dania/paczka-10.json` — 20 dań „na masę" (`dieta: masa`, makro na porcję), generowana z `skrypty/dania/zrodla/paczka-10-masa.py` (makro liczone ze składników). Pola `dieta`/`bialko`/`tluszcz`/`wegle` są w paczce opcjonalne — walidacja w `import-dan.js`, lista diet `DIETY` w `wspolne.js`, etykiety w `src/dieta.js`
   - `skrypty/dania/` — 7 paczek, 200 dań napisanych w rozmowie (2026-10-25), kiedy kredyty API się skończyły
   - workflow „Dania agentem" (`dania-agentem.yml`) + `.claude/przepisy-prompt.md` — przepisy pisze Claude Code na `CLAUDE_CODE_OAUTH_TOKEN` (ten sam token, co agent QA), potem walidacja, commit i `import` ze zdjęciami. Tego tokenu NIE da się podstawić pod `ANTHROPIC_KEY` — to subskrypcja, nie klucz API, i tryb `klucze` to pokazuje odpowiedzią z API (401)
   - między agentem a commitem stoją trzy maszynowe bramki: czy paczka w ogóle powstała (raport „STATUS: OK" bez pliku = czerwony przebieg), walidacja formatu i brama dubli (`PACZKA=... npm run sprawdz:nazwy`). Pierwszy przebieg agenta pokazał, po co: raport OK, zero pliku, a w raporcie dania, które już są w bazie
@@ -181,6 +182,12 @@ czegoś, co wygląda na usterkę. Ustalenie jest nadrzędne wobec własnej oceny
 Dopisuje je Filip; sam go nie edytuj bez jego słowa.
 
 \## Migracje do wykonania w Supabase
+
+`migracja_dieta_makro.sql` — kolumny `dieta` (np. `masa`, chip „💪 Na masę"
+w Przepisach i Tygodniu) oraz `bialko`, `tluszcz`, `wegle` (g na porcję,
+chip w szczegółach dania). Wykonana razem z daniami przez
+`supabase/fixes/20261120-1700-dane.sql`. Listy działają też bez niej
+(`src/dieta.js` → `zDietaAlboBez`), tylko bez chipa diety.
 
 `supabase/fixes/20261006-rls-dania-zdjecia.sql` — polityki RLS na
 `storage.objects` dla bucketu `dania-zdjecia`. BEZ TEGO wgranie zdjęcia z apki

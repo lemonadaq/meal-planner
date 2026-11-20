@@ -1,0 +1,1584 @@
+[
+  {
+    "nazwa": "Jajecznica z 4 jaj z szynką na chlebie żytnim",
+    "rodzaj": "sniadanie",
+    "kuchnia": "polska",
+    "poziom": "latwe",
+    "czas_minuty": 15,
+    "kcal": 730,
+    "dieta": "masa",
+    "bialko": 45,
+    "tluszcz": 33,
+    "wegle": 61,
+    "skladniki": [
+      {
+        "nazwa": "jajka",
+        "ilosc": "4",
+        "jednostka": "szt",
+        "kategoria": "3_Nabiał"
+      },
+      {
+        "nazwa": "masło",
+        "ilosc": "10",
+        "jednostka": "g",
+        "kategoria": "3_Nabiał"
+      },
+      {
+        "nazwa": "szynka",
+        "ilosc": "50",
+        "jednostka": "g",
+        "kategoria": "2_Mięso i ryby"
+      },
+      {
+        "nazwa": "chleb żytni",
+        "ilosc": "3",
+        "jednostka": "szt",
+        "kategoria": "4_Pieczywo"
+      },
+      {
+        "nazwa": "pomidory",
+        "ilosc": "1",
+        "jednostka": "szt",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "szczypiorek",
+        "ilosc": "1",
+        "jednostka": "łyżka",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "sól",
+        "ilosc": "1",
+        "jednostka": "szczypta",
+        "kategoria": "7_Przyprawy"
+      },
+      {
+        "nazwa": "pieprz",
+        "ilosc": "1",
+        "jednostka": "szczypta",
+        "kategoria": "7_Przyprawy"
+      }
+    ],
+    "kroki": [
+      "Rozgrzej masło na patelni na średnim ogniu i podsmaż pokrojoną w paski szynkę przez minutę.",
+      "Wbij jajka, dopraw solą i pieprzem i mieszaj powoli szpatułką, aż się zetną, ale zostaną wilgotne.",
+      "Zdejmij z ognia, posyp szczypiorkiem. Podawaj z chlebem żytnim i pokrojonym pomidorem."
+    ],
+    "opis_wizualny": "A generous portion of soft, creamy scrambled eggs with strips of ham and chopped chives on a plate, three slices of dark rye bread on the side and a sliced tomato. Natural morning light, rustic wooden table."
+  },
+  {
+    "nazwa": "Burrito śniadaniowe z jajkiem, fasolą i serem",
+    "rodzaj": "sniadanie",
+    "kuchnia": "meksykanska",
+    "poziom": "latwe",
+    "czas_minuty": 20,
+    "kcal": 860,
+    "dieta": "masa",
+    "bialko": 48,
+    "tluszcz": 39,
+    "wegle": 78,
+    "skladniki": [
+      {
+        "nazwa": "tortilla",
+        "ilosc": "2",
+        "jednostka": "szt",
+        "kategoria": "4_Pieczywo"
+      },
+      {
+        "nazwa": "jajka",
+        "ilosc": "3",
+        "jednostka": "szt",
+        "kategoria": "3_Nabiał"
+      },
+      {
+        "nazwa": "fasola czerwona z puszki",
+        "ilosc": "80",
+        "jednostka": "g",
+        "kategoria": "6_Konserwy i słoiki"
+      },
+      {
+        "nazwa": "ser żółty",
+        "ilosc": "40",
+        "jednostka": "g",
+        "kategoria": "3_Nabiał"
+      },
+      {
+        "nazwa": "papryka",
+        "ilosc": "1/2",
+        "jednostka": "szt",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "papryczka chili",
+        "ilosc": "1/2",
+        "jednostka": "szt",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "olej",
+        "ilosc": "1",
+        "jednostka": "łyżeczka",
+        "kategoria": "8_Inne"
+      },
+      {
+        "nazwa": "kumin",
+        "ilosc": "1",
+        "jednostka": "szczypta",
+        "kategoria": "7_Przyprawy"
+      },
+      {
+        "nazwa": "sól",
+        "ilosc": "1",
+        "jednostka": "szczypta",
+        "kategoria": "7_Przyprawy"
+      }
+    ],
+    "kroki": [
+      "Podsmaż na oleju pokrojoną w kostkę paprykę i chili przez 3 minuty.",
+      "Dodaj odsączoną fasolę i kumin, rozgnieć ją lekko widelcem i podgrzej.",
+      "Wbij jajka, posól i mieszaj, aż się zetną.",
+      "Rozłóż farsz na tortillach, posyp startym serem, zwiń ciasno i opiecz na suchej patelni z obu stron, aż ser się roztopi."
+    ],
+    "opis_wizualny": "Two golden toasted breakfast burritos cut in half, showing a filling of scrambled eggs, red beans, diced red pepper and melted cheese. Served on a board with a small bowl of salsa."
+  },
+  {
+    "nazwa": "Twarożek z jajkiem na twardo i rzodkiewką na chlebie żytnim",
+    "rodzaj": "sniadanie",
+    "kuchnia": "polska",
+    "poziom": "latwe",
+    "czas_minuty": 15,
+    "kcal": 840,
+    "dieta": "masa",
+    "bialko": 68,
+    "tluszcz": 30,
+    "wegle": 68,
+    "skladniki": [
+      {
+        "nazwa": "twaróg",
+        "ilosc": "200",
+        "jednostka": "g",
+        "kategoria": "3_Nabiał"
+      },
+      {
+        "nazwa": "skyr naturalny",
+        "ilosc": "100",
+        "jednostka": "g",
+        "kategoria": "3_Nabiał"
+      },
+      {
+        "nazwa": "jajka",
+        "ilosc": "2",
+        "jednostka": "szt",
+        "kategoria": "3_Nabiał"
+      },
+      {
+        "nazwa": "rzodkiewka",
+        "ilosc": "5",
+        "jednostka": "szt",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "szczypiorek",
+        "ilosc": "2",
+        "jednostka": "łyżka",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "chleb żytni",
+        "ilosc": "3",
+        "jednostka": "szt",
+        "kategoria": "4_Pieczywo"
+      },
+      {
+        "nazwa": "masło",
+        "ilosc": "10",
+        "jednostka": "g",
+        "kategoria": "3_Nabiał"
+      },
+      {
+        "nazwa": "sól",
+        "ilosc": "1",
+        "jednostka": "szczypta",
+        "kategoria": "7_Przyprawy"
+      },
+      {
+        "nazwa": "pieprz",
+        "ilosc": "1",
+        "jednostka": "szczypta",
+        "kategoria": "7_Przyprawy"
+      }
+    ],
+    "kroki": [
+      "Ugotuj jajka na twardo (9 minut od zagotowania), ostudź w zimnej wodzie i obierz.",
+      "Rozgnieć twaróg widelcem ze skyrem, dodaj pokrojoną rzodkiewkę i szczypiorek, dopraw solą i pieprzem.",
+      "Posmaruj chleb cienko masłem, nałóż twarożek, a na wierzch połówki jajek."
+    ],
+    "opis_wizualny": "Slices of rye bread topped with a thick layer of white cottage cheese spread with sliced radishes and chives, halved hard-boiled eggs on top. Bright, fresh breakfast scene."
+  },
+  {
+    "nazwa": "Pancakes proteinowe ze skyrem i bananem",
+    "rodzaj": "sniadanie",
+    "kuchnia": "amerykanska",
+    "poziom": "latwe",
+    "czas_minuty": 25,
+    "kcal": 850,
+    "dieta": "masa",
+    "bialko": 49,
+    "tluszcz": 24,
+    "wegle": 113,
+    "skladniki": [
+      {
+        "nazwa": "jajka",
+        "ilosc": "2",
+        "jednostka": "szt",
+        "kategoria": "3_Nabiał"
+      },
+      {
+        "nazwa": "skyr naturalny",
+        "ilosc": "200",
+        "jednostka": "g",
+        "kategoria": "3_Nabiał"
+      },
+      {
+        "nazwa": "mąka pszenna",
+        "ilosc": "80",
+        "jednostka": "g",
+        "kategoria": "5_Produkty sypkie"
+      },
+      {
+        "nazwa": "proszek do pieczenia",
+        "ilosc": "1",
+        "jednostka": "łyżeczka",
+        "kategoria": "7_Przyprawy"
+      },
+      {
+        "nazwa": "banany",
+        "ilosc": "1",
+        "jednostka": "szt",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "masło orzechowe",
+        "ilosc": "1",
+        "jednostka": "łyżka",
+        "kategoria": "6_Konserwy i słoiki"
+      },
+      {
+        "nazwa": "miód",
+        "ilosc": "1",
+        "jednostka": "łyżka",
+        "kategoria": "8_Inne"
+      },
+      {
+        "nazwa": "olej",
+        "ilosc": "1",
+        "jednostka": "łyżeczka",
+        "kategoria": "8_Inne"
+      }
+    ],
+    "kroki": [
+      "Zmiksuj jajka ze skyrem, dodaj mąkę i proszek do pieczenia i wymieszaj na gładkie, gęste ciasto.",
+      "Smaż małe placki na lekko natłuszczonej patelni na średnim ogniu, aż pojawią się bąbelki, potem obróć i smaż jeszcze minutę.",
+      "Podawaj z plasterkami banana, masłem orzechowym i miodem."
+    ],
+    "opis_wizualny": "A tall stack of thick, fluffy golden pancakes topped with banana slices, a drizzle of peanut butter and honey dripping down the sides. Shot from a low angle."
+  },
+  {
+    "nazwa": "Tosty francuskie z chałki z bananem i skyrem",
+    "rodzaj": "sniadanie",
+    "kuchnia": "francuska",
+    "poziom": "latwe",
+    "czas_minuty": 15,
+    "kcal": 980,
+    "dieta": "masa",
+    "bialko": 50,
+    "tluszcz": 34,
+    "wegle": 120,
+    "skladniki": [
+      {
+        "nazwa": "chałka",
+        "ilosc": "120",
+        "jednostka": "g",
+        "kategoria": "4_Pieczywo"
+      },
+      {
+        "nazwa": "jajka",
+        "ilosc": "3",
+        "jednostka": "szt",
+        "kategoria": "3_Nabiał"
+      },
+      {
+        "nazwa": "mleko",
+        "ilosc": "60",
+        "jednostka": "ml",
+        "kategoria": "3_Nabiał"
+      },
+      {
+        "nazwa": "cynamon",
+        "ilosc": "1",
+        "jednostka": "szczypta",
+        "kategoria": "7_Przyprawy"
+      },
+      {
+        "nazwa": "masło",
+        "ilosc": "10",
+        "jednostka": "g",
+        "kategoria": "3_Nabiał"
+      },
+      {
+        "nazwa": "skyr naturalny",
+        "ilosc": "150",
+        "jednostka": "g",
+        "kategoria": "3_Nabiał"
+      },
+      {
+        "nazwa": "banany",
+        "ilosc": "1",
+        "jednostka": "szt",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "miód",
+        "ilosc": "1",
+        "jednostka": "łyżka",
+        "kategoria": "8_Inne"
+      }
+    ],
+    "kroki": [
+      "Roztrzep jajka z mlekiem i cynamonem w głębokim talerzu.",
+      "Pokrój chałkę na grube kromki i namocz każdą z obu stron w masie jajecznej.",
+      "Smaż na maśle na średnim ogniu po 2 minuty z każdej strony, aż się zrumienią.",
+      "Podawaj ze skyrem, plasterkami banana i miodem."
+    ],
+    "opis_wizualny": "Thick slices of golden-brown French toast made from braided challah, topped with a dollop of thick white yogurt, banana slices and honey. Dusting of cinnamon, cosy breakfast light."
+  },
+  {
+    "nazwa": "Naleśniki z twarożkiem waniliowym i jagodami",
+    "rodzaj": "sniadanie",
+    "kuchnia": "polska",
+    "poziom": "srednie",
+    "czas_minuty": 30,
+    "kcal": 770,
+    "dieta": "masa",
+    "bialko": 59,
+    "tluszcz": 22,
+    "wegle": 86,
+    "skladniki": [
+      {
+        "nazwa": "mąka pszenna",
+        "ilosc": "60",
+        "jednostka": "g",
+        "kategoria": "5_Produkty sypkie"
+      },
+      {
+        "nazwa": "mleko",
+        "ilosc": "120",
+        "jednostka": "ml",
+        "kategoria": "3_Nabiał"
+      },
+      {
+        "nazwa": "jajka",
+        "ilosc": "1",
+        "jednostka": "szt",
+        "kategoria": "3_Nabiał"
+      },
+      {
+        "nazwa": "twaróg",
+        "ilosc": "200",
+        "jednostka": "g",
+        "kategoria": "3_Nabiał"
+      },
+      {
+        "nazwa": "skyr naturalny",
+        "ilosc": "50",
+        "jednostka": "g",
+        "kategoria": "3_Nabiał"
+      },
+      {
+        "nazwa": "cukier waniliowy",
+        "ilosc": "1",
+        "jednostka": "łyżeczka",
+        "kategoria": "7_Przyprawy"
+      },
+      {
+        "nazwa": "miód",
+        "ilosc": "1",
+        "jednostka": "łyżka",
+        "kategoria": "8_Inne"
+      },
+      {
+        "nazwa": "jagody",
+        "ilosc": "80",
+        "jednostka": "g",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "olej",
+        "ilosc": "1",
+        "jednostka": "łyżeczka",
+        "kategoria": "8_Inne"
+      }
+    ],
+    "kroki": [
+      "Zmiksuj mąkę z mlekiem, jajkiem i szczyptą soli. Odstaw ciasto na 10 minut.",
+      "Smaż cienkie naleśniki na lekko natłuszczonej patelni, po około minucie z każdej strony.",
+      "Rozgnieć twaróg ze skyrem, cukrem waniliowym i miodem.",
+      "Posmaruj naleśniki farszem, złóż w trójkąty i podawaj z jagodami."
+    ],
+    "opis_wizualny": "Thin golden crepes folded into triangles, generously filled with sweet vanilla cottage cheese, scattered with fresh blueberries on a white plate."
+  },
+  {
+    "nazwa": "Shake bananowy z masłem orzechowym i płatkami",
+    "rodzaj": "sniadanie",
+    "kuchnia": "miedzynarodowa",
+    "poziom": "latwe",
+    "czas_minuty": 5,
+    "kcal": 840,
+    "dieta": "masa",
+    "bialko": 46,
+    "tluszcz": 28,
+    "wegle": 104,
+    "skladniki": [
+      {
+        "nazwa": "mleko",
+        "ilosc": "400",
+        "jednostka": "ml",
+        "kategoria": "3_Nabiał"
+      },
+      {
+        "nazwa": "banany",
+        "ilosc": "1",
+        "jednostka": "szt",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "płatki owsiane",
+        "ilosc": "50",
+        "jednostka": "g",
+        "kategoria": "5_Produkty sypkie"
+      },
+      {
+        "nazwa": "masło orzechowe",
+        "ilosc": "2",
+        "jednostka": "łyżka",
+        "kategoria": "6_Konserwy i słoiki"
+      },
+      {
+        "nazwa": "skyr naturalny",
+        "ilosc": "150",
+        "jednostka": "g",
+        "kategoria": "3_Nabiał"
+      },
+      {
+        "nazwa": "miód",
+        "ilosc": "1",
+        "jednostka": "łyżka",
+        "kategoria": "8_Inne"
+      }
+    ],
+    "kroki": [
+      "Wrzuć wszystkie składniki do blendera.",
+      "Miksuj minutę, aż płatki całkiem się rozdrobnią i shake będzie gładki. Pij od razu albo zabierz w bidonie do pracy."
+    ],
+    "opis_wizualny": "A tall glass of thick, creamy beige banana peanut butter smoothie with a straw, a banana and a jar of peanut butter beside it on a kitchen counter."
+  },
+  {
+    "nazwa": "Udka z kurczaka tikka z ryżem basmati",
+    "rodzaj": "obiad",
+    "kuchnia": "indyjska",
+    "poziom": "srednie",
+    "czas_minuty": 45,
+    "kcal": 1150,
+    "dieta": "masa",
+    "bialko": 63,
+    "tluszcz": 45,
+    "wegle": 122,
+    "skladniki": [
+      {
+        "nazwa": "udko z kurczaka",
+        "ilosc": "250",
+        "jednostka": "g",
+        "kategoria": "2_Mięso i ryby"
+      },
+      {
+        "nazwa": "jogurt naturalny",
+        "ilosc": "3",
+        "jednostka": "łyżka",
+        "kategoria": "3_Nabiał"
+      },
+      {
+        "nazwa": "ryż basmati",
+        "ilosc": "120",
+        "jednostka": "g",
+        "kategoria": "5_Produkty sypkie"
+      },
+      {
+        "nazwa": "cebula",
+        "ilosc": "1",
+        "jednostka": "szt",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "czosnek",
+        "ilosc": "2",
+        "jednostka": "szt",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "imbir",
+        "ilosc": "1",
+        "jednostka": "łyżeczka",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "pomidory z puszki",
+        "ilosc": "200",
+        "jednostka": "g",
+        "kategoria": "6_Konserwy i słoiki"
+      },
+      {
+        "nazwa": "śmietana 18%",
+        "ilosc": "3",
+        "jednostka": "łyżka",
+        "kategoria": "3_Nabiał"
+      },
+      {
+        "nazwa": "garam masala",
+        "ilosc": "2",
+        "jednostka": "łyżeczka",
+        "kategoria": "7_Przyprawy"
+      },
+      {
+        "nazwa": "kurkuma",
+        "ilosc": "1",
+        "jednostka": "łyżeczka",
+        "kategoria": "7_Przyprawy"
+      },
+      {
+        "nazwa": "papryczka chili",
+        "ilosc": "1",
+        "jednostka": "szt",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "olej",
+        "ilosc": "1",
+        "jednostka": "łyżka",
+        "kategoria": "8_Inne"
+      },
+      {
+        "nazwa": "sól",
+        "ilosc": "1",
+        "jednostka": "szczypta",
+        "kategoria": "7_Przyprawy"
+      }
+    ],
+    "kroki": [
+      "Pokrój mięso z udek w kostkę i wymieszaj z jogurtem, połową garam masali i solą. Odstaw na 15 minut.",
+      "Ugotuj ryż według instrukcji na opakowaniu.",
+      "Na oleju zeszklij posiekaną cebulę, dodaj czosnek, imbir, chili, kurkumę i resztę garam masali, smaż minutę.",
+      "Dodaj kurczaka i obsmaż go ze wszystkich stron przez 5 minut.",
+      "Wlej pomidory i duś pod przykryciem 15 minut. Na koniec wmieszaj śmietanę i podgrzej, nie gotując.",
+      "Podawaj z ryżem. Druga porcja dobrze znosi odgrzewanie następnego dnia."
+    ],
+    "opis_wizualny": "A bowl of fluffy white basmati rice next to a rich orange-red tikka curry with tender chunks of chicken thigh, swirl of cream on top, sprinkled with fresh coriander."
+  },
+  {
+    "nazwa": "Chili con carne z ryżem i kwaśną śmietaną",
+    "rodzaj": "obiad",
+    "kuchnia": "meksykanska",
+    "poziom": "srednie",
+    "czas_minuty": 50,
+    "kcal": 1250,
+    "dieta": "masa",
+    "bialko": 61,
+    "tluszcz": 52,
+    "wegle": 136,
+    "skladniki": [
+      {
+        "nazwa": "mięso mielone wołowe",
+        "ilosc": "200",
+        "jednostka": "g",
+        "kategoria": "2_Mięso i ryby"
+      },
+      {
+        "nazwa": "fasola czerwona z puszki",
+        "ilosc": "120",
+        "jednostka": "g",
+        "kategoria": "6_Konserwy i słoiki"
+      },
+      {
+        "nazwa": "kukurydza z puszki",
+        "ilosc": "60",
+        "jednostka": "g",
+        "kategoria": "6_Konserwy i słoiki"
+      },
+      {
+        "nazwa": "pomidory z puszki",
+        "ilosc": "200",
+        "jednostka": "g",
+        "kategoria": "6_Konserwy i słoiki"
+      },
+      {
+        "nazwa": "koncentrat pomidorowy",
+        "ilosc": "1",
+        "jednostka": "łyżka",
+        "kategoria": "6_Konserwy i słoiki"
+      },
+      {
+        "nazwa": "cebula",
+        "ilosc": "1",
+        "jednostka": "szt",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "czosnek",
+        "ilosc": "2",
+        "jednostka": "szt",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "papryka",
+        "ilosc": "1/2",
+        "jednostka": "szt",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "papryczka chili",
+        "ilosc": "1",
+        "jednostka": "szt",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "kumin",
+        "ilosc": "1",
+        "jednostka": "łyżeczka",
+        "kategoria": "7_Przyprawy"
+      },
+      {
+        "nazwa": "papryka słodka",
+        "ilosc": "1",
+        "jednostka": "łyżeczka",
+        "kategoria": "7_Przyprawy"
+      },
+      {
+        "nazwa": "ryż basmati",
+        "ilosc": "100",
+        "jednostka": "g",
+        "kategoria": "5_Produkty sypkie"
+      },
+      {
+        "nazwa": "śmietana 18%",
+        "ilosc": "2",
+        "jednostka": "łyżka",
+        "kategoria": "3_Nabiał"
+      },
+      {
+        "nazwa": "olej",
+        "ilosc": "1",
+        "jednostka": "łyżeczka",
+        "kategoria": "8_Inne"
+      },
+      {
+        "nazwa": "sól",
+        "ilosc": "1",
+        "jednostka": "szczypta",
+        "kategoria": "7_Przyprawy"
+      }
+    ],
+    "kroki": [
+      "Na oleju zeszklij posiekaną cebulę, dodaj czosnek, chili i pokrojoną paprykę, smaż 3 minuty.",
+      "Dodaj mięso i smaż, rozbijając łopatką, aż się zrumieni. Wsyp kumin i paprykę słodką.",
+      "Dodaj koncentrat, pomidory, odsączoną fasolę i kukurydzę. Duś na małym ogniu 25 minut, mieszając od czasu do czasu.",
+      "W tym czasie ugotuj ryż. Podawaj chili na ryżu z łyżką śmietany."
+    ],
+    "opis_wizualny": "A deep bowl of thick, dark red chili con carne with ground beef, kidney beans and corn, served over white rice with a dollop of sour cream and sliced red chili on top."
+  },
+  {
+    "nazwa": "Spaghetti z wołowym sosem pomidorowym i parmezanem",
+    "rodzaj": "obiad",
+    "kuchnia": "wloska",
+    "poziom": "latwe",
+    "czas_minuty": 40,
+    "kcal": 1030,
+    "dieta": "masa",
+    "bialko": 53,
+    "tluszcz": 42,
+    "wegle": 109,
+    "skladniki": [
+      {
+        "nazwa": "spaghetti",
+        "ilosc": "125",
+        "jednostka": "g",
+        "kategoria": "5_Produkty sypkie"
+      },
+      {
+        "nazwa": "mięso mielone wołowe",
+        "ilosc": "150",
+        "jednostka": "g",
+        "kategoria": "2_Mięso i ryby"
+      },
+      {
+        "nazwa": "pomidory z puszki",
+        "ilosc": "200",
+        "jednostka": "g",
+        "kategoria": "6_Konserwy i słoiki"
+      },
+      {
+        "nazwa": "koncentrat pomidorowy",
+        "ilosc": "1",
+        "jednostka": "łyżka",
+        "kategoria": "6_Konserwy i słoiki"
+      },
+      {
+        "nazwa": "cebula",
+        "ilosc": "1/2",
+        "jednostka": "szt",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "czosnek",
+        "ilosc": "2",
+        "jednostka": "szt",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "marchew",
+        "ilosc": "1/2",
+        "jednostka": "szt",
+        "kategoria": "7_Przyprawy"
+      },
+      {
+        "nazwa": "oregano",
+        "ilosc": "1",
+        "jednostka": "łyżeczka",
+        "kategoria": "7_Przyprawy"
+      },
+      {
+        "nazwa": "parmezan",
+        "ilosc": "20",
+        "jednostka": "g",
+        "kategoria": "3_Nabiał"
+      },
+      {
+        "nazwa": "oliwa z oliwek",
+        "ilosc": "1",
+        "jednostka": "łyżeczka",
+        "kategoria": "8_Inne"
+      },
+      {
+        "nazwa": "sól",
+        "ilosc": "1",
+        "jednostka": "szczypta",
+        "kategoria": "7_Przyprawy"
+      },
+      {
+        "nazwa": "pieprz",
+        "ilosc": "1",
+        "jednostka": "szczypta",
+        "kategoria": "7_Przyprawy"
+      }
+    ],
+    "kroki": [
+      "Na oliwie podsmaż drobno posiekaną cebulę i startą marchew przez 5 minut, dodaj czosnek.",
+      "Dodaj mięso i smaż, aż się zrumieni. Wmieszaj koncentrat, pomidory i oregano, dopraw.",
+      "Duś sos na małym ogniu 20 minut.",
+      "Ugotuj spaghetti al dente, wymieszaj z sosem i posyp tartym parmezanem."
+    ],
+    "opis_wizualny": "A large plate of spaghetti twirled with a thick meaty tomato and beef sauce, generously topped with grated parmesan and a basil leaf, rustic Italian setting."
+  },
+  {
+    "nazwa": "Kurczak teriyaki z ryżem i brokułem",
+    "rodzaj": "obiad",
+    "kuchnia": "japonska",
+    "poziom": "latwe",
+    "czas_minuty": 30,
+    "kcal": 900,
+    "dieta": "masa",
+    "bialko": 67,
+    "tluszcz": 15,
+    "wegle": 125,
+    "skladniki": [
+      {
+        "nazwa": "pierś z kurczaka",
+        "ilosc": "220",
+        "jednostka": "g",
+        "kategoria": "2_Mięso i ryby"
+      },
+      {
+        "nazwa": "ryż basmati",
+        "ilosc": "120",
+        "jednostka": "g",
+        "kategoria": "5_Produkty sypkie"
+      },
+      {
+        "nazwa": "brokuł",
+        "ilosc": "150",
+        "jednostka": "g",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "sos sojowy",
+        "ilosc": "2",
+        "jednostka": "łyżka",
+        "kategoria": "6_Konserwy i słoiki"
+      },
+      {
+        "nazwa": "miód",
+        "ilosc": "1",
+        "jednostka": "łyżka",
+        "kategoria": "8_Inne"
+      },
+      {
+        "nazwa": "czosnek",
+        "ilosc": "1",
+        "jednostka": "szt",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "imbir",
+        "ilosc": "1",
+        "jednostka": "łyżeczka",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "sezam",
+        "ilosc": "1",
+        "jednostka": "łyżeczka",
+        "kategoria": "7_Przyprawy"
+      },
+      {
+        "nazwa": "olej",
+        "ilosc": "1",
+        "jednostka": "łyżka",
+        "kategoria": "8_Inne"
+      },
+      {
+        "nazwa": "dymka",
+        "ilosc": "1",
+        "jednostka": "szt",
+        "kategoria": "1_Warzywa i owoce"
+      }
+    ],
+    "kroki": [
+      "Ugotuj ryż. Brokuł podziel na różyczki i gotuj na parze lub w wodzie 4 minuty.",
+      "Wymieszaj sos sojowy z miodem, startym czosnkiem i imbirem.",
+      "Pokrój kurczaka w kostkę i smaż na oleju na mocnym ogniu 6–7 minut, aż się zrumieni.",
+      "Wlej sos i smaż jeszcze 2 minuty, aż zgęstnieje i oblepi mięso.",
+      "Podawaj z ryżem i brokułem, posyp sezamem i dymką. Dobrze nadaje się do pudełka na 2 dni."
+    ],
+    "opis_wizualny": "A meal-prep style bowl with white rice, glossy teriyaki chicken pieces sprinkled with sesame seeds and spring onion, and bright green steamed broccoli florets."
+  },
+  {
+    "nazwa": "Antrykot z pieczonymi ziemniakami i sałatką",
+    "rodzaj": "obiad",
+    "kuchnia": "amerykanska",
+    "poziom": "srednie",
+    "czas_minuty": 50,
+    "kcal": 1000,
+    "dieta": "masa",
+    "bialko": 56,
+    "tluszcz": 59,
+    "wegle": 63,
+    "skladniki": [
+      {
+        "nazwa": "antrykot wołowy",
+        "ilosc": "250",
+        "jednostka": "g",
+        "kategoria": "2_Mięso i ryby"
+      },
+      {
+        "nazwa": "ziemniaki",
+        "ilosc": "2",
+        "jednostka": "szt",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "oliwa z oliwek",
+        "ilosc": "1",
+        "jednostka": "łyżka",
+        "kategoria": "8_Inne"
+      },
+      {
+        "nazwa": "masło",
+        "ilosc": "10",
+        "jednostka": "g",
+        "kategoria": "3_Nabiał"
+      },
+      {
+        "nazwa": "czosnek",
+        "ilosc": "2",
+        "jednostka": "szt",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "rozmaryn",
+        "ilosc": "1",
+        "jednostka": "łyżeczka",
+        "kategoria": "7_Przyprawy"
+      },
+      {
+        "nazwa": "sałata",
+        "ilosc": "50",
+        "jednostka": "g",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "pomidory",
+        "ilosc": "1",
+        "jednostka": "szt",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "ogórek",
+        "ilosc": "1/2",
+        "jednostka": "szt",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "sól",
+        "ilosc": "1",
+        "jednostka": "szczypta",
+        "kategoria": "7_Przyprawy"
+      },
+      {
+        "nazwa": "pieprz",
+        "ilosc": "1",
+        "jednostka": "szczypta",
+        "kategoria": "7_Przyprawy"
+      }
+    ],
+    "kroki": [
+      "Wyjmij stek z lodówki 30 minut przed smażeniem. Rozgrzej piekarnik do 210 stopni.",
+      "Pokrój ziemniaki w łódeczki, wymieszaj z połową oliwy, rozmarynem i solą. Piecz 35 minut, raz przewracając.",
+      "Osusz stek, posól i smaż na bardzo gorącej patelni z resztą oliwy po 3 minuty z każdej strony. Pod koniec dodaj masło i czosnek i polewaj nimi mięso.",
+      "Odstaw stek na 5 minut, potem pokrój w poprzek włókien.",
+      "Podawaj z ziemniakami i sałatką z sałaty, pomidora i ogórka."
+    ],
+    "opis_wizualny": "A sliced medium-rare ribeye steak with a caramelised crust, pink centre, alongside crispy golden roasted potato wedges with rosemary and a fresh green side salad."
+  },
+  {
+    "nazwa": "Makaron z kurczakiem i szpinakiem w sosie śmietanowym",
+    "rodzaj": "obiad",
+    "kuchnia": "wloska",
+    "poziom": "latwe",
+    "czas_minuty": 30,
+    "kcal": 880,
+    "dieta": "masa",
+    "bialko": 67,
+    "tluszcz": 25,
+    "wegle": 95,
+    "skladniki": [
+      {
+        "nazwa": "makaron",
+        "ilosc": "120",
+        "jednostka": "g",
+        "kategoria": "5_Produkty sypkie"
+      },
+      {
+        "nazwa": "pierś z kurczaka",
+        "ilosc": "180",
+        "jednostka": "g",
+        "kategoria": "2_Mięso i ryby"
+      },
+      {
+        "nazwa": "szpinak",
+        "ilosc": "80",
+        "jednostka": "g",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "śmietana 18%",
+        "ilosc": "4",
+        "jednostka": "łyżka",
+        "kategoria": "3_Nabiał"
+      },
+      {
+        "nazwa": "parmezan",
+        "ilosc": "20",
+        "jednostka": "g",
+        "kategoria": "3_Nabiał"
+      },
+      {
+        "nazwa": "czosnek",
+        "ilosc": "2",
+        "jednostka": "szt",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "oliwa z oliwek",
+        "ilosc": "1",
+        "jednostka": "łyżeczka",
+        "kategoria": "8_Inne"
+      },
+      {
+        "nazwa": "papryka ostra",
+        "ilosc": "1",
+        "jednostka": "szczypta",
+        "kategoria": "7_Przyprawy"
+      },
+      {
+        "nazwa": "sól",
+        "ilosc": "1",
+        "jednostka": "szczypta",
+        "kategoria": "7_Przyprawy"
+      },
+      {
+        "nazwa": "pieprz",
+        "ilosc": "1",
+        "jednostka": "szczypta",
+        "kategoria": "7_Przyprawy"
+      }
+    ],
+    "kroki": [
+      "Ugotuj makaron al dente, odlej trochę wody z gotowania.",
+      "Pokrój kurczaka w paski, dopraw solą, pieprzem i ostrą papryką i smaż na oliwie 6 minut.",
+      "Dodaj czosnek i szpinak, smaż, aż szpinak zwiędnie.",
+      "Wlej śmietanę i 3 łyżki wody z makaronu, dodaj parmezan i makaron, wymieszaj, aż sos oblepi makaron."
+    ],
+    "opis_wizualny": "Penne pasta in a creamy white sauce with strips of golden pan-fried chicken and wilted spinach, topped with shaved parmesan and black pepper."
+  },
+  {
+    "nazwa": "Wrapy z kurczakiem gyros i tzatziki",
+    "rodzaj": "kolacja",
+    "kuchnia": "grecka",
+    "poziom": "latwe",
+    "czas_minuty": 25,
+    "kcal": 800,
+    "dieta": "masa",
+    "bialko": 57,
+    "tluszcz": 29,
+    "wegle": 73,
+    "skladniki": [
+      {
+        "nazwa": "tortilla",
+        "ilosc": "2",
+        "jednostka": "szt",
+        "kategoria": "4_Pieczywo"
+      },
+      {
+        "nazwa": "pierś z kurczaka",
+        "ilosc": "180",
+        "jednostka": "g",
+        "kategoria": "2_Mięso i ryby"
+      },
+      {
+        "nazwa": "przyprawa gyros",
+        "ilosc": "2",
+        "jednostka": "łyżeczka",
+        "kategoria": "7_Przyprawy"
+      },
+      {
+        "nazwa": "jogurt grecki",
+        "ilosc": "4",
+        "jednostka": "łyżka",
+        "kategoria": "3_Nabiał"
+      },
+      {
+        "nazwa": "ogórek",
+        "ilosc": "1/2",
+        "jednostka": "szt",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "czosnek",
+        "ilosc": "1",
+        "jednostka": "szt",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "pomidory",
+        "ilosc": "1",
+        "jednostka": "szt",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "sałata",
+        "ilosc": "30",
+        "jednostka": "g",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "cebula czerwona",
+        "ilosc": "1/4",
+        "jednostka": "szt",
+        "kategoria": "7_Przyprawy"
+      },
+      {
+        "nazwa": "olej",
+        "ilosc": "1",
+        "jednostka": "łyżka",
+        "kategoria": "8_Inne"
+      }
+    ],
+    "kroki": [
+      "Pokrój kurczaka w paski, wymieszaj z przyprawą gyros i olejem i smaż 7 minut na mocnym ogniu.",
+      "Zetrzyj ogórek, odciśnij wodę i wymieszaj z jogurtem i przeciśniętym czosnkiem.",
+      "Podgrzej tortille na suchej patelni. Nałóż sałatę, pomidora, cebulę, kurczaka i tzatziki, zawiń."
+    ],
+    "opis_wizualny": "Two wraps cut diagonally, filled with spiced golden gyros chicken strips, lettuce, tomato, red onion and creamy white tzatziki sauce, on a wooden board."
+  },
+  {
+    "nazwa": "Penne z tuńczykiem, oliwkami i pomidorami",
+    "rodzaj": "kolacja",
+    "kuchnia": "wloska",
+    "poziom": "latwe",
+    "czas_minuty": 20,
+    "kcal": 740,
+    "dieta": "masa",
+    "bialko": 49,
+    "tluszcz": 20,
+    "wegle": 90,
+    "skladniki": [
+      {
+        "nazwa": "makaron",
+        "ilosc": "110",
+        "jednostka": "g",
+        "kategoria": "5_Produkty sypkie"
+      },
+      {
+        "nazwa": "tuńczyk w sosie własnym",
+        "ilosc": "120",
+        "jednostka": "g",
+        "kategoria": "6_Konserwy i słoiki"
+      },
+      {
+        "nazwa": "pomidory z puszki",
+        "ilosc": "150",
+        "jednostka": "g",
+        "kategoria": "6_Konserwy i słoiki"
+      },
+      {
+        "nazwa": "oliwki czarne",
+        "ilosc": "6",
+        "jednostka": "szt",
+        "kategoria": "6_Konserwy i słoiki"
+      },
+      {
+        "nazwa": "czosnek",
+        "ilosc": "2",
+        "jednostka": "szt",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "papryczka chili",
+        "ilosc": "1/2",
+        "jednostka": "szt",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "oliwa z oliwek",
+        "ilosc": "1",
+        "jednostka": "łyżka",
+        "kategoria": "8_Inne"
+      },
+      {
+        "nazwa": "parmezan",
+        "ilosc": "15",
+        "jednostka": "g",
+        "kategoria": "3_Nabiał"
+      },
+      {
+        "nazwa": "natka pietruszki",
+        "ilosc": "1",
+        "jednostka": "łyżka",
+        "kategoria": "1_Warzywa i owoce"
+      }
+    ],
+    "kroki": [
+      "Ugotuj makaron al dente.",
+      "Na oliwie podsmaż czosnek i chili przez minutę, dodaj pomidory i duś 8 minut.",
+      "Dodaj odsączonego tuńczyka i pokrojone oliwki, podgrzej.",
+      "Wymieszaj z makaronem, posyp parmezanem i natką."
+    ],
+    "opis_wizualny": "A bowl of penne pasta in a chunky tomato sauce with flakes of tuna, sliced black olives and chopped parsley, sprinkled with parmesan."
+  },
+  {
+    "nazwa": "Cheeseburger z jajkiem sadzonym",
+    "rodzaj": "kolacja",
+    "kuchnia": "amerykanska",
+    "poziom": "latwe",
+    "czas_minuty": 25,
+    "kcal": 790,
+    "dieta": "masa",
+    "bialko": 49,
+    "tluszcz": 50,
+    "wegle": 38,
+    "skladniki": [
+      {
+        "nazwa": "mięso mielone wołowe",
+        "ilosc": "150",
+        "jednostka": "g",
+        "kategoria": "2_Mięso i ryby"
+      },
+      {
+        "nazwa": "bułka",
+        "ilosc": "1",
+        "jednostka": "szt",
+        "kategoria": "4_Pieczywo"
+      },
+      {
+        "nazwa": "ser żółty",
+        "ilosc": "30",
+        "jednostka": "g",
+        "kategoria": "3_Nabiał"
+      },
+      {
+        "nazwa": "jajka",
+        "ilosc": "1",
+        "jednostka": "szt",
+        "kategoria": "3_Nabiał"
+      },
+      {
+        "nazwa": "sałata",
+        "ilosc": "20",
+        "jednostka": "g",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "pomidory",
+        "ilosc": "1/2",
+        "jednostka": "szt",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "cebula czerwona",
+        "ilosc": "1/4",
+        "jednostka": "szt",
+        "kategoria": "7_Przyprawy"
+      },
+      {
+        "nazwa": "ketchup",
+        "ilosc": "1",
+        "jednostka": "łyżka",
+        "kategoria": "7_Przyprawy"
+      },
+      {
+        "nazwa": "olej",
+        "ilosc": "1",
+        "jednostka": "łyżeczka",
+        "kategoria": "8_Inne"
+      },
+      {
+        "nazwa": "sól",
+        "ilosc": "1",
+        "jednostka": "szczypta",
+        "kategoria": "7_Przyprawy"
+      },
+      {
+        "nazwa": "pieprz",
+        "ilosc": "1",
+        "jednostka": "szczypta",
+        "kategoria": "7_Przyprawy"
+      }
+    ],
+    "kroki": [
+      "Uformuj z mięsa płaski kotlet, dopraw solą i pieprzem dopiero tuż przed smażeniem.",
+      "Smaż na mocno rozgrzanej patelni po 3 minuty z każdej strony. Pod koniec połóż ser i przykryj, żeby się roztopił.",
+      "Usmaż jajko sadzone. Podpiecz przekrojoną bułkę.",
+      "Złóż burgera: bułka, ketchup, sałata, pomidor, kotlet z serem, cebula, jajko."
+    ],
+    "opis_wizualny": "A tall homemade cheeseburger with a juicy beef patty, melted cheese, a fried egg with runny yolk, lettuce, tomato and red onion in a toasted bun."
+  },
+  {
+    "nazwa": "Łosoś pieczony z kaszą bulgur i brokułem",
+    "rodzaj": "kolacja",
+    "kuchnia": "miedzynarodowa",
+    "poziom": "latwe",
+    "czas_minuty": 30,
+    "kcal": 680,
+    "dieta": "masa",
+    "bialko": 46,
+    "tluszcz": 26,
+    "wegle": 74,
+    "skladniki": [
+      {
+        "nazwa": "filet z łososia",
+        "ilosc": "160",
+        "jednostka": "g",
+        "kategoria": "2_Mięso i ryby"
+      },
+      {
+        "nazwa": "kasza bulgur",
+        "ilosc": "80",
+        "jednostka": "g",
+        "kategoria": "5_Produkty sypkie"
+      },
+      {
+        "nazwa": "brokuł",
+        "ilosc": "150",
+        "jednostka": "g",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "sok z cytryny",
+        "ilosc": "1",
+        "jednostka": "łyżka",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "czosnek",
+        "ilosc": "1",
+        "jednostka": "szt",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "koperek",
+        "ilosc": "1",
+        "jednostka": "łyżka",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "oliwa z oliwek",
+        "ilosc": "1",
+        "jednostka": "łyżeczka",
+        "kategoria": "8_Inne"
+      },
+      {
+        "nazwa": "sól",
+        "ilosc": "1",
+        "jednostka": "szczypta",
+        "kategoria": "7_Przyprawy"
+      },
+      {
+        "nazwa": "pieprz",
+        "ilosc": "1",
+        "jednostka": "szczypta",
+        "kategoria": "7_Przyprawy"
+      }
+    ],
+    "kroki": [
+      "Rozgrzej piekarnik do 200 stopni. Łososia skrop cytryną i oliwą, dopraw solą, pieprzem i czosnkiem.",
+      "Piecz łososia 15 minut.",
+      "Ugotuj kaszę bulgur według opakowania, a brokuł na parze przez 4 minuty.",
+      "Podawaj łososia na kaszy z brokułem, posyp koperkiem."
+    ],
+    "opis_wizualny": "A roasted salmon fillet with a golden top and lemon slice, served on fluffy bulgur wheat with bright green broccoli and fresh dill."
+  },
+  {
+    "nazwa": "Pizza z szynką i mozzarellą na cieście 00",
+    "rodzaj": "kolacja",
+    "kuchnia": "wloska",
+    "poziom": "srednie",
+    "czas_minuty": 100,
+    "kcal": 750,
+    "dieta": "masa",
+    "bialko": 40,
+    "tluszcz": 22,
+    "wegle": 96,
+    "skladniki": [
+      {
+        "nazwa": "mąka pszenna",
+        "ilosc": "125",
+        "jednostka": "g",
+        "kategoria": "5_Produkty sypkie"
+      },
+      {
+        "nazwa": "drożdże świeże",
+        "ilosc": "3",
+        "jednostka": "g",
+        "kategoria": "5_Produkty sypkie"
+      },
+      {
+        "nazwa": "oliwa z oliwek",
+        "ilosc": "1",
+        "jednostka": "łyżeczka",
+        "kategoria": "8_Inne"
+      },
+      {
+        "nazwa": "pomidory z puszki",
+        "ilosc": "80",
+        "jednostka": "g",
+        "kategoria": "6_Konserwy i słoiki"
+      },
+      {
+        "nazwa": "mozzarella",
+        "ilosc": "80",
+        "jednostka": "g",
+        "kategoria": "3_Nabiał"
+      },
+      {
+        "nazwa": "szynka",
+        "ilosc": "60",
+        "jednostka": "g",
+        "kategoria": "2_Mięso i ryby"
+      },
+      {
+        "nazwa": "oregano",
+        "ilosc": "1",
+        "jednostka": "szczypta",
+        "kategoria": "7_Przyprawy"
+      },
+      {
+        "nazwa": "sól",
+        "ilosc": "1",
+        "jednostka": "szczypta",
+        "kategoria": "7_Przyprawy"
+      }
+    ],
+    "kroki": [
+      "Rozpuść drożdże w 80 ml letniej wody, dodaj mąkę (najlepiej typu 00), sól i oliwę. Wyrabiaj 8 minut, aż ciasto będzie gładkie.",
+      "Odstaw ciasto pod przykryciem na godzinę, aż podwoi objętość.",
+      "Rozgrzej piekarnik na maksimum (najlepiej z kamieniem lub blachą w środku).",
+      "Rozciągnij ciasto dłońmi, posmaruj zmiksowanymi pomidorami z oregano, połóż mozzarellę i szynkę.",
+      "Piecz 7–9 minut, aż brzegi się zrumienią."
+    ],
+    "opis_wizualny": "A round homemade Neapolitan-style pizza with a puffy charred crust, tomato sauce, melted mozzarella and slices of ham, on a wooden peel."
+  },
+  {
+    "nazwa": "Miska ryżowa z kurczakiem, jajkiem i chili",
+    "rodzaj": "kolacja",
+    "kuchnia": "koreanska",
+    "poziom": "latwe",
+    "czas_minuty": 25,
+    "kcal": 740,
+    "dieta": "masa",
+    "bialko": 44,
+    "tluszcz": 24,
+    "wegle": 86,
+    "skladniki": [
+      {
+        "nazwa": "ryż basmati",
+        "ilosc": "90",
+        "jednostka": "g",
+        "kategoria": "5_Produkty sypkie"
+      },
+      {
+        "nazwa": "udko z kurczaka",
+        "ilosc": "150",
+        "jednostka": "g",
+        "kategoria": "2_Mięso i ryby"
+      },
+      {
+        "nazwa": "jajka",
+        "ilosc": "1",
+        "jednostka": "szt",
+        "kategoria": "3_Nabiał"
+      },
+      {
+        "nazwa": "papryka",
+        "ilosc": "1/2",
+        "jednostka": "szt",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "ogórek",
+        "ilosc": "1/2",
+        "jednostka": "szt",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "sos sojowy",
+        "ilosc": "1",
+        "jednostka": "łyżka",
+        "kategoria": "6_Konserwy i słoiki"
+      },
+      {
+        "nazwa": "miód",
+        "ilosc": "1",
+        "jednostka": "łyżeczka",
+        "kategoria": "8_Inne"
+      },
+      {
+        "nazwa": "papryczka chili",
+        "ilosc": "1",
+        "jednostka": "szt",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "czosnek",
+        "ilosc": "1",
+        "jednostka": "szt",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "sezam",
+        "ilosc": "1",
+        "jednostka": "łyżeczka",
+        "kategoria": "7_Przyprawy"
+      },
+      {
+        "nazwa": "olej",
+        "ilosc": "1",
+        "jednostka": "łyżeczka",
+        "kategoria": "8_Inne"
+      }
+    ],
+    "kroki": [
+      "Ugotuj ryż.",
+      "Pokrój mięso z udek w kostkę i smaż na oleju 7 minut. Dodaj czosnek, chili, sos sojowy i miód i smaż, aż się skarmelizuje.",
+      "Usmaż jajko sadzone.",
+      "Ułóż w misce ryż, kurczaka, pokrojoną paprykę i ogórek, na wierzch jajko. Posyp sezamem."
+    ],
+    "opis_wizualny": "A bowl of white rice topped with sticky caramelised chilli chicken, a fried egg, sliced cucumber and red pepper, sprinkled with sesame seeds."
+  },
+  {
+    "nazwa": "Pasta z jaj i twarogu ze szczypiorkiem na żytnim",
+    "rodzaj": "kolacja",
+    "kuchnia": "polska",
+    "poziom": "latwe",
+    "czas_minuty": 15,
+    "kcal": 740,
+    "dieta": "masa",
+    "bialko": 47,
+    "tluszcz": 32,
+    "wegle": 64,
+    "skladniki": [
+      {
+        "nazwa": "jajka",
+        "ilosc": "3",
+        "jednostka": "szt",
+        "kategoria": "3_Nabiał"
+      },
+      {
+        "nazwa": "twaróg",
+        "ilosc": "100",
+        "jednostka": "g",
+        "kategoria": "3_Nabiał"
+      },
+      {
+        "nazwa": "majonez",
+        "ilosc": "1",
+        "jednostka": "łyżka",
+        "kategoria": "6_Konserwy i słoiki"
+      },
+      {
+        "nazwa": "szczypiorek",
+        "ilosc": "2",
+        "jednostka": "łyżka",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "chleb żytni",
+        "ilosc": "3",
+        "jednostka": "szt",
+        "kategoria": "4_Pieczywo"
+      },
+      {
+        "nazwa": "pomidory",
+        "ilosc": "1",
+        "jednostka": "szt",
+        "kategoria": "1_Warzywa i owoce"
+      },
+      {
+        "nazwa": "sól",
+        "ilosc": "1",
+        "jednostka": "szczypta",
+        "kategoria": "7_Przyprawy"
+      },
+      {
+        "nazwa": "pieprz",
+        "ilosc": "1",
+        "jednostka": "szczypta",
+        "kategoria": "7_Przyprawy"
+      }
+    ],
+    "kroki": [
+      "Ugotuj jajka na twardo, ostudź i obierz.",
+      "Posiekaj jajka drobno, wymieszaj z twarogiem, majonezem i szczypiorkiem, dopraw.",
+      "Nałóż pastę na chleb i podawaj z pomidorem."
+    ],
+    "opis_wizualny": "Open-faced rye bread sandwiches spread thickly with a creamy egg and cottage cheese paste, topped with chopped chives, tomato slices on the side."
+  }
+]

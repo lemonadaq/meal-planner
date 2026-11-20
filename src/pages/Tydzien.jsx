@@ -11,6 +11,7 @@ import PodgladPrzepisu from '../components/PodgladPrzepisu'
 import { useDuzyEkran } from '../useDuzyEkran'
 import { formatDataLocal } from '../dataHelpers'
 import { pobierzWszystkieWiersze } from '../pobierzWszystko'
+import { DIETA_LABEL, obecneDiety, scalDiete, zDietaAlboBez } from '../dieta'
 import { useTydzien, zakresTygodniaLabel, poniedzialekTygodnia, filtrujDania, wlasneDanieZSzukajki } from '../useTydzien'
 
 // Chipy filtrów — 'wszystko' i 'ulubione' specjalne, reszta to wartości `rodzaj`
@@ -113,10 +114,11 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
 
     async function pobierz() {
       // Paginacja obowiązkowa — tabela dania to wiersz per składnik (>1000 wierszy)
-      const { data } = await pobierzWszystkieWiersze(() =>
+      // Kolumna `dieta` dochodzi migracją — bez niej pytamy jak dawniej (dieta.js)
+      const { data } = await zDietaAlboBez(kol => pobierzWszystkieWiersze(() =>
         supabase.from('dania')
-          .select('"Danie", rodzaj, "TYP", zdjecie, ulubione, kcal')
-          .order('"Danie"'))
+          .select(`"Danie", rodzaj, "TYP", zdjecie, ulubione, kcal${kol}`)
+          .order('"Danie"')))
 
       if (anulowane) return
 
@@ -131,6 +133,7 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
         }
         const bazowy = (!prev.zdjecie && d.zdjecie) ? { ...d } : { ...prev }
         bazowy.ulubione = !!(prev.ulubione || d.ulubione)
+        bazowy.dieta = scalDiete(prev, d)
         mapa.set(d.Danie, bazowy)
       }
       setDania([...mapa.values()])
@@ -397,7 +400,7 @@ export default function Tydzien({ user, householdId, onSelectDanie, sledz, refre
       {/* Chipy filtrów — horizontal scroll */}
       <div style={s.chipsRow}>
         <div style={s.chipsScroll}>
-          {FILTRY.map(f => {
+          {[...FILTRY.slice(0, 2), ...obecneDiety(dania).map(id => ({ id, label: DIETA_LABEL[id] })), ...FILTRY.slice(2)].map(f => {
             const on = f.id === 'wszystko' ? filtry.length === 0 : filtry.includes(f.id)
             return (
               <button key={f.id}

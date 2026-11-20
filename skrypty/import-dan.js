@@ -12,7 +12,7 @@
 // `auto` (SCHEMAT_PRZEPISU w wspolne.js) — żeby jedno dało się podmienić
 // drugim bez przepisywania czegokolwiek.
 
-import { RODZAJE, KUCHNIE, POZIOMY, KATEGORIE } from './wspolne.js'
+import { RODZAJE, KUCHNIE, POZIOMY, KATEGORIE, DIETY, POLA_MAKRO } from './wspolne.js'
 
 const JEDNOSTKI = ['g', 'ml', 'szt', 'łyżka', 'łyżeczka', 'szczypta']
 
@@ -27,7 +27,9 @@ export function sprawdzDanie(danie, gdzie = '') {
   if (danie.kuchnia && !KUCHNIE.includes(danie.kuchnia)) zle(`kuchnia "${danie.kuchnia}" poza listą`)
   if (danie.poziom && !POZIOMY.includes(danie.poziom)) zle(`poziom "${danie.poziom}" poza listą`)
 
-  for (const pole of ['czas_minuty', 'kcal']) {
+  if (danie.dieta != null && !DIETY.includes(danie.dieta)) zle(`dieta "${danie.dieta}" poza listą (${DIETY.join(', ')})`)
+
+  for (const pole of ['czas_minuty', 'kcal', ...POLA_MAKRO]) {
     const v = danie[pole]
     if (v != null && (!Number.isFinite(v) || v <= 0)) zle(`${pole} musi być liczbą dodatnią`)
   }
@@ -80,6 +82,10 @@ export function wczytajPlik(tekst, nazwaPliku = '') {
       kcal: d.kcal ?? null,
       kuchnia: d.kuchnia ?? null,
       poziom: d.poziom ?? null,
+      dieta: d.dieta ?? null,
+      bialko: d.bialko ?? null,
+      tluszcz: d.tluszcz ?? null,
+      wegle: d.wegle ?? null,
       skladniki: d.skladniki,
       kroki: d.kroki,
       opis_wizualny: d.opis_wizualny,

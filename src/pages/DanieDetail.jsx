@@ -3,6 +3,7 @@ import { supabase } from '../supabase'
 import { t, fonts, ui, GORA_TRESCI } from '../theme'
 import { poniedzialekTygodnia, zakresTygodniaLabel, etykietaTygodnia, TYGODNIE_DO_WYBORU } from '../useTydzien'
 import { kcalZeSkladnikow, etykietaKcal } from '../kcalZeSkladnikow'
+import { DIETA_LABEL, etykietaMakro } from '../dieta'
 
 async function kompresujObraz(plik, maxSzerokosc = 1200, jakosc = 0.82) {
   return new Promise(resolve => {
@@ -91,6 +92,9 @@ export function metaChipyDania(skladnik, rodzaje = RODZAJE) {
   if (rodzajLabel) chipy.push(rodzajLabel)
   if (skladnik.czas_minuty) chipy.push(`${skladnik.czas_minuty} min`)
   if (skladnik.kcal) chipy.push(`${skladnik.kcal} kcal`)
+  const makro = etykietaMakro(skladnik)
+  if (makro) chipy.push(makro)
+  if (DIETA_LABEL[skladnik.dieta]) chipy.push(DIETA_LABEL[skladnik.dieta])
   return chipy
 }
 
@@ -330,6 +334,10 @@ export default function DanieDetail({ nazwa: nazwaProp, onBack, user, householdI
         'rodzaj': edRodzaj || null,
         'czas_minuty': czasMinutyVal,
         'kcal': kcalVal,
+        // Dieta i makro przechodzą ze wzoru, inaczej nowy składnik „wypadałby"
+        // z filtra. Tylko gdy są — baza bez migracji nie zna tych kolumn.
+        ...Object.fromEntries(['dieta', 'bialko', 'tluszcz', 'wegle']
+          .filter(k => wzor[k] != null).map(k => [k, wzor[k]])),
       }))
       operacje.push(supabase.from('dania').insert(wiersze))
     }

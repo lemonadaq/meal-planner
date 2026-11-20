@@ -4,6 +4,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { supabase } from './supabase'
 import { formatDataLocal } from './dataHelpers'
+import { DIETA_LABEL } from './dieta'
 
 // Poniedziałek bieżącego tygodnia + offset tygodni, jako 'YYYY-MM-DD'.
 // Lustro tydzienZakupowZOffsetem z ListaZakupow.jsx — oba ekrany MUSZĄ zgadzać
@@ -48,13 +49,17 @@ export function etykietaTygodnia(offset) {
 // Czyste filtrowanie listy dań na ekranie Tydzień: chipy rodzajów
 // (multi-select, OR w obrębie rodzajów), 'ulubione' jako dodatkowy warunek
 // AND, szukajka po nazwie (bez wielkości liter).
+// Chip diety (np. 'masa') to też warunek AND — „obiady na masę", nie
+// „obiady albo cokolwiek na masę".
 export function filtrujDania(dania, { filtry = [], szukaj = '' } = {}) {
-  const aktywneRodzaje = filtry.filter(f => f !== 'ulubione')
+  const aktywneDiety = filtry.filter(f => f in DIETA_LABEL)
+  const aktywneRodzaje = filtry.filter(f => f !== 'ulubione' && !(f in DIETA_LABEL))
   const tylkoUlubione = filtry.includes('ulubione')
   const q = szukaj.trim().toLowerCase()
 
   return dania.filter(d => {
     if (tylkoUlubione && !d.ulubione) return false
+    if (aktywneDiety.length > 0 && !aktywneDiety.includes(d.dieta)) return false
     if (aktywneRodzaje.length > 0 && !aktywneRodzaje.includes(d.rodzaj)) return false
     if (q && !d.Danie.toLowerCase().includes(q)) return false
     return true

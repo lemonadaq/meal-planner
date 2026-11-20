@@ -44,6 +44,14 @@ export const KUCHNIE = [
 
 export const POZIOMY = ['latwe', 'srednie', 'trudne']
 
+// Diety — opcjonalne pole dania, filtr-chip w Przepisach i Tygodniu.
+// Etykiety do wyświetlenia: DIETA_LABEL w src/etykiety.js.
+// Kolumna wymaga migracji `migracja_dieta_makro.sql`.
+export const DIETY = ['masa']
+
+// Makro na 1 porcję (g) — opcjonalne, razem z kolumnami z tej samej migracji.
+export const POLA_MAKRO = ['bialko', 'tluszcz', 'wegle']
+
 export const KATEGORIE = [
   '1_Warzywa i owoce', '2_Mięso i ryby', '3_Nabiał', '4_Pieczywo',
   '5_Produkty sypkie', '6_Konserwy i słoiki', '7_Przyprawy', '8_Inne',
@@ -513,6 +521,12 @@ export function zbudujWiersze(nazwa, rodzaj, przepis, slownik = null) {
     'poziom': przepis.poziom || null,
     'porcje_bazowe': PORCJE_BAZOWE,
     'notatki': null,
+  }
+  // Dieta i makro tylko gdy są — baza bez `migracja_dieta_makro.sql` nie ma
+  // tych kolumn i INSERT z kluczem `dieta: null` padłby dla KAŻDEJ paczki.
+  if (przepis.dieta) wspolne['dieta'] = przepis.dieta
+  for (const pole of POLA_MAKRO) {
+    if (przepis[pole] != null) wspolne[pole] = przepis[pole]
   }
   const skladniki = scalPowtorki(przepis.skladniki.map(s => czyscSkladnik(s, slownik)))
 
